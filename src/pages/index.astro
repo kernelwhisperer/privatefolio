@@ -1,10 +1,14 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Card from '../components/Card.astro';
+import CounterDisplay from '../components/CounterDisplay';
+import CounterController from '../components/CounterController';
 ---
 
 <Layout title="Welcome to Astro.">
 	<main>
+		<CounterDisplay client:load/>
+		<CounterController client:load/>
 		<h1>Welcome to <span class="text-gradient">Astro</span></h1>
 		<p class="instructions">
 			To get started, open the directory <code>src/pages</code> in your project.<br />

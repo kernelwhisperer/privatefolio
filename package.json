@@ -11,6 +11,16 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^2.0.2"
+    "@astrojs/react": "^2.0.1",
+    "@astrojs/solid-js": "^2.0.0",
+    "@nanostores/react": "^0.4.1",
+    "@nanostores/solid": "^0.3.2",
+    "@types/react": "^18.0.21",
+    "@types/react-dom": "^18.0.6",
+    "astro": "^2.0.2",
+    "nanostores": "^0.7.1",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "solid-js": "^1.4.3"
   }
 }
