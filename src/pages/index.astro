@@ -3,10 +3,12 @@ import Layout from '../layouts/Layout.astro';
 import Card from '../components/Card.astro';
 import CounterDisplay from '../components/CounterDisplay';
 import CounterController from '../components/CounterController';
+import { Chart } from '../components/Chart';
 ---
 
 <Layout title="Welcome to Astro.">
 	<main>
+		<Chart client:load/>
 		<CounterDisplay client:load/>
 		<CounterController client:load/>
 		<h1>Welcome to <span class="text-gradient">Astro</span></h1>
