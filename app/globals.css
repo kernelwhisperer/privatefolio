@@ -1,0 +1,25 @@
+/* @media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+  }
+} */
+/* html {
+  font-family: system-ui, sans-serif;
+  background-color: #F6F6F6;
+} */
+:root {
+  --accent: 124, 58, 237;
+  --accent-gradient: linear-gradient(45deg, rgb(var(--accent)), #da62c4 30%, white 60%);
+}
+h1 {
+  font-size: 3rem;
+  font-weight: 800;
+  margin: 0;
+}
+.text-gradient {
+  background-image: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 400%;
+  background-position: 0%;
+}

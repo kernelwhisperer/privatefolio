@@ -1,4 +1,3 @@
-import { CssBaseline } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -8,6 +7,8 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import { groupBy } from "lodash";
 import React from "react";
+
+import { readCsv } from "./utils";
 
 export interface Trade {
   datetime: string;
@@ -20,17 +21,25 @@ export interface Trade {
   total: string;
 }
 
-interface TickerListProps {
-  tradeHistory: Trade[];
-}
+const filePath =
+  "data/history_transaction_recode_ecb12a29519d423a917ee4160ffba82e_1674930394870.csv";
 
-export function TickerList(props: TickerListProps) {
-  const { tradeHistory } = props;
+export default async function TickerList() {
+  const tradeHistory = await readCsv<Trade>(filePath, (csvRow) => ({
+    datetime: csvRow[1],
+    executedAmount: csvRow[4],
+    fee: csvRow[6],
+    filledPrice: csvRow[3],
+    role: csvRow[7] as any,
+    side: csvRow[2] as any,
+    ticker: csvRow[0],
+    total: csvRow[5],
+  }));
+  console.log("📜 LOG > tradeHistory:", tradeHistory[0]);
   const groupedTrades = groupBy(tradeHistory, "ticker");
   console.log("📜 LOG > groupedTrades:", groupedTrades);
   return (
     <div>
-      <CssBaseline />
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
