@@ -1,23 +1,11 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { Chart } from "../components/Chart";
-import { TickerList } from "../components/TickerList";
+import { TickerList, Trade } from "../components/TickerList";
 import { readCsv } from "../utils";
-import { groupBy } from "lodash";
 
 const filePath =
   "data/history_transaction_recode_ecb12a29519d423a917ee4160ffba82e_1674930394870.csv";
 
-interface Trade {
-  ticker: string;
-  datetime: string;
-  side: "BUY" | "SELL";
-  filledPrice: string;
-  executedAmount: string;
-  total: string;
-  fee: string;
-  role: "Maker" | "Taker";
-}
 const tradeHistory = await readCsv<Trade>(filePath, (csvRow) => ({
   ticker: csvRow[0],
   datetime: csvRow[1],
@@ -28,28 +16,17 @@ const tradeHistory = await readCsv<Trade>(filePath, (csvRow) => ({
   fee: csvRow[6],
   role: csvRow[7]as any,
 }));
-console.log("📜 LOG > tradeHistory:", tradeHistory[0]);
-const grouped = groupBy(tradeHistory, 'ticker')
-console.log("📜 LOG > grouped:", grouped);
-
+// console.log("📜 LOG > tradeHistory:", tradeHistory[0]);
 ---
 
 <Layout title="TradeJournal">
   <main>
     <h1><span class="text-gradient">TradeJournal</span></h1>
-    <!-- <Chart client:load/> -->
-    <TickerList />
+    <TickerList client:load tradeHistory={tradeHistory}/>
   </main>
 </Layout>
+
 <style>
-  html {
-    background-color: #3a3a3a;
-  }
-  main {
-    margin: auto;
-    padding: 1.5rem;
-    max-width: 60ch;
-  }
   h1 {
     font-size: 3rem;
     font-weight: 800;

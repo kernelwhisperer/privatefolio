@@ -33,7 +33,7 @@
     "@astrojs/solid-js": "^2.0.0",
     "@types/lodash": "^4.14.195",
     "@types/node": "^20.2.5",
-    "@types/react": "^18.0.21",
+    "@types/react": "^18.2.7",
     "@types/react-dom": "^18.0.6",
     "astro": "^2.5.0",
     "eslint": "^8.41.0",
