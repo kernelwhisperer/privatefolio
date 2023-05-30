@@ -2,7 +2,7 @@ import "./globals.css";
 
 import React from "react";
 
-import ThemeRegistry from "./components/Theme/ThemeRegistry";
+import { App } from "./components/RootLayout/App";
 
 export const metadata = {
   description: "Visualize your trades",
@@ -17,10 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <h1>
-          <span className="text-gradient">TradeJournal</span>
-        </h1>
-        <ThemeRegistry>{children}</ThemeRegistry>
+        <App>{children}</App>
       </body>
     </html>
   );

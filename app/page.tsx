@@ -1,4 +1,3 @@
-import { groupBy } from "lodash";
 import React from "react";
 
 import TickerList from "./components/HomePage/TickerList";
@@ -30,7 +29,5 @@ export default async function HomePage() {
     total: csvRow[5],
   }));
   console.log("📜 LOG > tradeHistory:", tradeHistory[0]);
-  const groupedTrades = groupBy(tradeHistory, "ticker");
-  console.log("📜 LOG > groupedTrades:", groupedTrades);
   return <TickerList tradeHistory={tradeHistory} />;
 }
