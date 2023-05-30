@@ -3,7 +3,7 @@
 import { red } from "@mui/material/colors";
 import { createTheme } from "@mui/material/styles";
 
-import DefaultFont from "./fonts";
+// import DefaultFont from "./fonts";
 
 // Create a theme instance.
 // When needed::: first argument is needed if you have common enterprise theme, and second argument is to override your enterprise theme.
@@ -21,9 +21,9 @@ const theme = createTheme({
     },
   },
   typography: {
-    body1: { fontFamily: DefaultFont.style.fontFamily },
-    body2: { fontFamily: DefaultFont.style.fontFamily },
-    fontFamily: DefaultFont.style.fontFamily,
+    // body1: { fontFamily: DefaultFont.style.fontFamily },
+    // body2: { fontFamily: DefaultFont.style.fontFamily },
+    // fontFamily: DefaultFont.style.fontFamily,
   },
 });
 
