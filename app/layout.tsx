@@ -1,14 +1,8 @@
 import "./globals.css";
 
-import { Roboto } from "next/font/google";
 import React from "react";
 
-export const roboto = Roboto({
-  display: "swap",
-  style: ["normal", "italic"],
-  subsets: ["latin"],
-  weight: ["400", "700"],
-});
+import ThemeRegistry from "./components/Theme/ThemeRegistry";
 
 export const metadata = {
   description: "Visualize your trades",
@@ -21,13 +15,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={roboto.className}>
+    <html lang="en">
       <body>
         <h1>
           <span className="text-gradient">TradeJournal</span>
         </h1>
-        {/* <CssBaseline /> */}
-        {children}
+        <ThemeRegistry>{children}</ThemeRegistry>
       </body>
     </html>
   );
