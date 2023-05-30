@@ -1,7 +1,8 @@
 import { groupBy } from "lodash";
 import React from "react";
 
-import { readCsv } from "./utils";
+import TickerList from "./components/HomePage/TickerList";
+import { readCsv } from "./utils/utils";
 
 export interface Trade {
   datetime: string;
@@ -17,7 +18,7 @@ export interface Trade {
 const filePath =
   "data/history_transaction_recode_ecb12a29519d423a917ee4160ffba82e_1674930394870.csv";
 
-export default async function TickerList() {
+export default async function HomePage() {
   const tradeHistory = await readCsv<Trade>(filePath, (csvRow) => ({
     datetime: csvRow[1],
     executedAmount: csvRow[4],
@@ -31,25 +32,5 @@ export default async function TickerList() {
   console.log("📜 LOG > tradeHistory:", tradeHistory[0]);
   const groupedTrades = groupBy(tradeHistory, "ticker");
   console.log("📜 LOG > groupedTrades:", groupedTrades);
-  return (
-    <div>
-      <table aria-label="simple table">
-        <thead>
-          <tr>
-            <th>Ticker</th>
-            <th align="right">No. of trades</th>
-          </tr>
-        </thead>
-        <tbody>
-          {Object.keys(groupedTrades).map((tradeGroup) => (
-            <tr key={tradeGroup}>
-              <td>{tradeGroup}</td>
-              <td align="right">{groupedTrades[tradeGroup].length}</td>
-              <td align="right"></td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
+  return <TickerList tradeHistory={tradeHistory} />;
 }
