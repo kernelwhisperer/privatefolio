@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Trade, TradeList } from "./components/HomePage/TickerList";
+import { Trade, TradeList } from "./components/HomePage/TradeList";
 import { readCsv } from "./utils/utils";
 
 const filePath = "data/preview.csv";
