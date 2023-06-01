@@ -1,6 +1,6 @@
 import React, { ReactNode, SVGTextElementAttributes } from "react";
 
-import { RobotoFlex } from "../Theme/fonts";
+import { RobotoFlexFF } from "../Theme/fonts";
 
 interface CustomTextProps extends SVGTextElementAttributes<SVGTextElement> {
   children: ReactNode;
@@ -17,7 +17,7 @@ const CustomText: React.FC<CustomTextProps> = ({
     strokeWidth="4"
     strokeLinejoin="miter"
     strokeLinecap="square"
-    fontFamily={RobotoFlex.style.fontFamily}
+    fontFamily={RobotoFlexFF}
     fontSize="40px"
     fontWeight="1000"
     paintOrder="stroke"
@@ -35,14 +35,14 @@ const CustomText: React.FC<CustomTextProps> = ({
 export function Logo() {
   return (
     <svg
-      width="232"
-      height="64"
-      viewBox="0 0 232 64"
+      width="256"
+      height="72"
+      viewBox="0 0 256 72"
       xmlns="http://www.w3.org/2000/svg"
     >
       <CustomText
         x="8"
-        y="24"
+        y="32"
         style={{
           filter: `drop-shadow(-4px 0px 0px var(--mui-palette-primary-main))`,
         }}
@@ -51,7 +51,7 @@ export function Logo() {
       </CustomText>
       <CustomText
         x="32"
-        y="56"
+        y="64"
         style={{
           filter: `drop-shadow(4px 0px 0px var(--mui-palette-primary-main))`,
         }}

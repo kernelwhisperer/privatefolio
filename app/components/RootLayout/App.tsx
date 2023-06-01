@@ -15,7 +15,7 @@ export function App({ children }: { children: React.ReactNode }) {
             alignItems: "flex-start",
             display: "flex",
             flexDirection: "column",
-            marginY: 3,
+            marginY: 2,
           }}
         >
           <Header />

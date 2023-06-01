@@ -1,18 +1,7 @@
 import React from "react";
 
-import TickerList from "./components/HomePage/TickerList";
+import { Trade, TradeList } from "./components/HomePage/TickerList";
 import { readCsv } from "./utils/utils";
-
-export interface Trade {
-  datetime: string;
-  executedAmount: string;
-  fee: string;
-  filledPrice: string;
-  role: "Maker" | "Taker";
-  side: "BUY" | "SELL";
-  ticker: string;
-  total: string;
-}
 
 const filePath = "data/preview.csv";
 
@@ -24,9 +13,10 @@ export default async function HomePage() {
     filledPrice: csvRow[3],
     role: csvRow[7] as any,
     side: csvRow[2] as any,
+    symbol: csvRow[0].split("_")[0],
     ticker: csvRow[0],
     total: csvRow[5],
   }));
   // console.log("📜 LOG > tradeHistory:", tradeHistory[0]);
-  return <TickerList tradeHistory={tradeHistory} />;
+  return <TradeList tradeHistory={tradeHistory} />;
 }

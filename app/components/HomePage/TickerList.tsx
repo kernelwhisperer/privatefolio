@@ -1,11 +1,13 @@
 "use client";
 
+import { Avatar, Stack } from "@mui/material";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import icons from "base64-cryptocurrency-icons";
 import { groupBy } from "lodash";
 import React from "react";
 
@@ -16,18 +18,19 @@ export interface Trade {
   filledPrice: string;
   role: "Maker" | "Taker";
   side: "BUY" | "SELL";
+  symbol: string;
   ticker: string;
   total: string;
 }
 
-interface TickerListProps {
+interface TradeListProps {
   tradeHistory: Trade[];
 }
 
-export default function TickerList(props: TickerListProps) {
+export function TradeList(props: TradeListProps) {
   const { tradeHistory } = props;
   // console.log("📜 LOG > tradeHistory:", tradeHistory[0]);
-  const groupedTrades = groupBy(tradeHistory, "ticker");
+  const groupedSymbols = groupBy(tradeHistory, "symbol");
   // console.log("📜 LOG > groupedTrades:", groupedTrades);
 
   return (
@@ -51,16 +54,24 @@ export default function TickerList(props: TickerListProps) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {Object.keys(groupedTrades).map((tradeGroup) => (
+            {Object.keys(groupedSymbols).map((symbol) => (
               <TableRow
-                key={tradeGroup}
+                key={symbol}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                 <TableCell component="th" scope="row">
-                  {tradeGroup}
+                  <Stack direction="row" gap={1} alignItems="center">
+                    <Avatar
+                      alt={symbol}
+                      src={icons[symbol]?.icon || "broken-img"}
+                      sx={{ fontSize: "14px", height: 18, width: 18 }}
+                      // TODO: take fontsize from theme
+                    />
+                    {symbol}
+                  </Stack>
                 </TableCell>
                 <TableCell align="right">
-                  {groupedTrades[tradeGroup].length}
+                  {groupedSymbols[symbol].length}
                 </TableCell>
                 <TableCell align="right">0</TableCell>
               </TableRow>

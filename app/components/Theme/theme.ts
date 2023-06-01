@@ -19,6 +19,9 @@ export const theme = extendTheme({
     light: {
       // https://colorhunt.co/palette/ff6d60f7d060f3e99f98d8aa
       palette: {
+        Avatar: {
+          defaultBg: LIGHT_THEME_TEXT,
+        },
         TableCell: {
           border: alpha(LIGHT_THEME_TEXT, 0.33),
         },
@@ -26,10 +29,7 @@ export const theme = extendTheme({
           default: "#c8bb9b",
         },
         primary: {
-          main: "rgb(57, 65, 73)",
-        },
-        secondary: {
-          main: "rgb(57, 65, 73)",
+          main: LIGHT_THEME_TEXT,
         },
         text: {
           primary: LIGHT_THEME_TEXT,
@@ -37,22 +37,12 @@ export const theme = extendTheme({
       },
     },
   },
-  // "Roboto Mono",
-  // RobotoFlex.style.fontFamily,
   typography: {
+    // "Roboto Mono",
     fontFamily: [
       "monospace",
       "system-ui",
       // "Roboto",
-      // "-apple-system",
-      // "BlinkMacSystemFont",
-      // '"Segoe UI"',
-      // '"Helvetica Neue"',
-      // "Arial",
-      // "sans-serif",
-      // '"Apple Color Emoji"',
-      // '"Segoe UI Emoji"',
-      // '"Segoe UI Symbol"',
     ].join(","),
   },
 });
