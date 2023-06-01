@@ -14,8 +14,7 @@ export interface Trade {
   total: string;
 }
 
-const filePath =
-  "data/history_transaction_recode_ecb12a29519d423a917ee4160ffba82e_1674930394870.csv";
+const filePath = "data/preview.csv";
 
 export default async function HomePage() {
   const tradeHistory = await readCsv<Trade>(filePath, (csvRow) => ({
@@ -28,6 +27,6 @@ export default async function HomePage() {
     ticker: csvRow[0],
     total: csvRow[5],
   }));
-  console.log("📜 LOG > tradeHistory:", tradeHistory[0]);
+  // console.log("📜 LOG > tradeHistory:", tradeHistory[0]);
   return <TickerList tradeHistory={tradeHistory} />;
 }

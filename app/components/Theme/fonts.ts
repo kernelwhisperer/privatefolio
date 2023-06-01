@@ -1,19 +1,10 @@
 // Fonts Example
-import { Roboto } from "next/font/google";
+// eslint-disable-next-line camelcase
+import { Roboto_Flex } from "next/font/google";
 
-const DefaultFont = Roboto({
-  display: "swap",
-  style: ["normal", "italic"],
+// https://v-fonts.com/fonts/roboto-flex
+export const RobotoFlex = Roboto_Flex({
+  axes: ["slnt", "YTUC", "wdth", "XTRA"],
+  display: "fallback", // TODO: not sure
   subsets: ["latin"],
-  weight: ["400", "700"],
 });
-
-export default DefaultFont;
-
-// Local Fonts example
-// more details here: https://nextjs.org/docs/app/building-your-application/optimizing/fonts#local-fonts
-// import localFont from 'next/font/local';
-
-// const LocalFont = localFont({src: [{path: './path-of-font-file-regular.woff', weight: '400', style: 'normal'}], fallback: ['Arial', 'sans-serif']})
-
-// export default LocalFont;

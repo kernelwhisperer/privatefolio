@@ -1,23 +1,25 @@
 "use client";
 
 import CssBaseline from "@mui/material/CssBaseline";
-import { Theme, ThemeProvider } from "@mui/material/styles";
+import {
+  Experimental_CssVarsProvider as CssVarsProvider,
+  getInitColorSchemeScript,
+} from "@mui/material/styles";
 import * as React from "react";
 
-export default function ThemeRegistry({
-  children,
-  theme,
-}: {
-  children: React.ReactNode;
-  theme: Theme;
-}) {
+import { NextAppDirEmotionCacheProvider } from "./EmotionCache";
+import { theme } from "./theme";
+
+export default function ThemeRegistry(props: { children: React.ReactNode }) {
+  const { children } = props;
+
   return (
-    <ThemeProvider theme={theme}>
-      {/* https://github.com/mui/material-ui/pull/37315#discussion_r1210849432 */}
-      {/* <NextAppDirEmotionCacheProvider options={{ key: "mui" }}> */}
-      <CssBaseline enableColorScheme={true} />
-      {children}
-      {/* </NextAppDirEmotionCacheProvider> */}
-    </ThemeProvider>
+    <NextAppDirEmotionCacheProvider options={{ key: "mui" }}>
+      <CssVarsProvider defaultMode="system" theme={theme}>
+        {getInitColorSchemeScript({ defaultMode: "system" })}
+        <CssBaseline enableColorScheme={true} />
+        {children}
+      </CssVarsProvider>
+    </NextAppDirEmotionCacheProvider>
   );
 }

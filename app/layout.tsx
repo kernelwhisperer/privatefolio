@@ -1,5 +1,3 @@
-import "./globals.css";
-
 import React from "react";
 
 import { App } from "./components/RootLayout/App";

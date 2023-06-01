@@ -1,7 +1,5 @@
 "use client";
 
-import { Typography } from "@mui/material";
-import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -28,22 +26,28 @@ interface TickerListProps {
 
 export default function TickerList(props: TickerListProps) {
   const { tradeHistory } = props;
-  console.log("📜 LOG > tradeHistory:", tradeHistory[0]);
+  // console.log("📜 LOG > tradeHistory:", tradeHistory[0]);
   const groupedTrades = groupBy(tradeHistory, "ticker");
-  console.log("📜 LOG > groupedTrades:", groupedTrades);
+  // console.log("📜 LOG > groupedTrades:", groupedTrades);
 
   return (
     <>
-      <Typography variant="h5" gutterBottom>
+      {/* <Typography variant="h5" gutterBottom>
         Ticker list
-      </Typography>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+      </Typography> */}
+      <TableContainer>
+        <Table sx={{ minWidth: 350 }} size="small" aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell>Ticker</TableCell>
-              <TableCell align="right">No. of trades</TableCell>
-              <TableCell align="right">Cost basis</TableCell>
+              <TableCell>
+                <b>Ticker</b>
+              </TableCell>
+              <TableCell align="right">
+                <b>No. of trades</b>
+              </TableCell>
+              <TableCell align="right">
+                <b>Cost basis</b>
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -58,7 +62,7 @@ export default function TickerList(props: TickerListProps) {
                 <TableCell align="right">
                   {groupedTrades[tradeGroup].length}
                 </TableCell>
-                <TableCell align="right"></TableCell>
+                <TableCell align="right">0</TableCell>
               </TableRow>
             ))}
           </TableBody>

@@ -1,29 +1,35 @@
 "use client";
 
-import { DarkModeOutlined, LightModeOutlined } from "@mui/icons-material";
-import { IconButton, PaletteMode } from "@mui/material";
-import React from "react";
+import {
+  DarkModeOutlined,
+  LightModeOutlined,
+  SettingsSuggestRounded,
+} from "@mui/icons-material";
+import { IconButton, Tooltip, useColorScheme } from "@mui/material";
+import React, { useMemo } from "react";
 
-export interface SettingsProps {
-  mode: PaletteMode;
-  setMode: (mode: PaletteMode) => void;
-}
+export function Settings() {
+  const { mode = "system", setMode } = useColorScheme();
 
-export function Settings(props: SettingsProps) {
-  const { mode, setMode } = props;
+  const nextMode = useMemo(() => {
+    if (mode === "light") return "dark";
+    if (mode === "system") return "light";
+    return "system";
+  }, [mode]);
+
   return (
-    <>
+    <Tooltip title={`Activate ${nextMode} mode`}>
       <IconButton
         size="large"
-        onClick={() => setMode(mode === "light" ? "dark" : "light")}
+        onClick={() => {
+          setMode(nextMode);
+        }}
         color="primary"
       >
-        {mode === "dark" ? (
-          <LightModeOutlined fontSize="small" />
-        ) : (
-          <DarkModeOutlined fontSize="small" />
-        )}
+        {mode === "light" && <LightModeOutlined fontSize="small" />}
+        {mode === "dark" && <DarkModeOutlined fontSize="small" />}
+        {mode === "system" && <SettingsSuggestRounded fontSize="small" />}
       </IconButton>
-    </>
+    </Tooltip>
   );
 }

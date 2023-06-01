@@ -8,7 +8,7 @@
     "email": "hello@danielconstantin.net"
   },
   "scripts": {
-    "start": "next dev --turbo",
+    "start": "next dev",
     "build": "next build",
     "start:prod": "next start",
     "lint": "eslint src",
