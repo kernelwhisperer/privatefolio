@@ -2,18 +2,25 @@ import { alpha } from "@mui/material";
 import { experimental_extendTheme as extendTheme } from "@mui/material/styles";
 
 const LIGHT_THEME_TEXT = "rgb(57, 65, 73)";
+const DARK_THEME_TEXT = "rgb(255,255,255)";
 
 export const theme = extendTheme({
   colorSchemes: {
     dark: {
       palette: {
+        Avatar: {
+          defaultBg: DARK_THEME_TEXT,
+        },
         mode: "dark",
         primary: {
-          main: "rgb(255,255,255)",
+          main: DARK_THEME_TEXT,
         },
-        secondary: {
-          main: "rgb(212,212,212)",
-        },
+        // text: {
+        //   primary: LIGHT_THEME_TEXT,
+        // },
+        // secondary: {
+        //   main: "rgb(212,212,212)",
+        // },
       },
     },
     light: {

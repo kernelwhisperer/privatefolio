@@ -16,7 +16,9 @@ export function Header() {
       width="100%"
       marginBottom={3}
     >
-      <Logo />
+      <a href="/">
+        <Logo />
+      </a>
       <Settings />
     </Stack>
   );
