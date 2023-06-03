@@ -1,45 +1,49 @@
-import { alpha } from "@mui/material";
+import { alpha, darken } from "@mui/material";
 import { experimental_extendTheme as extendTheme } from "@mui/material/styles";
 
-const LIGHT_THEME_TEXT = "rgb(57, 65, 73)";
-const DARK_THEME_TEXT = "rgb(255,255,255)";
+const RETRO_GREY = "rgb(57, 65, 73)";
+const RETRO_BEIGE = "rgb(200, 187, 155)";
 
 export const theme = extendTheme({
   colorSchemes: {
     dark: {
       palette: {
         Avatar: {
-          defaultBg: DARK_THEME_TEXT,
+          defaultBg: RETRO_BEIGE,
+        },
+        TableCell: {
+          border: alpha(RETRO_BEIGE, 0.33),
+        },
+        background: {
+          default: RETRO_GREY,
         },
         mode: "dark",
         primary: {
-          main: DARK_THEME_TEXT,
+          main: RETRO_BEIGE,
         },
-        // text: {
-        //   primary: LIGHT_THEME_TEXT,
-        // },
-        // secondary: {
-        //   main: "rgb(212,212,212)",
-        // },
+        text: {
+          primary: RETRO_BEIGE,
+          secondary: darken(RETRO_BEIGE, 0.25),
+        },
       },
     },
     light: {
       // https://colorhunt.co/palette/ff6d60f7d060f3e99f98d8aa
       palette: {
         Avatar: {
-          defaultBg: LIGHT_THEME_TEXT,
+          defaultBg: RETRO_GREY,
         },
         TableCell: {
-          border: alpha(LIGHT_THEME_TEXT, 0.33),
+          border: alpha(RETRO_GREY, 0.33),
         },
         background: {
-          default: "#c8bb9b",
+          default: RETRO_BEIGE,
         },
         primary: {
-          main: LIGHT_THEME_TEXT,
+          main: RETRO_GREY,
         },
         text: {
-          primary: LIGHT_THEME_TEXT,
+          primary: RETRO_GREY,
         },
       },
     },

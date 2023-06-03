@@ -4,11 +4,19 @@ import { Box, Stack, Typography } from "@mui/material";
 // import icons from "base64-cryptocurrency-icons";
 import React from "react";
 
+import { formatNumber } from "../../utils/client-utils";
 import { Trade } from "../../utils/interfaces";
 import EnhancedTable, { HeadCell } from "../EnhancedTable";
+import { ReChart } from "../Rechart";
 
 interface AssetInfoProps {
+  amountBought: number;
+  amountSold: number;
   assetSymbol: string;
+  costBasis: number;
+  holdings: number;
+  moneyIn: number;
+  moneyOut: number;
   tradeHistory: Trade[];
 }
 
@@ -23,10 +31,6 @@ const headCells: readonly HeadCell<Trade>[] = [
     label: "Datetime",
   },
   {
-    id: "ticker",
-    label: "Ticker",
-  },
-  {
     id: "side",
     label: "Side",
   },
@@ -36,77 +40,114 @@ const headCells: readonly HeadCell<Trade>[] = [
     numeric: true,
   },
   {
-    id: "executedAmount",
+    id: "amount",
     label: "Amount",
+    numeric: true,
+  },
+  {
+    id: "total",
+    label: "Total",
     numeric: true,
   },
 ];
 
 export function AssetInfo(props: AssetInfoProps) {
-  const { tradeHistory, assetSymbol } = props;
-  // const buyHistory = tradeHistory.filter((x) => x.side === "BUY");
-  // console.log("📜 LOG > groupedTrades:", groupedTrades);
-  const amountBought = tradeHistory.reduce(
-    (accumulator, x) =>
-      x.side === "BUY" ? accumulator + x.amount : accumulator,
-    0
-  );
-  const amountSold = tradeHistory.reduce(
-    (accumulator, x) =>
-      x.side === "SELL" ? accumulator + x.amount : accumulator,
-    0
-  );
-  const holdings = amountBought - amountSold;
-
-  const moneyInAmount = tradeHistory.reduce(
-    (accumulator, x) =>
-      x.side === "BUY" ? accumulator + x.total : accumulator,
-    0
-  );
-  const moneyOutAmount = tradeHistory.reduce(
-    (accumulator, x) =>
-      x.side === "SELL" ? accumulator + x.total : accumulator,
-    0
-  );
-
-  const costBasis = moneyInAmount / amountBought;
+  const {
+    costBasis,
+    moneyIn,
+    moneyOut,
+    tradeHistory,
+    assetSymbol,
+    // amountBought,
+    // amountSold,
+    holdings,
+  } = props;
 
   return (
     <Box sx={{ width: "100%" }}>
-      <Typography variant="h3" marginBottom={1}>
-        {assetSymbol}
-      </Typography>
-      <Stack gap={1} marginBottom={2}>
-        <Typography variant="body1">
+      <Stack
+        marginX={2}
+        direction="row"
+        marginBottom={2}
+        flexWrap="wrap"
+        justifyContent="space-between"
+        alignItems="center"
+      >
+        <Typography variant="h3" fontWeight={700}>
+          {assetSymbol}
+        </Typography>
+        <Stack gap={4} flexWrap="wrap" direction="row">
+          {/* <Typography variant="body1">
           <span>No. of trades</span> <span>{tradeHistory.length}</span>
-        </Typography>
-        <Typography variant="body1">
-          <span>Amount bought</span>{" "}
-          <span>
+        </Typography> */}
+          <Stack>
+            <Typography variant="body1" color="text.secondary">
+              Avg. buy price
+            </Typography>
+            <Typography variant="body1">
+              {formatNumber(costBasis)} USDT
+            </Typography>
+          </Stack>
+          {/* <Stack>
+          <Typography variant="body1" color="text.secondary">
+            Amount bought
+          </Typography>
+          <Typography variant="body1">
             {amountBought} {assetSymbol}
-          </span>
-        </Typography>
-        <Typography variant="body1">
-          <span>Amount sold</span>{" "}
-          <span>
+          </Typography>
+        </Stack>
+        <Stack>
+          <Typography variant="body1" color="text.secondary">
+            Amount sold
+          </Typography>
+          <Typography variant="body1">
             {amountSold} {assetSymbol}
-          </span>
-        </Typography>
-        <Typography variant="body1">
-          <span>Holdings</span>{" "}
-          <span>
-            {holdings} {assetSymbol}
-          </span>
-        </Typography>
-        <Typography variant="body1">
-          <span>Money in</span> <span>{moneyInAmount} USDT</span>
-        </Typography>
-        <Typography variant="body1">
-          <span>Money out</span> <span>{moneyOutAmount} USDT</span>
-        </Typography>
-        <Typography variant="body1">
-          <span>Cost basis</span> <span>{costBasis} USDT</span>
-        </Typography>
+          </Typography>
+        </Stack> */}
+          <Stack>
+            <Typography variant="body1" color="text.secondary">
+              Holdings
+            </Typography>
+            <Typography variant="body1">
+              {holdings} {assetSymbol}
+            </Typography>
+          </Stack>
+          <Stack>
+            <Typography variant="body1" color="text.secondary">
+              Cost
+            </Typography>
+            <Typography variant="body1">
+              {formatNumber(moneyIn - moneyOut)} USDT
+            </Typography>
+          </Stack>
+          {/* <Stack>
+          <Typography variant="body1" color="text.secondary">
+            Money in
+          </Typography>
+          <Typography variant="body1">{formatNumber(moneyIn)} USDT</Typography>
+        </Stack>
+        <Stack>
+          <Typography variant="body1" color="text.secondary">
+            Money out
+          </Typography>
+          <Typography variant="body1">{formatNumber(moneyOut)} USDT</Typography>
+        </Stack> */}
+        </Stack>
+      </Stack>
+      <Stack gap={4} marginX={2}>
+        <ReChart
+          data={tradeHistory
+            .map((x) => ({
+              value: x.filledPrice,
+            }))
+            .reverse()}
+        />
+        {/* <Chart
+          data={tradeHistory.map((x) => ({
+            time: new Date(x.datetime).getTime() / 1000,
+            value: x.filledPrice,
+          }))}
+        /> */}
       </Stack>
       <EnhancedTable<Trade> rows={tradeHistory} headCells={headCells} />
     </Box>

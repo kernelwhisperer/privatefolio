@@ -1,8 +1,9 @@
 import fs from "node:fs";
 
 import { parse } from "csv-parse";
+import Decimal from "decimal.js";
 
-import { Trade } from "./interfaces";
+import { ServerTrade, TradeRole, TradeSide } from "./interfaces";
 
 export async function readCsv<T>(
   filePath: string,
@@ -22,23 +23,24 @@ export async function readCsv<T>(
   });
 }
 
-export function mexcTransformer(csvRow: string[], index: number): Trade {
+export function mexcTransformer(csvRow: string[], index: number): ServerTrade {
   const ticker = csvRow[0];
-  const filledPrice = parseFloat(csvRow[3]);
-  const amount = parseFloat(csvRow[4]);
+  const filledPrice = new Decimal(csvRow[3].split(" ")[0]);
+  const amount = new Decimal(csvRow[4].split(" ")[0]);
+  const symbol = ticker.split("_")[0];
+  const baseSymbol = ticker.split("_")[1];
+  const total = new Decimal(csvRow[5].split(" ")[0]);
 
   return {
     amount,
+    baseSymbol,
     datetime: csvRow[1],
-    executedAmount: csvRow[4],
     fee: csvRow[6],
     filledPrice,
-    filledPriceSymbol: csvRow[3].split(" ")[1],
-    id: index, // `${csvRow[1]}_${index}`,
-    role: csvRow[7] as any,
-    side: csvRow[2] as any,
-    symbol: ticker.split("_")[0],
-    ticker,
-    total: parseFloat(csvRow[5]),
+    id: index,
+    role: csvRow[7] as TradeRole,
+    side: csvRow[2] as TradeSide,
+    symbol,
+    total,
   };
 }

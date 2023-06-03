@@ -10,6 +10,12 @@ import { CacheProvider as DefaultCacheProvider } from "@emotion/react";
 import { useServerInsertedHTML } from "next/navigation";
 import * as React from "react";
 
+const globalStyles = `
+  html {
+    overflow-y: scroll;
+  }  
+`;
+
 export type NextAppDirEmotionCacheProviderProps = {
   /** By default <CacheProvider /> from 'import { CacheProvider } from "@emotion/react"' */
   CacheProvider?: (props: {
@@ -53,7 +59,7 @@ export function NextAppDirEmotionCacheProvider(
     if (names.length === 0) {
       return null;
     }
-    let styles = "";
+    let styles = globalStyles;
     // eslint-disable-next-line no-restricted-syntax
     for (const name of names) {
       styles += cache.inserted[name];

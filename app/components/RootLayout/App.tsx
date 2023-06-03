@@ -9,16 +9,28 @@ import { Header } from "./Header";
 export function App({ children }: { children: React.ReactNode }) {
   return (
     <ThemeRegistry>
-      <Container maxWidth="lg">
+      <Container maxWidth="lg" sx={{ padding: { sm: 0 } }}>
         <Box
           sx={{
             alignItems: "flex-start",
             display: "flex",
             flexDirection: "column",
-            marginY: 2,
           }}
         >
           <Header />
+          {/* <Breadcrumbs
+            separator={<NavigateNext fontSize="small" />}
+            aria-label="breadcrumb"
+          >
+            <Link
+              underline="hover"
+              color="inherit"
+              href="/"
+              component={NextLink}
+            >
+              Home
+            </Link>
+          </Breadcrumbs> */}
           {children}
         </Box>
       </Container>

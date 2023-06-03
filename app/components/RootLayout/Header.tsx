@@ -1,6 +1,7 @@
 "use client";
 
 import { Stack } from "@mui/material";
+import Link from "next/link";
 import React from "react";
 
 import { Logo } from "./Logo";
@@ -14,11 +15,13 @@ export function Header() {
       justifyContent="space-between"
       alignItems="center"
       width="100%"
+      paddingX={2}
       marginBottom={3}
+      marginTop={1}
     >
-      <a href="/">
+      <Link href="/">
         <Logo />
-      </a>
+      </Link>
       <Settings />
     </Stack>
   );

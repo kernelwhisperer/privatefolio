@@ -1,6 +1,6 @@
 "use client";
 
-import { Stack } from "@mui/material";
+import { Link, Stack } from "@mui/material";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -9,6 +9,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 // import icons from "base64-cryptocurrency-icons";
 import { groupBy } from "lodash";
+import NextLink from "next/link";
 import React from "react";
 
 import { Trade } from "../../utils/interfaces";
@@ -35,11 +36,11 @@ export function AssetList(props: TradeListProps) {
               <TableCell>
                 <b>Asset</b>
               </TableCell>
-              <TableCell align="right">
-                <b>No. of trades</b>
+              <TableCell>
+                <b>Base pair</b>
               </TableCell>
               <TableCell align="right">
-                <b>Cost basis</b>
+                <b>No. of trades</b>
               </TableCell>
             </TableRow>
           </TableHead>
@@ -58,13 +59,21 @@ export function AssetList(props: TradeListProps) {
                         sx={{ fontSize: "14px", height: 18, width: 18 }}
                         // TODO: take fontsize from theme
                       /> */}
-                      <a href={`/asset/${symbol}`}>{symbol}</a>
+                      <Link
+                        href={`/asset/${symbol}`}
+                        component={NextLink}
+                        sx={{
+                          textDecoration: "none",
+                        }}
+                      >
+                        {symbol}
+                      </Link>
                     </Stack>
                   </TableCell>
+                  <TableCell>{groupedSymbols[symbol][0].baseSymbol}</TableCell>
                   <TableCell align="right">
                     {groupedSymbols[symbol].length}
                   </TableCell>
-                  <TableCell align="right">-</TableCell>
                 </TableRow>
               );
             })}

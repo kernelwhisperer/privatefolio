@@ -44,7 +44,7 @@ export function Logo() {
         x="8"
         y="32"
         style={{
-          filter: `drop-shadow(-2px 2px 0px var(--mui-palette-primary-main))`,
+          filter: `drop-shadow(-4px 0px 0px var(--mui-palette-primary-main))`,
         }}
       >
         TRADE
@@ -53,7 +53,7 @@ export function Logo() {
         x="32"
         y="64"
         style={{
-          filter: `drop-shadow(-2px 2px 0px var(--mui-palette-primary-main))`,
+          filter: `drop-shadow(-4px 0px 0px var(--mui-palette-primary-main))`,
         }}
       >
         JOURNAL
