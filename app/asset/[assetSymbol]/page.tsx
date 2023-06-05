@@ -2,6 +2,7 @@ import Decimal from "decimal.js";
 import React from "react";
 
 import { AssetInfo } from "../../components/AssetPage/AssetInfo";
+import { PageWrapper } from "../../components/RootLayout/PageWrapper";
 import { ServerTrade, Trade } from "../../utils/interfaces";
 import { mexcTransformer, readCsv } from "../../utils/utils";
 
@@ -43,15 +44,17 @@ export default async function AssetPage({
   const costBasis = moneyIn.div(amountBought);
 
   return (
-    <AssetInfo
-      assetSymbol={assetSymbol}
-      amountBought={amountBought.toNumber()}
-      amountSold={amountSold.toNumber()}
-      moneyIn={moneyIn.toNumber()}
-      moneyOut={moneyOut.toNumber()}
-      holdings={holdings.toNumber()}
-      costBasis={costBasis.toNumber()}
-      tradeHistory={frontendTradeHistory}
-    />
+    <PageWrapper>
+      <AssetInfo
+        assetSymbol={assetSymbol}
+        amountBought={amountBought.toNumber()}
+        amountSold={amountSold.toNumber()}
+        moneyIn={moneyIn.toNumber()}
+        moneyOut={moneyOut.toNumber()}
+        holdings={holdings.toNumber()}
+        costBasis={costBasis.toNumber()}
+        tradeHistory={frontendTradeHistory}
+      />
+    </PageWrapper>
   );
 }

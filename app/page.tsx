@@ -1,6 +1,7 @@
 import React from "react";
 
 import { AssetList } from "./components/HomePage/AssetList";
+import { PageWrapper } from "./components/RootLayout/PageWrapper";
 import { ServerTrade, Trade } from "./utils/interfaces";
 import { mexcTransformer, readCsv } from "./utils/utils";
 
@@ -17,5 +18,9 @@ export default async function HomePage() {
     };
   });
   // console.log("📜 LOG > tradeHistory:", tradeHistory[0]);
-  return <AssetList tradeHistory={frontendTradeHistory} />;
+  return (
+    <PageWrapper>
+      <AssetList tradeHistory={frontendTradeHistory} />
+    </PageWrapper>
+  );
 }

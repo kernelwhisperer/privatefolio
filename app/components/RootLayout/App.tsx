@@ -31,6 +31,23 @@ export function App({ children }: { children: React.ReactNode }) {
               Home
             </Link>
           </Breadcrumbs> */}
+          {/* <LazyMotion features={domAnimation}> */}
+          {/* TODO: https://github.com/vercel/next.js/issues/49279 */}
+          {/* <AnimatePresence>
+            <motion.div
+              key={pathname}
+              initial={{ opacity: 0, y: 80 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -80 }}
+     
+              transition={{
+                damping: 20,
+                stiffness: 40,
+                type: "spring",
+              }}
+            >
+            </motion.div>
+          </AnimatePresence> */}
           {children}
         </Box>
       </Container>
