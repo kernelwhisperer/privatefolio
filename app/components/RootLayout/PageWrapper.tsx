@@ -12,9 +12,10 @@ export function PageWrapper(props: HTMLMotionProps<"div">) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -80 }}
       transition={{
-        damping: 20,
-        stiffness: 160,
-        type: "spring",
+        duration: 0.3,
+        // damping: 20,
+        // stiffness: 160,
+        // type: "spring",
       }}
       {...props}
     />
