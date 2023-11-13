@@ -1,27 +1,27 @@
-"use client"
+"use client";
 
-import { Link, Stack } from "@mui/material"
-import Table from "@mui/material/Table"
-import TableBody from "@mui/material/TableBody"
-import TableCell from "@mui/material/TableCell"
-import TableContainer from "@mui/material/TableContainer"
-import TableHead from "@mui/material/TableHead"
-import TableRow from "@mui/material/TableRow"
+import { Link as MuiLink, Stack } from "@mui/material";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
 // import icons from "base64-cryptocurrency-icons";
-import { groupBy } from "lodash"
-import NextLink from "next/link"
-import React from "react"
+import { groupBy } from "lodash";
+import React from "react";
+import { Link } from "react-router-dom";
 
-import { Trade } from "../../utils/interfaces"
+import { Trade } from "../../utils/interfaces";
 
 interface TradeListProps {
-  tradeHistory: Trade[]
+  tradeHistory: Trade[];
 }
 
 export function AssetList(props: TradeListProps) {
-  const { tradeHistory } = props
-  const buyHistory = tradeHistory.filter((x) => x.side === "BUY")
-  const groupedSymbols = groupBy(buyHistory, "symbol")
+  const { tradeHistory } = props;
+  const buyHistory = tradeHistory.filter((x) => x.side === "BUY");
+  const groupedSymbols = groupBy(buyHistory, "symbol");
   // console.log("📜 LOG > groupedTrades:", groupedTrades);
 
   return (
@@ -47,7 +47,10 @@ export function AssetList(props: TradeListProps) {
           <TableBody>
             {Object.keys(groupedSymbols).map((symbol) => {
               return (
-                <TableRow key={symbol} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                <TableRow
+                  key={symbol}
+                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                >
                   <TableCell component="th" scope="row">
                     <Stack direction="row" gap={1} alignItems="center">
                       {/* <Avatar
@@ -56,25 +59,27 @@ export function AssetList(props: TradeListProps) {
                         sx={{ fontSize: "14px", height: 18, width: 18 }}
                         // TODO: take fontsize from theme
                       /> */}
-                      <Link
-                        href={`/asset/${symbol}`}
-                        component={NextLink}
+                      <MuiLink
+                        to={`/asset/${symbol}`}
+                        component={Link}
                         sx={{
                           textDecoration: "none",
                         }}
                       >
                         {symbol}
-                      </Link>
+                      </MuiLink>
                     </Stack>
                   </TableCell>
                   <TableCell>{groupedSymbols[symbol][0].baseSymbol}</TableCell>
-                  <TableCell align="right">{groupedSymbols[symbol].length}</TableCell>
+                  <TableCell align="right">
+                    {groupedSymbols[symbol].length}
+                  </TableCell>
                 </TableRow>
-              )
+              );
             })}
           </TableBody>
         </Table>
       </TableContainer>
     </>
-  )
+  );
 }

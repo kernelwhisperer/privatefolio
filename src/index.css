@@ -1,0 +1,37 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Mono&family=Roboto+Serif:opsz,wght@8..144,500&family=Roboto:wght@300;400;500;700&display=block");
+
+::selection {
+  color: white;
+  background: var(--main);
+}
+
+html {
+  scrollbar-width: thin;
+  --main: rgb(0, 211, 149);
+  overflow: scroll;
+}
+
+::-webkit-scrollbar-corner {
+  background-color: transparent;
+  border-color: transparent;
+}
+
+::-webkit-scrollbar,
+::-webkit-scrollbar-thumb {
+  height: 8px;
+  border-radius: 2px;
+  width: 8px;
+}
+
+::-webkit-scrollbar {
+  background: rgb(42, 45, 53);
+}
+
+
+::-webkit-scrollbar-thumb {
+  background: rgb(100, 106, 124);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(133, 141, 161);
+}
