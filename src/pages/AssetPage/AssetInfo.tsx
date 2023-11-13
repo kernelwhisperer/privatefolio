@@ -4,10 +4,10 @@ import { Box, Stack, Typography } from "@mui/material"
 // import icons from "base64-cryptocurrency-icons";
 import React from "react"
 
+import EnhancedTable, { HeadCell } from "../../components/EnhancedTable"
+import { ReChart } from "../../components/Rechart"
 import { formatNumber } from "../../utils/client-utils"
 import { Trade } from "../../utils/interfaces"
-import EnhancedTable, { HeadCell } from "../EnhancedTable"
-import { ReChart } from "../Rechart"
 
 interface AssetInfoProps {
   amountBought: number

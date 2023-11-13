@@ -1,8 +1,8 @@
 "use client"
 
-import { Stack } from "@mui/material"
-import Link from "next/link"
+import { Link as MuiLink, Stack } from "@mui/material"
 import React from "react"
+import { Link } from "react-router-dom"
 
 import { Logo } from "./Logo"
 import { Settings } from "./Settings"
@@ -19,9 +19,9 @@ export function Header() {
       marginBottom={3}
       marginTop={1}
     >
-      <Link href="/">
+      <MuiLink component={Link} to="/" underline="none">
         <Logo />
-      </Link>
+      </MuiLink>
       <Settings />
     </Stack>
   )

@@ -1,6 +1,3 @@
-import fs from "node:fs"
-
-import { parse } from "csv-parse"
 import Decimal from "decimal.js"
 
 import { ServerTrade, TradeRole, TradeSide } from "./interfaces"
@@ -9,18 +6,21 @@ export async function readCsv<T>(
   filePath: string,
   transformer: (input: string[], index: number) => T
 ): Promise<T[]> {
-  return new Promise((resolve) => {
-    const tradeHistory: T[] = []
-    fs.createReadStream(filePath)
-      .pipe(parse({ delimiter: ",", from_line: 2 })) // TODO: check this for consistency
-      .on("data", (csvRow) => {
-        tradeHistory.push(transformer(csvRow, tradeHistory.length))
-      })
-      .on("end", () => {
-        // do something with csvData
-        resolve(tradeHistory)
-      })
+  const response = await fetch(filePath)
+  const text = await response.text()
+
+  // Parse CSV text
+  const rows = text.split("\n").map((row) => row.split(","))
+  const tradeHistory: T[] = []
+
+  rows.slice(1).forEach((row, index) => {
+    try {
+      const obj = transformer(row, index)
+      tradeHistory.push(obj)
+    } catch {}
   })
+
+  return tradeHistory
 }
 
 export function mexcTransformer(csvRow: string[], index: number): ServerTrade {

@@ -1,37 +1,47 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto+Mono&family=Roboto+Serif:opsz,wght@8..144,500&family=Roboto:wght@300;400;500;700&display=block");
 
 ::selection {
-  color: white;
-  background: var(--main);
+  color: var(--mui-palette-background-default);
+  background: var(--mui-palette-primary-main);
 }
 
 html {
   scrollbar-width: thin;
-  --main: rgb(0, 211, 149);
-  overflow: scroll;
+  overflow-y: scroll;
+  -webkit-tap-highlight-color: transparent;
 }
 
 ::-webkit-scrollbar-corner {
-  background-color: transparent;
+  background: transparent;
   border-color: transparent;
 }
 
 ::-webkit-scrollbar,
 ::-webkit-scrollbar-thumb {
-  height: 8px;
-  border-radius: 2px;
-  width: 8px;
+  width: 12px;
+  height: 12px;
 }
 
 ::-webkit-scrollbar {
-  background: rgb(42, 45, 53);
+  background: rgb(230, 230, 230);
 }
 
-
 ::-webkit-scrollbar-thumb {
-  background: rgb(100, 106, 124);
+  background: rgba(195, 195, 195);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgb(133, 141, 161);
+  background: rgb(185, 185, 185);
+}
+
+html[data-mui-color-scheme="dark"] ::-webkit-scrollbar {
+  background: rgb(40, 40, 40);
+}
+
+html[data-mui-color-scheme="dark"] ::-webkit-scrollbar-thumb {
+  background: rgba(65, 65, 65);
+}
+
+html[data-mui-color-scheme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: rgb(85, 85, 85);
 }

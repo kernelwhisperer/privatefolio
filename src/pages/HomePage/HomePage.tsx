@@ -1,25 +1,31 @@
-import React from "react";
+import React, { useEffect, useState } from "react"
 
-import { AssetList } from "./AssetList";
-// import { ServerTrade, Trade } from "./utils/interfaces";
-// import { mexcTransformer, readCsv } from "./utils/utils";
+import { ServerTrade, Trade } from "../../utils/interfaces"
+import { mexcTransformer, readCsv } from "../../utils/utils"
+import { AssetList } from "./AssetList"
 
-// const filePath = "data/preview.csv";
+const filePath = "/data/preview.csv"
 
 export default function HomePage() {
-  // const tradeHistory = await readCsv<ServerTrade>(filePath, mexcTransformer);
-  // const frontendTradeHistory: Trade[] = tradeHistory.map((x) => {
-  //   return {
-  //     ...x,
-  //     amount: x.amount.toNumber(),
-  //     filledPrice: x.filledPrice.toNumber(),
-  //     total: x.total.toNumber(),
-  //   };
-  // });
-  // console.log("📜 LOG > tradeHistory:", tradeHistory[0]);
+  const [tradeHistory, setTradeHistory] = useState<Trade[]>([])
+
+  useEffect(() => {
+    readCsv<ServerTrade>(filePath, mexcTransformer).then((tradeHistory) => {
+      const frontendTradeHistory: Trade[] = tradeHistory.map((x) => {
+        return {
+          ...x,
+          amount: x.amount.toNumber(),
+          filledPrice: x.filledPrice.toNumber(),
+          total: x.total.toNumber(),
+        }
+      })
+      setTradeHistory(frontendTradeHistory)
+    })
+  }, [])
+
   return (
     <>
-      <AssetList tradeHistory={[]} />
+      <AssetList tradeHistory={tradeHistory} />
     </>
-  );
+  )
 }

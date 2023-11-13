@@ -1,8 +1,8 @@
 import Decimal from "decimal.js"
 import React from "react"
 
-import { AssetInfo } from "../../components/AssetPage/AssetInfo"
 import { PageWrapper } from "../../components/RootLayout/PageWrapper"
+import { AssetInfo } from "../../pages/AssetPage/AssetInfo"
 import { ServerTrade, Trade } from "../../utils/interfaces"
 import { mexcTransformer, readCsv } from "../../utils/utils"
 
