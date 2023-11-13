@@ -1,6 +1,6 @@
 "use client"
 
-import { Link as MuiLink, Stack } from "@mui/material"
+import { Button, Stack } from "@mui/material"
 import React from "react"
 import { Link } from "react-router-dom"
 
@@ -19,9 +19,17 @@ export function Header() {
       marginBottom={3}
       marginTop={1}
     >
-      <MuiLink component={Link} to="/" underline="none">
+      <Button
+        to={`/`}
+        aria-label="Visit Homepage"
+        component={Link}
+        sx={{
+          marginLeft: -2,
+          paddingX: 2,
+        }}
+      >
         <Logo />
-      </MuiLink>
+      </Button>
       <Settings />
     </Stack>
   )

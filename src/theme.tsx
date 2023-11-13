@@ -18,14 +18,24 @@ const theme = extendTheme({
       },
     },
   },
-  // shape: {
-  //   borderRadius: 6,
-  // },
   // transitions: {
   //   easing: {
   //     // sharp: "cubic-bezier(1.000, 0.000, 0.000, 1.000)",
   //   },
   // },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          textTransform: "none",
+        },
+      },
+    },
+  },
+
+  shape: {
+    borderRadius: 32,
+  },
 })
 // console.log("📜 LOG > theme:", theme)
 

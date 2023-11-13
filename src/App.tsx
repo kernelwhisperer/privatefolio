@@ -3,7 +3,8 @@ import { a, useTransition } from "@react-spring/web"
 import React from "react"
 import { Route, Routes, useLocation } from "react-router-dom"
 
-import { Header } from "./components/RootLayout/Header"
+import { Header } from "./components/Header/Header"
+import AssetPage from "./pages/AssetPage/AssetPage"
 import HomePage from "./pages/HomePage/HomePage"
 
 export default function App() {
@@ -35,8 +36,8 @@ export default function App() {
             }
           >
             <Routes location={item}>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/asset/:assetSymbol" element={<HomePage />} />
+              <Route path="/" Component={HomePage} />
+              <Route path="/asset/:assetSymbol" Component={AssetPage} />
             </Routes>
           </a.div>
         ))}

@@ -1,56 +1,78 @@
 import Decimal from "decimal.js"
-import React from "react"
+import React, { useEffect, useState } from "react"
+import { useParams } from "react-router-dom"
 
-import { PageWrapper } from "../../components/RootLayout/PageWrapper"
-import { AssetInfo } from "../../pages/AssetPage/AssetInfo"
 import { ServerTrade, Trade } from "../../utils/interfaces"
 import { mexcTransformer, readCsv } from "../../utils/utils"
+import { AssetInfo } from "./AssetInfo"
 
-const filePath = "data/preview.csv"
+const filePath = "/data/preview.csv"
 
-export default async function AssetPage({ params }: { params: { assetSymbol: string } }) {
-  const assetSymbol = params.assetSymbol.toLocaleUpperCase()
+export default function AssetPage() {
+  const params = useParams()
+  const assetSymbol = params.assetSymbol?.toLocaleUpperCase()
 
-  let tradeHistory = await readCsv<ServerTrade>(filePath, mexcTransformer)
-  tradeHistory = tradeHistory.filter((x) => x.symbol === assetSymbol)
+  const [tradeHistory, setTradeHistory] = useState<Trade[]>([])
+  const [amounts, setAmounts] = useState<any>({})
+  console.log("📜 LOG > AssetPage > amounts:", amounts)
 
-  let amountBought = new Decimal(0)
-  let amountSold = new Decimal(0)
-  let moneyIn = new Decimal(0)
-  let moneyOut = new Decimal(0)
+  useEffect(() => {
+    readCsv<ServerTrade>(filePath, mexcTransformer).then((tradeHistory) => {
+      const parsedTradeHistory = tradeHistory.filter((x) => x.symbol === assetSymbol)
 
-  const frontendTradeHistory: Trade[] = tradeHistory.map((x) => {
-    if (x.side === "BUY") {
-      amountBought = amountBought.plus(x.amount)
-      moneyIn = moneyIn.plus(x.total)
-    } else {
-      amountSold = amountSold.plus(x.amount)
-      moneyOut = moneyOut.plus(x.total)
-    }
+      let amountBought = new Decimal(0)
+      let amountSold = new Decimal(0)
+      let moneyIn = new Decimal(0)
+      let moneyOut = new Decimal(0)
 
-    return {
-      ...x,
-      amount: x.amount.toNumber(),
-      filledPrice: x.filledPrice.toNumber(),
-      total: x.total.toNumber(),
-    }
-  })
+      const frontendTradeHistory: Trade[] = parsedTradeHistory.map((x) => {
+        if (x.side === "BUY") {
+          amountBought = amountBought.plus(x.amount)
+          moneyIn = moneyIn.plus(x.total)
+        } else {
+          amountSold = amountSold.plus(x.amount)
+          moneyOut = moneyOut.plus(x.total)
+        }
 
-  const holdings = amountBought.minus(amountSold)
-  const costBasis = moneyIn.div(amountBought)
+        return {
+          ...x,
+          amount: x.amount.toNumber(),
+          filledPrice: x.filledPrice.toNumber(),
+          total: x.total.toNumber(),
+        }
+      })
+
+      const holdings = amountBought.minus(amountSold)
+      console.log("📜 LOG > readCsv<ServerTrade> > holdings:", holdings)
+      const costBasis = moneyIn.div(amountBought)
+      setTradeHistory(frontendTradeHistory)
+      setAmounts({
+        amountBought,
+        amountSold,
+        costBasis,
+        holdings,
+        moneyIn,
+        moneyOut,
+      })
+    })
+  }, [])
 
   return (
-    <PageWrapper>
-      <AssetInfo
-        assetSymbol={assetSymbol}
-        amountBought={amountBought.toNumber()}
-        amountSold={amountSold.toNumber()}
-        moneyIn={moneyIn.toNumber()}
-        moneyOut={moneyOut.toNumber()}
-        holdings={holdings.toNumber()}
-        costBasis={costBasis.toNumber()}
-        tradeHistory={frontendTradeHistory}
-      />
-    </PageWrapper>
+    <>
+      {tradeHistory.length === 0 ? (
+        "Loading..."
+      ) : (
+        <AssetInfo
+          assetSymbol={assetSymbol}
+          amountBought={amounts.amountBought.toNumber()}
+          amountSold={amounts.amountSold.toNumber()}
+          moneyIn={amounts.moneyIn.toNumber()}
+          moneyOut={amounts.moneyOut.toNumber()}
+          holdings={amounts.holdings.toNumber()}
+          costBasis={amounts.costBasis.toNumber()}
+          tradeHistory={tradeHistory}
+        />
+      )}
+    </>
   )
 }
