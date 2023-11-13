@@ -1,11 +1,11 @@
-"use client";
+"use client"
 
-import { Stack } from "@mui/material";
-import Link from "next/link";
-import React from "react";
+import { Stack } from "@mui/material"
+import Link from "next/link"
+import React from "react"
 
-import { Logo } from "./Logo";
-import { Settings } from "./Settings";
+import { Logo } from "./Logo"
+import { Settings } from "./Settings"
 
 export function Header() {
   return (
@@ -24,5 +24,5 @@ export function Header() {
       </Link>
       <Settings />
     </Stack>
-  );
+  )
 }

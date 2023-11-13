@@ -1,35 +1,31 @@
-import Decimal from "decimal.js";
-import React from "react";
+import Decimal from "decimal.js"
+import React from "react"
 
-import { AssetInfo } from "../../components/AssetPage/AssetInfo";
-import { PageWrapper } from "../../components/RootLayout/PageWrapper";
-import { ServerTrade, Trade } from "../../utils/interfaces";
-import { mexcTransformer, readCsv } from "../../utils/utils";
+import { AssetInfo } from "../../components/AssetPage/AssetInfo"
+import { PageWrapper } from "../../components/RootLayout/PageWrapper"
+import { ServerTrade, Trade } from "../../utils/interfaces"
+import { mexcTransformer, readCsv } from "../../utils/utils"
 
-const filePath = "data/preview.csv";
+const filePath = "data/preview.csv"
 
-export default async function AssetPage({
-  params,
-}: {
-  params: { assetSymbol: string };
-}) {
-  const assetSymbol = params.assetSymbol.toLocaleUpperCase();
+export default async function AssetPage({ params }: { params: { assetSymbol: string } }) {
+  const assetSymbol = params.assetSymbol.toLocaleUpperCase()
 
-  let tradeHistory = await readCsv<ServerTrade>(filePath, mexcTransformer);
-  tradeHistory = tradeHistory.filter((x) => x.symbol === assetSymbol);
+  let tradeHistory = await readCsv<ServerTrade>(filePath, mexcTransformer)
+  tradeHistory = tradeHistory.filter((x) => x.symbol === assetSymbol)
 
-  let amountBought = new Decimal(0);
-  let amountSold = new Decimal(0);
-  let moneyIn = new Decimal(0);
-  let moneyOut = new Decimal(0);
+  let amountBought = new Decimal(0)
+  let amountSold = new Decimal(0)
+  let moneyIn = new Decimal(0)
+  let moneyOut = new Decimal(0)
 
   const frontendTradeHistory: Trade[] = tradeHistory.map((x) => {
     if (x.side === "BUY") {
-      amountBought = amountBought.plus(x.amount);
-      moneyIn = moneyIn.plus(x.total);
+      amountBought = amountBought.plus(x.amount)
+      moneyIn = moneyIn.plus(x.total)
     } else {
-      amountSold = amountSold.plus(x.amount);
-      moneyOut = moneyOut.plus(x.total);
+      amountSold = amountSold.plus(x.amount)
+      moneyOut = moneyOut.plus(x.total)
     }
 
     return {
@@ -37,11 +33,11 @@ export default async function AssetPage({
       amount: x.amount.toNumber(),
       filledPrice: x.filledPrice.toNumber(),
       total: x.total.toNumber(),
-    };
-  });
+    }
+  })
 
-  const holdings = amountBought.minus(amountSold);
-  const costBasis = moneyIn.div(amountBought);
+  const holdings = amountBought.minus(amountSold)
+  const costBasis = moneyIn.div(amountBought)
 
   return (
     <PageWrapper>
@@ -56,5 +52,5 @@ export default async function AssetPage({
         tradeHistory={frontendTradeHistory}
       />
     </PageWrapper>
-  );
+  )
 }

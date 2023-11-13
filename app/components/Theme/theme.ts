@@ -1,8 +1,8 @@
-import { alpha, darken } from "@mui/material";
-import { experimental_extendTheme as extendTheme } from "@mui/material/styles";
+import { alpha, darken } from "@mui/material"
+import { experimental_extendTheme as extendTheme } from "@mui/material/styles"
 
-const RETRO_GREY = "rgb(57, 65, 73)";
-const RETRO_BEIGE = "rgb(200, 187, 155)";
+const RETRO_GREY = "rgb(57, 65, 73)"
+const RETRO_BEIGE = "rgb(200, 187, 155)"
 
 export const theme = extendTheme({
   colorSchemes: {
@@ -56,7 +56,7 @@ export const theme = extendTheme({
       // "Roboto",
     ].join(","),
   },
-});
+})
 
 // components: {
 //   MuiButton: {

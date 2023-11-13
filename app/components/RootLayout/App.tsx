@@ -1,10 +1,10 @@
-"use client";
+"use client"
 
-import { Box, Container } from "@mui/material";
-import React from "react";
+import { Box, Container } from "@mui/material"
+import React from "react"
 
-import ThemeRegistry from "../Theme/ThemeRegistry";
-import { Header } from "./Header";
+import ThemeRegistry from "../Theme/ThemeRegistry"
+import { Header } from "./Header"
 
 export function App({ children }: { children: React.ReactNode }) {
   return (
@@ -52,5 +52,5 @@ export function App({ children }: { children: React.ReactNode }) {
         </Box>
       </Container>
     </ThemeRegistry>
-  );
+  )
 }

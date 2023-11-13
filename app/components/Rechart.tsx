@@ -1,13 +1,6 @@
-import { useTheme } from "@mui/material";
-import React from "react";
-import {
-  Bar,
-  BarChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { useTheme } from "@mui/material"
+import React from "react"
+import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 // const data = [
 //   { time: "2018-12-22", value: 32.51 },
 //   { time: "2018-12-23", value: 31.11 },
@@ -22,7 +15,7 @@ import {
 // ];
 
 export const ReChart = ({ data }) => {
-  const theme = useTheme();
+  const theme = useTheme()
   return (
     <ResponsiveContainer width={"100%"} height={300}>
       <BarChart data={data}>
@@ -32,5 +25,5 @@ export const ReChart = ({ data }) => {
         <Tooltip />
       </BarChart>
     </ResponsiveContainer>
-  );
-};
+  )
+}

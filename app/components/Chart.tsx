@@ -1,9 +1,9 @@
-import { useTheme } from "@mui/material";
-import { ColorType, createChart } from "lightweight-charts";
-import React, { useEffect, useRef } from "react";
+import { useTheme } from "@mui/material"
+import { ColorType, createChart } from "lightweight-charts"
+import React, { useEffect, useRef } from "react"
 
 export const Chart = ({ data = [] }) => {
-  const theme = useTheme();
+  const theme = useTheme()
 
   // const data = [
   //   { time: "2018-12-22", value: 32.51 },
@@ -17,19 +17,16 @@ export const Chart = ({ data = [] }) => {
   //   { time: "2018-12-30", value: 22.68 },
   //   { time: "2018-12-31", value: 22.67 },
   // ];
-  const {
-    lineColor = theme.palette.primary.main,
-    textColor = theme.palette.text.primary,
-  } = {};
+  const { lineColor = theme.palette.primary.main, textColor = theme.palette.text.primary } = {}
 
-  const chartContainerRef = useRef<HTMLElement>();
+  const chartContainerRef = useRef<HTMLElement>()
 
   useEffect(() => {
-    if (!chartContainerRef.current) return;
+    if (!chartContainerRef.current) return
 
     const handleResize = () => {
-      chart.applyOptions({ width: chartContainerRef.current.clientWidth });
-    };
+      chart.applyOptions({ width: chartContainerRef.current.clientWidth })
+    }
 
     const chart = createChart(chartContainerRef.current, {
       grid: {
@@ -46,30 +43,30 @@ export const Chart = ({ data = [] }) => {
         textColor,
       },
       width: chartContainerRef.current.clientWidth,
-    });
+    })
     chart.timeScale().applyOptions({
       // barSpacing: 10,
       // timeVisible: true,
-    });
-    chart.timeScale().fitContent();
+    })
+    chart.timeScale().fitContent()
     chart.priceScale().applyOptions({
       //  mode: 1
       autoScale: false,
-    });
+    })
 
     const newSeries = chart.addHistogramSeries({
       color: lineColor,
-    });
-    newSeries.setData(data);
+    })
+    newSeries.setData(data)
 
-    window.addEventListener("resize", handleResize);
+    window.addEventListener("resize", handleResize)
 
     return () => {
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("resize", handleResize)
 
-      chart.remove();
-    };
-  }, [data, lineColor, textColor, chartContainerRef]);
+      chart.remove()
+    }
+  }, [data, lineColor, textColor, chartContainerRef])
 
-  return <div ref={chartContainerRef} />;
-};
+  return <div ref={chartContainerRef} />
+}

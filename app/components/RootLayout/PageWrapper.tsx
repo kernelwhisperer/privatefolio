@@ -1,7 +1,7 @@
-"use client";
-import { Box } from "@mui/material";
-import { HTMLMotionProps, motion } from "framer-motion";
-import React from "react";
+"use client"
+import { Box } from "@mui/material"
+import { HTMLMotionProps, motion } from "framer-motion"
+import React from "react"
 
 export function PageWrapper(props: HTMLMotionProps<"div">) {
   return (
@@ -19,5 +19,5 @@ export function PageWrapper(props: HTMLMotionProps<"div">) {
       }}
       {...props}
     />
-  );
+  )
 }

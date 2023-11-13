@@ -1,23 +1,23 @@
-"use client";
+"use client"
 
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material"
 // import icons from "base64-cryptocurrency-icons";
-import React from "react";
+import React from "react"
 
-import { formatNumber } from "../../utils/client-utils";
-import { Trade } from "../../utils/interfaces";
-import EnhancedTable, { HeadCell } from "../EnhancedTable";
-import { ReChart } from "../Rechart";
+import { formatNumber } from "../../utils/client-utils"
+import { Trade } from "../../utils/interfaces"
+import EnhancedTable, { HeadCell } from "../EnhancedTable"
+import { ReChart } from "../Rechart"
 
 interface AssetInfoProps {
-  amountBought: number;
-  amountSold: number;
-  assetSymbol: string;
-  costBasis: number;
-  holdings: number;
-  moneyIn: number;
-  moneyOut: number;
-  tradeHistory: Trade[];
+  amountBought: number
+  amountSold: number
+  assetSymbol: string
+  costBasis: number
+  holdings: number
+  moneyIn: number
+  moneyOut: number
+  tradeHistory: Trade[]
 }
 
 const headCells: readonly HeadCell<Trade>[] = [
@@ -49,7 +49,7 @@ const headCells: readonly HeadCell<Trade>[] = [
     label: "Total",
     numeric: true,
   },
-];
+]
 
 export function AssetInfo(props: AssetInfoProps) {
   const {
@@ -61,7 +61,7 @@ export function AssetInfo(props: AssetInfoProps) {
     // amountBought,
     // amountSold,
     holdings,
-  } = props;
+  } = props
 
   return (
     <Box sx={{ width: "100%" }}>
@@ -84,9 +84,7 @@ export function AssetInfo(props: AssetInfoProps) {
             <Typography variant="body1" color="text.secondary">
               Avg. buy price
             </Typography>
-            <Typography variant="body1">
-              {formatNumber(costBasis)} USDT
-            </Typography>
+            <Typography variant="body1">{formatNumber(costBasis)} USDT</Typography>
           </Stack>
           {/* <Stack>
           <Typography variant="body1" color="text.secondary">
@@ -116,9 +114,7 @@ export function AssetInfo(props: AssetInfoProps) {
             <Typography variant="body1" color="text.secondary">
               Cost
             </Typography>
-            <Typography variant="body1">
-              {formatNumber(moneyIn - moneyOut)} USDT
-            </Typography>
+            <Typography variant="body1">{formatNumber(moneyIn - moneyOut)} USDT</Typography>
           </Stack>
           {/* <Stack>
           <Typography variant="body1" color="text.secondary">
@@ -151,5 +147,5 @@ export function AssetInfo(props: AssetInfoProps) {
       </Stack>
       <EnhancedTable<Trade> rows={tradeHistory} headCells={headCells} />
     </Box>
-  );
+  )
 }

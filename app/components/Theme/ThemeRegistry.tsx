@@ -1,17 +1,17 @@
-"use client";
+"use client"
 
-import CssBaseline from "@mui/material/CssBaseline";
+import CssBaseline from "@mui/material/CssBaseline"
 import {
   Experimental_CssVarsProvider as CssVarsProvider,
   getInitColorSchemeScript,
-} from "@mui/material/styles";
-import * as React from "react";
+} from "@mui/material/styles"
+import * as React from "react"
 
-import { NextAppDirEmotionCacheProvider } from "./EmotionCache";
-import { theme } from "./theme";
+import { NextAppDirEmotionCacheProvider } from "./EmotionCache"
+import { theme } from "./theme"
 
 export default function ThemeRegistry(props: { children: React.ReactNode }) {
-  const { children } = props;
+  const { children } = props
 
   return (
     <NextAppDirEmotionCacheProvider options={{ key: "mui" }}>
@@ -21,5 +21,5 @@ export default function ThemeRegistry(props: { children: React.ReactNode }) {
         {children}
       </CssVarsProvider>
     </NextAppDirEmotionCacheProvider>
-  );
+  )
 }
