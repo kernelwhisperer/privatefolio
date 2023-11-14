@@ -23,19 +23,19 @@ html {
 }
 
 ::-webkit-scrollbar {
-  background: rgb(230, 230, 230);
+  background: rgb(240, 240, 240);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(195, 195, 195);
+  background: rgba(205, 205, 205);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgb(185, 185, 185);
+  background: rgb(195, 195, 195);
 }
 
 html[data-mui-color-scheme="dark"] ::-webkit-scrollbar {
-  background: rgb(40, 40, 40);
+  background: rgb(50, 50, 50);
 }
 
 html[data-mui-color-scheme="dark"] ::-webkit-scrollbar-thumb {

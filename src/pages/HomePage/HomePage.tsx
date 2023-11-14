@@ -1,5 +1,7 @@
+import { Paper, Stack, Typography } from "@mui/material"
 import React, { useEffect, useState } from "react"
 
+import { RobotoSerifFF } from "../../theme"
 import { ServerTrade, Trade } from "../../utils/interfaces"
 import { mexcTransformer, readCsv } from "../../utils/utils"
 import { AssetList } from "./AssetList"
@@ -24,8 +26,13 @@ export default function HomePage() {
   }, [])
 
   return (
-    <>
-      <AssetList tradeHistory={tradeHistory} />
-    </>
+    <Stack gap={2}>
+      <Typography variant="h6" fontFamily={RobotoSerifFF}>
+        Holdings
+      </Typography>
+      <Paper variant="outlined">
+        <AssetList tradeHistory={tradeHistory} />
+      </Paper>
+    </Stack>
   )
 }

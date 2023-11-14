@@ -5,15 +5,35 @@ const theme = extendTheme({
   colorSchemes: {
     dark: {
       palette: {
+        AppBar: {
+          darkBg: "rgba(30,30,30, 0.65)",
+        },
+        Tooltip: {
+          bg: "rgb(240, 240, 240)",
+        },
         background: {
           default: "rgb(40, 40, 40)",
-          paper: "transparent",
+          paper: "rgba(255, 255, 255, 0.05)",
         },
-        // primary: {
-        //   main: "#fff",
-        // },
+        primary: {
+          main: "rgb(233 141 50)",
+        },
+        text: {
+          // primary: RETRO_BEIGE_2,
+          secondary: "rgb(40, 40, 40)",
+        },
         // secondary: {
         //   main: "rgb(0, 211, 149)",
+        // },
+      },
+    },
+    light: {
+      palette: {
+        AppBar: {
+          darkBg: "rgba(230,230,230, 0.65)",
+        },
+        // primary: {
+        //   main: "rgb(233 141 50)",
         // },
       },
     },
@@ -24,17 +44,26 @@ const theme = extendTheme({
   //   },
   // },
   components: {
+    MuiAppBar: {
+      styleOverrides: {
+        root: {
+          "@supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none))": {
+            backdropFilter: "blur(20px)",
+          },
+        },
+      },
+    },
     MuiButton: {
       styleOverrides: {
         root: {
+          borderRadius: "32px",
           textTransform: "none",
         },
       },
     },
   },
-
   shape: {
-    borderRadius: 32,
+    borderRadius: 0,
   },
 })
 // console.log("📜 LOG > theme:", theme)

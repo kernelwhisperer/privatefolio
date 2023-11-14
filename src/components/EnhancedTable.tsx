@@ -136,7 +136,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
         </Typography>
       ) : (
         <Typography sx={{ flex: "1 1 100%" }} variant="h6" id="tableTitle" component="div">
-          Trade History
+          {/* Trade History */}
         </Typography>
       )}
       {numSelected > 0 ? (
@@ -179,7 +179,7 @@ export default function EnhancedTable<T extends BaseObject>(props: EnhancedTable
   const [selected, setSelected] = React.useState<readonly string[]>([])
   const [page, setPage] = React.useState(0)
   const [dense, setDense] = React.useState(true)
-  const [rowsPerPage, setRowsPerPage] = React.useState(10)
+  const [rowsPerPage, setRowsPerPage] = React.useState(25)
 
   const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof T) => {
     const isAsc = orderBy === property && order === "asc"

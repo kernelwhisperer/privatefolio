@@ -1,0 +1,1002 @@
+[
+  {
+    "coingeckoId": "binance",
+    "coingeckoTrustScore": 10,
+    "coingeckoTrustScoreRank": 1,
+    "country": "Cayman Islands",
+    "image": "https://assets.coingecko.com/markets/images/52/small/binance.jpg?1519353250",
+    "name": "Binance",
+    "url": "https://www.binance.com/",
+    "year": 2017
+  },
+  {
+    "coingeckoId": "okex",
+    "coingeckoTrustScore": 10,
+    "coingeckoTrustScoreRank": 2,
+    "country": "Seychelles",
+    "image": "https://assets.coingecko.com/markets/images/96/small/WeChat_Image_20220117220452.png?1642428377",
+    "name": "OKX",
+    "url": "https://www.okx.com",
+    "year": 2017
+  },
+  {
+    "coingeckoId": "bybit_spot",
+    "coingeckoTrustScore": 10,
+    "coingeckoTrustScoreRank": 3,
+    "country": "British Virgin Islands",
+    "image": "https://assets.coingecko.com/markets/images/698/small/bybit_spot.png?1629971794",
+    "name": "Bybit",
+    "url": "https://www.bybit.com",
+    "year": 2018
+  },
+  {
+    "coingeckoId": "gdax",
+    "coingeckoTrustScore": 10,
+    "coingeckoTrustScoreRank": 4,
+    "country": "United States",
+    "image": "https://assets.coingecko.com/markets/images/23/small/Coinbase_Coin_Primary.png?1621471875",
+    "name": "Coinbase Exchange",
+    "url": "https://www.coinbase.com/",
+    "year": 2012
+  },
+  {
+    "coingeckoId": "huobi",
+    "coingeckoTrustScore": 10,
+    "coingeckoTrustScoreRank": 5,
+    "country": "Seychelles",
+    "image": "https://assets.coingecko.com/markets/images/25/small/logo_V_colour_black.png?1669177364",
+    "name": "HTX",
+    "url": "https://www.huobi.com",
+    "year": 2013
+  },
+  {
+    "coingeckoId": "mxc",
+    "coingeckoTrustScore": 10,
+    "coingeckoTrustScoreRank": 6,
+    "country": "Seychelles",
+    "image": "https://assets.coingecko.com/markets/images/409/small/MEXC_logo_square.jpeg?1673000123",
+    "name": "MEXC",
+    "url": "https://www.mexc.com/",
+    "year": 2018
+  },
+  {
+    "coingeckoId": "kraken",
+    "coingeckoTrustScore": 10,
+    "coingeckoTrustScoreRank": 7,
+    "country": "United States",
+    "image": "https://assets.coingecko.com/markets/images/29/small/kraken.jpg?1584251255",
+    "name": "Kraken",
+    "url": "https://www.kraken.com/",
+    "year": 2011
+  },
+  {
+    "coingeckoId": "kucoin",
+    "coingeckoTrustScore": 10,
+    "coingeckoTrustScoreRank": 8,
+    "country": "Seychelles",
+    "image": "https://assets.coingecko.com/markets/images/61/small/kucoin.png?1640584259",
+    "name": "KuCoin",
+    "url": "https://www.kucoin.com/",
+    "year": 2014
+  },
+  {
+    "coingeckoId": "crypto_com",
+    "coingeckoTrustScore": 10,
+    "coingeckoTrustScoreRank": 9,
+    "country": "Malta",
+    "image": "https://assets.coingecko.com/markets/images/589/small/h2oMjPp6_400x400.jpg?1669699705",
+    "name": "Crypto.com Exchange",
+    "url": "https://crypto.com/exchange",
+    "year": 2019
+  },
+  {
+    "coingeckoId": "bitstamp",
+    "coingeckoTrustScore": 10,
+    "coingeckoTrustScoreRank": 10,
+    "country": "Luxembourg",
+    "image": "https://assets.coingecko.com/markets/images/9/small/bitstamp.jpg?1519627979",
+    "name": "Bitstamp",
+    "url": "https://links.bitstamp.net/c/2223866/1100037/14006",
+    "year": 2013
+  },
+  {
+    "coingeckoId": "bitfinex",
+    "coingeckoTrustScore": 10,
+    "coingeckoTrustScoreRank": 11,
+    "country": "British Virgin Islands",
+    "image": "https://assets.coingecko.com/markets/images/4/small/BItfinex.png?1615895883",
+    "name": "Bitfinex",
+    "url": "https://www.bitfinex.com",
+    "year": 2012
+  },
+  {
+    "coingeckoId": "binance_us",
+    "coingeckoTrustScore": 10,
+    "coingeckoTrustScoreRank": 12,
+    "country": "United States",
+    "image": "https://assets.coingecko.com/markets/images/469/small/Binance.png?1568875842",
+    "name": "Binance US",
+    "url": "https://www.binance.us/",
+    "year": 2019
+  },
+  {
+    "coingeckoId": "gate",
+    "coingeckoTrustScore": 9,
+    "coingeckoTrustScoreRank": 13,
+    "country": "Cayman Islands",
+    "image": "https://assets.coingecko.com/markets/images/60/small/gate_io_logo1.jpg?1654596784",
+    "name": "Gate.io",
+    "url": "https://gate.io/",
+    "year": null
+  },
+  {
+    "coingeckoId": "bitget",
+    "coingeckoTrustScore": 9,
+    "coingeckoTrustScoreRank": 14,
+    "country": "Seychelles",
+    "image": "https://assets.coingecko.com/markets/images/540/small/2023-07-25_21.47.43.jpg?1690293531",
+    "name": "Bitget",
+    "url": "https://www.bitget.com/referral/register",
+    "year": 2018
+  },
+  {
+    "coingeckoId": "bingx",
+    "coingeckoTrustScore": 9,
+    "coingeckoTrustScoreRank": 15,
+    "country": "British Virgin Islands",
+    "image": "https://assets.coingecko.com/markets/images/812/small/YtFwQwJr_400x400.jpg?1646056092",
+    "name": "BingX",
+    "url": "https://bingx.com/",
+    "year": 2018
+  },
+  {
+    "coingeckoId": "deepcoin",
+    "coingeckoTrustScore": 9,
+    "coingeckoTrustScoreRank": 16,
+    "country": "Seychelles",
+    "image": "https://assets.coingecko.com/markets/images/1005/small/deepcoin.jpeg?1689269658",
+    "name": "Deepcoin",
+    "url": "https://www.deepcoin.com/",
+    "year": 2018
+  },
+  {
+    "coingeckoId": "coinstore",
+    "coingeckoTrustScore": 9,
+    "coingeckoTrustScoreRank": 17,
+    "country": "Singapore",
+    "image": "https://assets.coingecko.com/markets/images/747/small/coinstore.jpeg?1639530357",
+    "name": "Coinstore",
+    "url": "https://www.coinstore.com/#/",
+    "year": 2020
+  },
+  {
+    "coingeckoId": "pointpay",
+    "coingeckoTrustScore": 9,
+    "coingeckoTrustScoreRank": 18,
+    "country": "Saint Vincent and the Grenadines",
+    "image": "https://assets.coingecko.com/markets/images/1060/small/pointpay.png?1676882506",
+    "name": "PointPay",
+    "url": "https://exchange.pointpay.io/",
+    "year": 2018
+  },
+  {
+    "coingeckoId": "gemini",
+    "coingeckoTrustScore": 9,
+    "coingeckoTrustScoreRank": 19,
+    "country": "United States",
+    "image": "https://assets.coingecko.com/markets/images/50/small/gemini.png?1605704107",
+    "name": "Gemini",
+    "url": "https://www.gemini.com/exchange",
+    "year": 2014
+  },
+  {
+    "coingeckoId": "bitmart",
+    "coingeckoTrustScore": 8,
+    "coingeckoTrustScoreRank": 20,
+    "country": "Cayman Islands",
+    "image": "https://assets.coingecko.com/markets/images/239/small/Bitmart.png?1628066397",
+    "name": "BitMart",
+    "url": "https://www.bitmart.com/en",
+    "year": 2017
+  },
+  {
+    "coingeckoId": "coinw",
+    "coingeckoTrustScore": 8,
+    "coingeckoTrustScoreRank": 21,
+    "country": "United Arab Emirates",
+    "image": "https://assets.coingecko.com/markets/images/1172/small/coinw.jpeg?1687506651",
+    "name": "CoinW",
+    "url": "https://www.coinw.com/",
+    "year": 2017
+  },
+  {
+    "coingeckoId": "digifinex",
+    "coingeckoTrustScore": 8,
+    "coingeckoTrustScoreRank": 22,
+    "country": "Seychelles",
+    "image": "https://assets.coingecko.com/markets/images/225/small/DF_logo.png?1594264355",
+    "name": "DigiFinex",
+    "url": "https://www.digifinex.com/",
+    "year": 2018
+  },
+  {
+    "coingeckoId": "upbit",
+    "coingeckoTrustScore": 8,
+    "coingeckoTrustScoreRank": 23,
+    "country": "South Korea",
+    "image": "https://assets.coingecko.com/markets/images/117/small/upbit.png?1520388800",
+    "name": "Upbit",
+    "url": "https://upbit.com",
+    "year": 2017
+  },
+  {
+    "coingeckoId": "xt",
+    "coingeckoTrustScore": 8,
+    "coingeckoTrustScoreRank": 24,
+    "country": "Seychelles",
+    "image": "https://assets.coingecko.com/markets/images/404/small/logo400x400.png?1575881839",
+    "name": "XT.COM",
+    "url": "https://www.xt.com/",
+    "year": 2018
+  },
+  {
+    "coingeckoId": "p2pb2b",
+    "coingeckoTrustScore": 8,
+    "coingeckoTrustScoreRank": 25,
+    "country": "Lithuania",
+    "image": "https://assets.coingecko.com/markets/images/251/small/ow0xng56_400x400.jpeg?1664939403",
+    "name": "P2B",
+    "url": "https://p2pb2b.com/",
+    "year": 2018
+  },
+  {
+    "coingeckoId": "btse",
+    "coingeckoTrustScore": 8,
+    "coingeckoTrustScoreRank": 26,
+    "country": "British Virgin Islands",
+    "image": "https://assets.coingecko.com/markets/images/464/small/BTSE.jpg?1568012415",
+    "name": "BTSE",
+    "url": "https://www.btse.com/",
+    "year": 2018
+  },
+  {
+    "coingeckoId": "whitebit",
+    "coingeckoTrustScore": 8,
+    "coingeckoTrustScoreRank": 27,
+    "country": "Lithuania",
+    "image": "https://assets.coingecko.com/markets/images/418/small/800_800.jpg?1688004634",
+    "name": "WhiteBIT",
+    "url": "https://whitebit.com",
+    "year": 2018
+  },
+  {
+    "coingeckoId": "coinsbit",
+    "coingeckoTrustScore": 8,
+    "coingeckoTrustScoreRank": 28,
+    "country": "Estonia",
+    "image": "https://assets.coingecko.com/markets/images/267/small/Coinsbit.png?1605153697",
+    "name": "Coinsbit",
+    "url": "https://coinsbit.io/",
+    "year": null
+  },
+  {
+    "coingeckoId": "phemex",
+    "coingeckoTrustScore": 8,
+    "coingeckoTrustScoreRank": 29,
+    "country": "Singapore",
+    "image": "https://assets.coingecko.com/markets/images/564/small/Phemex_logo_4.png?1641357471",
+    "name": "Phemex",
+    "url": "https://phemex.com/",
+    "year": 2019
+  },
+  {
+    "coingeckoId": "dextrade",
+    "coingeckoTrustScore": 8,
+    "coingeckoTrustScoreRank": 30,
+    "country": "Belize",
+    "image": "https://assets.coingecko.com/markets/images/380/small/Dex-Trade_logo_new.png?1599629803",
+    "name": "Dex-Trade",
+    "url": "https://dex-trade.com/",
+    "year": 2019
+  },
+  {
+    "coingeckoId": "qmall",
+    "coingeckoTrustScore": 8,
+    "coingeckoTrustScoreRank": 31,
+    "country": "Lithuania",
+    "image": "https://assets.coingecko.com/markets/images/1108/small/qmall.jpeg?1680079189",
+    "name": "QMall",
+    "url": "https://qmall.io/",
+    "year": null
+  },
+  {
+    "coingeckoId": "c_patex",
+    "coingeckoTrustScore": 8,
+    "coingeckoTrustScoreRank": 32,
+    "country": "Argentina",
+    "image": "https://assets.coingecko.com/markets/images/246/small/Exchange.jpg?1681192003",
+    "name": "C-Patex",
+    "url": "https://c-patex.com/",
+    "year": null
+  },
+  {
+    "coingeckoId": "exmo",
+    "coingeckoTrustScore": 8,
+    "coingeckoTrustScoreRank": 33,
+    "country": "United Kingdom",
+    "image": "https://assets.coingecko.com/markets/images/59/small/tt_ava.jpg?1669360697",
+    "name": "EXMO",
+    "url": "https://exmo.com/",
+    "year": 2013
+  },
+  {
+    "coingeckoId": "wootrade",
+    "coingeckoTrustScore": 8,
+    "coingeckoTrustScoreRank": 34,
+    "country": "Seychelles",
+    "image": "https://assets.coingecko.com/markets/images/683/small/woo.png?1677468948",
+    "name": "WOO X",
+    "url": "https://woo.org/",
+    "year": 2019
+  },
+  {
+    "coingeckoId": "bitbank",
+    "coingeckoTrustScore": 8,
+    "coingeckoTrustScoreRank": 35,
+    "country": "Japan",
+    "image": "https://assets.coingecko.com/markets/images/122/small/bitbank.jpg?1521186278",
+    "name": "Bitbank",
+    "url": "https://bitbank.cc/",
+    "year": 2016
+  },
+  {
+    "coingeckoId": "bitso",
+    "coingeckoTrustScore": 8,
+    "coingeckoTrustScoreRank": 36,
+    "country": "Gibraltar",
+    "image": "https://assets.coingecko.com/markets/images/8/small/Bitso-icon-dark.png?1581909156",
+    "name": "Bitso",
+    "url": "https://bitso.com",
+    "year": 2014
+  },
+  {
+    "coingeckoId": "fastex",
+    "coingeckoTrustScore": 8,
+    "coingeckoTrustScoreRank": 37,
+    "country": "Lithuania",
+    "image": "https://assets.coingecko.com/markets/images/1091/small/fastex.png?1678776256",
+    "name": "Fastex",
+    "url": "https://exchange.fastex.com/",
+    "year": null
+  },
+  {
+    "coingeckoId": "bullish_com",
+    "coingeckoTrustScore": 8,
+    "coingeckoTrustScoreRank": 38,
+    "country": "Gibraltar",
+    "image": "https://assets.coingecko.com/markets/images/905/small/bullish_com.png?1655198360",
+    "name": "Bullish",
+    "url": "https://bullish.com/",
+    "year": 2021
+  },
+  {
+    "coingeckoId": "max_maicoin",
+    "coingeckoTrustScore": 8,
+    "coingeckoTrustScoreRank": 39,
+    "country": "Taiwan",
+    "image": "https://assets.coingecko.com/markets/images/218/small/max.jpg?1533888641",
+    "name": "Max Maicoin",
+    "url": "https://max.maicoin.com",
+    "year": null
+  },
+  {
+    "coingeckoId": "bitopro",
+    "coingeckoTrustScore": 8,
+    "coingeckoTrustScoreRank": 40,
+    "country": "Taiwan",
+    "image": "https://assets.coingecko.com/markets/images/358/small/bitopro_coingecko_250x250_%281%29.png?1575884378",
+    "name": "BitoPro",
+    "url": "https://www.bitopro.com/",
+    "year": 2018
+  },
+  {
+    "coingeckoId": "valr",
+    "coingeckoTrustScore": 8,
+    "coingeckoTrustScoreRank": 41,
+    "country": "South Africa",
+    "image": "https://assets.coingecko.com/markets/images/1036/small/valr.png?1674711237",
+    "name": "VALR",
+    "url": "https://www.valr.com/",
+    "year": 2018
+  },
+  {
+    "coingeckoId": "indodax",
+    "coingeckoTrustScore": 8,
+    "coingeckoTrustScoreRank": 42,
+    "country": "Indonesia",
+    "image": "https://assets.coingecko.com/markets/images/3/small/logogram-Indodax-new-_JPG_format.jpg?1580974378",
+    "name": "Indodax",
+    "url": "https://indodax.com",
+    "year": 2014
+  },
+  {
+    "coingeckoId": "coinspro",
+    "coingeckoTrustScore": 8,
+    "coingeckoTrustScoreRank": 43,
+    "country": "Philippines",
+    "image": "https://assets.coingecko.com/markets/images/999/small/coinspro.png?1668488887",
+    "name": "Coins.ph",
+    "url": "https://coins.ph/about",
+    "year": null
+  },
+  {
+    "coingeckoId": "nice_hash",
+    "coingeckoTrustScore": 8,
+    "coingeckoTrustScoreRank": 44,
+    "country": "Slovenia",
+    "image": "https://assets.coingecko.com/markets/images/546/small/logo_small_light.png?1637836622",
+    "name": "NiceHash",
+    "url": "https://www.nicehash.com",
+    "year": null
+  },
+  {
+    "coingeckoId": "bitmex_spot",
+    "coingeckoTrustScore": 8,
+    "coingeckoTrustScoreRank": 45,
+    "country": "Seychelles",
+    "image": "https://assets.coingecko.com/markets/images/866/small/bitmex.jpeg?1652794708",
+    "name": "BitMEX",
+    "url": "https://www.bitmex.com/spot/",
+    "year": null
+  },
+  {
+    "coingeckoId": "blockchain_com",
+    "coingeckoTrustScore": 8,
+    "coingeckoTrustScoreRank": 46,
+    "country": "United Kingdom",
+    "image": "https://assets.coingecko.com/markets/images/613/small/unnamedddd.png?1610503741",
+    "name": "Blockchain.com",
+    "url": "https://www.blockchain.com/",
+    "year": 2012
+  },
+  {
+    "coingeckoId": "bitcastle",
+    "coingeckoTrustScore": 8,
+    "coingeckoTrustScoreRank": 47,
+    "country": "Lithuania",
+    "image": "https://assets.coingecko.com/markets/images/1341/small/bitcastle_logo.png?1699597604",
+    "name": "bitcastle",
+    "url": "https://bitcastle.io/en",
+    "year": 2019
+  },
+  {
+    "coingeckoId": "bitdelta",
+    "coingeckoTrustScore": 8,
+    "coingeckoTrustScoreRank": 48,
+    "country": "Vanuatu",
+    "image": "https://assets.coingecko.com/markets/images/1317/small/BitDelta_Logo_200x200.png?1697427470",
+    "name": "BitDelta",
+    "url": "https://bitdelta.com/",
+    "year": 2023
+  },
+  {
+    "coingeckoId": "lbank",
+    "coingeckoTrustScore": 7,
+    "coingeckoTrustScoreRank": 49,
+    "country": "British Virgin Islands",
+    "image": "https://assets.coingecko.com/markets/images/118/small/LBank_logo.png?1666234663",
+    "name": "LBank",
+    "url": "https://www.lbank.com",
+    "year": 2015
+  },
+  {
+    "coingeckoId": "bitrue",
+    "coingeckoTrustScore": 7,
+    "coingeckoTrustScoreRank": 50,
+    "country": "Singapore",
+    "image": "https://assets.coingecko.com/markets/images/254/small/unnamed_%281%29.png?1656295820",
+    "name": "Bitrue",
+    "url": "https://www.bitrue.com/",
+    "year": 2018
+  },
+  {
+    "coingeckoId": "biconomy",
+    "coingeckoTrustScore": 7,
+    "coingeckoTrustScoreRank": 51,
+    "country": "Canada",
+    "image": "https://assets.coingecko.com/markets/images/633/small/biconomy-cex.png?1642930152",
+    "name": "Biconomy",
+    "url": "https://www.biconomy.com/",
+    "year": 2019
+  },
+  {
+    "coingeckoId": "tidex",
+    "coingeckoTrustScore": 7,
+    "coingeckoTrustScoreRank": 52,
+    "country": "Lithuania",
+    "image": "https://assets.coingecko.com/markets/images/43/small/favicon.png?1651817092",
+    "name": "Tidex",
+    "url": "https://tidex.com/",
+    "year": 2017
+  },
+  {
+    "coingeckoId": "bitvenus_spot",
+    "coingeckoTrustScore": 7,
+    "coingeckoTrustScoreRank": 53,
+    "country": "British Virgin Islands",
+    "image": "https://assets.coingecko.com/markets/images/1253/small/BitVenus.png?1692847633",
+    "name": "BitVenus",
+    "url": "https://www.bitvenus.me",
+    "year": 2018
+  },
+  {
+    "coingeckoId": "fameex",
+    "coingeckoTrustScore": 7,
+    "coingeckoTrustScoreRank": 54,
+    "country": "Australia",
+    "image": "https://assets.coingecko.com/markets/images/1018/small/fameex.jpg?1678950802",
+    "name": "FameEX",
+    "url": "https://www.fameex.com",
+    "year": 2020
+  },
+  {
+    "coingeckoId": "bitmake",
+    "coingeckoTrustScore": 7,
+    "coingeckoTrustScoreRank": 55,
+    "country": "United Arab Emirates",
+    "image": "https://assets.coingecko.com/markets/images/1169/small/bitmake.jpeg?1687159763",
+    "name": "BitMake",
+    "url": "https://www.bitmake.com/",
+    "year": 2020
+  },
+  {
+    "coingeckoId": "bigone",
+    "coingeckoTrustScore": 7,
+    "coingeckoTrustScoreRank": 56,
+    "country": "Netherlands",
+    "image": "https://assets.coingecko.com/markets/images/100/small/qcFFufEY_400x400.jpg?1561103345",
+    "name": "BigONE",
+    "url": "https://bigone.com",
+    "year": 2017
+  },
+  {
+    "coingeckoId": "bitmax",
+    "coingeckoTrustScore": 7,
+    "coingeckoTrustScoreRank": 57,
+    "country": "Singapore",
+    "image": "https://assets.coingecko.com/markets/images/277/small/%E5%8E%9F%E8%89%B2.png?1650557355",
+    "name": "AscendEX (BitMax)",
+    "url": "https://ascendex.com/en/global-digital-asset-platform",
+    "year": 2018
+  },
+  {
+    "coingeckoId": "btcturk",
+    "coingeckoTrustScore": 7,
+    "coingeckoTrustScoreRank": 58,
+    "country": "Turkey",
+    "image": "https://assets.coingecko.com/markets/images/223/small/btctrurk_kripto.png?1689655713",
+    "name": "BtcTurk | Kripto",
+    "url": "https://kripto.btcturk.com/en",
+    "year": 2013
+  },
+  {
+    "coingeckoId": "paribu",
+    "coingeckoTrustScore": 7,
+    "coingeckoTrustScoreRank": 59,
+    "country": "Turkey",
+    "image": "https://assets.coingecko.com/markets/images/136/small/paribu.jpg?1527734779",
+    "name": "Paribu",
+    "url": "https://www.paribu.com/",
+    "year": null
+  },
+  {
+    "coingeckoId": "azbit",
+    "coingeckoTrustScore": 7,
+    "coingeckoTrustScoreRank": 60,
+    "country": "Seychelles",
+    "image": "https://assets.coingecko.com/markets/images/787/small/logo.png?1679018698",
+    "name": "Azbit",
+    "url": "https://azbit.com/",
+    "year": null
+  },
+  {
+    "coingeckoId": "bitflyer",
+    "coingeckoTrustScore": 7,
+    "coingeckoTrustScoreRank": 61,
+    "country": "Japan",
+    "image": "https://assets.coingecko.com/markets/images/5/small/bitFlyer-logo.png?1643256033",
+    "name": "bitFlyer",
+    "url": "https://bitflyer.com/en-eu/",
+    "year": 2014
+  },
+  {
+    "coingeckoId": "probit",
+    "coingeckoTrustScore": 7,
+    "coingeckoTrustScoreRank": 62,
+    "country": "Seychelles",
+    "image": "https://assets.coingecko.com/markets/images/370/small/probit.png?1594886584",
+    "name": "ProBit Global",
+    "url": "https://www.probit.com/",
+    "year": 2017
+  },
+  {
+    "coingeckoId": "cryptology",
+    "coingeckoTrustScore": 7,
+    "coingeckoTrustScoreRank": 63,
+    "country": "Lithuania",
+    "image": "https://assets.coingecko.com/markets/images/287/small/logo-symbol.png?1669975181",
+    "name": "Cryptology",
+    "url": "https://cryptology.com/",
+    "year": 2018
+  },
+  {
+    "coingeckoId": "bitkub",
+    "coingeckoTrustScore": 7,
+    "coingeckoTrustScoreRank": 64,
+    "country": "Thailand",
+    "image": "https://assets.coingecko.com/markets/images/249/small/bitkub.png?1537180687",
+    "name": "Bitkub",
+    "url": "https://www.bitkub.com",
+    "year": 2018
+  },
+  {
+    "coingeckoId": "coinex",
+    "coingeckoTrustScore": 7,
+    "coingeckoTrustScoreRank": 65,
+    "country": "Samoa",
+    "image": "https://assets.coingecko.com/markets/images/135/small/coinex.jpg?1527737297",
+    "name": "CoinEx",
+    "url": "https://www.coinex.com/",
+    "year": 2017
+  },
+  {
+    "coingeckoId": "luno",
+    "coingeckoTrustScore": 7,
+    "coingeckoTrustScoreRank": 66,
+    "country": "Singapore",
+    "image": "https://assets.coingecko.com/markets/images/33/small/luno.jpg?1519996997",
+    "name": "Luno",
+    "url": "https://www.luno.com",
+    "year": 2013
+  },
+  {
+    "coingeckoId": "bitexen",
+    "coingeckoTrustScore": 7,
+    "coingeckoTrustScoreRank": 67,
+    "country": "Turkey",
+    "image": "https://assets.coingecko.com/markets/images/693/small/Bitexen_Logo_Short.png?1634198471",
+    "name": "Bitexen",
+    "url": "https://www.bitexen.com/",
+    "year": 2018
+  },
+  {
+    "coingeckoId": "kanga",
+    "coingeckoTrustScore": 6,
+    "coingeckoTrustScoreRank": 68,
+    "country": "Belize",
+    "image": "https://assets.coingecko.com/markets/images/852/small/KaNGa_logo.png?1681790128",
+    "name": "Kanga",
+    "url": "https://kanga.exchange/",
+    "year": 2018
+  },
+  {
+    "coingeckoId": "cex",
+    "coingeckoTrustScore": 7,
+    "coingeckoTrustScoreRank": 69,
+    "country": "United Kingdom",
+    "image": "https://assets.coingecko.com/markets/images/56/small/main-icon.png?1617267530",
+    "name": "CEX.IO",
+    "url": "https://cex.io/",
+    "year": 2013
+  },
+  {
+    "coingeckoId": "stormgain",
+    "coingeckoTrustScore": 7,
+    "coingeckoTrustScoreRank": 70,
+    "country": "Saint Vincent and the Grenadines",
+    "image": "https://assets.coingecko.com/markets/images/608/small/CpDGk9Hn_400x400.png?1607582976",
+    "name": "Stormgain",
+    "url": "https://stormgain.com/?utm_id=1DSE&utm_source=coingecko_storm&utm_medium=media&utm_campaign=listing&utm_country=en",
+    "year": null
+  },
+  {
+    "coingeckoId": "bitcointry_exchange",
+    "coingeckoTrustScore": 7,
+    "coingeckoTrustScoreRank": 71,
+    "country": "Turkey",
+    "image": "https://assets.coingecko.com/markets/images/1231/small/Bitcointry.jpg?1693215743",
+    "name": "Bitcointry Exchange",
+    "url": "https://bitcointry.com",
+    "year": 2023
+  },
+  {
+    "coingeckoId": "finexbox",
+    "coingeckoTrustScore": 7,
+    "coingeckoTrustScoreRank": 72,
+    "country": "Hong Kong",
+    "image": "https://assets.coingecko.com/markets/images/318/small/finexbox20190920.jpg?1568959220",
+    "name": "FinexBox",
+    "url": "https://www.finexbox.com/",
+    "year": 2018
+  },
+  {
+    "coingeckoId": "coin_metro",
+    "coingeckoTrustScore": 7,
+    "coingeckoTrustScoreRank": 73,
+    "country": "Estonia",
+    "image": "https://assets.coingecko.com/markets/images/386/small/Coinmetro_Exchange_Logo_%282%29.png?1646280101",
+    "name": "Coinmetro",
+    "url": "https://coinmetro.com/",
+    "year": 2018
+  },
+  {
+    "coingeckoId": "bittrex",
+    "coingeckoTrustScore": 7,
+    "coingeckoTrustScoreRank": 74,
+    "country": "Liechtenstein",
+    "image": "https://assets.coingecko.com/markets/images/10/small/BG-color-250x250_icon.png?1596167574",
+    "name": "Bittrex Global",
+    "url": "https://global.bittrex.com",
+    "year": 2014
+  },
+  {
+    "coingeckoId": "nonkyc_io",
+    "coingeckoTrustScore": 7,
+    "coingeckoTrustScoreRank": 75,
+    "country": "Seychelles",
+    "image": "https://assets.coingecko.com/markets/images/1281/small/NKYC-Logo.png?1695181813",
+    "name": "Nonkyc.io",
+    "url": "https://nonkyc.io",
+    "year": 2023
+  },
+  {
+    "coingeckoId": "kuna",
+    "coingeckoTrustScore": 7,
+    "coingeckoTrustScoreRank": 76,
+    "country": "United Kingdom",
+    "image": "https://assets.coingecko.com/markets/images/97/small/kuna_exchange.png?1545126178",
+    "name": "Kuna Exchange",
+    "url": "https://kuna.io/",
+    "year": null
+  },
+  {
+    "coingeckoId": "emirex",
+    "coingeckoTrustScore": 7,
+    "coingeckoTrustScoreRank": 77,
+    "country": "United Arab Emirates",
+    "image": "https://assets.coingecko.com/markets/images/592/small/Emirex.png?1602067691",
+    "name": "Emirex",
+    "url": "https://www.emirex.com/",
+    "year": 2014
+  },
+  {
+    "coingeckoId": "delta_spot",
+    "coingeckoTrustScore": 7,
+    "coingeckoTrustScoreRank": 78,
+    "country": "Jamaica",
+    "image": "https://assets.coingecko.com/markets/images/642/small/delta_spot.jpg?1617283005",
+    "name": "Delta Exchange",
+    "url": "https://www.delta.exchange/app/spot/trade/",
+    "year": null
+  },
+  {
+    "coingeckoId": "uniswap_v3",
+    "coingeckoTrustScore": 6,
+    "coingeckoTrustScoreRank": 79,
+    "country": null,
+    "image": "https://assets.coingecko.com/markets/images/665/small/uniswap-v3.png?1620241698",
+    "name": "Uniswap V3 (Ethereum)",
+    "url": "https://app.uniswap.org/#/swap",
+    "year": 2018
+  },
+  {
+    "coingeckoId": "bitforex",
+    "coingeckoTrustScore": 6,
+    "coingeckoTrustScoreRank": 80,
+    "country": "Seychelles",
+    "image": "https://assets.coingecko.com/markets/images/214/small/BitForex-Logo.png?1573808227",
+    "name": "Bitforex",
+    "url": "https://www.bitforex.com/",
+    "year": 2018
+  },
+  {
+    "coingeckoId": "latoken",
+    "coingeckoTrustScore": 6,
+    "coingeckoTrustScoreRank": 81,
+    "country": "Cayman Islands",
+    "image": "https://assets.coingecko.com/markets/images/124/small/latoken.png?1685942070",
+    "name": "LATOKEN",
+    "url": "https://latoken.com/",
+    "year": 2017
+  },
+  {
+    "coingeckoId": "toobit",
+    "coingeckoTrustScore": 7,
+    "coingeckoTrustScoreRank": 82,
+    "country": "Cayman Islands",
+    "image": "https://assets.coingecko.com/markets/images/1139/small/Toobit_logo400X400.png?1686549566",
+    "name": "Toobit",
+    "url": "https://www.toobit.com/",
+    "year": 2022
+  },
+  {
+    "coingeckoId": "pionex",
+    "coingeckoTrustScore": 6,
+    "coingeckoTrustScoreRank": 83,
+    "country": "British Virgin Islands",
+    "image": "https://assets.coingecko.com/markets/images/1026/small/pionex.png?1673508138",
+    "name": "Pionex",
+    "url": "https://www.pionex.com",
+    "year": 2019
+  },
+  {
+    "coingeckoId": "uniswap_v3_arbitrum",
+    "coingeckoTrustScore": 6,
+    "coingeckoTrustScoreRank": 84,
+    "country": null,
+    "image": "https://assets.coingecko.com/markets/images/702/small/uniswap-v3.png?1631616149",
+    "name": "Uniswap V3 (Arbitrum One)",
+    "url": "https://app.uniswap.org/#/swap",
+    "year": null
+  },
+  {
+    "coingeckoId": "bithumb",
+    "coingeckoTrustScore": 6,
+    "coingeckoTrustScoreRank": 85,
+    "country": "South Korea",
+    "image": "https://assets.coingecko.com/markets/images/6/small/bithumb_BI.png?1573104549",
+    "name": "Bithumb",
+    "url": "https://www.bithumb.com/",
+    "year": 2014
+  },
+  {
+    "coingeckoId": "cointr",
+    "coingeckoTrustScore": 6,
+    "coingeckoTrustScoreRank": 86,
+    "country": "Lithuania",
+    "image": "https://assets.coingecko.com/markets/images/1028/small/cointr.png?1673681204",
+    "name": "CoinTR Pro",
+    "url": "https://www.cointr.pro/",
+    "year": 2022
+  },
+  {
+    "coingeckoId": "pancakeswap-v3-bsc",
+    "coingeckoTrustScore": 6,
+    "coingeckoTrustScoreRank": 87,
+    "country": null,
+    "image": "https://assets.coingecko.com/markets/images/1111/small/pancakeswap.jpeg?1680396625",
+    "name": "Pancakeswap V3 (BSC)",
+    "url": "https://pancakeswap.finance/swap",
+    "year": null
+  },
+  {
+    "coingeckoId": "citex",
+    "coingeckoTrustScore": 6,
+    "coingeckoTrustScoreRank": 88,
+    "country": "British Virgin Islands",
+    "image": "https://assets.coingecko.com/markets/images/390/small/CITEX-LOGO.png?1564028815",
+    "name": "CITEX",
+    "url": "https://www.citex.io/",
+    "year": 2018
+  },
+  {
+    "coingeckoId": "uniswap_v3_polygon_pos",
+    "coingeckoTrustScore": 6,
+    "coingeckoTrustScoreRank": 89,
+    "country": null,
+    "image": "https://assets.coingecko.com/markets/images/752/small/uniswap-polygon.png?1640329417",
+    "name": "Uniswap V3 (Polygon)",
+    "url": "https://app.uniswap.org/#/swap",
+    "year": 2021
+  },
+  {
+    "coingeckoId": "uniswap_v2",
+    "coingeckoTrustScore": 6,
+    "coingeckoTrustScoreRank": 90,
+    "country": null,
+    "image": "https://assets.coingecko.com/markets/images/535/small/256x256_Black-1.png?1590893262",
+    "name": "Uniswap V2 (Ethereum)",
+    "url": "https://app.uniswap.org/#/swap?use=V2",
+    "year": 2018
+  },
+  {
+    "coingeckoId": "uniswap_v3_optimism",
+    "coingeckoTrustScore": 6,
+    "coingeckoTrustScoreRank": 91,
+    "country": null,
+    "image": "https://assets.coingecko.com/markets/images/725/small/uniswap-v3.png?1634896204",
+    "name": "Uniswap V3 (Optimism)",
+    "url": "https://app.uniswap.org/#/swap",
+    "year": null
+  },
+  {
+    "coingeckoId": "bit2me",
+    "coingeckoTrustScore": 6,
+    "coingeckoTrustScoreRank": 92,
+    "country": "Spain",
+    "image": "https://assets.coingecko.com/markets/images/1137/small/bit2me.png?1683531473",
+    "name": "Bit2Me",
+    "url": "https://bit2me.com/",
+    "year": 2014
+  },
+  {
+    "coingeckoId": "maverick_protocol",
+    "coingeckoTrustScore": 6,
+    "coingeckoTrustScoreRank": 93,
+    "country": null,
+    "image": "https://assets.coingecko.com/markets/images/1160/small/maverick.png?1686556453",
+    "name": "Maverick Protocol",
+    "url": "https://www.mav.xyz/",
+    "year": null
+  },
+  {
+    "coingeckoId": "bitci",
+    "coingeckoTrustScore": 6,
+    "coingeckoTrustScoreRank": 94,
+    "country": "Turkey",
+    "image": "https://assets.coingecko.com/markets/images/450/small/Bitci.jpg?1564137859",
+    "name": "Bitci TR",
+    "url": "https://www.bitci.com.tr/en",
+    "year": 2018
+  },
+  {
+    "coingeckoId": "bitcoin_com",
+    "coingeckoTrustScore": 6,
+    "coingeckoTrustScoreRank": 95,
+    "country": "Bahamas",
+    "image": "https://assets.coingecko.com/markets/images/467/small/fmfw.png?1635491491",
+    "name": "FMFW.io",
+    "url": "https://fmfw.io/",
+    "year": 2019
+  },
+  {
+    "coingeckoId": "retro",
+    "coingeckoTrustScore": 5,
+    "coingeckoTrustScoreRank": 96,
+    "country": "United Arab Emirates",
+    "image": "https://assets.coingecko.com/markets/images/1204/small/retro.png?1691142507",
+    "name": "Retro",
+    "url": "https://retro.finance",
+    "year": 2022
+  },
+  {
+    "coingeckoId": "camelot-v3",
+    "coingeckoTrustScore": 6,
+    "coingeckoTrustScoreRank": 97,
+    "country": null,
+    "image": "https://assets.coingecko.com/markets/images/1119/small/camelot.jpeg?1681439700",
+    "name": "Camelot V3",
+    "url": "https://app.camelot.exchange/",
+    "year": null
+  },
+  {
+    "coingeckoId": "pancakeswap_new",
+    "coingeckoTrustScore": 6,
+    "coingeckoTrustScoreRank": 98,
+    "country": null,
+    "image": "https://assets.coingecko.com/markets/images/687/small/pancakeswap.jpeg?1626060212",
+    "name": "PancakeSwap (v2)",
+    "url": "https://pancakeswap.finance",
+    "year": 2020
+  },
+  {
+    "coingeckoId": "balancer",
+    "coingeckoTrustScore": 6,
+    "coingeckoTrustScoreRank": 99,
+    "country": null,
+    "image": "https://assets.coingecko.com/markets/images/673/small/balancer-v2.png?1621005731",
+    "name": "Balancer V2",
+    "url": "https://app.balancer.fi/#/trade",
+    "year": 2020
+  },
+  {
+    "coingeckoId": "uniswap-v3-avalanche",
+    "coingeckoTrustScore": 6,
+    "coingeckoTrustScoreRank": 100,
+    "country": null,
+    "image": "https://assets.coingecko.com/markets/images/1182/small/uniswap.jpeg?1689299026",
+    "name": "Uniswap V3 (Avalanche)",
+    "url": "https://app.uniswap.org/#/swap?",
+    "year": null
+  }
+]
