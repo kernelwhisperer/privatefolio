@@ -1,87 +1,80 @@
-import { Paper, Stack, Typography } from "@mui/material"
+import { Stack, TablePagination, Typography } from "@mui/material"
 import React, { useEffect, useState } from "react"
 
-import EnhancedTable, { HeadCell } from "../../components/EnhancedTable"
+import { findAssets } from "../../api/assets-api"
+import { Asset } from "../../interfaces"
 import { RobotoSerifFF } from "../../theme"
-import { ServerTrade, Trade } from "../../utils/interfaces"
-import { mexcTransformer, readCsv } from "../../utils/utils"
+import { ParsedTransaction, Transaction } from "../../utils/interfaces"
+import { mexcParser, readCsv } from "../../utils/tx-utils"
+import { TransactionCard } from "./TransactionCard"
 
 const filePath = "/data/preview.csv"
 
-const headCells: readonly HeadCell<Trade>[] = [
-  {
-    disablePadding: true,
-    id: "id",
-    label: "Id",
-  },
-  {
-    id: "datetime",
-    label: "Datetime",
-  },
-  {
-    id: "side",
-    label: "Side",
-  },
-  {
-    id: "filledPrice",
-    label: "Price",
-    numeric: true,
-  },
-  {
-    id: "amount",
-    label: "Amount",
-    numeric: true,
-  },
-  {
-    id: "total",
-    label: "Total",
-    numeric: true,
-  },
-]
-
 export function TransactionsPage() {
-  const [tradeHistory, setTradeHistory] = useState<Trade[]>([])
+  const [rows, setRows] = useState<Transaction[]>([])
+  const [assetMap, setAssetMap] = useState<Record<string, Asset>>({})
 
   useEffect(() => {
-    readCsv<ServerTrade>(filePath, mexcTransformer).then((tradeHistory) => {
-      const frontendTradeHistory: Trade[] = tradeHistory.map((x) => {
+    readCsv<ParsedTransaction>(filePath, mexcParser).then(async (tradeHistory) => {
+      const symbolMap = {}
+      const rows: Transaction[] = tradeHistory.map((x) => {
+        symbolMap[x.symbol] = true
+        symbolMap[x.feeSymbol] = true
+        symbolMap[x.quoteSymbol] = true
         return {
           ...x,
           amount: x.amount.toNumber(),
+          fee: x.fee.toNumber(),
           filledPrice: x.filledPrice.toNumber(),
           total: x.total.toNumber(),
+          type: x.side === "BUY" ? "Buy" : "Sell",
         }
       })
-      setTradeHistory(frontendTradeHistory)
+      setRows(rows)
+      console.log("📜 LOG > readCsv<ParsedTransaction> > rows:", rows.length)
+      const assets = await findAssets(symbolMap)
+      setAssetMap(assets)
     })
   }, [])
+
+  const [page, setPage] = React.useState(0)
+  const [rowsPerPage, setRowsPerPage] = React.useState(5)
+
+  const visibleRows = React.useMemo(
+    () => rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
+    [rows, page, rowsPerPage]
+  )
+
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage)
+  }
+
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(parseInt(event.target.value, 10))
+    setPage(0)
+  }
 
   return (
     <Stack gap={2}>
       <Typography variant="h6" fontFamily={RobotoSerifFF}>
-        Transactions
+        Transaction ledger
       </Typography>
-      {tradeHistory[0] && (
-        <>
-          <Paper variant="outlined">
-            <Stack gap={2} direction="row">
-              <span>{tradeHistory[0].datetime}</span>
-              <span>Trade</span>
-              <span>{tradeHistory[0].amount}</span>
-              <span>{tradeHistory[0].side}</span>
-              {/* <span>{tradeHistory[0].role}</span> */}
-              {/* <span>{tradeHistory[0].fee}</span> */}
-              <span>{tradeHistory[0].symbol}</span>
-              <span>{tradeHistory[0].baseSymbol}</span>
-              <span>{tradeHistory[0].total}</span>
-            </Stack>
-          </Paper>
-        </>
-      )}
-
-      <>
-        <EnhancedTable<Trade> rows={tradeHistory} headCells={headCells} />
-      </>
+      <Stack gap={0.5}>
+        {visibleRows.map((tx) => (
+          <TransactionCard key={tx.id} tx={tx} assetMap={assetMap} />
+        ))}
+      </Stack>
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 25]}
+        component="div"
+        count={rows.length}
+        page={page}
+        onPageChange={handleChangePage}
+        rowsPerPage={rowsPerPage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+        showFirstButton
+        showLastButton
+      />
     </Stack>
   )
 }

@@ -2,18 +2,18 @@ import { Paper, Stack, Typography } from "@mui/material"
 import React, { useEffect, useState } from "react"
 
 import { RobotoSerifFF } from "../../theme"
-import { ServerTrade, Trade } from "../../utils/interfaces"
-import { mexcTransformer, readCsv } from "../../utils/utils"
+import { ParsedTransaction, Transaction } from "../../utils/interfaces"
+import { mexcParser, readCsv } from "../../utils/tx-utils"
 import { AssetList } from "./AssetList"
 
 const filePath = "/data/preview.csv"
 
 export default function HomePage() {
-  const [tradeHistory, setTradeHistory] = useState<Trade[]>([])
+  const [tradeHistory, setTradeHistory] = useState<Transaction[]>([])
 
   useEffect(() => {
-    readCsv<ServerTrade>(filePath, mexcTransformer).then((tradeHistory) => {
-      const frontendTradeHistory: Trade[] = tradeHistory.map((x) => {
+    readCsv<ParsedTransaction>(filePath, mexcParser).then((tradeHistory) => {
+      const frontendTradeHistory: Transaction[] = tradeHistory.map((x) => {
         return {
           ...x,
           amount: x.amount.toNumber(),

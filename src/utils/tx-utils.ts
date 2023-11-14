@@ -1,6 +1,6 @@
 import Decimal from "decimal.js"
 
-import { ServerTrade, TradeRole, TradeSide } from "./interfaces"
+import { ParsedTransaction, TransactionRole, TransactionSide } from "./interfaces"
 
 export async function readCsv<T>(
   filePath: string,
@@ -23,23 +23,26 @@ export async function readCsv<T>(
   return tradeHistory
 }
 
-export function mexcTransformer(csvRow: string[], index: number): ServerTrade {
-  const ticker = csvRow[0]
+export function mexcParser(csvRow: string[], index: number): ParsedTransaction {
+  const marketPair = csvRow[0]
   const filledPrice = new Decimal(csvRow[3].split(" ")[0])
   const amount = new Decimal(csvRow[4].split(" ")[0])
-  const symbol = ticker.split("_")[0]
-  const baseSymbol = ticker.split("_")[1]
+  const symbol = marketPair.split("_")[0]
+  const quoteSymbol = marketPair.split("_")[1]
   const total = new Decimal(csvRow[5].split(" ")[0])
+  const fee = new Decimal(csvRow[6].split(" ")[0])
+  const feeSymbol = csvRow[6].split(" ")[1]
 
   return {
     amount,
-    baseSymbol,
     datetime: csvRow[1],
-    fee: csvRow[6],
+    fee,
+    feeSymbol,
     filledPrice,
     id: index,
-    role: csvRow[7] as TradeRole,
-    side: csvRow[2] as TradeSide,
+    quoteSymbol,
+    role: csvRow[7] as TransactionRole,
+    side: csvRow[2] as TransactionSide,
     symbol,
     total,
   }

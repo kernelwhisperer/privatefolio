@@ -7,7 +7,7 @@ import React from "react"
 import EnhancedTable, { HeadCell } from "../../components/EnhancedTable"
 import { ReChart } from "../../components/Rechart"
 import { formatNumber } from "../../utils/client-utils"
-import { Trade } from "../../utils/interfaces"
+import { Transaction } from "../../utils/interfaces"
 
 interface AssetInfoProps {
   amountBought: number
@@ -17,10 +17,10 @@ interface AssetInfoProps {
   holdings: number
   moneyIn: number
   moneyOut: number
-  tradeHistory: Trade[]
+  tradeHistory: Transaction[]
 }
 
-const headCells: readonly HeadCell<Trade>[] = [
+const headCells: readonly HeadCell<Transaction>[] = [
   {
     disablePadding: true,
     id: "id",
@@ -145,7 +145,7 @@ export function AssetInfo(props: AssetInfoProps) {
           }))}
         /> */}
       </Stack>
-      <EnhancedTable<Trade> rows={tradeHistory} headCells={headCells} />
+      <EnhancedTable<Transaction> rows={tradeHistory} headCells={headCells} />
     </Box>
   )
 }

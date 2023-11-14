@@ -2,8 +2,8 @@ import Decimal from "decimal.js"
 import React, { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 
-import { ServerTrade, Trade } from "../../utils/interfaces"
-import { mexcTransformer, readCsv } from "../../utils/utils"
+import { ParsedTransaction, Transaction } from "../../utils/interfaces"
+import { mexcParser, readCsv } from "../../utils/tx-utils"
 import { AssetInfo } from "./AssetInfo"
 
 const filePath = "/data/preview.csv"
@@ -12,12 +12,12 @@ export default function AssetPage() {
   const params = useParams()
   const assetSymbol = params.assetSymbol?.toLocaleUpperCase()
 
-  const [tradeHistory, setTradeHistory] = useState<Trade[]>([])
+  const [tradeHistory, setTradeHistory] = useState<Transaction[]>([])
   const [amounts, setAmounts] = useState<any>({})
   console.log("📜 LOG > AssetPage > amounts:", amounts)
 
   useEffect(() => {
-    readCsv<ServerTrade>(filePath, mexcTransformer).then((tradeHistory) => {
+    readCsv<ParsedTransaction>(filePath, mexcParser).then((tradeHistory) => {
       const parsedTradeHistory = tradeHistory.filter((x) => x.symbol === assetSymbol)
 
       let amountBought = new Decimal(0)
@@ -25,7 +25,7 @@ export default function AssetPage() {
       let moneyIn = new Decimal(0)
       let moneyOut = new Decimal(0)
 
-      const frontendTradeHistory: Trade[] = parsedTradeHistory.map((x) => {
+      const frontendTradeHistory: Transaction[] = parsedTradeHistory.map((x) => {
         if (x.side === "BUY") {
           amountBought = amountBought.plus(x.amount)
           moneyIn = moneyIn.plus(x.total)

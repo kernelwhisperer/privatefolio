@@ -1,10 +1,13 @@
 import { mkdir, writeFile } from "fs/promises"
 import { join } from "path"
 
+import { Asset } from "../src/interfaces"
+import { ASSET_FILES_LOCATION, ASSET_PAGES } from "../src/settings"
+
 const COINGECKO_BASE_API = "https://api.coingecko.com/api/v3"
 const ENDPOINT = "coins/markets"
-const PAGES = 2
-const DESTINATION_DIR = "/public/assets"
+const PAGES = ASSET_PAGES
+const DESTINATION_DIR = `/public/${ASSET_FILES_LOCATION}`
 
 async function main() {
   const URLs = Array(PAGES)
@@ -23,7 +26,7 @@ async function main() {
   await Promise.all(
     URLs.map(async (url, index) => {
       const res = await fetch(url)
-      let list = await res.json()
+      const list: unknown[] = await res.json()
 
       // "id": "bitcoin",
       // "symbol": "btc",
@@ -51,14 +54,14 @@ async function main() {
       // "atl_date": "2013-07-06T00:00:00.000Z",
       // "roi": null,
       // "last_updated": "2023-11-14T12:46:54.888Z"
-      list = list.map((x) => ({
+      const assets: Asset[] = list.map((x: any) => ({
         coingeckoId: x.id,
         image: x.image,
         name: x.name,
-        symbol: x.symbol,
+        symbol: x.symbol.toUpperCase(),
       }))
 
-      await writeFile(`${destination}/page-${index + 1}.json`, JSON.stringify(list, null, 2))
+      await writeFile(`${destination}/page-${index + 1}.json`, JSON.stringify(assets, null, 2))
 
       console.log(`Page ${index + 1} written`)
     })

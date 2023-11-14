@@ -1,30 +1,34 @@
 import Decimal from "decimal.js"
 
-export type TradeRole = "Maker" | "Taker"
-export type TradeSide = "BUY" | "SELL"
+export type TransactionRole = "Maker" | "Taker"
+export type TransactionSide = "BUY" | "SELL"
+export type TransactionType = "Buy" | "Sell"
 
-export interface ServerTrade {
+export interface ParsedTransaction {
   amount: Decimal
-  baseSymbol: string
   datetime: string
-  fee: string
+  fee: Decimal
+  feeSymbol: string
   filledPrice: Decimal
   id: number
-  role: TradeRole
-  side: TradeSide
+  quoteSymbol: string
+  role: TransactionRole
+  side: TransactionSide
   symbol: string
   total: Decimal
 }
 
-export interface Trade extends Record<string, number | string> {
+export interface Transaction extends Record<string, number | string> {
   amount: number
-  baseSymbol: string
   datetime: string
-  fee: string
+  fee: number
+  feeSymbol: string
   filledPrice: number
   id: number
-  role: TradeRole
-  side: TradeSide
+  quoteSymbol: string
+  role: TransactionRole
+  side: TransactionSide
   symbol: string
   total: number
+  type: TransactionType
 }

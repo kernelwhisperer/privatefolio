@@ -12,10 +12,10 @@ import { groupBy } from "lodash"
 import React from "react"
 import { Link } from "react-router-dom"
 
-import { Trade } from "../../utils/interfaces"
+import { Transaction } from "../../utils/interfaces"
 
 interface TradeListProps {
-  tradeHistory: Trade[]
+  tradeHistory: Transaction[]
 }
 
 export function AssetList(props: TradeListProps) {
@@ -67,7 +67,7 @@ export function AssetList(props: TradeListProps) {
                       </MuiLink>
                     </Stack>
                   </TableCell>
-                  <TableCell>{groupedSymbols[symbol][0].baseSymbol}</TableCell>
+                  <TableCell>{groupedSymbols[symbol][0].quoteSymbol}</TableCell>
                   <TableCell align="right">{groupedSymbols[symbol].length}</TableCell>
                 </TableRow>
               )

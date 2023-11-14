@@ -10,25 +10,25 @@ export const Tooltip = styled(({ className, ...props }: TooltipProps) => (
     arrow
     // enterDelay={800}
     disableInteractive
-    // followCursor
-    // PopperProps={{
-    //   modifiers: [
-    //     {
-    //       name: "offset",
-    //       options: {
-    //         offset: [0, 30],
-    //       },
-    //     },
-    //   ],
-    // }}
+    followCursor
+    PopperProps={{
+      modifiers: [
+        {
+          name: "offset",
+          options: {
+            offset: [0, 25],
+          },
+        },
+      ],
+    }}
     {...props}
   />
 ))(({ theme }) => ({
   zIndex: 3000,
   [`& .${tooltipClasses.tooltip}`]: {
-    // color: "var(--mui-palette-text-secondary)",
+    color: "var(--mui-palette-text-secondary)",
     fontSize: theme.typography.overline.fontSize,
     maxWidth: 280,
-    padding: 6,
+    padding: 10,
   },
 }))
