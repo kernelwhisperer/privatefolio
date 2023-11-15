@@ -1,72 +1,101 @@
-import { useTheme } from "@mui/material"
-import { ColorType, createChart } from "lightweight-charts"
-import React, { useEffect, useRef } from "react"
+"use client"
 
-export const Chart = ({ data = [] }) => {
+import { Box, useTheme } from "@mui/material"
+import { createChart, CrosshairMode, IChartApi } from "lightweight-charts"
+import React, { memo, MutableRefObject, useEffect, useRef } from "react"
+
+import { RobotoMonoFF } from "../theme"
+
+export type ChartProps = {
+  allowCompactPriceScale?: boolean
+  chartRef: MutableRefObject<IChartApi | undefined>
+  significantDigits: number
+  unitLabel: string
+}
+
+function Chart(props: ChartProps) {
+  const { chartRef, unitLabel, significantDigits, allowCompactPriceScale } = props
+
   const theme = useTheme()
-
-  // const data = [
-  //   { time: "2018-12-22", value: 32.51 },
-  //   { time: "2018-12-23", value: 31.11 },
-  //   { time: "2018-12-24", value: 27.02 },
-  //   { time: "2018-12-25", value: 27.32 },
-  //   { time: "2018-12-26", value: 25.17 },
-  //   { time: "2018-12-27", value: 28.89 },
-  //   { time: "2018-12-28", value: 25.46 },
-  //   { time: "2018-12-29", value: 23.92 },
-  //   { time: "2018-12-30", value: 22.68 },
-  //   { time: "2018-12-31", value: 22.67 },
-  // ];
-  const { lineColor = theme.palette.primary.main, textColor = theme.palette.text.primary } = {}
-
-  const chartContainerRef = useRef<HTMLElement>()
+  const containerRef = useRef<HTMLElement>()
 
   useEffect(() => {
-    if (!chartContainerRef.current) return
+    if (!containerRef.current) return
 
     const handleResize = () => {
-      chart.applyOptions({ width: chartContainerRef.current.clientWidth })
+      chartRef.current?.applyOptions({
+        height: containerRef.current?.clientHeight,
+        width: containerRef.current?.clientWidth,
+      })
     }
+    const primaryColor = theme.palette.primary.main
+    const textColor = theme.palette.text.primary
+    const borderColor = theme.palette.divider
+    const bgColor = theme.palette.background.default
 
-    const chart = createChart(chartContainerRef.current, {
+    chartRef.current = createChart(containerRef.current, {
+      crosshair: {
+        horzLine: {
+          labelBackgroundColor: primaryColor,
+        },
+        mode: CrosshairMode.Normal,
+        vertLine: {
+          labelBackgroundColor: primaryColor,
+        },
+      },
       grid: {
         horzLines: {
-          color: "transparent",
+          color: borderColor,
         },
         vertLines: {
-          color: "transparent",
+          color: borderColor,
         },
       },
-      height: 300,
+      // handleScroll: {
+      //   mouseWheel: false,
+      // },
       layout: {
-        background: { color: "transparent", type: ColorType.Solid },
+        background: { color: bgColor },
+        fontFamily: RobotoMonoFF,
         textColor,
       },
-      width: chartContainerRef.current.clientWidth,
-    })
-    chart.timeScale().applyOptions({
-      // barSpacing: 10,
-      // timeVisible: true,
-    })
-    chart.timeScale().fitContent()
-    chart.priceScale().applyOptions({
-      //  mode: 1
-      autoScale: false,
+      // localization: {
+      //   priceFormatter: createPriceFormatter(significantDigits, unitLabel, allowCompactPriceScale),
+      // },
+      width: containerRef.current.clientWidth,
     })
 
-    const newSeries = chart.addHistogramSeries({
-      color: lineColor,
+    chartRef.current.timeScale().applyOptions({
+      borderVisible: false,
+      // rightOffset: isMobile || window.location.toString().includes("machine=true") ? 4 : 8,
+      // secondsVisible: ["Block"].includes($timeframe.get()),
+      // timeVisible: ["Hour", "Minute", "Block"].includes($timeframe.get()),
     })
-    newSeries.setData(data)
+
+    chartRef.current.priceScale("right").applyOptions({
+      borderVisible: false,
+      // entireTextOnly: true,
+    })
 
     window.addEventListener("resize", handleResize)
 
-    return () => {
+    return function cleanup() {
       window.removeEventListener("resize", handleResize)
 
-      chart.remove()
+      chartRef.current?.remove()
     }
-  }, [data, lineColor, textColor, chartContainerRef])
+  }, [chartRef, theme, containerRef, unitLabel, significantDigits, allowCompactPriceScale])
 
-  return <div ref={chartContainerRef} />
+  return (
+    <Box
+      sx={{
+        "& tr:first-child td": { cursor: "crosshair" },
+        height: "100%",
+        width: "100%",
+      }}
+      ref={containerRef}
+    />
+  )
 }
+
+export const MemoChart = memo(Chart, () => true)

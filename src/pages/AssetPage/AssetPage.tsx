@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 
 import { ParsedTransaction, Transaction } from "../../utils/interfaces"
-import { mexcParser, readCsv } from "../../utils/tx-utils"
+import { mexcParser, readCsv } from "../../utils/csv-utils"
 import { AssetInfo } from "./AssetInfo"
 
 const filePath = "/data/preview.csv"

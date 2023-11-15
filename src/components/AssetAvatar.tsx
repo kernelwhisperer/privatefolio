@@ -6,8 +6,8 @@ import { stringToColor } from "../utils/color-utils"
 
 const StyledAvatar = styled(Avatar)`
   &.MuiAvatar-colorDefault {
-    border: 1px solid ${({ color = "gray" }) => alpha(color, 0.25)};
-    background: ${({ color = "gray" }) => alpha(color, 0.15)};
+    border: 1px solid ${({ color = "#fff" }) => alpha(color, 0.25)};
+    background: ${({ color = "#fff" }) => alpha(color, 0.15)};
   }
 `
 
@@ -20,8 +20,6 @@ export function AssetAvatar(props: AvatarProps & { children: string }) {
       sx={{
         height: { lg: 40, xs: 36 },
         width: { lg: 40, xs: 36 },
-        //
-        // xs: { height: 24, width: 24 },
       }}
       {...rest}
       color={color}

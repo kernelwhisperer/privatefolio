@@ -5,7 +5,6 @@ import { Box, Stack, Typography } from "@mui/material"
 import React from "react"
 
 import EnhancedTable, { HeadCell } from "../../components/EnhancedTable"
-import { ReChart } from "../../components/Rechart"
 import { formatNumber } from "../../utils/client-utils"
 import { Transaction } from "../../utils/interfaces"
 
@@ -131,13 +130,13 @@ export function AssetInfo(props: AssetInfoProps) {
         </Stack>
       </Stack>
       <Stack gap={4} marginX={2}>
-        <ReChart
+        {/* <MemoChart
           data={tradeHistory
             .map((x) => ({
               value: x.filledPrice,
             }))
             .reverse()}
-        />
+        /> */}
         {/* <Chart
           data={tradeHistory.map((x) => ({
             time: new Date(x.datetime).getTime() / 1000,

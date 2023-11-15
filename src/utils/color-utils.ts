@@ -13,7 +13,7 @@ const colorArray = [
   colors.blue[500],
   colors.blueGrey[500],
   colors.brown[500],
-  colors.common[500],
+  // colors.common[500],
   colors.cyan[500],
   colors.deepOrange[500],
   colors.deepPurple[500],

@@ -2,36 +2,26 @@ import { Stack, TablePagination, Typography } from "@mui/material"
 import React, { useEffect, useState } from "react"
 
 import { findAssets } from "../../api/assets-api"
+import { getTransactions } from "../../api/tx-api"
 import { Asset } from "../../interfaces"
 import { RobotoSerifFF } from "../../theme"
-import { ParsedTransaction, Transaction } from "../../utils/interfaces"
-import { mexcParser, readCsv } from "../../utils/tx-utils"
+import { Transaction } from "../../utils/interfaces"
 import { TransactionCard } from "./TransactionCard"
-
-const filePath = "/data/preview.csv"
 
 export function TransactionsPage() {
   const [rows, setRows] = useState<Transaction[]>([])
   const [assetMap, setAssetMap] = useState<Record<string, Asset>>({})
 
   useEffect(() => {
-    readCsv<ParsedTransaction>(filePath, mexcParser).then(async (tradeHistory) => {
+    getTransactions().then(async (transactions) => {
+      console.log("📜 LOG > getTransactions > transactions:", transactions)
       const symbolMap = {}
-      const rows: Transaction[] = tradeHistory.map((x) => {
+      transactions.forEach((x) => {
         symbolMap[x.symbol] = true
         symbolMap[x.feeSymbol] = true
         symbolMap[x.quoteSymbol] = true
-        return {
-          ...x,
-          amount: x.amount.toNumber(),
-          fee: x.fee.toNumber(),
-          filledPrice: x.filledPrice.toNumber(),
-          total: x.total.toNumber(),
-          type: x.side === "BUY" ? "Buy" : "Sell",
-        }
       })
-      setRows(rows)
-      console.log("📜 LOG > readCsv<ParsedTransaction> > rows:", rows.length)
+      setRows(transactions)
       const assets = await findAssets(symbolMap)
       setAssetMap(assets)
     })

@@ -20,8 +20,7 @@ interface TradeListProps {
 
 export function AssetList(props: TradeListProps) {
   const { tradeHistory } = props
-  const buyHistory = tradeHistory.filter((x) => x.side === "BUY")
-  const groupedSymbols = groupBy(buyHistory, "symbol")
+  const groupedSymbols = groupBy(tradeHistory, "symbol")
   // console.log("📜 LOG > groupedTrades:", groupedTrades);
 
   return (

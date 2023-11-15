@@ -21,11 +21,11 @@ export default function App() {
 
   const transitions = useTransition(location, {
     config: { friction: 160, mass: 5, tension: 2000 },
-    enter: { opacity: 1 },
+    enter: { opacity: 1, y: 0 },
     exitBeforeEnter: true,
-    from: { opacity: 0 },
+    from: { opacity: 0, y: 20 },
     keys: (location) => location.pathname,
-    leave: { opacity: 0 },
+    leave: { opacity: 0, y: 20 },
   })
 
   return (

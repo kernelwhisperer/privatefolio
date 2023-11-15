@@ -25,7 +25,7 @@ const color = red[500]
 
 export function SellTransaction(props: TransactionCardProps) {
   const { tx, assetMap } = props
-  const { symbol, type, amount, total, fee, quoteSymbol, feeSymbol, datetime } = tx
+  const { symbol, type, amount, total, fee, quoteSymbol, feeSymbol, timestamp } = tx
 
   return (
     <>
@@ -35,12 +35,12 @@ export function SellTransaction(props: TransactionCardProps) {
             <Grid item xs={12} lg={3}>
               <Stack alignItems="flex-start" gap={COLUMN_GAP}>
                 <Typography color="text.secondary" variant="caption">
-                  {formatDateRelative(new Date(datetime))}
+                  {formatDateRelative(timestamp)}
                 </Typography>
                 <span>
-                  <span>{formatDate(new Date(datetime))}</span>{" "}
+                  <span>{formatDate(timestamp)}</span>{" "}
                   <Typography component="span" color="text.secondary" variant="body2">
-                    at {formatHour(new Date(datetime))}
+                    at {formatHour(timestamp)}
                   </Typography>
                 </span>
                 <Chip

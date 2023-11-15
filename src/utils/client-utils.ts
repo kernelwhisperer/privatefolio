@@ -10,19 +10,19 @@ export function formatNumber(number: number) {
 // TODO
 export const TZ_OFFSET = new Date().getTimezoneOffset() * 60 * 1000
 
-export function formatDateRelative(date: Date) {
+export function formatDateRelative(date: Date | number) {
   return formatDistance(date, new Date(), {
     addSuffix: true,
   })
 }
 
-export function formatDate(date: Date) {
+export function formatDate(date: Date | number) {
   return new Intl.DateTimeFormat(window.navigator.language, {
     dateStyle: "long",
   }).format(date)
 }
 
-export function formatHour(date: Date) {
+export function formatHour(date: Date | number) {
   return new Intl.DateTimeFormat(window.navigator.language, {
     hour: "numeric",
     hour12: false,
@@ -32,7 +32,7 @@ export function formatHour(date: Date) {
   }).format(date)
 }
 
-export function formatDateWithHour(date: Date, opts: Intl.DateTimeFormatOptions = {}) {
+export function formatDateWithHour(date: Date | number, opts: Intl.DateTimeFormatOptions = {}) {
   return new Intl.DateTimeFormat(window.navigator.language, {
     day: "numeric",
     hour: "numeric",
