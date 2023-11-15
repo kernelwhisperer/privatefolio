@@ -2,10 +2,10 @@ import { Paper, Stack, Typography } from "@mui/material"
 import React, { useEffect, useState } from "react"
 
 import { findAssets } from "../../api/assets-api"
-import { getTransactions } from "../../api/tx-api"
+import { getAuditLogs } from "../../api/audit-logs-api"
 import { Asset } from "../../interfaces"
 import { RobotoSerifFF } from "../../theme"
-import { Transaction } from "../../utils/interfaces"
+import { Transaction } from "../../interfaces"
 import { AssetList } from "./AssetList"
 
 export default function HomePage() {
@@ -13,7 +13,7 @@ export default function HomePage() {
   const [assetMap, setAssetMap] = useState<Record<string, Asset>>({})
 
   useEffect(() => {
-    getTransactions().then(async (transactions) => {
+    getAuditLogs().then(async (transactions) => {
       console.log("📜 LOG > getTransactions > transactions:", transactions)
       const symbolMap = {}
       transactions.forEach((x) => {

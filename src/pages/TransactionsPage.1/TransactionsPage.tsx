@@ -3,9 +3,8 @@ import React, { useEffect, useState } from "react"
 
 import { findAssets } from "../../api/assets-api"
 import { getAuditLogs } from "../../api/audit-logs-api"
-import { Asset } from "../../interfaces"
+import { Asset, Transaction } from "../../interfaces"
 import { RobotoSerifFF } from "../../theme"
-import { Transaction } from "../../interfaces"
 import { TransactionCard } from "./TransactionCard"
 
 export function TransactionsPage() {

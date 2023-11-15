@@ -6,7 +6,7 @@ import React from "react"
 
 import EnhancedTable, { HeadCell } from "../../components/EnhancedTable"
 import { formatNumber } from "../../utils/client-utils"
-import { Transaction } from "../../utils/interfaces"
+import { Transaction } from "../../interfaces"
 
 interface AssetInfoProps {
   amountBought: number

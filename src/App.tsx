@@ -5,9 +5,7 @@ import React from "react"
 import { Route, Routes, useLocation } from "react-router-dom"
 
 import { Header } from "./components/Header/Header"
-import AssetPage from "./pages/AssetPage/AssetPage"
-import HomePage from "./pages/HomePage/HomePage"
-import { TransactionsPage } from "./pages/TransactionsPage/TransactionsPage"
+import { AuditLogsPage } from "./pages/AuditLogsPage/AuditLogsPage"
 
 const Offset = styled("div")(({ theme }) => theme.mixins.toolbar)
 
@@ -46,9 +44,10 @@ export default function App() {
             }
           >
             <Routes location={item}>
-              <Route path="/" Component={HomePage} />
-              <Route path="/asset/:assetSymbol" Component={AssetPage} />
-              <Route path="/transactions" Component={TransactionsPage} />
+              {/* <Route path="/" Component={HomePage} /> */}
+              {/* <Route path="/asset/:assetSymbol" Component={AssetPage} /> */}
+              {/* <Route path="/transactions" Component={TransactionsPage} /> */}
+              <Route path="/audit-logs" Component={AuditLogsPage} />
             </Routes>
           </a.div>
         ))}

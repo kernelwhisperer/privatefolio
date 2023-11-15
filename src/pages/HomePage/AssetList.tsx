@@ -12,7 +12,7 @@ import { groupBy } from "lodash"
 import React from "react"
 import { Link } from "react-router-dom"
 
-import { Transaction } from "../../utils/interfaces"
+import { Transaction } from "../../interfaces"
 
 interface TradeListProps {
   tradeHistory: Transaction[]

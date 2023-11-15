@@ -18,7 +18,7 @@ export function formatDateRelative(date: Date | number) {
 
 export function formatDate(date: Date | number) {
   return new Intl.DateTimeFormat(window.navigator.language, {
-    dateStyle: "long",
+    dateStyle: "medium",
   }).format(date)
 }
 
@@ -38,8 +38,8 @@ export function formatDateWithHour(date: Date | number, opts: Intl.DateTimeForma
     hour: "numeric",
     hour12: false,
     minute: "numeric",
-    month: "short",
-    second: "numeric",
+    month: "long",
+    // second: "numeric",
     // timeZoneName: "short",
     year: "numeric",
     ...opts,

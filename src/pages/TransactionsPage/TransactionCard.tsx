@@ -1,7 +1,7 @@
 import React from "react"
 
 import { Asset } from "../../interfaces"
-import { Transaction, TransactionType } from "../../utils/interfaces"
+import { Transaction, TransactionType } from "../../interfaces"
 import { BuyTransaction } from "./Transactions/BuyTransaction"
 import { SellTransaction } from "./Transactions/SellTransaction"
 

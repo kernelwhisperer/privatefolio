@@ -3,25 +3,22 @@ import React, { useEffect, useState } from "react"
 
 import { findAssets } from "../../api/assets-api"
 import { getAuditLogs } from "../../api/audit-logs-api"
-import { Asset } from "../../interfaces"
+import { Asset, AuditLog } from "../../interfaces"
 import { RobotoSerifFF } from "../../theme"
-import { Transaction } from "../../interfaces"
-import { TransactionCard } from "./TransactionCard"
+import { AuditLogCard } from "./AuditLogCard"
 
-export function TransactionsPage() {
-  const [rows, setRows] = useState<Transaction[]>([])
+export function AuditLogsPage() {
+  const [rows, setRows] = useState<AuditLog[]>([])
   const [assetMap, setAssetMap] = useState<Record<string, Asset>>({})
 
   useEffect(() => {
-    getAuditLogs().then(async (transactions) => {
-      console.log("📜 LOG > getTransactions > transactions:", transactions)
+    getAuditLogs().then(async (auditLogs) => {
+      console.log("📜 LOG > getTransactions > transactions:", auditLogs)
       const symbolMap = {}
-      transactions.forEach((x) => {
+      auditLogs.forEach((x) => {
         symbolMap[x.symbol] = true
-        symbolMap[x.feeSymbol] = true
-        symbolMap[x.quoteSymbol] = true
       })
-      setRows(transactions)
+      setRows(auditLogs)
       const assets = await findAssets(symbolMap)
       setAssetMap(assets)
     })
@@ -47,11 +44,18 @@ export function TransactionsPage() {
   return (
     <Stack gap={2}>
       <Typography variant="h6" fontFamily={RobotoSerifFF}>
-        Transaction ledger
+        Audit logs
       </Typography>
-      <Stack gap={0.5}>
-        {visibleRows.map((tx) => (
-          <TransactionCard key={tx.id} tx={tx} assetMap={assetMap} />
+      <Stack
+        sx={{
+          "& > * + *": {
+            borderTop: "1px solid var(--mui-palette-divider)",
+          },
+          border: "1px solid var(--mui-palette-divider)",
+        }}
+      >
+        {visibleRows.map((x) => (
+          <AuditLogCard key={x.id} auditLog={x} assetMap={assetMap} />
         ))}
       </Stack>
       <TablePagination

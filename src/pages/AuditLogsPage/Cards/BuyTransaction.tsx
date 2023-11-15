@@ -1,6 +1,6 @@
-import { EastRounded, RemoveRounded, SouthRounded } from "@mui/icons-material"
+import { AddRounded, EastRounded, SouthRounded } from "@mui/icons-material"
 import { alpha, Chip, Grid, Paper, Stack, Typography } from "@mui/material"
-import { red } from "@mui/material/colors"
+import { green } from "@mui/material/colors"
 // import Grid from "@mui/material/Unstable_Grid2" // Grid version 2
 import React from "react"
 
@@ -21,9 +21,9 @@ interface TransactionCardProps {
   tx: Transaction
 }
 
-const color = red[500]
+const color = green[500]
 
-export function SellTransaction(props: TransactionCardProps) {
+export function BuyTransaction(props: TransactionCardProps) {
   const { tx, assetMap } = props
   const { symbol, type, amount, total, fee, quoteSymbol, feeSymbol, timestamp } = tx
 
@@ -48,8 +48,10 @@ export function SellTransaction(props: TransactionCardProps) {
                   label={
                     <Typography variant="body2" component="div">
                       <Stack direction="row" gap={0.5} alignItems="center" paddingRight={0.5}>
-                        <RemoveRounded sx={{ fontSize: "inherit" }} />
+                        {/* <SwapHorizRounded fontSize="small" /> */}
+                        <AddRounded sx={{ fontSize: "inherit" }} />
                         <span>{type}</span>
+                        {/* <span>Trade</span> */}
                       </Stack>
                     </Typography>
                   }
@@ -59,11 +61,11 @@ export function SellTransaction(props: TransactionCardProps) {
             </Grid>
             <Grid item xs={12} lg={3}>
               <AssetChange
-                label="Sold"
-                amount={formatNumber(amount)}
-                symbol={symbol}
+                label="Paid"
+                amount={formatNumber(total)}
+                symbol={quoteSymbol}
                 valueAmount={"0.1"}
-                imageSrc={assetMap[symbol]?.image}
+                imageSrc={assetMap[quoteSymbol]?.image}
                 negative
               />
             </Grid>
@@ -76,10 +78,10 @@ export function SellTransaction(props: TransactionCardProps) {
             <Grid item xs={12} lg={3}>
               <AssetChange
                 label="Received"
-                amount={formatNumber(total)}
-                symbol={quoteSymbol}
+                amount={formatNumber(amount)}
+                symbol={symbol}
                 valueAmount={"0.1"}
-                imageSrc={assetMap[quoteSymbol]?.image}
+                imageSrc={assetMap[symbol]?.image}
               />
             </Grid>
             <Grid item xs={12} lg={2.5}>
