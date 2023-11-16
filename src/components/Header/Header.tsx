@@ -1,20 +1,19 @@
 "use client"
 
-import { AppBar, Button, Container, Stack, Toolbar } from "@mui/material"
+import { AppBar, Button, Container, Stack, Toolbar, Tooltip } from "@mui/material"
 import React from "react"
 import { Link } from "react-router-dom"
 
-import { Tooltip } from "../Tooltip"
 import { Logo } from "./Logo"
 import { Settings } from "./Settings"
 
 export function Header() {
   return (
     <AppBar
-      position="fixed"
+      position="static"
       elevation={0}
-      variant="outlined"
-      color="default"
+      // variant="outlined"
+      color="transparent"
       sx={{
         borderLeft: "none",
         borderRight: "none",

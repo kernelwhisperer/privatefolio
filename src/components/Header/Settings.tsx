@@ -1,10 +1,8 @@
 "use client"
 
 import { DarkModeOutlined, LightModeOutlined, SettingsSuggestRounded } from "@mui/icons-material"
-import { IconButton, useColorScheme } from "@mui/material"
+import { IconButton, Tooltip, useColorScheme } from "@mui/material"
 import React, { useMemo } from "react"
-
-import { Tooltip } from "../Tooltip"
 
 export function Settings() {
   const { mode = "system", setMode } = useColorScheme()

@@ -29,8 +29,8 @@ export default function App() {
   return (
     <>
       <Header />
-      <Offset />
-      <Container maxWidth="lg" sx={{ paddingY: 2 }}>
+      {/* <Offset /> */}
+      <Container maxWidth="lg" sx={{ paddingY: 3 }}>
         {transitions((styles, item) => (
           <a.div
             style={

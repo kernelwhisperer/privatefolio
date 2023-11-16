@@ -33,9 +33,30 @@ export function AuditLogsPage() {
   }, [])
 
   return (
-    <Stack gap={2}>
+    <Stack gap={1}>
       <Typography variant="h6" fontFamily={SerifFont}>
-        Audit logs
+        <span>Audit logs</span>
+        {/* <Stack direction="row" alignItems={"baseline"}>
+          <Chip
+            component={"span"}
+            size="small"
+            label={
+              <Typography variant="h6" fontFamily={SerifFont}>
+                {rows.length}
+              </Typography>
+            }
+            sx={{
+              // background: alpha(color, 0.075),
+              // color: "text.secondary",
+              fontFamily: "inherit",
+
+              fontSize: 14,
+              fontWeight: 300,
+              marginLeft: 1,
+              // letterSpacing: 0.5,
+            }}
+          />
+        </Stack> */}
       </Typography>
       <AuditLogsTable rows={rows} assetMap={assetMap} integrationMap={integrationMap} />
     </Stack>

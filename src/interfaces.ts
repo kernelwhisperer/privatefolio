@@ -40,6 +40,7 @@ export type Integration = "Binance" | "Mexc Global"
 export interface AuditLog {
   change: string
   changeBN: BigNumber
+  changeN: number
   id: string
   integration: Integration
   operation: AuditLogOperation
@@ -59,6 +60,7 @@ export interface BinanceAuditLog extends AuditLog {
 export interface Asset {
   coingeckoId: string
   image: string
+  isStablecoin: boolean
   name: string
   symbol: string
 }

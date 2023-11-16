@@ -1,9 +1,9 @@
 import { formatDistance } from "date-fns"
 
-export function formatNumber(number: number) {
+export function formatNumber(number: number, opts: Intl.NumberFormatOptions = {}) {
   return new Intl.NumberFormat(window.navigator.language, {
-    maximumFractionDigits: 18,
     notation: "standard",
+    ...opts,
   }).format(number)
 }
 

@@ -70,7 +70,16 @@ function TableHead(props: TableHeadProps) {
   }
 
   return (
-    <Paper component={MuiTableHead} sx={{ height: 52, position: "sticky", top: 64, zIndex: 2 }}>
+    <MuiTableHead
+      sx={{
+        background: "var(--mui-palette-background-paper)",
+        height: 52,
+        paddingTop: 0.5,
+        position: "sticky",
+        top: 0,
+        zIndex: 2,
+      }}
+    >
       <TableRow>
         {HEAD_CELLS.map(({ key, numeric, label }) => (
           <TableCell
@@ -100,7 +109,7 @@ function TableHead(props: TableHeadProps) {
           </TableCell>
         ))}
       </TableRow>
-    </Paper>
+    </MuiTableHead>
   )
 }
 
@@ -145,8 +154,8 @@ export function AuditLogsTable(props: AuditLogsTableProps) {
   )
 
   return (
-    <Paper variant="outlined">
-      <Box sx={{ width: "100%" }}>
+    <>
+      <Paper variant="outlined" sx={{ marginX: -2.5, padding: 0.5 }}>
         <TableContainer sx={{ overflowX: "unset" }}>
           <Table sx={{ minWidth: 750 }} size="small">
             <TableHead order={order} orderBy={orderBy} onRequestSort={handleRequestSort} />
@@ -162,7 +171,7 @@ export function AuditLogsTable(props: AuditLogsTableProps) {
                 />
               ))}
               {emptyRows > 0 && (
-                <TableRow style={{ height: 33 * emptyRows }}>
+                <TableRow style={{ height: 37 * emptyRows }}>
                   <TableCell colSpan={HEAD_CELLS.length} />
                 </TableRow>
               )}
@@ -170,10 +179,14 @@ export function AuditLogsTable(props: AuditLogsTableProps) {
           </Table>
         </TableContainer>
         <TablePagination
-          component={Paper}
-          elevation={5}
-          sx={{ bottom: 0, position: "sticky" }}
-          rowsPerPageOptions={[10, 25, 50]}
+          component="div"
+          sx={{
+            background: "var(--mui-palette-background-paper)",
+            bottom: 0,
+            position: "sticky",
+            // width: "100%",
+          }}
+          rowsPerPageOptions={[10, 25, 50, 100]}
           count={rows.length}
           rowsPerPage={rowsPerPage}
           page={page}
@@ -182,8 +195,8 @@ export function AuditLogsTable(props: AuditLogsTableProps) {
           showFirstButton
           showLastButton
         />
-      </Box>
+      </Paper>
       {/* <Drawer open /> */}
-    </Paper>
+    </>
   )
 }

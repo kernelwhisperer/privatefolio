@@ -54,12 +54,17 @@ async function main() {
       // "atl_date": "2013-07-06T00:00:00.000Z",
       // "roi": null,
       // "last_updated": "2023-11-14T12:46:54.888Z"
-      const assets: Asset[] = list.map((x: any) => ({
-        coingeckoId: x.id,
-        image: x.image,
-        name: x.name,
-        symbol: x.symbol.toUpperCase(),
-      }))
+      const assets: Asset[] = list.map((x: any) => {
+        const symbol = x.symbol.toUpperCase()
+
+        return {
+          coingeckoId: x.id,
+          image: x.image,
+          isStablecoin: ["USD", "EUR", "USDT", "USDC"].includes(symbol),
+          name: x.name,
+          symbol,
+        }
+      })
 
       await writeFile(`${destination}/page-${index + 1}.json`, JSON.stringify(assets, null, 2))
 

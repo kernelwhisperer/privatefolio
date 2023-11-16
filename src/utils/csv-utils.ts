@@ -56,6 +56,7 @@ export function binanceParser(csvRow: string, index: number): BinanceAuditLog {
   //
   const id = hashString(`${index}_${csvRow}`)
   const timestamp = new Date(utcTime).getTime() - TZ_OFFSET
+  const changeN = parseFloat(change)
   const changeBN = new Decimal(change)
   const symbol = coin
   const wallet = account
@@ -64,6 +65,7 @@ export function binanceParser(csvRow: string, index: number): BinanceAuditLog {
     account,
     change,
     changeBN,
+    changeN,
     coin,
     id,
     integration: "Binance",
