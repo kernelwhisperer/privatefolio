@@ -2,7 +2,7 @@ import { formatDistance } from "date-fns"
 
 export function formatNumber(number: number) {
   return new Intl.NumberFormat(window.navigator.language, {
-    maximumFractionDigits: 4,
+    maximumFractionDigits: 18,
     notation: "standard",
   }).format(number)
 }

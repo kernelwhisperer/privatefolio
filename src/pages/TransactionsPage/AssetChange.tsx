@@ -3,7 +3,7 @@ import React from "react"
 
 import { AssetAvatar } from "../../components/AssetAvatar"
 import { Truncate } from "../../components/Truncate"
-import { RobotoMonoFF } from "../../theme"
+import { MonoFont } from "../../theme"
 
 interface AssetChangeProps {
   amount: string
@@ -29,7 +29,7 @@ export function AssetChange(props: AssetChangeProps) {
           </AssetAvatar>
           <Stack alignSelf="center">
             <Typography
-              fontFamily={RobotoMonoFF}
+              fontFamily={MonoFont}
               component="div"
               variant="inherit"
               sx={{ display: "flex" }}
@@ -40,7 +40,7 @@ export function AssetChange(props: AssetChangeProps) {
               </Truncate>
             </Typography>
             <Typography
-              fontFamily={RobotoMonoFF}
+              fontFamily={MonoFont}
               component="span"
               variant="caption"
               color="text.secondary"

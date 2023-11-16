@@ -12,18 +12,13 @@ export function Header() {
   return (
     <AppBar
       position="fixed"
-      // color="transparent"
       elevation={0}
       variant="outlined"
-      color="inherit"
+      color="default"
       sx={{
         borderLeft: "none",
         borderRight: "none",
         borderTop: "none",
-        // border: "none",
-        // boxShadow: { xs: "none" },
-        // transition: theme.transitions.create("background"),
-        // willChange: "background"
       }}
     >
       <Toolbar disableGutters>

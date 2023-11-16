@@ -3,14 +3,14 @@ import type Decimal from "decimal.js"
 export type TransactionRole = "Maker" | "Taker"
 export type TransactionSide = "BUY" | "SELL"
 export type TransactionType = "Buy" | "Sell"
-export type Exchange = "mexc" | "binance"
+export type ExchangeId = "mexc" | "binance"
 
 export type BigNumber = Decimal
 
 export interface Transaction {
   amount: number
   amountBN: BigNumber
-  exchange: Exchange
+  exchange: ExchangeId
   fee: number
   feeBN: BigNumber
   feeSymbol: string
@@ -27,7 +27,14 @@ export interface Transaction {
   type: TransactionType
 }
 
-export type AuditLogOperation = "Deposit" | "Buy" | "Sell" | "Fee"
+export type AuditLogOperation =
+  | "Deposit"
+  | "Buy"
+  | "Sell"
+  | "Fee"
+  | "Distribution"
+  | "Withdraw"
+  | "Funding Fee"
 export type Integration = "Binance" | "Mexc Global"
 
 export interface AuditLog {
@@ -54,4 +61,16 @@ export interface Asset {
   image: string
   name: string
   symbol: string
+}
+
+export interface Exchange {
+  coingeckoId: string
+  coingeckoTrustScore: number
+  coingeckoTrustScoreRank: number
+  country: string
+  image: string
+  name: string
+  symbol: string
+  url: string
+  year: number
 }

@@ -39,23 +39,7 @@ function getComparator<Key extends keyof any>(
     : (a, b) => -descendingComparator(a, b, orderBy)
 }
 
-// Since 2020 all major browsers ensure sort stability with Array.prototype.sort().
-// stableSort() brings sort stability to non-modern browsers (notably IE11). If you
-// only support modern browsers you can replace stableSort(exampleArray, exampleComparator)
-// with exampleArray.slice().sort(exampleComparator)
-function stableSort<T>(array: readonly T[], comparator: (a: T, b: T) => number) {
-  const stabilizedThis = array.map((el, index) => [el, index] as [T, number])
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0])
-    if (order !== 0) {
-      return order
-    }
-    return a[1] - b[1]
-  })
-  return stabilizedThis.map((el) => el[0])
-}
-
-interface EnhancedTableHeadProps<T extends BaseObject> {
+interface EnhancedTableHeadProps<T extends TableObject> {
   headCells: readonly HeadCell<T>[]
   numSelected: number
   onRequestSort: (event: React.MouseEvent<unknown>, property: keyof T) => void
@@ -65,7 +49,7 @@ interface EnhancedTableHeadProps<T extends BaseObject> {
   rowCount: number
 }
 
-function EnhancedTableHead<T extends BaseObject>(props: EnhancedTableHeadProps<T>) {
+function EnhancedTableHead<T extends TableObject>(props: EnhancedTableHeadProps<T>) {
   const { onSelectAllClick, headCells, order, orderBy, numSelected, rowCount, onRequestSort } =
     props
   const createSortHandler = (property: keyof T) => (event: React.MouseEvent<unknown>) => {
@@ -156,29 +140,28 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
   )
 }
 
-type BaseObject = Record<string, number | string> & {
+export type TableObject = Record<string, number | string> & {
   id: string | number
 }
 
-export interface HeadCell<T extends BaseObject> {
+export interface HeadCell<T extends TableObject> {
   disablePadding?: boolean
   id: keyof T
   label: string
   numeric?: boolean
 }
 
-type EnhancedTableProps<T extends BaseObject> = {
+type EnhancedTableProps<T extends TableObject> = {
   headCells: readonly HeadCell<T>[]
   rows: T[]
 }
 
-export default function EnhancedTable<T extends BaseObject>(props: EnhancedTableProps<T>) {
+export default function EnhancedTable<T extends TableObject>(props: EnhancedTableProps<T>) {
   const { rows, headCells } = props
   const [order, setOrder] = React.useState<Order>("desc")
-  const [orderBy, setOrderBy] = React.useState<keyof T>("id")
+  const [orderBy, setOrderBy] = React.useState<keyof T>("timestamp")
   const [selected, setSelected] = React.useState<readonly string[]>([])
   const [page, setPage] = React.useState(0)
-  const [dense, setDense] = React.useState(true)
   const [rowsPerPage, setRowsPerPage] = React.useState(25)
 
   const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof T) => {
@@ -188,12 +171,12 @@ export default function EnhancedTable<T extends BaseObject>(props: EnhancedTable
   }
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.checked) {
-      const newSelected = rows.map((n) => n.id)
-      setSelected(newSelected)
-      return
-    }
-    setSelected([])
+    // if (event.target.checked) {
+    //   const newSelected = rows.map((n) => n.id)
+    //   setSelected(newSelected)
+    //   return
+    // }
+    // setSelected([])
   }
 
   const handleClick = (event: React.MouseEvent<unknown>, id: string) => {
@@ -225,10 +208,6 @@ export default function EnhancedTable<T extends BaseObject>(props: EnhancedTable
     setPage(0)
   }
 
-  const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDense(event.target.checked)
-  }
-
   const isSelected = (name: string) => selected.indexOf(name) !== -1
 
   // Avoid a layout jump when reaching the last page with empty rows.
@@ -236,10 +215,10 @@ export default function EnhancedTable<T extends BaseObject>(props: EnhancedTable
 
   const visibleRows = React.useMemo(
     () =>
-      stableSort<T>(rows, getComparator(order, orderBy) as any).slice(
-        page * rowsPerPage,
-        page * rowsPerPage + rowsPerPage
-      ),
+      rows
+        .slice()
+        .sort(getComparator(order, orderBy))
+        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
     [rows, order, orderBy, page, rowsPerPage]
   )
 
@@ -250,7 +229,7 @@ export default function EnhancedTable<T extends BaseObject>(props: EnhancedTable
         <Table
           // sx={{ minWidth: 750 }}
           aria-labelledby="tableTitle"
-          size={dense ? "small" : "medium"}
+          size="small"
         >
           <EnhancedTableHead
             headCells={headCells}
@@ -303,7 +282,7 @@ export default function EnhancedTable<T extends BaseObject>(props: EnhancedTable
             {emptyRows > 0 && (
               <TableRow
                 style={{
-                  height: (dense ? 33 : 53) * emptyRows,
+                  height: 33 * emptyRows,
                 }}
               >
                 <TableCell colSpan={6} />
@@ -320,12 +299,9 @@ export default function EnhancedTable<T extends BaseObject>(props: EnhancedTable
         page={page}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
+        showFirstButton
+        showLastButton
       />
-      {/* <FormControlLabel
-        control={<Switch checked={dense} onChange={handleChangeDense} />}
-        label="Dense padding"
-      /> */}
-      {/* TODO: enable in settings */}
     </Box>
   )
 }

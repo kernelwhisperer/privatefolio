@@ -4,7 +4,7 @@ import { Box, useTheme } from "@mui/material"
 import { createChart, CrosshairMode, IChartApi } from "lightweight-charts"
 import React, { memo, MutableRefObject, useEffect, useRef } from "react"
 
-import { RobotoMonoFF } from "../theme"
+import { MonoFont } from "../theme"
 
 export type ChartProps = {
   allowCompactPriceScale?: boolean
@@ -56,7 +56,7 @@ function Chart(props: ChartProps) {
       // },
       layout: {
         background: { color: bgColor },
-        fontFamily: RobotoMonoFF,
+        fontFamily: MonoFont,
         textColor,
       },
       // localization: {

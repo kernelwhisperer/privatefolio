@@ -40,19 +40,21 @@ type Parser = (csvRow: string, index: number) => AuditLog
 //   }
 // }
 
-export function binanceParser(csvRow: string): BinanceAuditLog {
+export function binanceParser(csvRow: string, index: number): BinanceAuditLog {
   const row = csvRow.replaceAll('"', "")
   const columns = row.split(",")
   //
   const userId = columns[0]
   const utcTime = columns[1]
   const account = columns[2]
-  const operation = columns[3] as AuditLogOperation
+  const operation = columns[3]
+    .replace("Transaction ", "")
+    .replace("Spend", "Sell") as AuditLogOperation
   const coin = columns[4]
   const change = columns[5]
   const remark = columns[6]
   //
-  const id = hashString(csvRow)
+  const id = hashString(`${index}_${csvRow}`)
   const timestamp = new Date(utcTime).getTime() - TZ_OFFSET
   const changeBN = new Decimal(change)
   const symbol = coin

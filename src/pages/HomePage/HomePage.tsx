@@ -3,9 +3,8 @@ import React, { useEffect, useState } from "react"
 
 import { findAssets } from "../../api/assets-api"
 import { getAuditLogs } from "../../api/audit-logs-api"
-import { Asset } from "../../interfaces"
-import { RobotoSerifFF } from "../../theme"
-import { Transaction } from "../../interfaces"
+import { Asset, Transaction } from "../../interfaces"
+import { SerifFont } from "../../theme"
 import { AssetList } from "./AssetList"
 
 export default function HomePage() {
@@ -29,7 +28,7 @@ export default function HomePage() {
 
   return (
     <Stack gap={2}>
-      <Typography variant="h6" fontFamily={RobotoSerifFF}>
+      <Typography variant="h6" fontFamily={SerifFont}>
         Holdings
       </Typography>
       <Paper variant="outlined">

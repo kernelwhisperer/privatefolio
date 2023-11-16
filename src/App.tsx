@@ -47,7 +47,7 @@ export default function App() {
               {/* <Route path="/" Component={HomePage} /> */}
               {/* <Route path="/asset/:assetSymbol" Component={AssetPage} /> */}
               {/* <Route path="/transactions" Component={TransactionsPage} /> */}
-              <Route path="/audit-logs" Component={AuditLogsPage} />
+              <Route path="*" Component={AuditLogsPage} />
             </Routes>
           </a.div>
         ))}

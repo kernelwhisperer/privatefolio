@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react"
 import { findAssets } from "../../api/assets-api"
 import { getAuditLogs } from "../../api/audit-logs-api"
 import { Asset, Transaction } from "../../interfaces"
-import { RobotoSerifFF } from "../../theme"
+import { SerifFont } from "../../theme"
 import { TransactionCard } from "./TransactionCard"
 
 export function TransactionsPage() {
@@ -45,7 +45,7 @@ export function TransactionsPage() {
 
   return (
     <Stack gap={2}>
-      <Typography variant="h6" fontFamily={RobotoSerifFF}>
+      <Typography variant="h6" fontFamily={SerifFont}>
         Transaction ledger
       </Typography>
       <Stack gap={0.5}>

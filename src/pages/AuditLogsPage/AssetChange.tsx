@@ -1,7 +1,7 @@
 import { Stack, Typography } from "@mui/material"
 import React from "react"
 
-import { RobotoMonoFF } from "../../theme"
+import { MonoFont } from "../../theme"
 
 interface AssetChangeProps {
   amount: string
@@ -23,7 +23,7 @@ export function AssetChange(props: AssetChangeProps) {
             {symbol}
           </AssetAvatar> */}
           <Stack alignSelf="center">
-            <Typography fontFamily={RobotoMonoFF} component="div" variant="inherit">
+            <Typography fontFamily={MonoFont} component="div" variant="inherit">
               {amount}
             </Typography>
           </Stack>

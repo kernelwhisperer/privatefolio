@@ -1,7 +1,7 @@
 import { alpha, Avatar, AvatarProps, styled, Typography } from "@mui/material"
 import React from "react"
 
-import { RobotoMonoFF } from "../theme"
+import { MonoFont } from "../theme"
 import { stringToColor } from "../utils/color-utils"
 
 const StyledAvatar = styled(Avatar)`
@@ -24,7 +24,7 @@ export function AssetAvatar(props: AvatarProps & { children: string }) {
       {...rest}
       color={color}
     >
-      <Typography variant="subtitle2" fontFamily={RobotoMonoFF} color={color}>
+      <Typography variant="subtitle2" fontFamily={MonoFont} color={color}>
         {children.slice(0, 3)}
       </Typography>
     </StyledAvatar>
