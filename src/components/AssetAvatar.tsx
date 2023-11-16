@@ -11,21 +11,34 @@ const StyledAvatar = styled(Avatar)`
   }
 `
 
-export function AssetAvatar(props: AvatarProps & { children: string }) {
-  const { children, ...rest } = props
+interface AssetAvatarProps extends AvatarProps {
+  children: string
+  size?: "small" | "large"
+}
+
+const smallSize = 18
+const largeSize = 40
+
+export function AssetAvatar(props: AssetAvatarProps) {
+  const { children, size = "large", ...rest } = props
   const color = stringToColor(children)
 
   return (
     <StyledAvatar
       sx={{
-        height: { lg: 40, xs: 36 },
-        width: { lg: 40, xs: 36 },
+        height: size === "small" ? smallSize : largeSize,
+        width: size === "small" ? smallSize : largeSize,
       }}
-      {...rest}
       color={color}
+      {...rest}
     >
-      <Typography variant="subtitle2" fontFamily={MonoFont} color={color}>
-        {children.slice(0, 3)}
+      <Typography
+        fontWeight={500}
+        fontSize={size === "small" ? "0.65rem" : "0.85rem"}
+        fontFamily={MonoFont}
+        color={color}
+      >
+        {children.slice(0, size === "small" ? 1 : 3)}
       </Typography>
     </StyledAvatar>
   )

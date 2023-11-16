@@ -72,7 +72,7 @@ export function AuditLogTableRow(props: AuditLogTableRowProps) {
           at {formatHour(timestamp)}
         </Typography>
       </TableCell>
-      <TableCell sx={{ maxWidth: 140, minWidth: 140, width: 140 }}>
+      <TableCell sx={{ maxWidth: 160, minWidth: 160, width: 140 }}>
         <Stack direction="row" gap={0.5} alignItems="center" component="div">
           <Avatar
             src={integrationMap[integration]?.image}
@@ -121,16 +121,8 @@ export function AuditLogTableRow(props: AuditLogTableRowProps) {
           component="div"
           // justifyContent="flex-end"
         >
-          <AssetAvatar
-            sx={{
-              // background: alpha(grey[500], 0.075),
-              height: 16,
-              width: 16,
-            }}
-            src={assetMap[symbol]?.image}
-            alt={symbol}
-          >
-            {symbol.slice(0, 1)}
+          <AssetAvatar size="small" src={assetMap[symbol]?.image} alt={symbol}>
+            {symbol}
           </AssetAvatar>
           <span>{symbol}</span>
         </Stack>

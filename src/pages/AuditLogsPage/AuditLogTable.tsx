@@ -1,4 +1,5 @@
-import { Paper } from "@mui/material"
+import { FilterListRounded } from "@mui/icons-material"
+import { IconButton, Paper } from "@mui/material"
 import Box from "@mui/material/Box"
 import Table from "@mui/material/Table"
 import TableBody from "@mui/material/TableBody"
@@ -9,7 +10,7 @@ import TablePagination from "@mui/material/TablePagination"
 import TableRow from "@mui/material/TableRow"
 import TableSortLabel from "@mui/material/TableSortLabel"
 import { visuallyHidden } from "@mui/utils"
-import React, { useState } from "react"
+import React, { ChangeEvent, MouseEvent, useCallback, useMemo, useState } from "react"
 
 import { Asset, AuditLog, Exchange } from "../../interfaces"
 import { getComparator, Order } from "../../utils/table-utils"
@@ -65,6 +66,7 @@ interface TableHeadProps {
 
 function TableHead(props: TableHeadProps) {
   const { order, orderBy, onRequestSort } = props
+
   const createSortHandler = (property: SortableKeys) => (event: React.MouseEvent<unknown>) => {
     onRequestSort(event, property)
   }
@@ -87,19 +89,18 @@ function TableHead(props: TableHeadProps) {
             align={numeric ? "right" : "left"}
             padding="normal"
             sortDirection={orderBy === key ? order : false}
-            sx={{
-              // // maxWidth: width,
-              // // minWidth: width,
-              overflow: "hidden",
-              // width,
-            }}
+            sx={{ flexDirection: "row" }}
           >
+            <IconButton size="small" sx={{ marginRight: 0.5 }}>
+              <FilterListRounded fontSize="inherit" />
+            </IconButton>
             <TableSortLabel
               active={orderBy === key}
               direction={orderBy === key ? order : "asc"}
               onClick={createSortHandler(key)}
             >
               {label}
+
               {orderBy === key ? (
                 <Box component="span" sx={visuallyHidden}>
                   {order === "desc" ? "sorted descending" : "sorted ascending"}
@@ -126,25 +127,31 @@ export function AuditLogsTable(props: AuditLogsTableProps) {
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(25)
 
-  const handleRequestSort = (event: React.MouseEvent<unknown>, property: SortableKeys) => {
-    const isAsc = orderBy === property && order === "asc"
-    setOrder(isAsc ? "desc" : "asc")
-    setOrderBy(property as SortableKeys)
-  }
+  const handleRequestSort = useCallback(
+    (_event: MouseEvent<unknown>, property: SortableKeys) => {
+      const isAsc = orderBy === property && order === "asc"
+      setOrder(isAsc ? "desc" : "asc")
+      setOrderBy(property as SortableKeys)
+    },
+    [orderBy, order]
+  )
 
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage)
-  }
+  const handleChangePage = useCallback(
+    (_event: MouseEvent<HTMLButtonElement> | null, newPage: number) => {
+      setPage(newPage)
+    },
+    []
+  )
 
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeRowsPerPage = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(parseInt(event.target.value, 10))
     setPage(0)
-  }
+  }, [])
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0
 
-  const visibleRows = React.useMemo(
+  const visibleRows = useMemo(
     () =>
       rows
         .slice()
@@ -184,7 +191,6 @@ export function AuditLogsTable(props: AuditLogsTableProps) {
             background: "var(--mui-palette-background-paper)",
             bottom: 0,
             position: "sticky",
-            // width: "100%",
           }}
           rowsPerPageOptions={[10, 25, 50, 100]}
           count={rows.length}
