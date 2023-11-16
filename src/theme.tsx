@@ -111,7 +111,7 @@ const theme = extendTheme({
             {
               name: "offset",
               options: {
-                offset: [0, 20],
+                offset: [0, 16],
               },
             },
           ],
@@ -123,13 +123,20 @@ const theme = extendTheme({
         followCursor: true,
       },
       styleOverrides: {
+        arrow: {
+          color: "rgba(0,0,0,1)",
+        },
         tooltip: {
+          background: grey[900],
+          border: "1px solid rgba(0,0,0,1)",
           borderRadius: 0,
-          maxWidth: 280,
-          paddingBottom: 12,
-          paddingLeft: 24,
-          paddingRight: 24,
-          paddingTop: 12,
+          fontSize: "0.8rem",
+          fontWeight: 300,
+          maxWidth: 320,
+          paddingBottom: 8,
+          paddingLeft: 16,
+          paddingRight: 16,
+          paddingTop: 8,
         },
       },
     },

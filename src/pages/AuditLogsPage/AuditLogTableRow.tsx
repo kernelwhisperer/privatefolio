@@ -18,12 +18,19 @@ import { AssetAvatar } from "../../components/AssetAvatar"
 import { Truncate } from "../../components/Truncate"
 import { Asset, AuditLog, AuditLogOperation, Exchange } from "../../interfaces"
 import { MonoFont } from "../../theme"
-import { formatDate, formatHour, formatNumber } from "../../utils/client-utils"
+import {
+  formatDate,
+  formatDateRelative,
+  formatDateWithHour,
+  formatHour,
+  formatNumber,
+} from "../../utils/client-utils"
 
 interface AuditLogTableRowProps extends TableRowProps {
   assetMap: Record<string, Asset>
   auditLog: AuditLog
   integrationMap: Record<string, Exchange>
+  relativeTime: boolean
 }
 
 const redColor = red[400]
@@ -48,9 +55,8 @@ const OPERATION_ICONS: Partial<Record<AuditLogOperation, SvgIconComponent>> = {
 }
 
 export function AuditLogTableRow(props: AuditLogTableRowProps) {
-  const { auditLog, assetMap, integrationMap, ...rest } = props
-  const { symbol, id, change, changeN, operation, changeBN, timestamp, integration, wallet } =
-    auditLog
+  const { auditLog, assetMap, integrationMap, relativeTime, ...rest } = props
+  const { symbol, id, change, changeN, operation, timestamp, integration, wallet } = auditLog
 
   const color = OPERATION_COLORS[operation] || grey[500]
   const OpIconComponent = OPERATION_ICONS[operation]
@@ -67,10 +73,41 @@ export function AuditLogTableRow(props: AuditLogTableRowProps) {
       // })}
     >
       <TableCell sx={{ maxWidth: 200, minWidth: 200, width: 200 }}>
-        <span>{formatDate(timestamp)}</span>{" "}
-        <Typography component="span" color="text.secondary" variant="inherit">
-          at {formatHour(timestamp)}
-        </Typography>
+        <Tooltip
+          title={
+            <Stack>
+              <span>
+                {formatDateWithHour(timestamp, {
+                  second: "numeric",
+                  timeZoneName: "short",
+                })}{" "}
+                <Typography color={"text.secondary"} component="i" variant="inherit">
+                  local
+                </Typography>
+              </span>
+              <span>
+                {formatDateWithHour(timestamp, {
+                  second: "numeric",
+                  timeZone: "UTC",
+                  timeZoneName: "short",
+                })}
+              </span>
+            </Stack>
+          }
+        >
+          <div>
+            {relativeTime ? (
+              <span>{formatDateRelative(timestamp)}</span>
+            ) : (
+              <>
+                <span>{formatDate(timestamp)}</span>{" "}
+                <Typography component="span" color="text.secondary" variant="inherit">
+                  at {formatHour(timestamp)}
+                </Typography>
+              </>
+            )}
+          </div>
+        </Tooltip>
       </TableCell>
       <TableCell sx={{ maxWidth: 160, minWidth: 160, width: 140 }}>
         <Stack direction="row" gap={0.5} alignItems="center" component="div">

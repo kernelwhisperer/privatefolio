@@ -7,7 +7,6 @@ export function formatNumber(number: number, opts: Intl.NumberFormatOptions = {}
   }).format(number)
 }
 
-// TODO
 export const TZ_OFFSET = new Date().getTimezoneOffset() * 60 * 1000
 
 export function formatDateRelative(date: Date | number) {

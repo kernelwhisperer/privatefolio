@@ -1,5 +1,5 @@
-import { FilterListRounded } from "@mui/icons-material"
-import { IconButton, Paper } from "@mui/material"
+import { AccessTimeFilledRounded, AccessTimeRounded, FilterListRounded } from "@mui/icons-material"
+import { IconButton, Paper, Tooltip } from "@mui/material"
 import Box from "@mui/material/Box"
 import Table from "@mui/material/Table"
 import TableBody from "@mui/material/TableBody"
@@ -59,16 +59,18 @@ const HEAD_CELLS: HeadCell[] = [
 ]
 
 interface TableHeadProps {
-  onRequestSort: (event: React.MouseEvent<unknown>, property: SortableKeys) => void
+  onRelativeTime: (event: React.MouseEvent<unknown>) => void
+  onSort: (event: React.MouseEvent<unknown>, property: SortableKeys) => void
   order: Order
   orderBy: string
+  relativeTime: boolean
 }
 
 function TableHead(props: TableHeadProps) {
-  const { order, orderBy, onRequestSort } = props
+  const { order, orderBy, onSort, onRelativeTime, relativeTime } = props
 
   const createSortHandler = (property: SortableKeys) => (event: React.MouseEvent<unknown>) => {
-    onRequestSort(event, property)
+    onSort(event, property)
   }
 
   return (
@@ -91,16 +93,33 @@ function TableHead(props: TableHeadProps) {
             sortDirection={orderBy === key ? order : false}
             sx={{ flexDirection: "row" }}
           >
-            <IconButton size="small" sx={{ marginRight: 0.5 }}>
-              <FilterListRounded fontSize="inherit" />
-            </IconButton>
+            {key === "timestamp" && (
+              <Tooltip title={`Switch to ${relativeTime ? "absolute" : "relative"} time`}>
+                <IconButton
+                  size="small"
+                  sx={{ marginRight: 0.5 }}
+                  edge="start"
+                  onClick={onRelativeTime}
+                >
+                  {relativeTime ? (
+                    <AccessTimeRounded fontSize="inherit" />
+                  ) : (
+                    <AccessTimeFilledRounded fontSize="inherit" />
+                  )}
+                </IconButton>
+              </Tooltip>
+            )}
+            <Tooltip title={`Filter by ${key}`}>
+              <IconButton size="small" sx={{ marginRight: 0.5 }} edge="start">
+                <FilterListRounded fontSize="inherit" />
+              </IconButton>
+            </Tooltip>
             <TableSortLabel
               active={orderBy === key}
               direction={orderBy === key ? order : "asc"}
               onClick={createSortHandler(key)}
             >
               {label}
-
               {orderBy === key ? (
                 <Box component="span" sx={visuallyHidden}>
                   {order === "desc" ? "sorted descending" : "sorted ascending"}
@@ -126,8 +145,9 @@ export function AuditLogsTable(props: AuditLogsTableProps) {
   const [orderBy, setOrderBy] = useState<SortableKeys>("timestamp")
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(25)
+  const [relativeTime, setRelativeTime] = useState(true)
 
-  const handleRequestSort = useCallback(
+  const handleSort = useCallback(
     (_event: MouseEvent<unknown>, property: SortableKeys) => {
       const isAsc = orderBy === property && order === "asc"
       setOrder(isAsc ? "desc" : "asc")
@@ -135,6 +155,10 @@ export function AuditLogsTable(props: AuditLogsTableProps) {
     },
     [orderBy, order]
   )
+
+  const handleRelativeTime = useCallback((_event: MouseEvent<unknown>) => {
+    setRelativeTime((prev) => !prev)
+  }, [])
 
   const handleChangePage = useCallback(
     (_event: MouseEvent<HTMLButtonElement> | null, newPage: number) => {
@@ -165,12 +189,20 @@ export function AuditLogsTable(props: AuditLogsTableProps) {
       <Paper variant="outlined" sx={{ marginX: -2.5, padding: 0.5 }}>
         <TableContainer sx={{ overflowX: "unset" }}>
           <Table sx={{ minWidth: 750 }} size="small">
-            <TableHead order={order} orderBy={orderBy} onRequestSort={handleRequestSort} />
+            <TableHead
+              order={order}
+              orderBy={orderBy}
+              onSort={handleSort}
+              // onRequestSort={handleRequestSort}
+              onRelativeTime={handleRelativeTime}
+              relativeTime={relativeTime}
+            />
             <TableBody>
               {visibleRows.map((x) => (
                 <AuditLogTableRow
                   hover
                   onClick={console.log}
+                  relativeTime={relativeTime}
                   key={x.id}
                   auditLog={x}
                   assetMap={assetMap}
