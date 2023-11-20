@@ -32,8 +32,8 @@ interface FileImportTableRowProps extends TableRowProps {
 
 export function FileImportTableRow(props: FileImportTableRowProps) {
   const { fileImport, integrationMap, relativeTime, ...rest } = props
+  console.log("📜 LOG > FileImportTableRow > integrationMap:", integrationMap)
   const { name, integration, timestamp, lastModified, size, _attachments, logs, rows } = fileImport
-  console.log("📜 LOG > FileImportTableRow > _attachments:", _attachments)
 
   function handleDelete(event: MouseEvent<HTMLButtonElement>) {
     event.preventDefault()

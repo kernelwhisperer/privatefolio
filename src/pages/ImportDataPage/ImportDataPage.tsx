@@ -12,26 +12,28 @@ import { FileImportsTable } from "./FileImportsTable"
 export function ImportDataPage() {
   const [rows, setRows] = useState<FileImport[] | null>(null)
   const [integrationMap, setIntegrationMap] = useState<Record<string, Exchange>>({})
-  console.log("📜 LOG > ImportDataPage > rows:", rows)
 
   useEffect(() => {
-    getFileImports()
-      .then((rows) => {
-        setRows(rows)
+    async function fetchData() {
+      const rows = await getFileImports()
+      setRows(rows)
 
-        const integrationMap = {}
-        rows.forEach((x) => {
-          if (x.integration) {
-            integrationMap[x.integration] = true
-          }
-        })
+      const integrationMap = {}
+      rows.forEach((x) => {
+        if (x.integration) {
+          integrationMap[x.integration] = true
+        }
+      })
 
-        return findExchanges(integrationMap)
-      })
-      .then((integrations) => {
-        setIntegrationMap(integrations)
-      })
-    const unsubscribe = subscribeToFileImports(setRows)
+      const integrations = await findExchanges(integrationMap)
+      setIntegrationMap(integrations)
+    }
+
+    fetchData().then()
+
+    const unsubscribe = subscribeToFileImports(async () => {
+      await fetchData()
+    })
 
     return () => {
       unsubscribe()

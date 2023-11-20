@@ -108,15 +108,13 @@ export async function removeFileImport(fileImport: FileImport) {
   return res.ok
 }
 
-export function subscribeToFileImports(callback: (fileImports: FileImport[]) => void) {
+export function subscribeToFileImports(callback: () => void) {
   const changes = fileImportsDB
     .changes({
       live: true,
       since: "now",
     })
-    .on("change", () => {
-      getFileImports().then(callback)
-    })
+    .on("change", callback)
 
   return () => {
     try {
