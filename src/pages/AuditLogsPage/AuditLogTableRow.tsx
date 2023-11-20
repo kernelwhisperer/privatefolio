@@ -95,7 +95,7 @@ export function AuditLogTableRow(props: AuditLogTableRowProps) {
             </Stack>
           }
         >
-          <div>
+          <span>
             {relativeTime ? (
               <span>{formatDateRelative(timestamp)}</span>
             ) : (
@@ -106,7 +106,7 @@ export function AuditLogTableRow(props: AuditLogTableRowProps) {
                 </Typography>
               </>
             )}
-          </div>
+          </span>
         </Tooltip>
       </TableCell>
       <TableCell sx={{ maxWidth: 160, minWidth: 160, width: 140 }}>

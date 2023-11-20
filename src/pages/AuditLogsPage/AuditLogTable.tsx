@@ -78,7 +78,6 @@ function TableHead(props: TableHeadProps) {
       sx={{
         background: "var(--mui-palette-background-paper)",
         height: 52,
-        paddingTop: 0.5,
         position: "sticky",
         top: 0,
         zIndex: 2,
@@ -186,7 +185,7 @@ export function AuditLogsTable(props: AuditLogsTableProps) {
 
   return (
     <>
-      <Paper variant="outlined" sx={{ marginX: -2.5, padding: 0.5 }}>
+      <Paper variant="outlined" sx={{ marginX: -2.5, paddingY: 0.5 }}>
         <TableContainer sx={{ overflowX: "unset" }}>
           <Table sx={{ minWidth: 750 }} size="small">
             <TableHead
