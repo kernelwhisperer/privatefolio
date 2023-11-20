@@ -28,7 +28,8 @@ const theme = extendTheme({
           paper: "rgb(45, 45, 45)",
         },
         primary: {
-          main: "rgb(233 141 50)",
+          // main: "rgb(150 157 185)",
+          main: "rgb(136 101 160)",
         },
         text: {
           // primary: RETRO_BEIGE_2,

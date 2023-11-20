@@ -47,8 +47,7 @@ export function Header() {
             </Tooltip>
             <Stack direction="row" sx={{ marginRight: -1 }}>
               <Button
-                to={`/transactions`}
-                aria-label="View Transactions"
+                to={`/import-data`}
                 component={Link}
                 color="inherit"
                 sx={{
@@ -56,7 +55,7 @@ export function Header() {
                   paddingX: 2,
                 }}
               >
-                Transactions
+                Import data
               </Button>
               <Settings />
             </Stack>

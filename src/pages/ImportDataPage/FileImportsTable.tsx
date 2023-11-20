@@ -1,4 +1,4 @@
-import { AccessTimeFilledRounded, AccessTimeRounded, FilterListRounded } from "@mui/icons-material"
+import { AccessTimeFilledRounded, AccessTimeRounded } from "@mui/icons-material"
 import { IconButton, Paper, Tooltip } from "@mui/material"
 import Box from "@mui/material/Box"
 import Table from "@mui/material/Table"
@@ -12,14 +12,15 @@ import TableSortLabel from "@mui/material/TableSortLabel"
 import { visuallyHidden } from "@mui/utils"
 import React, { ChangeEvent, MouseEvent, useCallback, useMemo, useState } from "react"
 
-import { Asset, AuditLog, Exchange } from "../../interfaces"
+import { FileImport } from "../../api/file-import-api"
+import { Exchange } from "../../interfaces"
 import { getComparator, Order } from "../../utils/table-utils"
-import { AuditLogTableRow } from "./AuditLogTableRow"
+import { FileImportTableRow } from "./FileImportTableRow"
 
-type SortableKeys = keyof Omit<AuditLog, "changeBN">
+type SortableKeys = keyof Omit<FileImport, "_attachments" | "_rev">
 
 interface HeadCell {
-  key: SortableKeys
+  key?: SortableKeys
   label: string
   numeric?: boolean
   // width?: number
@@ -28,34 +29,27 @@ interface HeadCell {
 const HEAD_CELLS: HeadCell[] = [
   {
     key: "timestamp",
-    label: "Timestamp",
+    label: "Imported",
     // width: 172,
   },
   {
-    key: "integration",
-    label: "Integration",
+    key: "name",
+    label: "Name",
     // width: 40,
   },
   {
-    key: "wallet",
-    label: "Wallet",
+    key: "size",
+    label: "File size",
     // width: 40,
   },
   {
-    key: "operation",
-    label: "Operation",
-  },
-  {
-    key: "change",
-    label: "Change",
-    numeric: true,
-  },
-  {
-    key: "symbol",
-    label: "Asset",
+    key: "lastModified",
+    label: "Last modified",
     // width: 40,
   },
-  // TODO USD value
+  {
+    label: "",
+  },
 ]
 
 interface TableHeadProps {
@@ -84,9 +78,9 @@ function TableHead(props: TableHeadProps) {
       }}
     >
       <TableRow>
-        {HEAD_CELLS.map(({ key, numeric, label }) => (
+        {HEAD_CELLS.map(({ key, numeric, label }, index) => (
           <TableCell
-            key={key}
+            key={index}
             align={numeric ? "right" : "left"}
             padding="normal"
             sortDirection={orderBy === key ? order : false}
@@ -108,23 +102,20 @@ function TableHead(props: TableHeadProps) {
                 </IconButton>
               </Tooltip>
             )}
-            <Tooltip title={`Filter by ${key}`}>
-              <IconButton size="small" sx={{ marginRight: 0.5 }} edge="start">
-                <FilterListRounded fontSize="inherit" />
-              </IconButton>
-            </Tooltip>
-            <TableSortLabel
-              active={orderBy === key}
-              direction={orderBy === key ? order : "asc"}
-              onClick={createSortHandler(key)}
-            >
-              {label}
-              {orderBy === key ? (
-                <Box component="span" sx={visuallyHidden}>
-                  {order === "desc" ? "sorted descending" : "sorted ascending"}
-                </Box>
-              ) : null}
-            </TableSortLabel>
+            {key && (
+              <TableSortLabel
+                active={orderBy === key}
+                direction={orderBy === key ? order : "asc"}
+                onClick={createSortHandler(key)}
+              >
+                {label}
+                {orderBy === key ? (
+                  <Box component="span" sx={visuallyHidden}>
+                    {order === "desc" ? "sorted descending" : "sorted ascending"}
+                  </Box>
+                ) : null}
+              </TableSortLabel>
+            )}
           </TableCell>
         ))}
       </TableRow>
@@ -132,14 +123,13 @@ function TableHead(props: TableHeadProps) {
   )
 }
 
-type AuditLogsTableProps = {
-  assetMap: Record<string, Asset>
+type FileImportsTableProps = {
   integrationMap: Record<string, Exchange>
-  rows: AuditLog[]
+  rows: FileImport[]
 }
 
-export function AuditLogsTable(props: AuditLogsTableProps) {
-  const { rows, assetMap, integrationMap } = props
+export function FileImportsTable(props: FileImportsTableProps) {
+  const { rows, integrationMap } = props
   const [order, setOrder] = useState<Order>("desc")
   const [orderBy, setOrderBy] = useState<SortableKeys>("timestamp")
   const [page, setPage] = useState(0)
@@ -201,13 +191,12 @@ export function AuditLogsTable(props: AuditLogsTableProps) {
             />
             <TableBody>
               {visibleRows.map((x) => (
-                <AuditLogTableRow
+                <FileImportTableRow
                   hover
                   onClick={console.log}
                   relativeTime={relativeTime}
-                  key={x.id}
-                  auditLog={x}
-                  assetMap={assetMap}
+                  key={x._id}
+                  fileImport={x}
                   integrationMap={integrationMap}
                 />
               ))}
@@ -225,6 +214,7 @@ export function AuditLogsTable(props: AuditLogsTableProps) {
             background: "var(--mui-palette-background-paper)",
             bottom: 0,
             position: "sticky",
+            visibility: "hidden",
           }}
           rowsPerPageOptions={[10, 25, 50, 100]}
           count={rows.length}
