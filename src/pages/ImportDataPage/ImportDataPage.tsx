@@ -2,21 +2,35 @@ import { FolderOutlined } from "@mui/icons-material"
 import { Skeleton, Stack, Typography } from "@mui/material"
 import React, { useEffect, useState } from "react"
 
+import { findExchanges } from "../../api/exchanges-api"
 import { FileImport, getFileImports, subscribeToFileImports } from "../../api/file-import-api"
 import { FileDrop } from "../../components/FileDrop"
+import { Exchange } from "../../interfaces"
 import { SerifFont } from "../../theme"
 import { FileImportsTable } from "./FileImportsTable"
 
 export function ImportDataPage() {
   const [rows, setRows] = useState<FileImport[] | null>(null)
+  const [integrationMap, setIntegrationMap] = useState<Record<string, Exchange>>({})
   console.log("📜 LOG > ImportDataPage > rows:", rows)
 
   useEffect(() => {
-    getFileImports().then((rows) => {
-      setTimeout(() => {
+    getFileImports()
+      .then((rows) => {
         setRows(rows)
-      }, 100)
-    })
+
+        const integrationMap = {}
+        rows.forEach((x) => {
+          if (x.integration) {
+            integrationMap[x.integration] = true
+          }
+        })
+
+        return findExchanges(integrationMap)
+      })
+      .then((integrations) => {
+        setIntegrationMap(integrations)
+      })
     const unsubscribe = subscribeToFileImports(setRows)
 
     return () => {
@@ -50,7 +64,7 @@ export function ImportDataPage() {
         </FileDrop>
       ) : (
         <>
-          <FileImportsTable rows={rows} integrationMap={{}} />
+          <FileImportsTable rows={rows} integrationMap={integrationMap} />
           <FileDrop sx={{ background: "var(--mui-palette-background-default)", marginX: -2 }} />
         </>
       )}

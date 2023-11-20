@@ -30,22 +30,28 @@ const HEAD_CELLS: HeadCell[] = [
   {
     key: "timestamp",
     label: "Imported",
-    // width: 172,
   },
   {
     key: "name",
     label: "Name",
-    // width: 40,
   },
   {
     key: "size",
     label: "File size",
-    // width: 40,
+    numeric: true,
   },
   {
     key: "lastModified",
     label: "Last modified",
-    // width: 40,
+  },
+  {
+    key: "integration",
+    label: "Integration",
+  },
+  {
+    key: "logs",
+    label: "Audit logs",
+    numeric: true,
   },
   {
     label: "",
@@ -107,6 +113,7 @@ function TableHead(props: TableHeadProps) {
                 active={orderBy === key}
                 direction={orderBy === key ? order : "asc"}
                 onClick={createSortHandler(key)}
+                sx={{ marginRight: -1 }}
               >
                 {label}
                 {orderBy === key ? (
@@ -168,7 +175,7 @@ export function FileImportsTable(props: FileImportsTableProps) {
     () =>
       rows
         .slice()
-        .sort(getComparator<SortableKeys>(order, orderBy))
+        .sort(getComparator<SortableKeys>(order, orderBy)) // TODO
         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
     [rows, order, orderBy, page, rowsPerPage]
   )

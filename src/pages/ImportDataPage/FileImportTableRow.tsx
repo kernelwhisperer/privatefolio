@@ -1,6 +1,8 @@
 import { HighlightOffRounded } from "@mui/icons-material"
 import {
+  Avatar,
   IconButton,
+  Skeleton,
   Stack,
   TableCell,
   TableRow,
@@ -30,7 +32,7 @@ interface FileImportTableRowProps extends TableRowProps {
 
 export function FileImportTableRow(props: FileImportTableRowProps) {
   const { fileImport, integrationMap, relativeTime, ...rest } = props
-  const { name, timestamp, lastModified, size, _attachments } = fileImport
+  const { name, integration, timestamp, lastModified, size, _attachments, logs, rows } = fileImport
   console.log("📜 LOG > FileImportTableRow > _attachments:", _attachments)
 
   function handleDelete(event: MouseEvent<HTMLButtonElement>) {
@@ -86,22 +88,11 @@ export function FileImportTableRow(props: FileImportTableRowProps) {
           </span>
         </Tooltip>
       </TableCell>
-      {/* <TableCell sx={{ maxWidth: 160, minWidth: 160, width: 140 }}>
-        <Stack direction="row" gap={0.5} alignItems="center" component="div">
-          <Avatar
-            src={integrationMap[integration]?.image}
-            sx={{
-              borderRadius: "2px",
-              height: 16,
-              width: 16,
-            }}
-            alt={symbol}
-          />
-          <span>{integration}</span>
-        </Stack>
-      </TableCell> */}
       <TableCell sx={{ maxWidth: 140, minWidth: 140, width: 140 }}>{name}</TableCell>
-      <TableCell sx={{ fontFamily: MonoFont, maxWidth: 140, minWidth: 140, width: 140 }}>
+      <TableCell
+        sx={{ fontFamily: MonoFont, maxWidth: 140, minWidth: 140, width: 140 }}
+        align="right"
+      >
         {formatFileSize(size)}
       </TableCell>
       <TableCell sx={{ maxWidth: 200, minWidth: 200, width: 200 }}>
@@ -140,6 +131,30 @@ export function FileImportTableRow(props: FileImportTableRowProps) {
             )}
           </span>
         </Tooltip>
+      </TableCell>
+      <TableCell sx={{ maxWidth: 160, minWidth: 160, width: 140 }}>
+        {integration ? (
+          <Stack direction="row" gap={0.5} alignItems="center" component="div">
+            <Avatar
+              src={integrationMap[integration]?.image}
+              sx={{
+                borderRadius: "2px",
+                height: 16,
+                width: 16,
+              }}
+              alt={integration}
+            />
+            <span>{integration}</span>
+          </Stack>
+        ) : (
+          <Skeleton></Skeleton>
+        )}
+      </TableCell>
+      <TableCell
+        sx={{ fontFamily: MonoFont, maxWidth: 160, minWidth: 160, width: 140 }}
+        align="right"
+      >
+        {typeof logs === "undefined" ? <Skeleton></Skeleton> : logs}
       </TableCell>
       <TableCell sx={{ maxWidth: 40, minWidth: 40, width: 40 }}>
         <Tooltip title="Delete">

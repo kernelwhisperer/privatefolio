@@ -1,18 +1,34 @@
-import { fileImportsDB } from "./database"
+import { parseCsv } from "../utils/csv-utils"
+import { auditLogsDB, fileImportsDB } from "./database"
 
 export interface FileImport {
+  _attachments: {
+    0: {
+      content_type: string
+      /**
+       * base64 encoded
+       */
+      data: string
+    }
+  }
+  _id: string
+  _rev: string
+  integration?: string
+  lastModified: number
+  logs?: number
+  name: string
+  rows?: number
+  size: number
+  timestamp: number
+}
+
+export interface NewFileImport extends Omit<FileImport, "_attachments"> {
   _attachments: {
     0: {
       content_type: string
       data: File
     }
   }
-  _id: string
-  _rev: string
-  lastModified: number
-  name: string
-  size: number
-  timestamp: number
 }
 
 export async function addFileImport(file: File) {
@@ -31,9 +47,9 @@ export async function addFileImport(file: File) {
     timestamp,
   })
 
-  // file
   setTimeout(async () => {
-    await fileImportsDB.put<FileImport>({
+    // save file
+    await fileImportsDB.put<NewFileImport>({
       _attachments: {
         0: {
           content_type: type,
@@ -47,9 +63,22 @@ export async function addFileImport(file: File) {
       size,
       timestamp,
     })
-  }, 5)
 
-  // parse
+    // parse file
+    const fileImport = await fileImportsDB.get<FileImport>(id, { attachments: true })
+    const { metadata, logs } = await parseCsv(atob(fileImport._attachments[0].data), fileImport._id)
+    console.log("📜 LOG > setTimeout > metadata, logs:", metadata, logs)
+
+    // save logs
+    const res = await auditLogsDB.bulkDocs(logs)
+    console.log("📜 LOG > setTimeout > res:", res)
+
+    // save metadata
+    await fileImportsDB.put<FileImport>({
+      ...fileImport,
+      ...metadata,
+    })
+  }, 50)
 
   return id
 }
@@ -64,6 +93,17 @@ export async function getFileImports() {
 }
 
 export async function removeFileImport(fileImport: FileImport) {
+  console.log("📜 LOG > removeFileImport > fileImport._id:", fileImport._id)
+  const logs = await auditLogsDB.allDocs({
+    // Prefix search
+    // https://pouchdb.com/api.html#batch_fetch
+    endkey: `${fileImport._id}\ufff0`,
+    startkey: fileImport._id,
+  } as PouchDB.Core.AllDocsWithinRangeOptions)
+  console.log("📜 LOG > removeFileImport > res:", logs)
+
+  await Promise.all(logs.rows.map((row) => auditLogsDB.remove(row.id, row.value.rev)))
+
   const res = await fileImportsDB.remove(fileImport)
   return res.ok
 }

@@ -2,9 +2,9 @@ import { Stack, Typography } from "@mui/material"
 import React, { useEffect, useState } from "react"
 
 import { findAssets } from "../../api/assets-api"
-import { getAuditLogs } from "../../api/audit-logs-api"
+import { AuditLog, getAuditLogs } from "../../api/audit-logs-api"
 import { findExchanges } from "../../api/exchanges-api"
-import { Asset, AuditLog, Exchange } from "../../interfaces"
+import { Asset, Exchange } from "../../interfaces"
 import { SerifFont } from "../../theme"
 import { AuditLogsTable } from "./AuditLogTable"
 
@@ -15,6 +15,7 @@ export function AuditLogsPage() {
 
   useEffect(() => {
     getAuditLogs().then(async (auditLogs) => {
+      console.log("📜 LOG > getAuditLogs > auditLogs:", auditLogs)
       setRows(auditLogs)
 
       const symbolMap = {}

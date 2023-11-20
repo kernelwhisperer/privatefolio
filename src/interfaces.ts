@@ -35,27 +35,8 @@ export type AuditLogOperation =
   | "Distribution"
   | "Withdraw"
   | "Funding Fee"
+
 export type Integration = "Binance" | "Mexc Global"
-
-export interface AuditLog {
-  change: string
-  changeBN: BigNumber
-  changeN: number
-  id: string
-  integration: Integration
-  operation: AuditLogOperation
-  symbol: string
-  timestamp: number
-  wallet: string
-}
-
-export interface BinanceAuditLog extends AuditLog {
-  account: string
-  coin: string
-  remark: string
-  userId: string
-  utcTime: string
-}
 
 export interface Asset {
   coingeckoId: string

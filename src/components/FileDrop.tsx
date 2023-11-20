@@ -24,8 +24,10 @@ export function FileDrop(props: PaperProps) {
     e.preventDefault()
     setDragOver(false)
     if (e.dataTransfer.files) {
-      Array.from(e.dataTransfer.files).forEach((file) => {
-        addFileImport(file)
+      Array.from(e.dataTransfer.files).forEach((file, index) => {
+        setTimeout(() => {
+          addFileImport(file)
+        }, index * 1)
       })
     }
   }
@@ -33,8 +35,10 @@ export function FileDrop(props: PaperProps) {
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
     if (files) {
-      Array.from(files).forEach((file) => {
-        addFileImport(file)
+      Array.from(files).forEach((file, index) => {
+        setTimeout(() => {
+          addFileImport(file)
+        }, index + 1)
       })
     }
   }

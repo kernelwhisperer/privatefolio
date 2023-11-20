@@ -1,15 +1,30 @@
-import { readCsv } from "../utils/csv-utils"
+import { AuditLogOperation, Integration } from "../interfaces"
+import { auditLogsDB } from "./database"
 
-const files = [
-  // "data/MEXC/Spot orders/Export Trade History-2021.csv",
-  // "data/MEXC/Spot orders/Export Trade History-2022.csv",
-  // "data/Binance/2017.csv",
-  // "data/Binance/2018.csv",
-  "data/Binance/2018.csv",
-  "data/Binance/2023_nov.csv",
-]
+export interface AuditLog {
+  _id: string
+  change: string
+  changeN: number
+  integration: Integration
+  operation: AuditLogOperation
+  symbol: string
+  timestamp: number
+  wallet: string
+}
+
+export interface BinanceAuditLog extends AuditLog {
+  account: string
+  coin: string
+  remark: string
+  userId: string
+  utcTime: string
+}
 
 export async function getAuditLogs() {
-  const auditLogLists = await Promise.all(files.map(readCsv))
-  return auditLogLists.flat(1).sort((a, b) => b.timestamp - a.timestamp)
+  const res = await auditLogsDB.allDocs<AuditLog>({
+    // attachments: true,
+    // descending: true,
+    include_docs: true,
+  })
+  return res.rows.map((row) => row.doc) as AuditLog[]
 }

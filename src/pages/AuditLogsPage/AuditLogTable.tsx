@@ -12,11 +12,12 @@ import TableSortLabel from "@mui/material/TableSortLabel"
 import { visuallyHidden } from "@mui/utils"
 import React, { ChangeEvent, MouseEvent, useCallback, useMemo, useState } from "react"
 
-import { Asset, AuditLog, Exchange } from "../../interfaces"
+import { AuditLog } from "../../api/audit-logs-api"
+import { Asset, Exchange } from "../../interfaces"
 import { getComparator, Order } from "../../utils/table-utils"
 import { AuditLogTableRow } from "./AuditLogTableRow"
 
-type SortableKeys = keyof Omit<AuditLog, "changeBN">
+type SortableKeys = keyof AuditLog
 
 interface HeadCell {
   key: SortableKeys
@@ -46,7 +47,7 @@ const HEAD_CELLS: HeadCell[] = [
     label: "Operation",
   },
   {
-    key: "change",
+    key: "changeN",
     label: "Change",
     numeric: true,
   },
@@ -108,7 +109,7 @@ function TableHead(props: TableHeadProps) {
                 </IconButton>
               </Tooltip>
             )}
-            <Tooltip title={`Filter by ${key}`}>
+            <Tooltip title={`Filter by ${label}`}>
               <IconButton size="small" sx={{ marginRight: 0.5 }} edge="start">
                 <FilterListRounded fontSize="inherit" />
               </IconButton>
@@ -205,7 +206,7 @@ export function AuditLogsTable(props: AuditLogsTableProps) {
                   hover
                   onClick={console.log}
                   relativeTime={relativeTime}
-                  key={x.id}
+                  key={x._id}
                   auditLog={x}
                   assetMap={assetMap}
                   integrationMap={integrationMap}

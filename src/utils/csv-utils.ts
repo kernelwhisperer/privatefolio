@@ -1,10 +1,9 @@
-import Decimal from "decimal.js"
-
-import { AuditLog, AuditLogOperation, BinanceAuditLog } from "../interfaces"
+import { AuditLog, BinanceAuditLog } from "../api/audit-logs-api"
+import { AuditLogOperation, Integration } from "../interfaces"
 import { TZ_OFFSET } from "./client-utils"
 import { hashString } from "./utils"
 
-type Parser = (csvRow: string, index: number) => AuditLog
+type Parser = (csvRow: string, index: number, fileImportId: string) => AuditLog
 
 // export function mexcParser(csvRow: string[], index: number): AuditLog {
 //   const marketPair = csvRow[0]
@@ -40,7 +39,11 @@ type Parser = (csvRow: string, index: number) => AuditLog
 //   }
 // }
 
-export function binanceParser(csvRow: string, index: number): BinanceAuditLog {
+export function binanceParser(
+  csvRow: string,
+  index: number,
+  fileImportId: string
+): BinanceAuditLog {
   const row = csvRow.replaceAll('"', "")
   const columns = row.split(",")
   //
@@ -54,20 +57,19 @@ export function binanceParser(csvRow: string, index: number): BinanceAuditLog {
   const change = columns[5]
   const remark = columns[6]
   //
-  const id = hashString(`${index}_${csvRow}`)
+  const hash = hashString(`${index}_${csvRow}`)
+  const _id = `${fileImportId}_${hash}`
   const timestamp = new Date(utcTime).getTime() - TZ_OFFSET
   const changeN = parseFloat(change)
-  const changeBN = new Decimal(change)
   const symbol = coin
   const wallet = account
 
   return {
+    _id,
     account,
     change,
-    changeBN,
     changeN,
     coin,
-    id,
     integration: "Binance",
     operation,
     remark,
@@ -79,31 +81,38 @@ export function binanceParser(csvRow: string, index: number): BinanceAuditLog {
   }
 }
 
-const PARSERS: Record<string, Parser> = {
-  '"User_ID","UTC_Time","Account","Operation","Coin","Change","Remark"': binanceParser,
-  // "Pairs,Time,Side,Filled Price,Executed Amount,Total,Fee,Role": mexcParser,
+const INTEGRATIONS: Record<string, Integration> = {
+  '"User_ID","UTC_Time","Account","Operation","Coin","Change","Remark"': "Binance",
+  "Pairs,Time,Side,Filled Price,Executed Amount,Total,Fee,Role": "Mexc Global",
 }
 
-export async function readCsv(filePath: string): Promise<AuditLog[]> {
-  const response = await fetch(filePath)
-  const text = await response.text()
+const PARSERS: Record<Integration, Parser> = {
+  Binance: binanceParser,
+  "Mexc Global": function () {
+    throw new Error("Function not implemented.")
+  },
+}
 
+export async function parseCsv(text: string, _fileImportId: string) {
   // Parse CSV
-  const rows = text.split("\n")
+  const rows = text.trim().split("\n")
   // const rows = rowsAsText.map((row) => row.split(","))
 
   const header = rows[0]
-  const parser = PARSERS[header]
+  const integration = INTEGRATIONS[header]
+  const parser = PARSERS[integration]
 
-  const transactions: AuditLog[] = []
+  const logs: AuditLog[] = []
 
   // Skip header
   rows.slice(1).forEach((row, index) => {
     try {
-      const obj = parser(row, index)
-      transactions.push(obj)
+      const obj = parser(row, index, _fileImportId)
+      logs.push(obj)
     } catch {}
   })
 
-  return transactions
+  const metadata = { integration, logs: logs.length, rows: rows.length - 1 }
+
+  return { logs, metadata }
 }

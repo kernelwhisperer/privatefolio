@@ -145,7 +145,8 @@ export function AuditLogTableRow(props: AuditLogTableRowProps) {
         <Tooltip title={change}>
           <span>
             {formatNumber(changeN, {
-              maximumFractionDigits: assetMap[symbol]?.isStablecoin ? 0 : 18,
+              maximumFractionDigits: 2, // TODO make this configurable
+              minimumFractionDigits: 2,
             })}
           </span>
         </Tooltip>
