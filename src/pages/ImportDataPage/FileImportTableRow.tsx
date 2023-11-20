@@ -9,7 +9,7 @@ import {
   Typography,
 } from "@mui/material"
 // import TableCell from "@mui/material/Unstable_TableCell2" // TableCell version 2
-import React from "react"
+import React, { MouseEvent } from "react"
 
 import { FileImport, removeFileImport } from "../../api/file-import-api"
 import { Exchange } from "../../interfaces"
@@ -30,9 +30,11 @@ interface FileImportTableRowProps extends TableRowProps {
 
 export function FileImportTableRow(props: FileImportTableRowProps) {
   const { fileImport, integrationMap, relativeTime, ...rest } = props
-  const { name, timestamp, lastModified, size } = fileImport
+  const { name, timestamp, lastModified, size, _attachments } = fileImport
+  console.log("📜 LOG > FileImportTableRow > _attachments:", _attachments)
 
-  function handleDelete() {
+  function handleDelete(event: MouseEvent<HTMLButtonElement>) {
+    event.preventDefault()
     removeFileImport(fileImport)
   }
 

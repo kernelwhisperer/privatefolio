@@ -1,5 +1,4 @@
 import { readCsv } from "../utils/csv-utils"
-import { fileImportsDB } from "./database"
 
 const files = [
   // "data/MEXC/Spot orders/Export Trade History-2021.csv",
@@ -14,4 +13,3 @@ export async function getAuditLogs() {
   const auditLogLists = await Promise.all(files.map(readCsv))
   return auditLogLists.flat(1).sort((a, b) => b.timestamp - a.timestamp)
 }
-console.log("📜 LOG > db:", fileImportsDB)

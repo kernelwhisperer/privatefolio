@@ -17,29 +17,49 @@ export interface FileImport {
 
 export async function addFileImport(file: File) {
   const { name, type, lastModified, size } = file
+  const timestamp = new Date().getTime()
 
   if (type !== "text/csv") {
     throw new Error("Error reading file: not .csv")
   }
 
-  const res = await fileImportsDB.post<Omit<FileImport, "_id" | "_rev">>({
-    _attachments: {
-      0: {
-        content_type: type,
-        data: file,
-      },
-    },
+  // metadata
+  const { id, rev } = await fileImportsDB.post<Omit<FileImport, "_id" | "_rev" | "_attachments">>({
     lastModified,
     name,
     size,
-    timestamp: new Date().getTime(),
+    timestamp,
   })
 
-  return res.id
+  // file
+  setTimeout(async () => {
+    await fileImportsDB.put<FileImport>({
+      _attachments: {
+        0: {
+          content_type: type,
+          data: file,
+        },
+      },
+      _id: id,
+      _rev: rev,
+      lastModified,
+      name,
+      size,
+      timestamp,
+    })
+  }, 5)
+
+  // parse
+
+  return id
 }
 
 export async function getFileImports() {
-  const res = await fileImportsDB.allDocs<FileImport>({ descending: true, include_docs: true })
+  const res = await fileImportsDB.allDocs<FileImport>({
+    // attachments: true,
+    // descending: true,
+    include_docs: true,
+  })
   return res.rows.map((row) => row.doc) as FileImport[]
 }
 

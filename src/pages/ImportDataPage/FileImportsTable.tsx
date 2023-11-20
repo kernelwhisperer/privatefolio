@@ -177,7 +177,7 @@ export function FileImportsTable(props: FileImportsTableProps) {
     <>
       <Paper
         variant="outlined"
-        sx={{ marginX: { lg: -2.5 }, overflowX: { lg: "unset", xs: "auto" }, paddingY: 0.5 }}
+        sx={{ marginX: { lg: -2 }, overflowX: { lg: "unset", xs: "auto" }, paddingY: 0.5 }}
       >
         <TableContainer sx={{ overflowX: "unset" }}>
           <Table sx={{ minWidth: 750 }} size="small">
@@ -214,7 +214,6 @@ export function FileImportsTable(props: FileImportsTableProps) {
             background: "var(--mui-palette-background-paper)",
             bottom: 0,
             position: "sticky",
-            visibility: "hidden",
           }}
           rowsPerPageOptions={[10, 25, 50, 100]}
           count={rows.length}
