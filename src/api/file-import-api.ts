@@ -1,4 +1,5 @@
 import { parseCsv } from "../utils/csv-utils"
+import { hashString } from "../utils/utils"
 import { auditLogsDB, fileImportsDB } from "./database"
 
 export interface FileImport {
@@ -33,14 +34,17 @@ export interface NewFileImport extends Omit<FileImport, "_attachments"> {
 
 export async function addFileImport(file: File) {
   const { name, type, lastModified, size } = file
-  const timestamp = new Date().getTime()
 
   if (type !== "text/csv") {
     throw new Error("Error reading file: not .csv")
   }
 
+  const timestamp = new Date().getTime()
+  const _id = hashString(`${name}_${size}_${lastModified}`)
+
   // metadata
-  const { id, rev } = await fileImportsDB.post<Omit<FileImport, "_id" | "_rev" | "_attachments">>({
+  const { rev } = await fileImportsDB.put<Omit<FileImport, "_id" | "_rev" | "_attachments">>({
+    _id,
     lastModified,
     name,
     size,
@@ -56,7 +60,7 @@ export async function addFileImport(file: File) {
           data: file,
         },
       },
-      _id: id,
+      _id,
       _rev: rev,
       lastModified,
       name,
@@ -65,7 +69,7 @@ export async function addFileImport(file: File) {
     })
 
     // parse file
-    const fileImport = await fileImportsDB.get<FileImport>(id, { attachments: true })
+    const fileImport = await fileImportsDB.get<FileImport>(_id, { attachments: true })
     const { metadata, logs } = await parseCsv(atob(fileImport._attachments[0].data), fileImport._id)
     console.log("📜 LOG > setTimeout > metadata, logs:", metadata, logs)
 
@@ -80,7 +84,7 @@ export async function addFileImport(file: File) {
     })
   }, 50)
 
-  return id
+  return _id
 }
 
 export async function getFileImports() {
@@ -102,7 +106,9 @@ export async function removeFileImport(fileImport: FileImport) {
   } as PouchDB.Core.AllDocsWithinRangeOptions)
   console.log("📜 LOG > removeFileImport > res:", logs)
 
-  await Promise.all(logs.rows.map((row) => auditLogsDB.remove(row.id, row.value.rev)))
+  await auditLogsDB.bulkDocs(
+    logs.rows.map((row) => ({ _deleted: true, _id: row.id, _rev: row.value.rev }))
+  )
 
   const res = await fileImportsDB.remove(fileImport)
   return res.ok

@@ -46,15 +46,13 @@ export function Header() {
               </Button>
             </Tooltip>
             <Stack direction="row" sx={{ marginRight: -1 }}>
-              <Button
-                to={`/import-data`}
-                component={Link}
-                color="inherit"
-                sx={{
-                  marginLeft: -2,
-                  paddingX: 2,
-                }}
-              >
+              <Button to={`/balances`} component={Link} color="inherit" sx={{ paddingX: 2 }}>
+                Balances
+              </Button>
+              <Button to={`/audit-logs`} component={Link} color="inherit" sx={{ paddingX: 2 }}>
+                Audit logs
+              </Button>
+              <Button to={`/import-data`} component={Link} color="inherit" sx={{ paddingX: 2 }}>
                 Import data
               </Button>
               <Settings />

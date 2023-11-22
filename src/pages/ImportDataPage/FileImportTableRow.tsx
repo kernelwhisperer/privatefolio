@@ -22,6 +22,7 @@ import {
   formatDateWithHour,
   formatFileSize,
   formatHour,
+  formatNumber,
 } from "../../utils/client-utils"
 
 interface FileImportTableRowProps extends TableRowProps {
@@ -32,8 +33,7 @@ interface FileImportTableRowProps extends TableRowProps {
 
 export function FileImportTableRow(props: FileImportTableRowProps) {
   const { fileImport, integrationMap, relativeTime, ...rest } = props
-  console.log("📜 LOG > FileImportTableRow > integrationMap:", integrationMap)
-  const { name, integration, timestamp, lastModified, size, _attachments, logs, rows } = fileImport
+  const { name, integration, timestamp, lastModified, size, logs } = fileImport
 
   function handleDelete(event: MouseEvent<HTMLButtonElement>) {
     event.preventDefault()
@@ -154,7 +154,7 @@ export function FileImportTableRow(props: FileImportTableRowProps) {
         sx={{ fontFamily: MonoFont, maxWidth: 160, minWidth: 160, width: 140 }}
         align="right"
       >
-        {typeof logs === "undefined" ? <Skeleton></Skeleton> : logs}
+        {typeof logs === "undefined" ? <Skeleton></Skeleton> : formatNumber(logs)}
       </TableCell>
       <TableCell sx={{ maxWidth: 40, minWidth: 40, width: 40 }}>
         <Tooltip title="Delete">
