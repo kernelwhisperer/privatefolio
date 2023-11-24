@@ -5,7 +5,13 @@ import { SerifFont } from "../../theme"
 
 export function Logo() {
   return (
-    <Typography variant="h5" fontFamily={SerifFont} fontWeight={800} letterSpacing={0.5}>
+    <Typography
+      variant="h5"
+      fontFamily={SerifFont}
+      fontWeight={800}
+      letterSpacing={0.5}
+      padding={0}
+    >
       Privatefolio
     </Typography>
   )

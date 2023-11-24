@@ -1,3 +1,5 @@
+import { atom } from "nanostores"
+
 export enum TaskPriority {
   Low = 2,
   Medium = 5,
@@ -5,55 +7,52 @@ export enum TaskPriority {
 }
 
 export interface Task {
-  completedAt?: number
-  duration?: number // Duration in milliseconds
   function: () => Promise<void>
   name: string
   priority: TaskPriority
 }
 
-const history: Task[] = []
-const queue: Task[] = [
-  {
-    function: () => new Promise((resolve) => setTimeout(resolve, 1000)),
-    name: "Import data",
-    priority: TaskPriority.Low,
-  },
-]
+export interface FinishedTask {
+  completedAt?: number
+  duration: number // Duration in milliseconds
+  name: string
+}
+
+export const $taskHistory = atom<FinishedTask[]>([])
+export const $taskQueue = atom<Task[]>([])
+export const $pendingTask = atom<Task | undefined>()
+
 let isProcessing = false // Flag to check if processQueue is already running
 
-export function isEmpty(): boolean {
-  return queue.length === 0
-}
-
-export function size(): number {
-  return queue.length
-}
-
-export function peek(): Task | undefined {
-  return queue[0]
-}
-
-export function listTasks(): Task[] {
-  return queue
-}
-
-export function dequeue(): Task | undefined {
-  return queue.shift()
+function dequeue(): Task | undefined {
+  const newQueue = [...$taskQueue.get()]
+  const task = newQueue.shift()
+  $taskQueue.set(newQueue)
+  return task
 }
 
 async function processQueue() {
   isProcessing = true
-  while (!isEmpty()) {
+  while ($taskQueue.get().length !== 0) {
     const task = dequeue()
+    $pendingTask.set(task)
+
     if (task) {
       const startTime = Date.now()
       try {
+        console.log(`Processing task: ${task.name}`)
         await task.function()
+        console.log(`Completed task: ${task.name}`)
         const endTime = Date.now()
-        task.completedAt = endTime
-        task.duration = endTime - startTime // Calculate duration
-        history.push(task) // Add the completed task to history
+        $pendingTask.set(undefined)
+        $taskHistory.set([
+          {
+            completedAt: endTime,
+            duration: endTime - startTime, // Calculate duration
+            name: task.name,
+          },
+          ...$taskHistory.get(),
+        ]) // Add the completed task to history
       } catch (error) {
         console.error("Error processing task:", error)
         // Handle failed task, maybe add it to a separate history
@@ -64,13 +63,11 @@ async function processQueue() {
 }
 
 export function enqueue(item: Task & { priority?: TaskPriority }) {
-  queue.push(item)
-  queue.sort((a, b) => a.priority - b.priority) // Sort on enqueue
+  const newQueue = [...$taskQueue.get(), item]
+  newQueue.sort((a, b) => a.priority - b.priority) // Sort on enqueue
+  $taskQueue.set(newQueue)
+
   if (!isProcessing) {
     processQueue()
   }
-}
-
-export function getHistory() {
-  return history
 }

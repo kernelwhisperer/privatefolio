@@ -1774,6 +1774,11 @@
     prop-types "^15.8.1"
     react-is "^18.2.0"
 
+"@nanostores/react@^0.7.1":
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/@nanostores/react/-/react-0.7.1.tgz#e0446f5cacc9fa53448c454f5d00ddb0f906a37a"
+  integrity sha512-EXQg9N4MdI4eJQz/AZLIx3hxQ6BuBmV4Q55bCd5YCSgEOAW7tGTsIZxpRXxvxLXzflNvHTBvfrDNY38TlSVBkQ==
+
 "@nicolo-ribaudo/eslint-scope-5-internals@5.1.1-v1":
   version "5.1.1-v1"
   resolved "https://registry.yarnpkg.com/@nicolo-ribaudo/eslint-scope-5-internals/-/eslint-scope-5-internals-5.1.1-v1.tgz#dbf733a965ca47b1973177dc0bb6c889edcfb129"
@@ -5093,6 +5098,11 @@ nanoid@^3.3.6:
   version "3.3.7"
   resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.3.7.tgz#d0c301a691bc8d54efa0a2226ccf3fe2fd656bd8"
   integrity sha512-eSRppjcPIatRIMC1U6UngP8XFcz8MQWGQdt1MTBQ7NaAmvXDfvNxbvWV3x2y6CdEUciCSsDHDQZbhYaB8QEo2g==
+
+nanostores@^0.9.5:
+  version "0.9.5"
+  resolved "https://registry.yarnpkg.com/nanostores/-/nanostores-0.9.5.tgz#4fcfce9786c4bf16e045a899cda2e46e90780a5b"
+  integrity sha512-Z+p+g8E7yzaWwOe5gEUB2Ox0rCEeXWYIZWmYvw/ajNYX8DlXdMvMDj8DWfM/subqPAcsf8l8Td4iAwO1DeIIRQ==
 
 napi-macros@~2.0.0:
   version "2.0.0"

@@ -1,5 +1,5 @@
 import { Fade } from "@mui/material"
-import { grey } from "@mui/material/colors"
+import { blue, grey } from "@mui/material/colors"
 import { experimental_extendTheme as extendTheme } from "@mui/material/styles"
 
 export const MainFont = "'Roboto Flex', sans-serif"
@@ -27,17 +27,22 @@ const theme = extendTheme({
           default: "rgb(40, 40, 40)",
           paper: "rgb(45, 45, 45)",
         },
+        // secondary: {
+        //   main: "rgb(0, 211, 149)",
+        // },
+        info: {
+          main: blue.A100,
+        },
         primary: {
           // main: "rgb(150 157 185)",
           main: "rgb(136, 101, 160)",
         },
+        secondary: {
+          main: "rgb(160, 160, 160)",
+        },
         text: {
-          // primary: RETRO_BEIGE_2,
           secondary: "rgba(255, 255, 255, 0.5)",
         },
-        // secondary: {
-        //   main: "rgb(0, 211, 149)",
-        // },
       },
     },
     light: {
@@ -49,9 +54,15 @@ const theme = extendTheme({
           default: "rgb(247, 247, 250)",
           paper: "rgb(252, 252, 253)",
         },
+        info: {
+          main: blue.A400,
+        },
         // primary: {
         //   main: "rgb(233 141 50)",
         // },
+        secondary: {
+          main: "rgb(120, 120, 120)",
+        },
       },
     },
   },
@@ -86,11 +97,15 @@ const theme = extendTheme({
       },
     },
     MuiPaper: {
+      defaultProps: {
+        elevation: 0,
+      },
       styleOverrides: {
         root: {
           "@supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none))": {
             backdropFilter: "blur(20px)",
           },
+          border: "1px solid var(--mui-palette-divider)",
           boxShadow: "unset",
           // clipPath: cutCorners,
         },

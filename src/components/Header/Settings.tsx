@@ -16,11 +16,12 @@ export function Settings() {
   return (
     <Tooltip title={`Activate ${nextMode} mode`}>
       <IconButton
-        size="large"
+        size="medium"
         onClick={() => {
           setMode(nextMode)
         }}
-        color="inherit"
+        color="secondary"
+        edge="end"
       >
         {mode === "light" && <LightModeOutlined fontSize="small" />}
         {mode === "dark" && <DarkModeOutlined fontSize="small" />}

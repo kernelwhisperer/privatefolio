@@ -2,6 +2,7 @@ import { AddRounded, RemoveRounded, SvgIconComponent } from "@mui/icons-material
 import {
   alpha,
   Avatar,
+  Box,
   Chip,
   Stack,
   TableCell,
@@ -14,9 +15,10 @@ import { green, grey, red } from "@mui/material/colors"
 // import TableCell from "@mui/material/Unstable_TableCell2" // TableCell version 2
 import React from "react"
 
+import { AuditLog } from "../../api/audit-logs-api"
 import { AssetAvatar } from "../../components/AssetAvatar"
 import { Truncate } from "../../components/Truncate"
-import { Asset, AuditLog, AuditLogOperation, Exchange } from "../../interfaces"
+import { Asset, AuditLogOperation, Exchange } from "../../interfaces"
 import { MonoFont } from "../../theme"
 import {
   formatDate,
@@ -56,7 +58,7 @@ const OPERATION_ICONS: Partial<Record<AuditLogOperation, SvgIconComponent>> = {
 
 export function AuditLogTableRow(props: AuditLogTableRowProps) {
   const { auditLog, assetMap, integrationMap, relativeTime, ...rest } = props
-  const { symbol, id, change, changeN, operation, timestamp, integration, wallet } = auditLog
+  const { symbol, change, changeN, operation, timestamp, integration, wallet } = auditLog
 
   const color = OPERATION_COLORS[operation] || grey[500]
   const OpIconComponent = OPERATION_ICONS[operation]
@@ -81,7 +83,7 @@ export function AuditLogTableRow(props: AuditLogTableRowProps) {
                   second: "numeric",
                   timeZoneName: "short",
                 })}{" "}
-                <Typography color={"text.secondary"} component="i" variant="inherit">
+                <Typography color={grey[400]} component="i" variant="inherit">
                   local
                 </Typography>
               </span>
@@ -142,7 +144,7 @@ export function AuditLogTableRow(props: AuditLogTableRowProps) {
         align="right"
         sx={{ color: changeN < 0 ? redColor : greenColor, fontFamily: MonoFont }}
       >
-        <Tooltip title={change}>
+        <Tooltip title={<Box sx={{ fontFamily: MonoFont }}>{change}</Box>}>
           <span>
             {formatNumber(changeN, {
               maximumFractionDigits: 2, // TODO make this configurable

@@ -1,11 +1,25 @@
-import { Button, CircularProgress, List, ListItem, ListItemText, Popover } from "@mui/material"
+import { CheckRounded, DoneAllRounded, HourglassEmptyRounded } from "@mui/icons-material"
+import {
+  Button,
+  CircularProgress,
+  List,
+  ListItem,
+  ListItemText,
+  Popover,
+  Typography,
+} from "@mui/material"
+import { useStore } from "@nanostores/react"
 import React, { useEffect, useState } from "react"
 
-import { enqueue, listTasks } from "../../api/tasks-api"
+import { $pendingTask, $taskHistory, $taskQueue, enqueue } from "../../api/tasks-api"
+import { MonoFont } from "../../theme"
+import { formatNumber } from "../../utils/client-utils"
 
 export function TaskDropdown() {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
-  const tasks = listTasks()
+  const pendingTask = useStore($pendingTask)
+  const taskQueue = useStore($taskQueue)
+  const taskHistory = useStore($taskHistory)
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
@@ -16,13 +30,6 @@ export function TaskDropdown() {
   }
 
   const open = Boolean(anchorEl)
-  const id = open ? "simple-popover" : undefined
-
-  // Logic to determine the button text
-  const buttonText =
-    tasks.length > 0
-      ? `${0}/8 - ${tasks[0].name}` // Assuming function.name is the description
-      : "No Tasks"
 
   useEffect(() => {
     enqueue({
@@ -32,7 +39,27 @@ export function TaskDropdown() {
             resolve()
           }, 2000)
         }),
-      name: "Task 1",
+      name: "Fetch prices",
+      priority: 2,
+    })
+    enqueue({
+      function: () =>
+        new Promise((resolve) => {
+          setTimeout(() => {
+            resolve()
+          }, 31000)
+        }),
+      name: "Import data",
+      priority: 2,
+    })
+    enqueue({
+      function: () =>
+        new Promise((resolve) => {
+          setTimeout(() => {
+            resolve()
+          }, 100)
+        }),
+      name: "Compact data",
       priority: 2,
     })
   }, [])
@@ -40,34 +67,76 @@ export function TaskDropdown() {
   return (
     <div>
       <Button
+        size="small"
         variant="outlined"
-        color="primary"
+        color={pendingTask ? "info" : "secondary"}
         onClick={handleClick}
-        startIcon={<CircularProgress size={16} />}
+        startIcon={
+          pendingTask ? <CircularProgress size={16} color="inherit" /> : <DoneAllRounded />
+        }
       >
-        {buttonText}
+        {pendingTask ? `${pendingTask.name}` : "Up to date"}
       </Button>
 
       <Popover
-        id={id}
+        id="task-list-popover"
         open={open}
         anchorEl={anchorEl}
         onClose={handleClose}
         anchorOrigin={{
-          horizontal: "left",
+          horizontal: "right",
           vertical: "bottom",
         }}
         transformOrigin={{
-          horizontal: "left",
+          horizontal: "right",
           vertical: "top",
         }}
+        sx={{ marginTop: 0.5 }}
+        PaperProps={{ elevation: 1 }}
       >
-        <List dense>
-          {tasks.map((task, index) => (
+        <List dense sx={{ minWidth: 240 }}>
+          {taskQueue.map((task, index) => (
             <ListItem key={index}>
-              <ListItemText primary={`Priority: ${task.priority}`} />
+              <HourglassEmptyRounded sx={{ marginRight: 1, width: 16 }} color="info" />
+              <ListItemText primary={task.name} />
             </ListItem>
           ))}
+          {pendingTask && (
+            <ListItem>
+              <CircularProgress size={16} sx={{ marginRight: 1 }} color="info" />
+              <ListItemText primary={pendingTask.name} />
+            </ListItem>
+          )}
+          {taskHistory.map((task, index) => (
+            <ListItem key={index}>
+              <CheckRounded sx={{ marginRight: 1, width: 16 }} color="success" />
+              <ListItemText
+                primary={
+                  <>
+                    {task.name}{" "}
+                    <Typography
+                      fontFamily={MonoFont}
+                      variant="inherit"
+                      component="span"
+                      color="text.secondary"
+                    >
+                      (
+                      {formatNumber(task.duration / 1000, {
+                        maximumFractionDigits: 2,
+                        minimumFractionDigits: 2,
+                      })}
+                      s)
+                    </Typography>
+                  </>
+                }
+              />
+            </ListItem>
+          ))}
+          {taskQueue.length === 0 && taskHistory.length === 0 && !pendingTask && (
+            <ListItem>
+              <ListItemText primary="Nothing to see here" />
+            </ListItem>
+          )}
         </List>
       </Popover>
     </div>

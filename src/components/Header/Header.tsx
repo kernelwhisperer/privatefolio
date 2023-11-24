@@ -1,6 +1,6 @@
 "use client"
 
-import { AppBar, Button, Container, Stack, Toolbar, Tooltip } from "@mui/material"
+import { AppBar, Button, Container, Grid, Stack, Toolbar, Tooltip } from "@mui/material"
 import React from "react"
 import { Link } from "react-router-dom"
 
@@ -16,23 +16,16 @@ export function Header() {
       // variant="outlined"
       color="transparent"
       sx={{
-        borderLeft: "none",
-        borderRight: "none",
-        borderTop: "none",
+        border: "none",
+        // borderLeft: "none",
+        // borderRight: "none",
+        // borderTop: "none",
       }}
     >
       <Toolbar disableGutters>
         <Container maxWidth="lg" sx={{ padding: { xs: 0 }, position: "relative" }}>
-          <Stack
-            gap={1}
-            flexDirection="row"
-            justifyContent="space-between"
-            alignItems="center"
-            width="100%"
-            paddingX={2}
-            marginY={1}
-          >
-            <Stack direction="row" sx={{ marginRight: -1 }} alignItems="center" gap={0.25}>
+          <Grid container spacing={0.5} paddingX={2} marginY={1}>
+            <Grid item lg={4}>
               <Tooltip title="View Homepage">
                 <Button
                   to={`/`}
@@ -47,9 +40,8 @@ export function Header() {
                   <Logo />
                 </Button>
               </Tooltip>
-              <TaskDropdown />
-            </Stack>
-            <Stack direction="row" sx={{ marginRight: -1 }} gap={0.25}>
+            </Grid>
+            <Grid item lg={4} gap={0.5} component={Stack} justifyContent="center">
               <Button to={`/balances`} component={Link} color="inherit" sx={{ paddingX: 2 }}>
                 Balances
               </Button>
@@ -59,9 +51,19 @@ export function Header() {
               <Button to={`/import-data`} component={Link} color="inherit" sx={{ paddingX: 2 }}>
                 Import data
               </Button>
+            </Grid>
+            <Grid
+              item
+              lg={4}
+              alignItems="center"
+              gap={0.5}
+              component={Stack}
+              justifyContent="flex-end"
+            >
+              <TaskDropdown />
               <Settings />
-            </Stack>
-          </Stack>
+            </Grid>
+          </Grid>
         </Container>
       </Toolbar>
     </AppBar>

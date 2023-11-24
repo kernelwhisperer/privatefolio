@@ -186,10 +186,7 @@ export function AuditLogsTable(props: AuditLogsTableProps) {
 
   return (
     <>
-      <Paper
-        variant="outlined"
-        sx={{ marginX: { lg: -2 }, overflowX: { lg: "unset", xs: "auto" }, paddingY: 0.5 }}
-      >
+      <Paper sx={{ marginX: { lg: -2 }, overflowX: { lg: "unset", xs: "auto" }, paddingY: 0.5 }}>
         <TableContainer sx={{ overflowX: "unset" }}>
           <Table sx={{ minWidth: 750 }} size="small">
             <TableHead
