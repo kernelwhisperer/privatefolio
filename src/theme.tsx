@@ -29,7 +29,7 @@ const theme = extendTheme({
         },
         primary: {
           // main: "rgb(150 157 185)",
-          main: "rgb(136 101 160)",
+          main: "rgb(136, 101, 160)",
         },
         text: {
           // primary: RETRO_BEIGE_2,
@@ -94,6 +94,11 @@ const theme = extendTheme({
           boxShadow: "unset",
           // clipPath: cutCorners,
         },
+      },
+    },
+    MuiPopover: {
+      defaultProps: {
+        TransitionComponent: Fade,
       },
     },
     MuiTableRow: {

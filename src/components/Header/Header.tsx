@@ -4,6 +4,7 @@ import { AppBar, Button, Container, Stack, Toolbar, Tooltip } from "@mui/materia
 import React from "react"
 import { Link } from "react-router-dom"
 
+import { TaskDropdown } from "../Tasks/TaskDropdown"
 import { Logo } from "./Logo"
 import { Settings } from "./Settings"
 
@@ -31,21 +32,24 @@ export function Header() {
             paddingX={2}
             marginY={1}
           >
-            <Tooltip title="View Homepage">
-              <Button
-                to={`/`}
-                aria-label="View Homepage"
-                component={Link}
-                color="inherit"
-                sx={{
-                  marginLeft: -1,
-                  paddingX: 2,
-                }}
-              >
-                <Logo />
-              </Button>
-            </Tooltip>
-            <Stack direction="row" sx={{ marginRight: -1 }}>
+            <Stack direction="row" sx={{ marginRight: -1 }} alignItems="center" gap={0.25}>
+              <Tooltip title="View Homepage">
+                <Button
+                  to={`/`}
+                  aria-label="View Homepage"
+                  component={Link}
+                  color="inherit"
+                  sx={{
+                    marginLeft: -1,
+                    paddingX: 2,
+                  }}
+                >
+                  <Logo />
+                </Button>
+              </Tooltip>
+              <TaskDropdown />
+            </Stack>
+            <Stack direction="row" sx={{ marginRight: -1 }} gap={0.25}>
               <Button to={`/balances`} component={Link} color="inherit" sx={{ paddingX: 2 }}>
                 Balances
               </Button>
