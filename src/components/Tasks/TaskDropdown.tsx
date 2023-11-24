@@ -9,9 +9,9 @@ import {
   Typography,
 } from "@mui/material"
 import { useStore } from "@nanostores/react"
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 
-import { $pendingTask, $taskHistory, $taskQueue, enqueue } from "../../api/tasks-api"
+import { $pendingTask, $taskHistory, $taskQueue } from "../../api/tasks-api"
 import { MonoFont } from "../../theme"
 import { formatNumber } from "../../utils/client-utils"
 
@@ -31,38 +31,38 @@ export function TaskDropdown() {
 
   const open = Boolean(anchorEl)
 
-  useEffect(() => {
-    enqueue({
-      function: () =>
-        new Promise((resolve) => {
-          setTimeout(() => {
-            resolve()
-          }, 2000)
-        }),
-      name: "Fetch prices",
-      priority: 2,
-    })
-    enqueue({
-      function: () =>
-        new Promise((resolve) => {
-          setTimeout(() => {
-            resolve()
-          }, 31000)
-        }),
-      name: "Import data",
-      priority: 2,
-    })
-    enqueue({
-      function: () =>
-        new Promise((resolve) => {
-          setTimeout(() => {
-            resolve()
-          }, 100)
-        }),
-      name: "Compact data",
-      priority: 2,
-    })
-  }, [])
+  // useEffect(() => {
+  //   enqueue({
+  //     function: () =>
+  //       new Promise((resolve) => {
+  //         setTimeout(() => {
+  //           resolve()
+  //         }, 2000)
+  //       }),
+  //     name: "Fetch prices",
+  //     priority: 2,
+  //   })
+  //   enqueue({
+  //     function: () =>
+  //       new Promise((resolve) => {
+  //         setTimeout(() => {
+  //           resolve()
+  //         }, 31000)
+  //       }),
+  //     name: "Import data",
+  //     priority: 2,
+  //   })
+  //   enqueue({
+  //     function: () =>
+  //       new Promise((resolve) => {
+  //         setTimeout(() => {
+  //           resolve()
+  //         }, 100)
+  //       }),
+  //     name: "Compact data",
+  //     priority: 2,
+  //   })
+  // }, [])
 
   return (
     <div>

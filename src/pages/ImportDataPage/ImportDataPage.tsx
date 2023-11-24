@@ -72,10 +72,10 @@ export function ImportDataPage({ show }: { show: boolean }) {
           </Stack>
         </FileDrop>
       ) : (
-        <>
+        <StaggeredList gap={1} show={show}>
           <FileImportsTable rows={rows} integrationMap={integrationMap} />
           <FileDrop sx={{ background: "var(--mui-palette-background-default)", marginX: -2 }} />
-        </>
+        </StaggeredList>
       )}
     </StaggeredList>
   )

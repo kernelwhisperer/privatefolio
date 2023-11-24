@@ -1,5 +1,6 @@
 import { DataArrayRounded } from "@mui/icons-material"
 import { Link as MuiLink, Paper, Skeleton, Stack, Typography } from "@mui/material"
+import { a, useTransition } from "@react-spring/web"
 import React, { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 
@@ -9,10 +10,12 @@ import { findExchanges } from "../../api/exchanges-api"
 import { StaggeredList } from "../../components/StaggeredList"
 import { Asset, Exchange } from "../../interfaces"
 import { SerifFont } from "../../theme"
+import { SPRING_CONFIGS } from "../../utils/utils"
 import { AuditLogsTable } from "./AuditLogTable"
 
 export function AuditLogsPage({ show }: { show: boolean }) {
-  const [rows, setRows] = useState<AuditLog[] | null>(null)
+  const [loading, setLoading] = useState<boolean>(true)
+  const [rows, setRows] = useState<AuditLog[]>([])
   const [assetMap, setAssetMap] = useState<Record<string, Asset>>({})
   const [integrationMap, setIntegrationMap] = useState<Record<string, Exchange>>({})
 
@@ -21,6 +24,7 @@ export function AuditLogsPage({ show }: { show: boolean }) {
     getAuditLogs().then(async (auditLogs) => {
       console.log(`Query took ${Date.now() - start}ms (audit logs)`)
       setRows(auditLogs)
+      setLoading(false)
 
       const symbolMap = {}
       const integrationMap = {}
@@ -36,6 +40,14 @@ export function AuditLogsPage({ show }: { show: boolean }) {
       setIntegrationMap(integrations)
     })
   }, [])
+
+  const transitions = useTransition(loading, {
+    config: SPRING_CONFIGS.ultra,
+    enter: { opacity: 1, y: 0 },
+    exitBeforeEnter: true,
+    from: { opacity: 0, y: -10 },
+    leave: { opacity: 0, y: 10 },
+  })
 
   return (
     <StaggeredList gap={1} show={show}>
@@ -63,39 +75,43 @@ export function AuditLogsPage({ show }: { show: boolean }) {
           />
         </Stack> */}
       </Typography>
-      {rows === null ? (
-        <Stack gap={1.5}>
-          <Stack direction="row" gap={1.5}>
-            <Skeleton variant="rounded" height={56} width={240}></Skeleton>
-            <Skeleton variant="rounded" height={56} width={240}></Skeleton>
-            <Skeleton variant="rounded" height={56} width={240}></Skeleton>
-          </Stack>
-          <Skeleton variant="rounded" height={37}></Skeleton>
-          <Skeleton variant="rounded" height={37}></Skeleton>
-          <Skeleton variant="rounded" height={37}></Skeleton>
-          <Skeleton variant="rounded" height={37}></Skeleton>
-        </Stack>
-      ) : rows.length === 0 ? (
-        <Paper sx={{ marginX: -2, padding: 4 }}>
-          <Typography color="text.secondary" variant="body2" component="div">
-            <Stack alignItems="center">
-              <DataArrayRounded sx={{ height: 64, width: 64 }} />
-              <span>Nothing to see here...</span>
-              <MuiLink
-                color="inherit"
-                sx={{ marginTop: 4 }}
-                component={Link}
-                to="/import-data"
-                underline="hover"
-              >
-                Visit <i>Import data</i> to get started
-              </MuiLink>
+      {transitions((styles, isLoading) => (
+        <a.div style={styles}>
+          {isLoading ? (
+            <Stack gap={1.5} sx={{ marginX: { lg: -2 } }}>
+              <Stack direction="row" gap={1.5}>
+                <Skeleton variant="rounded" height={56} width={240}></Skeleton>
+                <Skeleton variant="rounded" height={56} width={240}></Skeleton>
+                <Skeleton variant="rounded" height={56} width={240}></Skeleton>
+              </Stack>
+              <Skeleton variant="rounded" height={37}></Skeleton>
+              <Skeleton variant="rounded" height={37}></Skeleton>
+              <Skeleton variant="rounded" height={37}></Skeleton>
+              <Skeleton variant="rounded" height={37}></Skeleton>
             </Stack>
-          </Typography>
-        </Paper>
-      ) : (
-        <AuditLogsTable rows={rows} assetMap={assetMap} integrationMap={integrationMap} />
-      )}
+          ) : rows.length === 0 ? (
+            <Paper sx={{ marginX: { lg: -2 }, padding: 4 }}>
+              <Typography color="text.secondary" variant="body2" component="div">
+                <Stack alignItems="center">
+                  <DataArrayRounded sx={{ height: 64, width: 64 }} />
+                  <span>Nothing to see here...</span>
+                  <MuiLink
+                    color="inherit"
+                    sx={{ marginTop: 4 }}
+                    component={Link}
+                    to="/import-data"
+                    underline="hover"
+                  >
+                    Visit <i>Import data</i> to get started
+                  </MuiLink>
+                </Stack>
+              </Typography>
+            </Paper>
+          ) : (
+            <AuditLogsTable rows={rows} assetMap={assetMap} integrationMap={integrationMap} />
+          )}
+        </a.div>
+      ))}
     </StaggeredList>
   )
 }
