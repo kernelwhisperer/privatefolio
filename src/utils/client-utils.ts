@@ -1,4 +1,5 @@
 import { formatDistance } from "date-fns"
+// TODO rename to formatting-utils
 
 export function formatNumber(number: number, opts: Intl.NumberFormatOptions = {}) {
   return new Intl.NumberFormat(window.navigator.language, {

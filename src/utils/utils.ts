@@ -14,3 +14,19 @@ export function hashString(str: string): string {
   }
   return hash.toString()
 }
+
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+export function noop() {}
+
+export const SPRING_CONFIGS = {
+  quick: { friction: 200, mass: 5, tension: 2000 },
+  quicker: { friction: 200, mass: 6, tension: 3000 },
+  slow: { friction: 200, mass: 5, tension: 1500 },
+  ultra: { clamp: true, friction: 200, mass: 5, tension: 6000 },
+  veryQuick: { friction: 200, mass: 5, tension: 4000 },
+  verySlow: { friction: 200, mass: 50, tension: 250 },
+}
+
+export async function wait(interval: number) {
+  return new Promise((resolve) => setTimeout(resolve, interval))
+}

@@ -1,14 +1,15 @@
-import { Stack, Typography } from "@mui/material"
+import { Typography } from "@mui/material"
 import React, { useEffect, useState } from "react"
 
 import { findAssets } from "../../api/assets-api"
 import { Balance, getBalances } from "../../api/balances-api"
 import { findExchanges } from "../../api/exchanges-api"
+import { StaggeredList } from "../../components/StaggeredList"
 import { Asset, Exchange } from "../../interfaces"
 import { SerifFont } from "../../theme"
 import { AuditLogsTable } from "./AuditLogTable"
 
-export function BalancesPage() {
+export function BalancesPage({ show }: { show: boolean }) {
   const [rows, setRows] = useState<Balance[]>([])
   const [assetMap, setAssetMap] = useState<Record<string, Asset>>({})
   const [integrationMap, setIntegrationMap] = useState<Record<string, Exchange>>({})
@@ -34,7 +35,7 @@ export function BalancesPage() {
   }, [])
 
   return (
-    <Stack gap={1}>
+    <StaggeredList gap={1} show={show}>
       <Typography variant="h6" fontFamily={SerifFont}>
         <span>Balances</span>
         {/* <Stack direction="row" alignItems={"baseline"}>
@@ -60,6 +61,6 @@ export function BalancesPage() {
         </Stack> */}
       </Typography>
       <AuditLogsTable rows={rows} assetMap={assetMap} integrationMap={integrationMap} />
-    </Stack>
+    </StaggeredList>
   )
 }

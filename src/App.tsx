@@ -17,14 +17,18 @@ import { ImportDataPage } from "./pages/ImportDataPage/ImportDataPage"
 
 export default function App() {
   const location = useLocation()
+  const { pathname } = location
 
   const transitions = useTransition(location, {
     config: { friction: 160, mass: 5, tension: 2500 },
-    enter: { delay: 133, opacity: 1, y: 0 },
+    enter: {
+      // delay: 133,
+      opacity: 2,
+    },
     exitBeforeEnter: true,
-    from: { opacity: 0, y: 20 },
+    from: { opacity: 1 },
     keys: (location) => location.pathname,
-    leave: { opacity: 0, y: 20 },
+    leave: { opacity: 1 },
   })
 
   return (
@@ -45,13 +49,19 @@ export default function App() {
             }
           >
             <Routes location={item}>
-              {/* <Route path="/" Component={HomePage} /> */}
-              {/* <Route path="/asset/:assetSymbol" Component={AssetPage} /> */}
-              {/* <Route path="/transactions" Component={TransactionsPage} /> */}
-              <Route path="/import-data" Component={ImportDataPage} />
-              <Route path="/audit-logs" Component={AuditLogsPage} />
-              <Route path="/balances" Component={BalancesPage} />
-              <Route path="*" Component={BalancesPage} />
+              {/* <Route path="/" element={<HomePage show={pathname === ""}/>} /> */}
+              {/* <Route path="/asset/:assetSymbol" element={<AssetPage show={pathname === ""}/>} /> */}
+              {/* <Route path="/transactions" element={<TransactionsPage show={pathname === ""}/>} /> */}
+              <Route
+                path="/import-data"
+                element={<ImportDataPage show={pathname === "/import-data"} />}
+              />
+              <Route
+                path="/audit-logs"
+                element={<AuditLogsPage show={pathname === "/audit-logs"} />}
+              />
+              <Route path="/balances" element={<BalancesPage show={pathname === "/balances"} />} />
+              <Route path="*" element={<BalancesPage show={pathname === "/"} />} />
             </Routes>
           </a.div>
         ))}

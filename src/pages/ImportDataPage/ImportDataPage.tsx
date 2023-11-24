@@ -5,11 +5,12 @@ import React, { useEffect, useState } from "react"
 import { findExchanges } from "../../api/exchanges-api"
 import { FileImport, getFileImports, subscribeToFileImports } from "../../api/file-import-api"
 import { FileDrop } from "../../components/FileDrop"
+import { StaggeredList } from "../../components/StaggeredList"
 import { Exchange } from "../../interfaces"
 import { SerifFont } from "../../theme"
 import { FileImportsTable } from "./FileImportsTable"
 
-export function ImportDataPage() {
+export function ImportDataPage({ show }: { show: boolean }) {
   const [rows, setRows] = useState<FileImport[] | null>(null)
   const [integrationMap, setIntegrationMap] = useState<Record<string, Exchange>>({})
 
@@ -43,7 +44,11 @@ export function ImportDataPage() {
   }, [])
 
   return (
-    <Stack gap={1}>
+    <StaggeredList
+      // component="main"
+      gap={1}
+      show={show}
+    >
       <Typography variant="h6" fontFamily={SerifFont}>
         File imports
       </Typography>
@@ -72,6 +77,6 @@ export function ImportDataPage() {
           <FileDrop sx={{ background: "var(--mui-palette-background-default)", marginX: -2 }} />
         </>
       )}
-    </Stack>
+    </StaggeredList>
   )
 }

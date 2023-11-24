@@ -6,11 +6,12 @@ import { Link } from "react-router-dom"
 import { findAssets } from "../../api/assets-api"
 import { AuditLog, getAuditLogs } from "../../api/audit-logs-api"
 import { findExchanges } from "../../api/exchanges-api"
+import { StaggeredList } from "../../components/StaggeredList"
 import { Asset, Exchange } from "../../interfaces"
 import { SerifFont } from "../../theme"
 import { AuditLogsTable } from "./AuditLogTable"
 
-export function AuditLogsPage() {
+export function AuditLogsPage({ show }: { show: boolean }) {
   const [rows, setRows] = useState<AuditLog[] | null>(null)
   const [assetMap, setAssetMap] = useState<Record<string, Asset>>({})
   const [integrationMap, setIntegrationMap] = useState<Record<string, Exchange>>({})
@@ -37,7 +38,7 @@ export function AuditLogsPage() {
   }, [])
 
   return (
-    <Stack gap={1}>
+    <StaggeredList gap={1} show={show}>
       <Typography variant="h6" fontFamily={SerifFont}>
         <span>Audit logs</span>
         {/* <Stack direction="row" alignItems={"baseline"}>
@@ -95,6 +96,6 @@ export function AuditLogsPage() {
       ) : (
         <AuditLogsTable rows={rows} assetMap={assetMap} integrationMap={integrationMap} />
       )}
-    </Stack>
+    </StaggeredList>
   )
 }
