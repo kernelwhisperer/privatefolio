@@ -15,7 +15,9 @@ export function ImportDataPage() {
 
   useEffect(() => {
     async function fetchData() {
+      const start = Date.now()
       const rows = await getFileImports()
+      console.log(`Query took ${Date.now() - start}ms (file imports)`)
       setRows(rows)
 
       const integrationMap = {}

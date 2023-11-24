@@ -72,7 +72,7 @@ export function TaskDropdown() {
         color={pendingTask ? "info" : "secondary"}
         onClick={handleClick}
         startIcon={
-          pendingTask ? <CircularProgress size={16} color="inherit" /> : <DoneAllRounded />
+          pendingTask ? <CircularProgress size={14} color="inherit" /> : <DoneAllRounded />
         }
       >
         {pendingTask ? `${pendingTask.name}` : "Up to date"}
@@ -103,7 +103,7 @@ export function TaskDropdown() {
           ))}
           {pendingTask && (
             <ListItem>
-              <CircularProgress size={16} sx={{ marginRight: 1 }} color="info" />
+              <CircularProgress size={14} sx={{ marginRight: 1 }} color="info" />
               <ListItemText primary={pendingTask.name} />
             </ListItem>
           )}

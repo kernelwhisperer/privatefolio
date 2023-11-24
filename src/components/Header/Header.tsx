@@ -25,7 +25,7 @@ export function Header() {
       <Toolbar disableGutters>
         <Container maxWidth="lg" sx={{ padding: { xs: 0 }, position: "relative" }}>
           <Grid container spacing={0.5} paddingX={2} marginY={1}>
-            <Grid item lg={4}>
+            <Grid item md={3}>
               <Tooltip title="View Homepage">
                 <Button
                   to={`/`}
@@ -41,7 +41,7 @@ export function Header() {
                 </Button>
               </Tooltip>
             </Grid>
-            <Grid item lg={4} gap={0.5} component={Stack} justifyContent="center">
+            <Grid item md={6} gap={0.5} component={Stack} justifyContent="center">
               <Button to={`/balances`} component={Link} color="inherit" sx={{ paddingX: 2 }}>
                 Balances
               </Button>
@@ -54,7 +54,7 @@ export function Header() {
             </Grid>
             <Grid
               item
-              lg={4}
+              md={3}
               alignItems="center"
               gap={0.5}
               component={Stack}

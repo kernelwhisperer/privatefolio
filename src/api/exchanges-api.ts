@@ -4,6 +4,10 @@ import { EXCHANGE_FILES_LOCATION, EXCHANGE_PAGES } from "../settings"
 export async function findExchanges(nameMap: Record<string, boolean>) {
   const map: Record<string, Exchange> = {}
 
+  if (Object.keys(nameMap).length === 0) {
+    return map
+  }
+
   for (let page = 1; page <= EXCHANGE_PAGES; page++) {
     // console.log(`Exchanges: Fetching page ${page}`)
     const response = await fetch(`${EXCHANGE_FILES_LOCATION}/page-${page}.json`)
