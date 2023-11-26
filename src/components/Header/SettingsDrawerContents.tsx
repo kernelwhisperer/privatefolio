@@ -1,6 +1,5 @@
 import { CloseRounded, GitHub, Telegram, Twitter } from "@mui/icons-material"
 import {
-  Divider,
   IconButton,
   Link as MuiLink,
   MenuItem,
@@ -37,11 +36,9 @@ const CustomLink = ({ children, ...rest }: any) => (
 const SectionTitle = (props: TypographyProps) => (
   <Typography
     variant="subtitle2"
-    letterSpacing="0.05rem"
-    sx={{
-      marginBottom: 0.5,
-      // textTransform: "uppercase",
-    }}
+    color="text.secondary"
+    letterSpacing="0.025rem"
+    sx={{ marginBottom: 0.5 }}
     {...props}
   />
 )
@@ -61,26 +58,14 @@ export const SettingsDrawerContents = ({
       gap={4}
       show={open}
     >
-      <div>
-        <Stack direction="row" justifyContent="space-between" alignItems="center">
-          <Typography
-            variant="subtitle1"
-            // letterSpacing="0.05rem"
-            sx={
-              {
-                // marginBottom: 0.5,
-                // textTransform: "uppercase",
-              }
-            }
-          >
-            Settings
-          </Typography>
-          <IconButton onClick={toggleOpen} edge="end">
-            <CloseRounded />
-          </IconButton>
-        </Stack>
-        <Divider />
-      </div>
+      <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <Typography variant="subtitle1" letterSpacing="0.025rem">
+          Settings
+        </Typography>
+        <IconButton onClick={toggleOpen} edge="end">
+          <CloseRounded fontSize="small" />
+        </IconButton>
+      </Stack>
       <div>
         <SectionTitle>Theme</SectionTitle>
         <ThemeMode />

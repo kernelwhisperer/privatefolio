@@ -6,7 +6,7 @@ import { Link } from "react-router-dom"
 
 import { TaskDropdown } from "../Tasks/TaskDropdown"
 import { Logo } from "./Logo"
-import { Settings } from "./SettingsDrawer"
+import { SettingsDrawer } from "./SettingsDrawer"
 
 export function Header() {
   return (
@@ -61,7 +61,7 @@ export function Header() {
               justifyContent="flex-end"
             >
               <TaskDropdown />
-              <Settings />
+              <SettingsDrawer />
             </Grid>
           </Grid>
         </Container>
