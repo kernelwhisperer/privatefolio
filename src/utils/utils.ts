@@ -30,3 +30,6 @@ export const SPRING_CONFIGS = {
 export async function wait(interval: number) {
   return new Promise((resolve) => setTimeout(resolve, interval))
 }
+
+export const SITE_DOMAIN = "https://privatefolio.app"
+export const isProduction = Boolean(window.location.toString().includes(SITE_DOMAIN))

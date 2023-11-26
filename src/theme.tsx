@@ -6,8 +6,10 @@ export const MainFont = "'Roboto Flex', sans-serif"
 export const SerifFont = "'Roboto Serif', serif"
 export const MonoFont = "'IBM Plex Mono', monospace"
 
-const cutCorners =
-  "polygon(12px 0%, calc(100% - 12px) 0%, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0% calc(100% - 12px), 0% 12px)"
+export const bgColor = "rgb(247, 247, 250)"
+
+// const cutCorners =
+//   "polygon(12px 0%, calc(100% - 12px) 0%, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0% calc(100% - 12px), 0% 12px)"
 
 const theme = extendTheme({
   colorSchemes: {
@@ -51,7 +53,7 @@ const theme = extendTheme({
           border: "rgba(0,0,0, 0.05)",
         },
         background: {
-          default: "rgb(247, 247, 250)",
+          default: bgColor,
           paper: "rgb(252, 252, 253)",
         },
         info: {
@@ -81,6 +83,16 @@ const theme = extendTheme({
         },
       },
     },
+    // MuiBackdrop: {
+    //   styleOverrides: {
+    //     root: {
+    //       "@supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none))": {
+    //         backdropFilter: "blur(8px)",
+    //         backgroundColor: "var(--mui-palette-background-backdrop)",
+    //       },
+    //     },
+    //   },
+    // },
     MuiButton: {
       styleOverrides: {
         root: {
@@ -116,15 +128,15 @@ const theme = extendTheme({
         TransitionComponent: Fade,
       },
     },
-    MuiTableRow: {
-      styleOverrides: {
-        root: {
-          "&:nth-of-type(odd)": {
-            // backgroundColor: "rgba(45, 45, 45, 0.5)",
-          },
-        },
-      },
-    },
+    // MuiTableRow: {
+    //   styleOverrides: {
+    //     root: {
+    //       "&:nth-of-type(odd)": {
+    //         backgroundColor: "rgba(45, 45, 45, 0.5)",
+    //       },
+    //     },
+    //   },
+    // },
     MuiTooltip: {
       defaultProps: {
         PopperProps: {

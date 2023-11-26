@@ -1,5 +1,5 @@
 import { FolderOutlined } from "@mui/icons-material"
-import { Skeleton, Stack, Typography } from "@mui/material"
+import { Stack, Typography } from "@mui/material"
 import React, { useEffect, useState } from "react"
 
 import { findExchanges } from "../../api/exchanges-api"
@@ -11,7 +11,7 @@ import { SerifFont } from "../../theme"
 import { FileImportsTable } from "./FileImportsTable"
 
 export function ImportDataPage({ show }: { show: boolean }) {
-  const [rows, setRows] = useState<FileImport[] | null>(null)
+  const [rows, setRows] = useState<FileImport[]>([])
   const [integrationMap, setIntegrationMap] = useState<Record<string, Exchange>>({})
 
   useEffect(() => {
@@ -52,19 +52,7 @@ export function ImportDataPage({ show }: { show: boolean }) {
       <Typography variant="h6" fontFamily={SerifFont}>
         File imports
       </Typography>
-      {rows === null ? (
-        <Stack gap={1.5}>
-          <Stack direction="row" gap={1.5}>
-            <Skeleton variant="rounded" height={56} width={240}></Skeleton>
-            <Skeleton variant="rounded" height={56} width={240}></Skeleton>
-            <Skeleton variant="rounded" height={56} width={240}></Skeleton>
-          </Stack>
-          <Skeleton variant="rounded" height={37}></Skeleton>
-          <Skeleton variant="rounded" height={37}></Skeleton>
-          <Skeleton variant="rounded" height={37}></Skeleton>
-          <Skeleton variant="rounded" height={37}></Skeleton>
-        </Stack>
-      ) : rows.length === 0 ? (
+      {rows.length === 0 ? (
         <FileDrop sx={{ marginX: -2, padding: 4 }}>
           <Stack alignItems="center">
             <FolderOutlined sx={{ height: 64, width: 64 }} />

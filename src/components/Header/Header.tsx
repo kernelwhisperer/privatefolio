@@ -6,7 +6,7 @@ import { Link } from "react-router-dom"
 
 import { TaskDropdown } from "../Tasks/TaskDropdown"
 import { Logo } from "./Logo"
-import { Settings } from "./Settings"
+import { Settings } from "./SettingsDrawer"
 
 export function Header() {
   return (

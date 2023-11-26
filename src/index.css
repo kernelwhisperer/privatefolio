@@ -9,7 +9,7 @@
 
 html {
   scrollbar-width: thin;
-  overflow-y: scroll;
+  /* overflow-y: scroll; TODO */
   -webkit-tap-highlight-color: transparent;
 }
 
