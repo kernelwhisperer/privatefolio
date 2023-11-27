@@ -9,7 +9,6 @@ import {
   TableRow,
   TableRowProps,
   Tooltip,
-  Typography,
 } from "@mui/material"
 import { green, grey, red } from "@mui/material/colors"
 // import TableCell from "@mui/material/Unstable_TableCell2" // TableCell version 2
@@ -17,16 +16,11 @@ import React from "react"
 
 import { AuditLog } from "../../api/audit-logs-api"
 import { AssetAvatar } from "../../components/AssetAvatar"
+import { TimestampCell } from "../../components/TimestampCell"
 import { Truncate } from "../../components/Truncate"
 import { Asset, AuditLogOperation, Exchange } from "../../interfaces"
 import { MonoFont } from "../../theme"
-import {
-  formatDate,
-  formatDateRelative,
-  formatDateWithHour,
-  formatHour,
-  formatNumber,
-} from "../../utils/client-utils"
+import { formatNumber } from "../../utils/client-utils"
 
 interface AuditLogTableRowProps extends TableRowProps {
   assetMap: Record<string, Asset>
@@ -75,41 +69,7 @@ export function AuditLogTableRow(props: AuditLogTableRowProps) {
       // })}
     >
       <TableCell sx={{ maxWidth: 200, minWidth: 200, width: 200 }}>
-        <Tooltip
-          title={
-            <Stack>
-              <span>
-                {formatDateWithHour(timestamp, {
-                  second: "numeric",
-                  timeZoneName: "short",
-                })}{" "}
-                <Typography color={grey[400]} component="i" variant="inherit">
-                  local
-                </Typography>
-              </span>
-              <span>
-                {formatDateWithHour(timestamp, {
-                  second: "numeric",
-                  timeZone: "UTC",
-                  timeZoneName: "short",
-                })}
-              </span>
-            </Stack>
-          }
-        >
-          <span>
-            {relativeTime ? (
-              <span>{formatDateRelative(timestamp)}</span>
-            ) : (
-              <>
-                <span>{formatDate(timestamp)}</span>{" "}
-                <Typography component="span" color="text.secondary" variant="inherit">
-                  at {formatHour(timestamp)}
-                </Typography>
-              </>
-            )}
-          </span>
-        </Tooltip>
+        <TimestampCell timestamp={timestamp} relative={relativeTime} />
       </TableCell>
       <TableCell sx={{ maxWidth: 160, minWidth: 160, width: 140 }}>
         <Stack direction="row" gap={0.5} alignItems="center" component="div">
