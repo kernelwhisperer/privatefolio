@@ -2,12 +2,12 @@ import { Typography } from "@mui/material"
 import React, { useEffect, useState } from "react"
 
 import { findAssets } from "../../api/assets-api"
-import { Balance, getBalances } from "../../api/balances-api"
+import { Balance, computeBalances, getBalances } from "../../api/balances-api"
 import { findExchanges } from "../../api/exchanges-api"
 import { StaggeredList } from "../../components/StaggeredList"
 import { Asset, Exchange } from "../../interfaces"
 import { SerifFont } from "../../theme"
-import { AuditLogsTable } from "./AuditLogTable"
+import { AuditLogsTable } from "../AuditLogsPage/AuditLogTable"
 
 export function BalancesPage({ show }: { show: boolean }) {
   const [rows, setRows] = useState<Balance[]>([])
@@ -16,7 +16,6 @@ export function BalancesPage({ show }: { show: boolean }) {
 
   useEffect(() => {
     getBalances().then(async (balances) => {
-      console.log("📜 LOG > getBalances > balances:", balances)
       setRows(balances)
 
       const symbolMap = {}
@@ -31,6 +30,10 @@ export function BalancesPage({ show }: { show: boolean }) {
 
       const integrations = await findExchanges(integrationMap)
       setIntegrationMap(integrations)
+    })
+
+    computeBalances().then((balances) => {
+      console.log("📜 LOG > computeBalances > balances:", balances)
     })
   }, [])
 
