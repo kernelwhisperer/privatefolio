@@ -1,30 +1,21 @@
-import { AuditLogOperation, Integration } from "../interfaces"
+import { AuditLog } from "../interfaces"
+import { ActiveFilterMap } from "../stores/audit-log-store"
 import { auditLogsDB } from "./database"
 
-export interface AuditLog {
-  _id: string
-  change: string
-  changeN: number
-  integration: Integration
-  operation: AuditLogOperation
-  symbol: string
-  timestamp: number
-  wallet: string
-}
-
-export interface BinanceAuditLog extends AuditLog {
-  account: string
-  coin: string
-  remark: string
-  userId: string
-  utcTime: string
-}
-
-export async function getAuditLogs() {
-  const res = await auditLogsDB.allDocs<AuditLog>({
+/**
+ * Retrieves audit logs from the database.
+ *
+ * @warning Unsorted.
+ */
+export async function getAuditLogs(filters: ActiveFilterMap = {}) {
+  console.log("📜 LOG > getAuditLogs > filters:", filters)
+  const { docs, warning } = await auditLogsDB.find({
     // attachments: true,
     // descending: true,
-    include_docs: true,
+    // include_docs: true,
+    selector: filters,
   })
-  return res.rows.map((row) => row.doc) as AuditLog[]
+  console.warn(warning)
+  return docs as AuditLog[]
+  // return res.rows.map((row) => row.doc)
 }

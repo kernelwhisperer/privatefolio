@@ -103,16 +103,31 @@ export async function parseCsv(text: string, _fileImportId: string) {
   const parser = PARSERS[integration]
 
   const logs: AuditLog[] = []
+  const symbolMap: Record<string, boolean> = {}
+  const walletMap: Record<string, boolean> = {}
+  const operationMap: Partial<Record<AuditLogOperation, boolean>> = {}
 
   // Skip header
   rows.slice(1).forEach((row, index) => {
     try {
       const obj = parser(row, index, _fileImportId)
       logs.push(obj)
+
+      symbolMap[obj.symbol] = true
+      walletMap[obj.wallet] = true
+      operationMap[obj.operation] = true
     } catch {}
   })
 
-  const metadata = { integration, logs: logs.length, rows: rows.length - 1 }
+  const metadata = {
+    integration,
+    logs: logs.length,
+    operations: Object.keys(operationMap) as AuditLogOperation[],
+    rows: rows.length - 1,
+    symbols: Object.keys(symbolMap),
+    wallets: Object.keys(walletMap),
+  }
+  console.log("📜 LOG > parseCsv > metadata:", metadata)
 
   return { logs, metadata }
 }

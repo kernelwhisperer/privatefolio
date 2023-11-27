@@ -9,7 +9,7 @@ export const sumArray = (noArray: number[]) => noArray.reduce((x, y) => x + y, 0
 export const toAsciiSum = pipe(toCharArray, toAsciiArray, sumArray)
 
 const colorArray = [
-  colors.amber[500],
+  colors.amber[800],
   colors.blue[500],
   colors.blueGrey[500],
   colors.brown[500],
@@ -25,7 +25,7 @@ const colorArray = [
   colors.lime[500],
   colors.orange[500],
   colors.pink[500],
-  colors.purple[500],
+  colors.purple[400],
   colors.red[500],
   colors.teal[500],
   colors.yellow[500],

@@ -16,7 +16,7 @@ export interface AssetAvatarProps extends AvatarProps {
   size?: "small" | "large"
 }
 
-const smallSize = 18
+const smallSize = 16
 const largeSize = 40
 
 export function AssetAvatar(props: AssetAvatarProps) {

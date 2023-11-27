@@ -11,6 +11,8 @@ html {
   scrollbar-width: thin;
   /* overflow-y: scroll; TODO */
   -webkit-tap-highlight-color: transparent;
+  /* scrollbar-gutter: stable; */
+  overflow-y: scroll;
 }
 
 ::-webkit-scrollbar-corner {

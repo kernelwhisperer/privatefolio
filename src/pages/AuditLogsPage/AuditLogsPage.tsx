@@ -1,15 +1,24 @@
 import { DataArrayRounded } from "@mui/icons-material"
 import { Link as MuiLink, Paper, Skeleton, Stack, Typography } from "@mui/material"
+import { useStore } from "@nanostores/react"
 import { a, useTransition } from "@react-spring/web"
 import React, { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 
 import { findAssets } from "../../api/assets-api"
-import { AuditLog, getAuditLogs } from "../../api/audit-logs-api"
+import { getAuditLogs } from "../../api/audit-logs-api"
 import { findExchanges } from "../../api/exchanges-api"
+import { FilterChip } from "../../components/FilterChip"
 import { StaggeredList } from "../../components/StaggeredList"
-import { Asset, Exchange } from "../../interfaces"
+import { Asset, AuditLog, Exchange } from "../../interfaces"
+import {
+  $activeFilters,
+  computeFilterMap,
+  FilterKey,
+  LABEL_MAP,
+} from "../../stores/audit-log-store"
 import { SerifFont } from "../../theme"
+import { stringToColor } from "../../utils/color-utils"
 import { SPRING_CONFIGS } from "../../utils/utils"
 import { AuditLogsTable } from "./AuditLogTable"
 
@@ -19,9 +28,15 @@ export function AuditLogsPage({ show }: { show: boolean }) {
   const [assetMap, setAssetMap] = useState<Record<string, Asset>>({})
   const [integrationMap, setIntegrationMap] = useState<Record<string, Exchange>>({})
 
+  const activeFilters = useStore($activeFilters)
+
+  useEffect(() => {
+    computeFilterMap().then()
+  }, [])
+
   useEffect(() => {
     const start = Date.now()
-    getAuditLogs().then(async (auditLogs) => {
+    getAuditLogs(activeFilters).then(async (auditLogs) => {
       console.log(`Query took ${Date.now() - start}ms (audit logs)`)
       setRows(auditLogs)
       setLoading(false)
@@ -39,7 +54,7 @@ export function AuditLogsPage({ show }: { show: boolean }) {
       const integrations = await findExchanges(integrationMap)
       setIntegrationMap(integrations)
     })
-  }, [])
+  }, [activeFilters])
 
   const transitions = useTransition(loading, {
     config: SPRING_CONFIGS.ultra,
@@ -89,7 +104,7 @@ export function AuditLogsPage({ show }: { show: boolean }) {
               <Skeleton variant="rounded" height={37}></Skeleton>
               <Skeleton variant="rounded" height={37}></Skeleton>
             </Stack>
-          ) : rows.length === 0 ? (
+          ) : rows.length === 0 && Object.keys(activeFilters).length === 0 ? (
             <Paper sx={{ marginX: { lg: -2 }, padding: 4 }}>
               <Typography color="text.secondary" variant="body2" component="div">
                 <Stack alignItems="center">
@@ -108,7 +123,21 @@ export function AuditLogsPage({ show }: { show: boolean }) {
               </Typography>
             </Paper>
           ) : (
-            <AuditLogsTable rows={rows} assetMap={assetMap} integrationMap={integrationMap} />
+            <Stack gap={1}>
+              <Stack direction="row" spacing={1} marginLeft={0}>
+                {Object.keys(activeFilters).map((x) => (
+                  <FilterChip
+                    key={x}
+                    label={`${LABEL_MAP[x]} = ${activeFilters[x]}`}
+                    color={stringToColor(x)}
+                    onDelete={() => {
+                      $activeFilters.setKey(x as FilterKey, undefined)
+                    }}
+                  />
+                ))}
+              </Stack>
+              <AuditLogsTable rows={rows} assetMap={assetMap} integrationMap={integrationMap} />
+            </Stack>
           )}
         </a.div>
       ))}

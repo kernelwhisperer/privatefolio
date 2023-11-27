@@ -109,6 +109,7 @@ export function AuditLogTableRow(props: AuditLogTableRowProps) {
             {formatNumber(changeN, {
               maximumFractionDigits: 2, // TODO make this configurable
               minimumFractionDigits: 2,
+              signDisplay: "always",
             })}
           </span>
         </Tooltip>
@@ -124,6 +125,17 @@ export function AuditLogTableRow(props: AuditLogTableRowProps) {
           <AssetAvatar size="small" src={assetMap[symbol]?.image} alt={symbol} />
           <span>{symbol}</span>
         </Stack>
+      </TableCell>
+      <TableCell align="right" sx={{ fontFamily: MonoFont }}>
+        <Tooltip title={<Box sx={{ fontFamily: MonoFont }}>{change}</Box>}>
+          <span>
+            {formatNumber(0, {
+              maximumFractionDigits: 2, // TODO make this configurable
+              minimumFractionDigits: 2,
+              // signDisplay: "always",
+            })}
+          </span>
+        </Tooltip>
       </TableCell>
     </TableRow>
   )

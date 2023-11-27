@@ -23,8 +23,8 @@ export function ImportDataPage({ show }: { show: boolean }) {
 
       const integrationMap = {}
       rows.forEach((x) => {
-        if (x.integration) {
-          integrationMap[x.integration] = true
+        if (x.meta?.integration) {
+          integrationMap[x.meta.integration] = true
         }
       })
 

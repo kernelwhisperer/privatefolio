@@ -1,5 +1,7 @@
 import { atom } from "nanostores"
 
+import { logAtoms } from "../utils/utils"
+
 export enum TaskPriority {
   Low = 2,
   Medium = 5,
@@ -21,6 +23,8 @@ export interface FinishedTask {
 export const $taskHistory = atom<FinishedTask[]>([])
 export const $taskQueue = atom<Task[]>([])
 export const $pendingTask = atom<Task | undefined>()
+
+logAtoms({ $pendingTask, $taskHistory, $taskQueue })
 
 let isProcessing = false // Flag to check if processQueue is already running
 

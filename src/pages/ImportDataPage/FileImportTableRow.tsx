@@ -27,7 +27,8 @@ interface FileImportTableRowProps extends TableRowProps {
 
 export function FileImportTableRow(props: FileImportTableRowProps) {
   const { fileImport, integrationMap, relativeTime, ...rest } = props
-  const { name, integration, timestamp, lastModified, size, logs } = fileImport
+  const { name, meta, timestamp, lastModified, size } = fileImport
+  const integration = meta?.integration
 
   const [loading, setLoading] = useState(false)
 
@@ -80,7 +81,7 @@ export function FileImportTableRow(props: FileImportTableRowProps) {
         sx={{ fontFamily: MonoFont, maxWidth: 160, minWidth: 160, width: 140 }}
         align="right"
       >
-        {typeof logs === "undefined" ? <Skeleton></Skeleton> : formatNumber(logs)}
+        {!meta ? <Skeleton></Skeleton> : formatNumber(meta.logs)}
       </TableCell>
       <TableCell sx={{ maxWidth: 40, minWidth: 40, width: 40 }}>
         <Tooltip title="Delete file import (including its audit logs)">

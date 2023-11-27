@@ -57,3 +57,48 @@ export interface Exchange {
   url: string
   year: number
 }
+
+export interface AuditLog {
+  _id: string
+  change: string
+  changeN: number
+  integration: Integration
+  operation: AuditLogOperation
+  symbol: string
+  timestamp: number
+  wallet: string
+}
+
+export interface BinanceAuditLog extends AuditLog {
+  account: string
+  coin: string
+  remark: string
+  userId: string
+  utcTime: string
+}
+
+export interface FileImport {
+  _attachments: {
+    0: {
+      content_type: string
+      /**
+       * base64 encoded
+       */
+      data: string
+    }
+  }
+  _id: string
+  _rev: string
+  lastModified: number
+  meta?: {
+    integration: string
+    logs: number
+    operations: AuditLogOperation[]
+    rows: number
+    symbols: string[]
+    wallets: string[]
+  }
+  name: string
+  size: number
+  timestamp: number
+}

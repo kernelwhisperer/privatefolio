@@ -1,6 +1,4 @@
-import { AccessTimeFilledRounded, AccessTimeRounded, FilterListRounded } from "@mui/icons-material"
-import { IconButton, Paper, Tooltip } from "@mui/material"
-import Box from "@mui/material/Box"
+import { Paper } from "@mui/material"
 import Table from "@mui/material/Table"
 import TableBody from "@mui/material/TableBody"
 import TableCell from "@mui/material/TableCell"
@@ -8,41 +6,39 @@ import TableContainer from "@mui/material/TableContainer"
 import MuiTableHead from "@mui/material/TableHead"
 import TablePagination from "@mui/material/TablePagination"
 import TableRow from "@mui/material/TableRow"
-import TableSortLabel from "@mui/material/TableSortLabel"
-import { visuallyHidden } from "@mui/utils"
 import React, { ChangeEvent, MouseEvent, useCallback, useMemo, useState } from "react"
 
-import { AuditLog } from "../../api/audit-logs-api"
-import { Asset, Exchange } from "../../interfaces"
+import { Asset, AuditLog, Exchange } from "../../interfaces"
 import { getComparator, Order } from "../../utils/table-utils"
+import { AuditLogTableHead, AuditLogTableHeadProps } from "./AuditLogTableHead"
 import { AuditLogTableRow } from "./AuditLogTableRow"
 
 type SortableKeys = keyof AuditLog
 
 interface HeadCell {
+  filterable?: boolean
   key: SortableKeys
   label: string
   numeric?: boolean
-  // width?: number
 }
 
 const HEAD_CELLS: HeadCell[] = [
   {
     key: "timestamp",
     label: "Timestamp",
-    // width: 172,
   },
   {
+    filterable: true,
     key: "integration",
     label: "Integration",
-    // width: 40,
   },
   {
+    filterable: true,
     key: "wallet",
     label: "Wallet",
-    // width: 40,
   },
   {
+    filterable: true,
     key: "operation",
     label: "Operation",
   },
@@ -52,28 +48,18 @@ const HEAD_CELLS: HeadCell[] = [
     numeric: true,
   },
   {
+    filterable: true,
     key: "symbol",
     label: "Asset",
-    // width: 40,
   },
-  // TODO USD value
+  {
+    key: "balance",
+    label: "New balance",
+    numeric: true,
+  },
 ]
 
-interface TableHeadProps {
-  onRelativeTime: (event: React.MouseEvent<unknown>) => void
-  onSort: (event: React.MouseEvent<unknown>, property: SortableKeys) => void
-  order: Order
-  orderBy: string
-  relativeTime: boolean
-}
-
-function TableHead(props: TableHeadProps) {
-  const { order, orderBy, onSort, onRelativeTime, relativeTime } = props
-
-  const createSortHandler = (property: SortableKeys) => (event: React.MouseEvent<unknown>) => {
-    onSort(event, property)
-  }
-
+function TableHead(props: Omit<AuditLogTableHeadProps, "headCell">) {
   return (
     <MuiTableHead
       sx={{
@@ -85,47 +71,13 @@ function TableHead(props: TableHeadProps) {
       }}
     >
       <TableRow>
-        {HEAD_CELLS.map(({ key, numeric, label }) => (
+        {HEAD_CELLS.map((headCell, index) => (
           <TableCell
-            key={key}
-            align={numeric ? "right" : "left"}
+            key={index}
             padding="normal"
-            sortDirection={orderBy === key ? order : false}
-            sx={{ flexDirection: "row" }}
+            sortDirection={props.orderBy === headCell.key ? props.order : false}
           >
-            {key === "timestamp" && (
-              <Tooltip title={`Switch to ${relativeTime ? "absolute" : "relative"} time`}>
-                <IconButton
-                  size="small"
-                  sx={{ marginRight: 0.5 }}
-                  edge="start"
-                  onClick={onRelativeTime}
-                >
-                  {relativeTime ? (
-                    <AccessTimeRounded fontSize="inherit" />
-                  ) : (
-                    <AccessTimeFilledRounded fontSize="inherit" />
-                  )}
-                </IconButton>
-              </Tooltip>
-            )}
-            <Tooltip title={`Filter by ${label}`}>
-              <IconButton size="small" sx={{ marginRight: 0.5 }} edge="start">
-                <FilterListRounded fontSize="inherit" />
-              </IconButton>
-            </Tooltip>
-            <TableSortLabel
-              active={orderBy === key}
-              direction={orderBy === key ? order : "asc"}
-              onClick={createSortHandler(key)}
-            >
-              {label}
-              {orderBy === key ? (
-                <Box component="span" sx={visuallyHidden}>
-                  {order === "desc" ? "sorted descending" : "sorted ascending"}
-                </Box>
-              ) : null}
-            </TableSortLabel>
+            <AuditLogTableHead headCell={headCell} {...props} />
           </TableCell>
         ))}
       </TableRow>
@@ -237,7 +189,6 @@ export function AuditLogsTable(props: AuditLogsTableProps) {
           showLastButton
         />
       </Paper>
-      {/* <Drawer open /> */}
     </>
   )
 }

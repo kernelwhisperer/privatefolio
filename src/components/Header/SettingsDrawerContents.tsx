@@ -16,7 +16,7 @@ import { ReducedMotion } from "./ReducedMotion"
 import { ThemeMode } from "./ThemeMode"
 
 const CustomLink = ({ children, ...rest }: any) => (
-  <MenuItem component={MuiLink} tabIndex={0} role="button" {...rest}>
+  <MenuItem component={MuiLink} tabIndex={0} role="button" sx={{ borderRadius: 0.5 }} {...rest}>
     <Typography
       variant="h6"
       component="div"
@@ -51,7 +51,7 @@ export const SettingsDrawerContents = ({
   toggleOpen,
 }: MenuContentsProps) => {
   return (
-    <StaggeredList padding={2} gap={4} show={open} secondary>
+    <StaggeredList padding={2} gap={4} show={open} secondary sx={{ overflowX: "hidden" }}>
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <Typography variant="subtitle1" letterSpacing="0.025rem">
           Settings

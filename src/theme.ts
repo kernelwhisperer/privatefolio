@@ -10,6 +10,28 @@ export const bgColor = "rgb(242, 242, 245)"
 // const cutCorners =
 //   "polygon(12px 0%, calc(100% - 12px) 0%, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0% calc(100% - 12px), 0% 12px)"
 
+declare module "@mui/material/Button" {
+  interface ButtonPropsColorOverrides {
+    accent: true
+  }
+}
+
+declare module "@mui/material/Badge" {
+  interface BadgePropsColorOverrides {
+    accent: true
+  }
+}
+
+declare module "@mui/material" {
+  interface Palette {
+    accent: Palette["primary"]
+  }
+
+  interface PaletteOptions {
+    accent?: PaletteOptions["primary"]
+  }
+}
+
 export const theme: CssVarsThemeOptions = {
   colorSchemes: {
     dark: {
@@ -21,6 +43,9 @@ export const theme: CssVarsThemeOptions = {
           // border: "none",
           border: "rgba(255,255,255, 0.05)",
         },
+        accent: {
+          main: "rgb(136, 101, 160)",
+        },
         // Tooltip: {
         //   bg: "rgb(240, 240, 240)",
         // },
@@ -28,14 +53,11 @@ export const theme: CssVarsThemeOptions = {
           default: "rgb(40, 40, 40)",
           paper: "rgb(45, 45, 45)",
         },
-        // secondary: {
-        //   main: "rgb(0, 211, 149)",
-        // },
         info: {
           main: blue.A100,
         },
         primary: {
-          main: "rgb(136, 101, 160)",
+          main: "rgb(200,200,200)",
         },
         secondary: {
           main: "rgb(160, 160, 160)",
@@ -49,6 +71,9 @@ export const theme: CssVarsThemeOptions = {
       palette: {
         TableCell: {
           border: "rgba(0,0,0, 0.05)",
+        },
+        accent: {
+          main: "rgb(136, 101, 160)",
         },
         background: {
           default: bgColor,
@@ -81,6 +106,42 @@ export const theme: CssVarsThemeOptions = {
         },
       },
     },
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          borderRadius: "32px",
+          textTransform: "none",
+        },
+      },
+    },
+    MuiCheckbox: {
+      styleOverrides: {
+        root: {
+          "& svg": {
+            height: 16,
+            width: 16,
+          },
+          padding: "6px",
+        },
+      },
+    },
+    MuiChip: {
+      styleOverrides: {
+        root: {
+          borderRadius: 2,
+        },
+      },
+    },
+    MuiDrawer: {
+      defaultProps: {
+        disableScrollLock: true,
+      },
+    },
+    MuiList: {
+      defaultProps: {
+        disablePadding: true,
+      },
+    },
     // MuiBackdrop: {
     //   styleOverrides: {
     //     root: {
@@ -91,19 +152,9 @@ export const theme: CssVarsThemeOptions = {
     //     },
     //   },
     // },
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          borderRadius: "32px",
-          textTransform: "none",
-        },
-      },
-    },
-    MuiChip: {
-      styleOverrides: {
-        root: {
-          borderRadius: 2,
-        },
+    MuiMenuItem: {
+      defaultProps: {
+        color: "secondary",
       },
     },
     MuiPaper: {
@@ -124,6 +175,15 @@ export const theme: CssVarsThemeOptions = {
     MuiPopover: {
       defaultProps: {
         TransitionComponent: Fade,
+      },
+    },
+    MuiSelect: {
+      defaultProps: {
+        MenuProps: {
+          PaperProps: {
+            elevation: 2,
+          },
+        },
       },
     },
     // MuiTableRow: {

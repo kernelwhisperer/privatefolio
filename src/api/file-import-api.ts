@@ -1,27 +1,7 @@
+import { FileImport } from "../interfaces"
 import { parseCsv } from "../utils/csv-utils"
 import { hashString } from "../utils/utils"
 import { auditLogsDB, fileImportsDB } from "./database"
-
-export interface FileImport {
-  _attachments: {
-    0: {
-      content_type: string
-      /**
-       * base64 encoded
-       */
-      data: string
-    }
-  }
-  _id: string
-  _rev: string
-  integration?: string
-  lastModified: number
-  logs?: number
-  name: string
-  rows?: number
-  size: number
-  timestamp: number
-}
 
 export interface NewFileImport extends Omit<FileImport, "_attachments"> {
   _attachments: {
@@ -43,7 +23,7 @@ export async function processFileImport(_id: string) {
   // save metadata
   await fileImportsDB.put<FileImport>({
     ...fileImport,
-    ...metadata,
+    meta: metadata,
   })
 }
 
