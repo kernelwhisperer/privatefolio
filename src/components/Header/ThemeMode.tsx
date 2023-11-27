@@ -25,23 +25,34 @@ export function ThemeMode() {
       <Tabs
         variant="fullWidth"
         textColor="inherit"
-        indicatorColor="secondary"
         value={mode === "light" ? 0 : mode === "system" ? 1 : 2}
         onChange={handleTabChange}
-        sx={{
-          background: "var(--mui-palette-background-paper)",
-          borderRadius: 5,
+        sx={(theme) => ({
+          background: "var(--mui-palette-background-default)",
+          borderRadius: 1,
           padding: 0.5,
           [`& .${tabsClasses.indicator}`]: {
-            borderRadius: 5,
+            background: "var(--mui-palette-background-paper)",
+            backgroundImage: "var(--mui-overlays-2)",
+            borderRadius: 0.75,
             height: "100%",
           },
+          [`& .${tabsClasses.flexContainer}`]: {
+            gap: 0.5,
+          },
           [`& .${tabsClasses.flexContainer} > button`]: {
+            borderRadius: 0.75,
             minHeight: 20,
             textTransform: "none !important",
+            transition: theme.transitions.create("background"),
+            willChange: "background",
             zIndex: 2,
           },
-        }}
+          [`& .${tabsClasses.flexContainer} > button:hover`]: {
+            background:
+              theme.palette.mode === "dark" ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.75)",
+          },
+        })}
       >
         <Tab label="Light" icon={<LightMode />} iconPosition="start" disableRipple />
         <Tab label="System" icon={<SettingsBrightness />} iconPosition="start" disableRipple />

@@ -1,17 +1,16 @@
-import { Fade } from "@mui/material"
+import { CssVarsThemeOptions, Fade } from "@mui/material"
 import { blue, grey } from "@mui/material/colors"
-import { experimental_extendTheme as extendTheme } from "@mui/material/styles"
 
 export const MainFont = "'Roboto Flex', sans-serif"
 export const SerifFont = "'Roboto Serif', serif"
 export const MonoFont = "'IBM Plex Mono', monospace"
 
-export const bgColor = "rgb(247, 247, 250)"
+export const bgColor = "rgb(242, 242, 245)"
 
 // const cutCorners =
 //   "polygon(12px 0%, calc(100% - 12px) 0%, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0% calc(100% - 12px), 0% 12px)"
 
-const theme = extendTheme({
+export const theme: CssVarsThemeOptions = {
   colorSchemes: {
     dark: {
       palette: {
@@ -36,7 +35,6 @@ const theme = extendTheme({
           main: blue.A100,
         },
         primary: {
-          // main: "rgb(150 157 185)",
           main: "rgb(136, 101, 160)",
         },
         secondary: {
@@ -54,14 +52,14 @@ const theme = extendTheme({
         },
         background: {
           default: bgColor,
-          paper: "rgb(252, 252, 253)",
+          paper: "rgb(255, 255, 255)",
         },
         info: {
           main: blue.A400,
         },
-        // primary: {
-        //   main: "rgb(233 141 50)",
-        // },
+        primary: {
+          main: "rgb(136, 101, 160)",
+        },
         secondary: {
           main: "rgb(120, 120, 120)",
         },
@@ -197,7 +195,4 @@ const theme = extendTheme({
     },
     fontFamily: MainFont,
   },
-})
-// console.log("📜 LOG > theme:", theme)
-
-export default theme
+}

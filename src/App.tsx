@@ -7,20 +7,14 @@ import { Header } from "./components/Header/Header"
 import { AuditLogsPage } from "./pages/AuditLogsPage/AuditLogsPage"
 import { BalancesPage } from "./pages/BalancesPage/BalancesPage"
 import { ImportDataPage } from "./pages/ImportDataPage/ImportDataPage"
-
-// const Offset = styled("div")(({ theme }) => theme.mixins.toolbar)
-
-// const StyledContainer = styled(Container)`
-//   // margin-top: ${(props) => props.theme.mixins.toolbar.minHeight}px;
-//   background: red;
-// `
+import { SPRING_CONFIGS } from "./utils/utils"
 
 export default function App() {
   const location = useLocation()
   const { pathname } = location
 
   const transitions = useTransition(location, {
-    config: { friction: 160, mass: 5, tension: 2500 },
+    config: SPRING_CONFIGS.veryQuick,
     enter: {
       // delay: 133,
       opacity: 2,
@@ -34,7 +28,6 @@ export default function App() {
   return (
     <>
       <Header />
-      {/* <Offset /> */}
       <Container maxWidth="lg" sx={{ paddingTop: 3 }}>
         {transitions((styles, item) => (
           <a.div

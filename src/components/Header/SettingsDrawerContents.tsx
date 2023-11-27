@@ -11,7 +11,6 @@ import React from "react"
 
 import { AppVerProps, PopoverToggleProps } from "../../stores/app-store"
 import { MonoFont } from "../../theme"
-import { SPRING_CONFIGS } from "../../utils/utils"
 import { StaggeredList } from "../StaggeredList"
 import { ReducedMotion } from "./ReducedMotion"
 import { ThemeMode } from "./ThemeMode"
@@ -52,12 +51,7 @@ export const SettingsDrawerContents = ({
   toggleOpen,
 }: MenuContentsProps) => {
   return (
-    <StaggeredList
-      config={open ? SPRING_CONFIGS.quick : SPRING_CONFIGS.veryQuick}
-      padding={2}
-      gap={4}
-      show={open}
-    >
+    <StaggeredList padding={2} gap={4} show={open} secondary>
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <Typography variant="subtitle1" letterSpacing="0.025rem">
           Settings
@@ -76,7 +70,7 @@ export const SettingsDrawerContents = ({
       </div>
       <div role="list" aria-labelledby="social-links">
         <SectionTitle id="social-links" role="listitem">
-          Social
+          Community
         </SectionTitle>
         <CustomLink target="_blank" href="https://t.me/protofun" role="listitem">
           <Telegram fontSize="small" />
