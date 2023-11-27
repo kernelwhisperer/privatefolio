@@ -121,9 +121,7 @@ export function AuditLogTableRow(props: AuditLogTableRowProps) {
           component="div"
           // justifyContent="flex-end"
         >
-          <AssetAvatar size="small" src={assetMap[symbol]?.image} alt={symbol}>
-            {symbol}
-          </AssetAvatar>
+          <AssetAvatar size="small" src={assetMap[symbol]?.image} alt={symbol} />
           <span>{symbol}</span>
         </Stack>
       </TableCell>

@@ -24,9 +24,7 @@ export function AssetChange(props: AssetChangeProps) {
           {label}
         </Typography>
         <Stack direction="row" gap={1}>
-          <AssetAvatar src={imageSrc} alt={symbol}>
-            {symbol}
-          </AssetAvatar>
+          <AssetAvatar src={imageSrc} alt={symbol} />
           <Stack alignSelf="center">
             <Typography
               fontFamily={MonoFont}

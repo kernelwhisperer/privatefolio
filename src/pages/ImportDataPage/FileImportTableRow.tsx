@@ -1,6 +1,5 @@
 import { HighlightOffRounded } from "@mui/icons-material"
 import {
-  Avatar,
   CircularProgress,
   IconButton,
   Skeleton,
@@ -14,6 +13,7 @@ import {
 import React, { MouseEvent, useState } from "react"
 
 import { FileImport, removeFileImport } from "../../api/file-import-api"
+import { IntegrationAvatar } from "../../components/IntegrationAvatar"
 import { TimestampCell } from "../../components/TimestampCell"
 import { Exchange } from "../../interfaces"
 import { MonoFont } from "../../theme"
@@ -65,13 +65,9 @@ export function FileImportTableRow(props: FileImportTableRowProps) {
       <TableCell sx={{ maxWidth: 160, minWidth: 160, width: 140 }}>
         {integration ? (
           <Stack direction="row" gap={0.5} alignItems="center" component="div">
-            <Avatar
+            <IntegrationAvatar
+              size="small"
               src={integrationMap[integration]?.image}
-              sx={{
-                borderRadius: "2px",
-                height: 16,
-                width: 16,
-              }}
               alt={integration}
             />
             <span>{integration}</span>

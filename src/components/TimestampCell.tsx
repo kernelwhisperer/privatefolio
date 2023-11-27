@@ -1,4 +1,5 @@
 import { Stack, Tooltip, Typography } from "@mui/material"
+import { grey } from "@mui/material/colors"
 import React from "react"
 
 import {
@@ -25,7 +26,7 @@ export function TimestampCell(props: TimestampCellProps) {
               second: "numeric",
               timeZoneName: "short",
             })}{" "}
-            <Typography color={"text.secondary"} component="i" variant="inherit">
+            <Typography color={grey[400]} component="i" variant="inherit">
               local
             </Typography>
           </span>
@@ -35,6 +36,13 @@ export function TimestampCell(props: TimestampCellProps) {
               timeZone: "UTC",
               timeZoneName: "short",
             })}
+          </span>
+          <span>
+            {/* TODO this should go under a DevMode/Debug option */}
+            {timestamp}{" "}
+            <Typography color={grey[400]} component="i" variant="inherit">
+              unix timestamp
+            </Typography>
           </span>
         </Stack>
       }
