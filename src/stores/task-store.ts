@@ -65,7 +65,6 @@ async function processQueue() {
 export function enqueueTask(item: Task & { priority?: TaskPriority }) {
   const newQueue = [...$taskQueue.get(), item]
   newQueue.sort((a, b) => b.priority - a.priority)
-  console.log("📜 LOG > enqueueTask > newQueue:", newQueue)
   $taskQueue.set(newQueue)
 
   if (!isProcessing) {

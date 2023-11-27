@@ -162,7 +162,7 @@ export function FileImportTableRow(props: FileImportTableRowProps) {
         {typeof logs === "undefined" ? <Skeleton></Skeleton> : formatNumber(logs)}
       </TableCell>
       <TableCell sx={{ maxWidth: 40, minWidth: 40, width: 40 }}>
-        <Tooltip title="Delete">
+        <Tooltip title="Delete file import (including its audit logs)">
           <IconButton
             size="small"
             sx={{ height: 28, marginLeft: -1 }}

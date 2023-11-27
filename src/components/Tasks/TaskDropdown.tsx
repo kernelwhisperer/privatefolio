@@ -12,7 +12,7 @@ import {
 import { useStore } from "@nanostores/react"
 import React, { useState } from "react"
 
-import { $pendingTask, $taskHistory, $taskQueue } from "../../api/tasks-api"
+import { $pendingTask, $taskHistory, $taskQueue } from "../../stores/task-store"
 import { MonoFont } from "../../theme"
 import { formatNumber } from "../../utils/client-utils"
 import { Truncate } from "../Truncate"

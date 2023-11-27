@@ -36,11 +36,9 @@ export async function processFileImport(_id: string) {
   // parse file
   const fileImport = await fileImportsDB.get<FileImport>(_id, { attachments: true })
   const { metadata, logs } = await parseCsv(atob(fileImport._attachments[0].data), fileImport._id)
-  console.log("📜 LOG > setTimeout > metadata, logs:", metadata, logs)
 
   // save logs
-  const res = await auditLogsDB.bulkDocs(logs)
-  console.log("📜 LOG > setTimeout > res:", res)
+  await auditLogsDB.bulkDocs(logs)
 
   // save metadata
   await fileImportsDB.put<FileImport>({
@@ -86,14 +84,12 @@ export async function getFileImports() {
 }
 
 export async function removeFileImport(fileImport: FileImport) {
-  console.log("📜 LOG > removeFileImport > fileImport._id:", fileImport._id)
   const logs = await auditLogsDB.allDocs({
     // Prefix search
     // https://pouchdb.com/api.html#batch_fetch
     endkey: `${fileImport._id}\ufff0`,
     startkey: fileImport._id,
   } as PouchDB.Core.AllDocsWithinRangeOptions)
-  console.log("📜 LOG > removeFileImport > res:", logs)
 
   await auditLogsDB.bulkDocs(
     logs.rows.map((row) => ({ _deleted: true, _id: row.id, _rev: row.value.rev }))

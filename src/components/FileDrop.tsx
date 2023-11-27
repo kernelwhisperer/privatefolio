@@ -2,7 +2,7 @@ import { Paper, PaperProps, Stack, Typography, useTheme } from "@mui/material"
 import React, { useRef, useState } from "react"
 
 import { addFileImport, processFileImport } from "../api/file-import-api"
-import { enqueueTask } from "../api/tasks-api"
+import { enqueueTask } from "../stores/task-store"
 // import PouchDB from "pouchdb"; // Uncomment to use PouchDB
 
 export function FileDrop(props: PaperProps) {
