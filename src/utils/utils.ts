@@ -40,10 +40,10 @@ export const isProduction = Boolean(window.location.toString().includes(SITE_DOM
 export function logAtoms(atoms: { [key: string]: AnyStore }) {
   if (!isProduction) {
     logger(atoms, {
-      // messages: {
-      //   mount: false,
-      //   unmount: false,
-      // },
+      messages: {
+        mount: false,
+        unmount: false,
+      },
     })
   }
 }

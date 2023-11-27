@@ -1,14 +1,18 @@
-import { Paper } from "@mui/material"
+import { TimerSharp } from "@mui/icons-material"
+import { Paper, Stack, Typography } from "@mui/material"
 import Table from "@mui/material/Table"
 import TableBody from "@mui/material/TableBody"
 import TableCell from "@mui/material/TableCell"
 import TableContainer from "@mui/material/TableContainer"
 import MuiTableHead from "@mui/material/TableHead"
-import TablePagination from "@mui/material/TablePagination"
+import TablePagination, { tablePaginationClasses } from "@mui/material/TablePagination"
 import TableRow from "@mui/material/TableRow"
 import React, { ChangeEvent, MouseEvent, useCallback, useMemo, useState } from "react"
 
+import { TablePaginationActions } from "../../components/TableActions"
 import { Asset, AuditLog, Exchange } from "../../interfaces"
+import { MonoFont } from "../../theme"
+import { formatNumber } from "../../utils/client-utils"
 import { getComparator, Order } from "../../utils/table-utils"
 import { AuditLogTableHead, AuditLogTableHeadProps } from "./AuditLogTableHead"
 import { AuditLogTableRow } from "./AuditLogTableRow"
@@ -88,15 +92,16 @@ function TableHead(props: Omit<AuditLogTableHeadProps, "headCell">) {
 type AuditLogsTableProps = {
   assetMap: Record<string, Asset>
   integrationMap: Record<string, Exchange>
+  queryTime: number
   rows: AuditLog[]
 }
 
 export function AuditLogsTable(props: AuditLogsTableProps) {
-  const { rows, assetMap, integrationMap } = props
+  const { rows, assetMap, integrationMap, queryTime } = props
   const [order, setOrder] = useState<Order>("desc")
   const [orderBy, setOrderBy] = useState<SortableKeys>("timestamp")
   const [page, setPage] = useState(0)
-  const [rowsPerPage, setRowsPerPage] = useState(25)
+  const [rowsPerPage, setRowsPerPage] = useState(10)
   const [relativeTime, setRelativeTime] = useState(true)
 
   const handleSort = useCallback(
@@ -172,22 +177,76 @@ export function AuditLogsTable(props: AuditLogsTableProps) {
             </TableBody>
           </Table>
         </TableContainer>
-        <TablePagination
-          component="div"
+        <Stack
+          direction="row"
           sx={{
             background: "var(--mui-palette-background-paper)",
             bottom: 0,
             position: "sticky",
           }}
-          rowsPerPageOptions={[10, 25, 50, 100]}
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-          showFirstButton
-          showLastButton
-        />
+          justifyContent="space-between"
+          alignItems="center"
+        >
+          <Typography
+            variant="caption"
+            color="text.secondary"
+            component="div"
+            padding={1.5}
+            fontFamily={MonoFont}
+          >
+            <Stack direction="row" gap={1}>
+              <TimerSharp fontSize="small" />
+              <span>
+                {formatNumber(queryTime / 1000, {
+                  maximumFractionDigits: 2,
+                  minimumFractionDigits: 2,
+                })}
+                s
+              </span>
+            </Stack>
+          </Typography>
+          <TablePagination
+            component="div"
+            sx={{
+              border: 0,
+              width: "100%",
+              [`& .${tablePaginationClasses.spacer}`]: {
+                flexBasis: 0,
+                flexGrow: 0,
+              },
+              [`& .${tablePaginationClasses.input}`]: {
+                marginRight: "auto",
+              },
+              [`& .${tablePaginationClasses.toolbar}`]: {
+                paddingLeft: 0,
+              },
+              [`& .${tablePaginationClasses.select}, & .${tablePaginationClasses.selectIcon}`]: {
+                color: "var(--mui-palette-text-secondary)",
+              },
+            }}
+            rowsPerPageOptions={[10, 25, 50, 100]}
+            count={rows.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+            labelRowsPerPage=""
+            labelDisplayedRows={({ from, to, count }) => (
+              <>
+                {from}-{to}{" "}
+                <Typography variant="body2" component="span" color="text.secondary">
+                  of {count}
+                </Typography>
+              </>
+            )}
+            slotProps={{
+              select: {
+                renderValue: (value) => `${value} rows per page`,
+              },
+            }}
+            ActionsComponent={TablePaginationActions}
+          />
+        </Stack>
       </Paper>
     </>
   )

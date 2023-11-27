@@ -19,10 +19,11 @@ import {
 } from "../../stores/audit-log-store"
 import { SerifFont } from "../../theme"
 import { stringToColor } from "../../utils/color-utils"
-import { SPRING_CONFIGS } from "../../utils/utils"
+import { SPRING_CONFIGS, wait } from "../../utils/utils"
 import { AuditLogsTable } from "./AuditLogTable"
 
 export function AuditLogsPage({ show }: { show: boolean }) {
+  const [queryTime, setQueryTime] = useState<number>(0)
   const [loading, setLoading] = useState<boolean>(true)
   const [rows, setRows] = useState<AuditLog[]>([])
   const [assetMap, setAssetMap] = useState<Record<string, Asset>>({})
@@ -36,32 +37,36 @@ export function AuditLogsPage({ show }: { show: boolean }) {
 
   useEffect(() => {
     const start = Date.now()
-    getAuditLogs(activeFilters).then(async (auditLogs) => {
-      console.log(`Query took ${Date.now() - start}ms (audit logs)`)
-      setRows(auditLogs)
-      setLoading(false)
+    // TODO make this cancelable
+    wait(200)
+      .then(() => getAuditLogs(activeFilters))
+      .then(async (auditLogs) => {
+        console.log(`Query took ${Date.now() - start}ms (audit logs)`)
+        setRows(auditLogs)
+        setLoading(false)
+        setQueryTime(Date.now() - start)
 
-      const symbolMap = {}
-      const integrationMap = {}
-      auditLogs.forEach((x) => {
-        symbolMap[x.symbol] = true
-        integrationMap[x.integration] = true
+        const symbolMap = {}
+        const integrationMap = {}
+        auditLogs.forEach((x) => {
+          symbolMap[x.symbol] = true
+          integrationMap[x.integration] = true
+        })
+
+        const assets = await findAssets(symbolMap)
+        setAssetMap(assets)
+
+        const integrations = await findExchanges(integrationMap)
+        setIntegrationMap(integrations)
       })
-
-      const assets = await findAssets(symbolMap)
-      setAssetMap(assets)
-
-      const integrations = await findExchanges(integrationMap)
-      setIntegrationMap(integrations)
-    })
   }, [activeFilters])
 
   const transitions = useTransition(loading, {
-    config: SPRING_CONFIGS.ultra,
-    enter: { opacity: 1, y: 0 },
+    config: SPRING_CONFIGS.veryQuick,
+    enter: { opacity: 2 },
     exitBeforeEnter: true,
-    from: { opacity: 0, y: -10 },
-    leave: { opacity: 0, y: 10 },
+    from: { opacity: 2 },
+    leave: { opacity: 1 },
   })
 
   return (
@@ -124,19 +129,26 @@ export function AuditLogsPage({ show }: { show: boolean }) {
             </Paper>
           ) : (
             <Stack gap={1}>
-              <Stack direction="row" spacing={1} marginLeft={0}>
-                {Object.keys(activeFilters).map((x) => (
-                  <FilterChip
-                    key={x}
-                    label={`${LABEL_MAP[x]} = ${activeFilters[x]}`}
-                    color={stringToColor(x)}
-                    onDelete={() => {
-                      $activeFilters.setKey(x as FilterKey, undefined)
-                    }}
-                  />
-                ))}
-              </Stack>
-              <AuditLogsTable rows={rows} assetMap={assetMap} integrationMap={integrationMap} />
+              {Object.keys(activeFilters).length > 0 && (
+                <Stack direction="row" spacing={1} marginLeft={0}>
+                  {Object.keys(activeFilters).map((x) => (
+                    <FilterChip
+                      key={x}
+                      label={`${LABEL_MAP[x]} = ${activeFilters[x]}`}
+                      color={stringToColor(x)}
+                      onDelete={() => {
+                        $activeFilters.setKey(x as FilterKey, undefined)
+                      }}
+                    />
+                  ))}
+                </Stack>
+              )}
+              <AuditLogsTable
+                rows={rows}
+                assetMap={assetMap}
+                integrationMap={integrationMap}
+                queryTime={queryTime}
+              />
             </Stack>
           )}
         </a.div>

@@ -50,3 +50,9 @@ html[data-mui-color-scheme="dark"] ::-webkit-scrollbar-thumb {
 html[data-mui-color-scheme="dark"] ::-webkit-scrollbar-thumb:hover {
   background: rgb(85, 85, 85);
 }
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}

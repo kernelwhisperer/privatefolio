@@ -39,6 +39,9 @@ export const theme: CssVarsThemeOptions = {
         Avatar: {
           defaultBg: grey[800],
         },
+        Skeleton: {
+          bg: "rgb(65, 65, 65)",
+        },
         TableCell: {
           // border: "none",
           border: "rgba(255,255,255, 0.05)",
@@ -69,6 +72,9 @@ export const theme: CssVarsThemeOptions = {
     },
     light: {
       palette: {
+        Skeleton: {
+          bg: "rgb(220, 220, 225)",
+        },
         TableCell: {
           border: "rgba(0,0,0, 0.05)",
         },
@@ -184,6 +190,11 @@ export const theme: CssVarsThemeOptions = {
             elevation: 2,
           },
         },
+      },
+    },
+    MuiSkeleton: {
+      defaultProps: {
+        // animation: false,
       },
     },
     // MuiTableRow: {

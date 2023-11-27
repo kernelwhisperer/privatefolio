@@ -1,4 +1,4 @@
-import { map } from "nanostores"
+import { keepMount, map } from "nanostores"
 
 import { getFileImports } from "../api/file-import-api"
 import { AuditLogOperation } from "../interfaces"
@@ -14,6 +14,7 @@ type FilterMap = {
 export type FilterKey = keyof FilterMap
 
 export const $filterMap = map<FilterMap>()
+keepMount($filterMap)
 
 export type ActiveFilterMap = {
   integration?: string
@@ -27,7 +28,8 @@ export const $activeFilters = map<ActiveFilterMap>({})
 logAtoms({ $activeFilters, $filterMap })
 
 export async function computeFilterMap() {
-  if (!$filterMap.get()) return
+  const filterMap = $filterMap.get()
+  if (Object.keys(filterMap).length > 0) return
 
   const fileImports = await getFileImports()
 

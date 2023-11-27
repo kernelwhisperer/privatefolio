@@ -15,7 +15,9 @@ export async function getAuditLogs(filters: ActiveFilterMap = {}) {
     // include_docs: true,
     selector: filters,
   })
-  console.warn(warning)
+
+  if (warning) console.warn(warning)
+
   return docs as AuditLog[]
   // return res.rows.map((row) => row.doc)
 }

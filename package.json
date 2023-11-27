@@ -21,7 +21,7 @@
     "@emotion/react": "^11.11.0",
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.11.16",
-    "@mui/material": "^5.13.3",
+    "@mui/material": "^5.14.18",
     "@nanostores/logger": "^0.2.4",
     "@nanostores/react": "^0.7.1",
     "@react-spring/web": "^9.7.3",
