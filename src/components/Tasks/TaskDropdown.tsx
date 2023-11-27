@@ -96,7 +96,7 @@ export function TaskDropdown() {
           vertical: "top",
         }}
         sx={{ marginTop: 0.5 }}
-        PaperProps={{ elevation: 1, sx: { height: 320, overflow: "hidden", paddingY: 0.75 } }}
+        PaperProps={{ elevation: 1, sx: { height: 260, overflow: "hidden", paddingY: 0.75 } }}
       >
         <List
           dense
