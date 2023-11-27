@@ -1,6 +1,7 @@
 import { HighlightOffRounded } from "@mui/icons-material"
 import {
   Avatar,
+  CircularProgress,
   IconButton,
   Skeleton,
   Stack,
@@ -11,7 +12,7 @@ import {
   Typography,
 } from "@mui/material"
 // import TableCell from "@mui/material/Unstable_TableCell2" // TableCell version 2
-import React, { MouseEvent } from "react"
+import React, { MouseEvent, useState } from "react"
 
 import { FileImport, removeFileImport } from "../../api/file-import-api"
 import { Exchange } from "../../interfaces"
@@ -35,9 +36,13 @@ export function FileImportTableRow(props: FileImportTableRowProps) {
   const { fileImport, integrationMap, relativeTime, ...rest } = props
   const { name, integration, timestamp, lastModified, size, logs } = fileImport
 
-  function handleDelete(event: MouseEvent<HTMLButtonElement>) {
+  const [loading, setLoading] = useState(false)
+
+  async function handleDelete(event: MouseEvent<HTMLButtonElement>) {
     event.preventDefault()
-    removeFileImport(fileImport)
+    setLoading(true)
+    await removeFileImport(fileImport)
+    setLoading(false)
   }
 
   return (
@@ -158,8 +163,17 @@ export function FileImportTableRow(props: FileImportTableRowProps) {
       </TableCell>
       <TableCell sx={{ maxWidth: 40, minWidth: 40, width: 40 }}>
         <Tooltip title="Delete">
-          <IconButton size="small" sx={{ marginRight: 0.5 }} edge="start" onClick={handleDelete}>
-            <HighlightOffRounded fontSize="inherit" />
+          <IconButton
+            size="small"
+            sx={{ height: 28, marginLeft: -1 }}
+            onClick={handleDelete}
+            disabled={loading}
+          >
+            {loading ? (
+              <CircularProgress size={14} color="inherit" />
+            ) : (
+              <HighlightOffRounded fontSize="inherit" />
+            )}
           </IconButton>
         </Tooltip>
       </TableCell>

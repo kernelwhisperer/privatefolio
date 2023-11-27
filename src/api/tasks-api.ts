@@ -7,7 +7,7 @@ export enum TaskPriority {
 }
 
 export interface Task {
-  function: () => Promise<void>
+  function: () => Promise<any>
   name: string
   priority: TaskPriority
 }
@@ -62,9 +62,10 @@ async function processQueue() {
   isProcessing = false
 }
 
-export function enqueue(item: Task & { priority?: TaskPriority }) {
+export function enqueueTask(item: Task & { priority?: TaskPriority }) {
   const newQueue = [...$taskQueue.get(), item]
-  newQueue.sort((a, b) => a.priority - b.priority) // Sort on enqueue
+  newQueue.sort((a, b) => b.priority - a.priority)
+  console.log("📜 LOG > enqueueTask > newQueue:", newQueue)
   $taskQueue.set(newQueue)
 
   if (!isProcessing) {

@@ -1,7 +1,8 @@
 import { Paper, PaperProps, Stack, Typography, useTheme } from "@mui/material"
 import React, { useRef, useState } from "react"
 
-import { addFileImport } from "../api/file-import-api"
+import { addFileImport, processFileImport } from "../api/file-import-api"
+import { enqueueTask } from "../api/tasks-api"
 // import PouchDB from "pouchdb"; // Uncomment to use PouchDB
 
 export function FileDrop(props: PaperProps) {
@@ -20,26 +21,33 @@ export function FileDrop(props: PaperProps) {
     setDragOver(false)
   }
 
+  const handleFileUpload = (file: File) => {
+    enqueueTask({
+      function: async () => {
+        const _id = await addFileImport(file)
+        enqueueTask({
+          function: () => processFileImport(_id),
+          name: `Extract audit logs from ${file.name}`,
+          priority: 5,
+        })
+      },
+      name: `Import file ${file.name}`,
+      priority: 8,
+    })
+  }
+
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault()
     setDragOver(false)
     if (e.dataTransfer.files) {
-      Array.from(e.dataTransfer.files).forEach((file, index) => {
-        setTimeout(() => {
-          addFileImport(file)
-        }, index * 1)
-      })
+      Array.from(e.dataTransfer.files).forEach(handleFileUpload)
     }
   }
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
     if (files) {
-      Array.from(files).forEach((file, index) => {
-        setTimeout(() => {
-          addFileImport(file)
-        }, index + 1)
-      })
+      Array.from(files).forEach(handleFileUpload)
     }
   }
 
@@ -64,6 +72,9 @@ export function FileDrop(props: PaperProps) {
         cursor: "pointer",
         padding: 1,
         textAlign: "center",
+        transition: theme.transitions.create("background-color", {
+          duration: theme.transitions.duration.shortest,
+        }),
         ...sx,
       }}
       {...rest}

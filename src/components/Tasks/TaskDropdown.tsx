@@ -6,6 +6,7 @@ import {
   ListItem,
   ListItemText,
   Popover,
+  Stack,
   Typography,
 } from "@mui/material"
 import { useStore } from "@nanostores/react"
@@ -14,6 +15,7 @@ import React, { useState } from "react"
 import { $pendingTask, $taskHistory, $taskQueue } from "../../api/tasks-api"
 import { MonoFont } from "../../theme"
 import { formatNumber } from "../../utils/client-utils"
+import { Truncate } from "../Truncate"
 
 export function TaskDropdown() {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
@@ -75,7 +77,9 @@ export function TaskDropdown() {
           pendingTask ? <CircularProgress size={14} color="inherit" /> : <DoneAllRounded />
         }
       >
-        {pendingTask ? `${pendingTask.name}` : "Up to date"}
+        <Truncate sx={{ maxWidth: 260 }}>
+          {pendingTask ? `${pendingTask.name}` : "Up to date"}
+        </Truncate>
       </Button>
 
       <Popover
@@ -92,19 +96,31 @@ export function TaskDropdown() {
           vertical: "top",
         }}
         sx={{ marginTop: 0.5 }}
-        PaperProps={{ elevation: 1 }}
+        PaperProps={{ elevation: 1, sx: { height: 320, overflow: "hidden", paddingY: 0.75 } }}
       >
-        <List dense sx={{ minWidth: 240 }}>
+        <List
+          dense
+          sx={{
+            "::-webkit-scrollbar,::-webkit-scrollbar-thumb": {
+              width: "6px",
+            },
+            height: "100%",
+            maxWidth: 340,
+            minWidth: 340,
+            overflowY: "auto",
+            padding: 0,
+          }}
+        >
           {taskQueue.map((task, index) => (
             <ListItem key={index}>
               <HourglassEmptyRounded sx={{ marginRight: 1, width: 16 }} color="info" />
-              <ListItemText primary={task.name} />
+              <ListItemText primary={<Truncate>{task.name}</Truncate>} />
             </ListItem>
           ))}
           {pendingTask && (
             <ListItem>
               <CircularProgress size={14} sx={{ marginRight: 1 }} color="info" />
-              <ListItemText primary={pendingTask.name} />
+              <ListItemText primary={<Truncate>{pendingTask.name}</Truncate>} />
             </ListItem>
           )}
           {taskHistory.map((task, index) => (
@@ -112,8 +128,8 @@ export function TaskDropdown() {
               <CheckRounded sx={{ marginRight: 1, width: 16 }} color="success" />
               <ListItemText
                 primary={
-                  <>
-                    {task.name}{" "}
+                  <Stack direction="row" gap={0.5}>
+                    <Truncate>{task.name}</Truncate>
                     <Typography
                       fontFamily={MonoFont}
                       variant="inherit"
@@ -127,7 +143,7 @@ export function TaskDropdown() {
                       })}
                       s)
                     </Typography>
-                  </>
+                  </Stack>
                 }
               />
             </ListItem>

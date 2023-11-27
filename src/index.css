@@ -22,6 +22,7 @@ html {
 ::-webkit-scrollbar-thumb {
   width: 12px;
   height: 12px;
+  border-radius: 2px;
 }
 
 ::-webkit-scrollbar {
