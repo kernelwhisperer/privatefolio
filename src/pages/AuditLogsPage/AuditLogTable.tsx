@@ -57,7 +57,7 @@ const HEAD_CELLS: HeadCell[] = [
     label: "Asset",
   },
   {
-    key: "balance",
+    key: "balance" as any,
     label: "New balance",
     numeric: true,
   },
@@ -208,7 +208,7 @@ export function AuditLogsTable(props: AuditLogsTableProps) {
               <TimerSharp fontSize="small" />
             )}
             {queryTime === null ? (
-              <Skeleton width="100%"></Skeleton>
+              <Skeleton sx={{ flexGrow: 1 }}></Skeleton>
             ) : (
               <span>
                 {formatNumber(queryTime / 1000, {

@@ -1,12 +1,32 @@
 "use client"
 
-import { AppBar, Button, Container, Grid, Stack, Toolbar, Tooltip } from "@mui/material"
+import {
+  AppBar,
+  Button,
+  ButtonProps,
+  Container,
+  Grid,
+  Stack,
+  Toolbar,
+  Tooltip,
+} from "@mui/material"
 import React from "react"
-import { Link } from "react-router-dom"
+import { Link, NavLink } from "react-router-dom"
 
 import { TaskDropdown } from "../Tasks/TaskDropdown"
 import { Logo } from "./Logo"
 import { SettingsDrawer } from "./SettingsDrawer"
+
+export function NavButton(props: ButtonProps<typeof NavLink>) {
+  return (
+    <Button
+      component={NavLink}
+      color="inherit"
+      sx={{ "&.active": { background: "var(--mui-palette-action-hover)" }, paddingX: 2 }}
+      {...props}
+    />
+  )
+}
 
 export function Header() {
   return (
@@ -42,15 +62,9 @@ export function Header() {
               </Tooltip>
             </Grid>
             <Grid item md={6} gap={0.5} component={Stack} justifyContent="center">
-              <Button to={`/balances`} component={Link} color="inherit" sx={{ paddingX: 2 }}>
-                Balances
-              </Button>
-              <Button to={`/audit-logs`} component={Link} color="inherit" sx={{ paddingX: 2 }}>
-                Audit logs
-              </Button>
-              <Button to={`/import-data`} component={Link} color="inherit" sx={{ paddingX: 2 }}>
-                Import data
-              </Button>
+              <NavButton to={`/balances`}>Balances</NavButton>
+              <NavButton to={`/audit-logs`}>Audit logs</NavButton>
+              <NavButton to={`/import-data`}>Import data</NavButton>
             </Grid>
             <Grid
               item

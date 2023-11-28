@@ -8,13 +8,30 @@ import { auditLogsDB } from "./database"
  * @warning Unsorted.
  */
 export async function getAuditLogs(filters: ActiveFilterMap = {}) {
-  console.log("📜 LOG > getAuditLogs > filters:", filters)
-  const { docs, warning } = await auditLogsDB.find({
+  await auditLogsDB.createIndex({
+    index: {
+      fields: ["symbol"],
+    },
+  })
+  await auditLogsDB.createIndex({
+    index: {
+      fields: ["operation"],
+    },
+  })
+
+  const res2 = await auditLogsDB.allDocs({ include_docs: false })
+  console.log("📜 LOG > getAuditLogs > res2:", res2)
+
+  const result = await auditLogsDB.find({
+    limit: 25,
     // attachments: true,
     // descending: true,
     // include_docs: true,
     selector: filters,
+    sort: [{ symbol: "desc" }],
   })
+  const { docs, warning } = result
+  console.log("📜 LOG > getAuditLogs > result:", result)
 
   if (warning) console.warn(warning)
 

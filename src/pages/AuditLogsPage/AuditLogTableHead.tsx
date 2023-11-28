@@ -97,7 +97,7 @@ export function AuditLogTableHead(props: AuditLogTableHeadProps) {
                   <ListItemText primary={<em>None</em>} />
                 </MenuItem>
               )}
-              {filterMap &&
+              {filterMap[key] &&
                 filterMap[key].map((x: string) => (
                   <MenuItem key={x} value={x} dense>
                     <ListItemText primary={x} />

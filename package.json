@@ -38,7 +38,8 @@
     "react": "^18.2.0",
     "react-dom": "18.2.0",
     "react-router-dom": "^6.18.0",
-    "recharts": "^2.6.2"
+    "recharts": "^2.6.2",
+    "worker-pouch": "^2.1.0"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.195",

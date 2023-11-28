@@ -4,9 +4,10 @@ import PouchDBFind from "pouchdb-find"
 import { AuditLog, FileImport } from "../interfaces"
 
 PouchDB.plugin(PouchDBFind)
+// PouchDB.adapter("worker", WorkerPouch)
 
-export const fileImportsDB = new PouchDB<FileImport>("file-imports")
-export const auditLogsDB = new PouchDB<AuditLog>("audit-logs")
+export const fileImportsDB = new PouchDB<FileImport>("file-imports", {})
+export const auditLogsDB = new PouchDB<AuditLog>("audit-logs", {})
 
 try {
   PouchDB.replicate("file-imports", "http://localhost:5984/file-imports", { live: true })

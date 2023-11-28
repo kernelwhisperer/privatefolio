@@ -19,11 +19,12 @@ import {
 } from "../../stores/audit-log-store"
 import { SerifFont } from "../../theme"
 import { stringToColor } from "../../utils/color-utils"
-import { SPRING_CONFIGS, wait } from "../../utils/utils"
+import { SPRING_CONFIGS } from "../../utils/utils"
 import { AuditLogsTable } from "./AuditLogTable"
 
 export function AuditLogsPage({ show }: { show: boolean }) {
   const [queryTime, setQueryTime] = useState<number | null>(null)
+  console.log("📜 LOG > AuditLogsPage > queryTime:", queryTime)
   const [loading, setLoading] = useState<boolean>(true)
   const [rows, setRows] = useState<AuditLog[]>([])
   const [assetMap, setAssetMap] = useState<Record<string, Asset>>({})
@@ -36,30 +37,28 @@ export function AuditLogsPage({ show }: { show: boolean }) {
   }, [])
 
   useEffect(() => {
-    const start = Date.now()
     // TODO make this cancelable
     setQueryTime(null)
-    wait(200)
-      .then(() => getAuditLogs(activeFilters))
-      .then(async (auditLogs) => {
-        console.log(`Query took ${Date.now() - start}ms (audit logs)`)
-        setRows(auditLogs)
-        setLoading(false)
-        setQueryTime(Date.now() - start)
+    const start = Date.now()
+    getAuditLogs(activeFilters).then(async (auditLogs) => {
+      console.log(`Query took ${Date.now() - start}ms (audit logs)`)
+      setRows(auditLogs)
+      setLoading(false)
+      setQueryTime(Date.now() - start)
 
-        const symbolMap = {}
-        const integrationMap = {}
-        auditLogs.forEach((x) => {
-          symbolMap[x.symbol] = true
-          integrationMap[x.integration] = true
-        })
-
-        const assets = await findAssets(symbolMap)
-        setAssetMap(assets)
-
-        const integrations = await findExchanges(integrationMap)
-        setIntegrationMap(integrations)
+      const symbolMap = {}
+      const integrationMap = {}
+      auditLogs.forEach((x) => {
+        symbolMap[x.symbol] = true
+        integrationMap[x.integration] = true
       })
+
+      const assets = await findAssets(symbolMap)
+      setAssetMap(assets)
+
+      const integrations = await findExchanges(integrationMap)
+      setIntegrationMap(integrations)
+    })
   }, [activeFilters])
 
   const transitions = useTransition(loading, {
