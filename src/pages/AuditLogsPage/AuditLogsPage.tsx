@@ -23,7 +23,7 @@ import { SPRING_CONFIGS, wait } from "../../utils/utils"
 import { AuditLogsTable } from "./AuditLogTable"
 
 export function AuditLogsPage({ show }: { show: boolean }) {
-  const [queryTime, setQueryTime] = useState<number>(0)
+  const [queryTime, setQueryTime] = useState<number | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
   const [rows, setRows] = useState<AuditLog[]>([])
   const [assetMap, setAssetMap] = useState<Record<string, Asset>>({})
@@ -38,6 +38,7 @@ export function AuditLogsPage({ show }: { show: boolean }) {
   useEffect(() => {
     const start = Date.now()
     // TODO make this cancelable
+    setQueryTime(null)
     wait(200)
       .then(() => getAuditLogs(activeFilters))
       .then(async (auditLogs) => {

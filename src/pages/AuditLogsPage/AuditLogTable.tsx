@@ -1,5 +1,5 @@
 import { TimerSharp } from "@mui/icons-material"
-import { Paper, Stack, Typography } from "@mui/material"
+import { CircularProgress, Paper, Skeleton, Stack, Typography } from "@mui/material"
 import Table from "@mui/material/Table"
 import TableBody from "@mui/material/TableBody"
 import TableCell from "@mui/material/TableCell"
@@ -92,7 +92,7 @@ function TableHead(props: Omit<AuditLogTableHeadProps, "headCell">) {
 type AuditLogsTableProps = {
   assetMap: Record<string, Asset>
   integrationMap: Record<string, Exchange>
-  queryTime: number
+  queryTime: number | null
   rows: AuditLog[]
 }
 
@@ -194,12 +194,22 @@ export function AuditLogsTable(props: AuditLogsTableProps) {
           <Typography
             variant="caption"
             color="text.secondary"
-            component="div"
+            component={Stack}
             padding={1.5}
+            sx={{ minWidth: 100 }}
             fontFamily={MonoFont}
+            direction="row"
+            gap={1}
+            marginBottom={0.25}
           >
-            <Stack direction="row" gap={1}>
+            {queryTime === null ? (
+              <CircularProgress size={14} color="inherit" sx={{ margin: "3px" }} />
+            ) : (
               <TimerSharp fontSize="small" />
+            )}
+            {queryTime === null ? (
+              <Skeleton width="100%"></Skeleton>
+            ) : (
               <span>
                 {formatNumber(queryTime / 1000, {
                   maximumFractionDigits: 2,
@@ -207,7 +217,7 @@ export function AuditLogsTable(props: AuditLogsTableProps) {
                 })}
                 s
               </span>
-            </Stack>
+            )}
           </Typography>
           <TablePagination
             component="div"
