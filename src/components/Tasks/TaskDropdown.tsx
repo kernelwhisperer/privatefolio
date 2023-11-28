@@ -5,12 +5,12 @@ import {
   List,
   ListItem,
   ListItemText,
-  Popover,
+  Menu,
   Stack,
   Typography,
 } from "@mui/material"
 import { useStore } from "@nanostores/react"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 
 import { $pendingTask, $taskHistory, $taskQueue } from "../../stores/task-store"
 import { MonoFont } from "../../theme"
@@ -33,38 +33,38 @@ export function TaskDropdown() {
 
   const open = Boolean(anchorEl)
 
-  // useEffect(() => {
-  //   enqueue({
-  //     function: () =>
-  //       new Promise((resolve) => {
-  //         setTimeout(() => {
-  //           resolve()
-  //         }, 2000)
-  //       }),
-  //     name: "Fetch prices",
-  //     priority: 2,
-  //   })
-  //   enqueue({
-  //     function: () =>
-  //       new Promise((resolve) => {
-  //         setTimeout(() => {
-  //           resolve()
-  //         }, 31000)
-  //       }),
-  //     name: "Import data",
-  //     priority: 2,
-  //   })
-  //   enqueue({
-  //     function: () =>
-  //       new Promise((resolve) => {
-  //         setTimeout(() => {
-  //           resolve()
-  //         }, 100)
-  //       }),
-  //     name: "Compact data",
-  //     priority: 2,
-  //   })
-  // }, [])
+  useEffect(() => {
+    // enqueueTask({
+    //   function: () =>
+    //     new Promise((resolve) => {
+    //       setTimeout(() => {
+    //         resolve(1)
+    //       }, 2000)
+    //     }),
+    //   name: "Fetch prices",
+    //   priority: 2,
+    // })
+    // enqueueTask({
+    //   function: () =>
+    //     new Promise((resolve) => {
+    //       setTimeout(() => {
+    //         resolve(1)
+    //       }, 31000)
+    //     }),
+    //   name: "Import data",
+    //   priority: 2,
+    // })
+    // enqueueTask({
+    //   function: () =>
+    //     new Promise((resolve) => {
+    //       setTimeout(() => {
+    //         resolve(1)
+    //       }, 100)
+    //     }),
+    //   name: "Compact data",
+    //   priority: 2,
+    // })
+  }, [])
 
   return (
     <div>
@@ -82,8 +82,7 @@ export function TaskDropdown() {
         </Truncate>
       </Button>
 
-      <Popover
-        id="task-list-popover"
+      <Menu
         open={open}
         anchorEl={anchorEl}
         onClose={handleClose}
@@ -96,19 +95,13 @@ export function TaskDropdown() {
           vertical: "top",
         }}
         sx={{ marginTop: 0.5 }}
-        PaperProps={{ elevation: 1, sx: { height: 260, overflow: "hidden", paddingY: 0.75 } }}
+        MenuListProps={{ sx: { maxHeight: 256 } }}
       >
         <List
           dense
           sx={{
-            "::-webkit-scrollbar,::-webkit-scrollbar-thumb": {
-              width: "6px",
-            },
-            height: "100%",
             maxWidth: 340,
             minWidth: 340,
-            overflowY: "auto",
-            padding: 0,
           }}
         >
           {taskQueue.map((task, index) => (
@@ -154,7 +147,7 @@ export function TaskDropdown() {
             </ListItem>
           )}
         </List>
-      </Popover>
+      </Menu>
     </div>
   )
 }

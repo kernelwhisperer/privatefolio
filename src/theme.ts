@@ -89,7 +89,7 @@ export const theme: CssVarsThemeOptions = {
           main: blue.A400,
         },
         primary: {
-          main: "rgb(136, 101, 160)",
+          main: "rgb(80, 80, 80)",
         },
         secondary: {
           main: "rgb(120, 120, 120)",
@@ -148,6 +148,22 @@ export const theme: CssVarsThemeOptions = {
         disablePadding: true,
       },
     },
+    MuiMenu: {
+      defaultProps: {
+        PaperProps: {
+          elevation: 1,
+        },
+      },
+      styleOverrides: {
+        root: {
+          "& ::-webkit-scrollbar,& ::-webkit-scrollbar-thumb": {
+            borderRadius: "16px",
+            width: "8px",
+          },
+          maxHeight: "50vh",
+        },
+      },
+    },
     // MuiBackdrop: {
     //   styleOverrides: {
     //     root: {
@@ -187,7 +203,7 @@ export const theme: CssVarsThemeOptions = {
       defaultProps: {
         MenuProps: {
           PaperProps: {
-            elevation: 2,
+            elevation: 1,
           },
         },
       },

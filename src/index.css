@@ -9,7 +9,6 @@
 
 html {
   scrollbar-width: thin;
-  /* overflow-y: scroll; TODO */
   -webkit-tap-highlight-color: transparent;
   /* scrollbar-gutter: stable; */
   overflow-y: scroll;
@@ -28,27 +27,27 @@ html {
 }
 
 ::-webkit-scrollbar {
-  background: rgb(240, 240, 240);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(205, 205, 205);
+  background: rgba(0, 0, 0, 0.15);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgb(195, 195, 195);
+  background: rgba(0, 0, 0, 0.25);
 }
 
 html[data-mui-color-scheme="dark"] ::-webkit-scrollbar {
-  background: rgb(50, 50, 50);
+  background: transparent;
 }
 
 html[data-mui-color-scheme="dark"] ::-webkit-scrollbar-thumb {
-  background: rgba(65, 65, 65);
+  background: rgba(255, 255, 255, 0.15);
 }
 
 html[data-mui-color-scheme="dark"] ::-webkit-scrollbar-thumb:hover {
-  background: rgb(85, 85, 85);
+  background: rgba(255, 255, 255, 0.25);
 }
 
 input[type=number]::-webkit-inner-spin-button, 

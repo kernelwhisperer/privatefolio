@@ -7,7 +7,7 @@ import TableContainer from "@mui/material/TableContainer"
 import MuiTableHead from "@mui/material/TableHead"
 import TablePagination, { tablePaginationClasses } from "@mui/material/TablePagination"
 import TableRow from "@mui/material/TableRow"
-import React, { ChangeEvent, MouseEvent, useCallback, useMemo, useState } from "react"
+import React, { ChangeEvent, MouseEvent, useCallback, useEffect, useMemo, useState } from "react"
 
 import { TablePaginationActions } from "../../components/TableActions"
 import { Asset, AuditLog, Exchange } from "../../interfaces"
@@ -101,7 +101,7 @@ export function AuditLogsTable(props: AuditLogsTableProps) {
   const [order, setOrder] = useState<Order>("desc")
   const [orderBy, setOrderBy] = useState<SortableKeys>("timestamp")
   const [page, setPage] = useState(0)
-  const [rowsPerPage, setRowsPerPage] = useState(10)
+  const [rowsPerPage, setRowsPerPage] = useState(25)
   const [relativeTime, setRelativeTime] = useState(true)
 
   const handleSort = useCallback(
@@ -140,6 +140,10 @@ export function AuditLogsTable(props: AuditLogsTableProps) {
         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
     [rows, order, orderBy, page, rowsPerPage]
   )
+
+  useEffect(() => {
+    setPage(0)
+  }, [rows])
 
   return (
     <>
