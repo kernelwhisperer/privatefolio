@@ -83,6 +83,7 @@ const HEAD_CELLS: HeadCell[] = [
     label: "Asset",
   },
   {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     key: "balance" as any,
     label: "New balance",
     numeric: true,

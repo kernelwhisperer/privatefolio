@@ -12,10 +12,10 @@ import {
 // import TableCell from "@mui/material/Unstable_TableCell2" // TableCell version 2
 import React, { MouseEvent, useState } from "react"
 
-import { FileImport, removeFileImport } from "../../api/file-import-api"
+import { removeFileImport } from "../../api/file-import-api"
 import { IntegrationAvatar } from "../../components/IntegrationAvatar"
 import { TimestampCell } from "../../components/TimestampCell"
-import { Exchange } from "../../interfaces"
+import { Exchange, FileImport } from "../../interfaces"
 import { MonoFont } from "../../theme"
 import { formatFileSize, formatNumber } from "../../utils/client-utils"
 
