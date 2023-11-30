@@ -28,6 +28,7 @@ export interface HeadCell {
   key: SortableKeys
   label: string
   numeric?: boolean
+  sortable?: boolean
 }
 
 export interface AuditLogTableHeadProps {
@@ -41,7 +42,7 @@ export interface AuditLogTableHeadProps {
 
 export function AuditLogTableHead(props: AuditLogTableHeadProps) {
   const { headCell, order, orderBy, onSort, relativeTime, onRelativeTime } = props
-  const { key, numeric, label, filterable } = headCell
+  const { key, numeric, label, filterable, sortable } = headCell
 
   const { value: open, toggle: toggleOpen } = useBoolean(false)
 
@@ -59,7 +60,12 @@ export function AuditLogTableHead(props: AuditLogTableHeadProps) {
 
   return (
     <>
-      <Stack direction="row" marginX={-0.5} justifyContent={numeric ? "flex-end" : "flex-start"}>
+      <Stack
+        direction="row"
+        marginX={-0.5}
+        justifyContent={numeric ? "flex-end" : "flex-start"}
+        alignItems="center"
+      >
         {key === "timestamp" && (
           <Tooltip title={`Switch to ${relativeTime ? "absolute" : "relative"} time`}>
             <IconButton
@@ -113,18 +119,22 @@ export function AuditLogTableHead(props: AuditLogTableHeadProps) {
             </Tooltip>
           </>
         )}
-        <TableSortLabel
-          active={orderBy === key}
-          direction={orderBy === key ? order : "asc"}
-          onClick={createSortHandler(key)}
-        >
-          {label}
-          {orderBy === key ? (
-            <Box component="span" sx={visuallyHidden}>
-              {order === "desc" ? "sorted descending" : "sorted ascending"}
-            </Box>
-          ) : null}
-        </TableSortLabel>
+        {sortable ? (
+          <TableSortLabel
+            active={orderBy === key}
+            direction={orderBy === key ? order : "asc"}
+            onClick={createSortHandler(key)}
+          >
+            {label}
+            {orderBy === key ? (
+              <Box component="span" sx={visuallyHidden}>
+                {order === "desc" ? "sorted descending" : "sorted ascending"}
+              </Box>
+            ) : null}
+          </TableSortLabel>
+        ) : (
+          <>{label}</>
+        )}
       </Stack>
     </>
   )

@@ -42,9 +42,9 @@ export default function App() {
             }
           >
             <Routes location={item}>
-              {/* <Route path="/" element={<HomePage show={pathname === ""}/>} /> */}
               {/* <Route path="/asset/:assetSymbol" element={<AssetPage show={pathname === ""}/>} /> */}
               {/* <Route path="/transactions" element={<TransactionsPage show={pathname === ""}/>} /> */}
+              <Route path="/" element={<BalancesPage show={pathname === "/"} />} />
               <Route
                 path="/import-data"
                 element={<ImportDataPage show={pathname === "/import-data"} />}
@@ -53,8 +53,6 @@ export default function App() {
                 path="/audit-logs"
                 element={<AuditLogsPage show={pathname === "/audit-logs"} />}
               />
-              <Route path="/balances" element={<BalancesPage show={pathname === "/balances"} />} />
-              <Route path="*" element={<BalancesPage show={pathname === "/"} />} />
             </Routes>
           </a.div>
         ))}

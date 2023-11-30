@@ -22,7 +22,7 @@ export function NavButton(props: ButtonProps<typeof NavLink>) {
     <Button
       component={NavLink}
       color="inherit"
-      sx={{ "&.active": { background: "var(--mui-palette-action-hover)" }, paddingX: 2 }}
+      sx={{ "&.active": { textDecoration: "underline", textDecorationThickness: 2 }, paddingX: 2 }}
       {...props}
     />
   )
@@ -62,7 +62,7 @@ export function Header() {
               </Tooltip>
             </Grid>
             <Grid item md={6} gap={0.5} component={Stack} justifyContent="center">
-              <NavButton to={`/balances`}>Balances</NavButton>
+              <NavButton to={`/`}>Balances</NavButton>
               <NavButton to={`/audit-logs`}>Audit logs</NavButton>
               <NavButton to={`/import-data`}>Import data</NavButton>
             </Grid>

@@ -50,10 +50,10 @@ export async function computeFilterMap() {
   }
 
   $filterMap.set({
-    integration: [...integrations],
-    operation: [...operations],
-    symbol: [...symbols],
-    wallet: [...wallets],
+    integration: [...integrations].sort(),
+    operation: [...operations].sort(),
+    symbol: [...symbols].sort(),
+    wallet: [...wallets].sort(),
   })
 }
 

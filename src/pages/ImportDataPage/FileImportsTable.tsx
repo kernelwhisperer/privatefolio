@@ -12,8 +12,7 @@ import TableSortLabel from "@mui/material/TableSortLabel"
 import { visuallyHidden } from "@mui/utils"
 import React, { ChangeEvent, MouseEvent, useCallback, useMemo, useState } from "react"
 
-import { FileImport } from "../../api/file-import-api"
-import { Exchange } from "../../interfaces"
+import { Exchange, FileImport } from "../../interfaces"
 import { getComparator, Order } from "../../utils/table-utils"
 import { FileImportTableRow } from "./FileImportTableRow"
 
