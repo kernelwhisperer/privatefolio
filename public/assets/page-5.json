@@ -1,0 +1,702 @@
+[
+  {
+    "coingeckoId": "qanplatform",
+    "image": "https://assets.coingecko.com/coins/images/15977/large/qanx.png?1696515591",
+    "isStablecoin": false,
+    "name": "QANplatform",
+    "symbol": "QANX"
+  },
+  {
+    "coingeckoId": "cortex",
+    "image": "https://assets.coingecko.com/coins/images/3861/large/2638.png?1696504523",
+    "isStablecoin": false,
+    "name": "Cortex",
+    "symbol": "CTXC"
+  },
+  {
+    "coingeckoId": "aurory",
+    "image": "https://assets.coingecko.com/coins/images/19324/large/Ico_Blanc.png?1696518766",
+    "isStablecoin": false,
+    "name": "Aurory",
+    "symbol": "AURY"
+  },
+  {
+    "coingeckoId": "unibot",
+    "image": "https://assets.coingecko.com/coins/images/30462/large/logonoline_%281%29.png?1696529349",
+    "isStablecoin": false,
+    "name": "Unibot",
+    "symbol": "UNIBOT"
+  },
+  {
+    "coingeckoId": "dynex",
+    "image": "https://assets.coingecko.com/coins/images/27776/large/Transparent_Logo.png?1696526797",
+    "isStablecoin": false,
+    "name": "Dynex",
+    "symbol": "DNX"
+  },
+  {
+    "coingeckoId": "spell-token",
+    "image": "https://assets.coingecko.com/coins/images/15861/large/abracadabra-3.png?1696515477",
+    "isStablecoin": false,
+    "name": "Spell",
+    "symbol": "SPELL"
+  },
+  {
+    "coingeckoId": "games-for-a-living",
+    "image": "https://assets.coingecko.com/coins/images/29430/large/token.png?1696528378",
+    "isStablecoin": false,
+    "name": "Games for a Living",
+    "symbol": "GFAL"
+  },
+  {
+    "coingeckoId": "badger-dao",
+    "image": "https://assets.coingecko.com/coins/images/13287/large/badger_dao_logo.jpg?1696513059",
+    "isStablecoin": false,
+    "name": "Badger",
+    "symbol": "BADGER"
+  },
+  {
+    "coingeckoId": "maverick-protocol",
+    "image": "https://assets.coingecko.com/coins/images/30850/large/MAV_Logo.png?1696529701",
+    "isStablecoin": false,
+    "name": "Maverick Protocol",
+    "symbol": "MAV"
+  },
+  {
+    "coingeckoId": "rss3",
+    "image": "https://assets.coingecko.com/coins/images/23575/large/RSS3.png?1696522783",
+    "isStablecoin": false,
+    "name": "RSS3",
+    "symbol": "RSS3"
+  },
+  {
+    "coingeckoId": "bifrost",
+    "image": "https://assets.coingecko.com/coins/images/4639/large/BFC_Symbol.png?1696505208",
+    "isStablecoin": false,
+    "name": "Bifrost",
+    "symbol": "BFC"
+  },
+  {
+    "coingeckoId": "metars-genesis",
+    "image": "https://assets.coingecko.com/coins/images/26625/large/PRmUU8O1_400x400.jpeg?1696525698",
+    "isStablecoin": false,
+    "name": "Metars Genesis",
+    "symbol": "MRS"
+  },
+  {
+    "coingeckoId": "nkn",
+    "image": "https://assets.coingecko.com/coins/images/3375/large/nkn.png?1696504074",
+    "isStablecoin": false,
+    "name": "NKN",
+    "symbol": "NKN"
+  },
+  {
+    "coingeckoId": "hello-labs",
+    "image": "https://assets.coingecko.com/coins/images/27891/large/uFXN2S1N_400x400.jpeg?1696526908",
+    "isStablecoin": false,
+    "name": "HELLO",
+    "symbol": "HELLO"
+  },
+  {
+    "coingeckoId": "coti",
+    "image": "https://assets.coingecko.com/coins/images/2962/large/Coti.png?1696503705",
+    "isStablecoin": false,
+    "name": "COTI",
+    "symbol": "COTI"
+  },
+  {
+    "coingeckoId": "certik",
+    "image": "https://assets.coingecko.com/coins/images/12944/large/shentu_2.jpg?1696512733",
+    "isStablecoin": false,
+    "name": "Shentu",
+    "symbol": "CTK"
+  },
+  {
+    "coingeckoId": "lyra-finance",
+    "image": "https://assets.coingecko.com/coins/images/21490/large/Add-a-heading-26.png?1696520850",
+    "isStablecoin": false,
+    "name": "Lyra Finance",
+    "symbol": "LYRA"
+  },
+  {
+    "coingeckoId": "vega-protocol",
+    "image": "https://assets.coingecko.com/coins/images/15870/large/vega.PNG?1696515485",
+    "isStablecoin": false,
+    "name": "Vega Protocol",
+    "symbol": "VEGA"
+  },
+  {
+    "coingeckoId": "murasaki",
+    "image": "https://assets.coingecko.com/coins/images/28570/large/mura.png?1696527558",
+    "isStablecoin": false,
+    "name": "Murasaki",
+    "symbol": "MURA"
+  },
+  {
+    "coingeckoId": "dock",
+    "image": "https://assets.coingecko.com/coins/images/3978/large/dock-icon-dark-large.png?1696504619",
+    "isStablecoin": false,
+    "name": "Dock",
+    "symbol": "DOCK"
+  },
+  {
+    "coingeckoId": "pha",
+    "image": "https://assets.coingecko.com/coins/images/12451/large/phala.png?1696512270",
+    "isStablecoin": false,
+    "name": "Phala",
+    "symbol": "PHA"
+  },
+  {
+    "coingeckoId": "dusk-network",
+    "image": "https://assets.coingecko.com/coins/images/5217/large/image_widget_biddfvxd454b1.png?1696505726",
+    "isStablecoin": false,
+    "name": "Dusk",
+    "symbol": "DUSK"
+  },
+  {
+    "coingeckoId": "ultra",
+    "image": "https://assets.coingecko.com/coins/images/4480/large/Ultra.png?1696505069",
+    "isStablecoin": false,
+    "name": "Ultra",
+    "symbol": "UOS"
+  },
+  {
+    "coingeckoId": "cobak-token",
+    "image": "https://assets.coingecko.com/coins/images/13459/large/cbk-128-128.png?1696513222",
+    "isStablecoin": false,
+    "name": "Cobak",
+    "symbol": "CBK"
+  },
+  {
+    "coingeckoId": "sharering",
+    "image": "https://assets.coingecko.com/coins/images/3609/large/74586729_2443914875881351_2785018663453851648_n.png?1696504289",
+    "isStablecoin": false,
+    "name": "Share",
+    "symbol": "SHR"
+  },
+  {
+    "coingeckoId": "chainx",
+    "image": "https://assets.coingecko.com/coins/images/9133/large/chainx.png?1696509256",
+    "isStablecoin": false,
+    "name": "ChainX",
+    "symbol": "PCX"
+  },
+  {
+    "coingeckoId": "cyberconnect",
+    "image": "https://assets.coingecko.com/coins/images/31274/large/cyberconnect.png?1696530098",
+    "isStablecoin": false,
+    "name": "CyberConnect",
+    "symbol": "CYBER"
+  },
+  {
+    "coingeckoId": "songbird",
+    "image": "https://assets.coingecko.com/coins/images/18663/large/SGB_512x512.png?1696518133",
+    "isStablecoin": false,
+    "name": "Songbird",
+    "symbol": "SGB"
+  },
+  {
+    "coingeckoId": "world-mobile-token",
+    "image": "https://assets.coingecko.com/coins/images/17333/large/Colored_Token.png?1696516885",
+    "isStablecoin": false,
+    "name": "World Mobile Token",
+    "symbol": "WMT"
+  },
+  {
+    "coingeckoId": "airtor-protocol",
+    "image": "https://assets.coingecko.com/coins/images/29690/large/AirTor.png?1696528623",
+    "isStablecoin": false,
+    "name": "AirTor Protocol",
+    "symbol": "ATOR"
+  },
+  {
+    "coingeckoId": "wink",
+    "image": "https://assets.coingecko.com/coins/images/9129/large/WinK.png?1696509252",
+    "isStablecoin": false,
+    "name": "WINkLink",
+    "symbol": "WIN"
+  },
+  {
+    "coingeckoId": "gitcoin",
+    "image": "https://assets.coingecko.com/coins/images/15810/large/gitcoin.png?1696515429",
+    "isStablecoin": false,
+    "name": "Gitcoin",
+    "symbol": "GTC"
+  },
+  {
+    "coingeckoId": "oraichain-token",
+    "image": "https://assets.coingecko.com/coins/images/12931/large/orai.png?1696512718",
+    "isStablecoin": false,
+    "name": "Oraichain",
+    "symbol": "ORAI"
+  },
+  {
+    "coingeckoId": "jesus-coin",
+    "image": "https://assets.coingecko.com/coins/images/30036/large/JESUS_COIN_LOGO.png?1696528959",
+    "isStablecoin": false,
+    "name": "Jesus Coin",
+    "symbol": "JESUS"
+  },
+  {
+    "coingeckoId": "veno-finance",
+    "image": "https://assets.coingecko.com/coins/images/28799/large/Veno_Token_dark.png?1696527777",
+    "isStablecoin": false,
+    "name": "Veno Finance",
+    "symbol": "VNO"
+  },
+  {
+    "coingeckoId": "e-radix",
+    "image": "https://assets.coingecko.com/coins/images/13145/large/exrd_logo.png?1696512931",
+    "isStablecoin": false,
+    "name": "e-Radix",
+    "symbol": "EXRD"
+  },
+  {
+    "coingeckoId": "adventure-gold",
+    "image": "https://assets.coingecko.com/coins/images/18125/large/lpgblc4h_400x400.jpg?1696517628",
+    "isStablecoin": false,
+    "name": "Adventure Gold",
+    "symbol": "AGLD"
+  },
+  {
+    "coingeckoId": "origin-protocol",
+    "image": "https://assets.coingecko.com/coins/images/3296/large/op.jpg?1696504006",
+    "isStablecoin": false,
+    "name": "Origin Protocol",
+    "symbol": "OGN"
+  },
+  {
+    "coingeckoId": "looksrare",
+    "image": "https://assets.coingecko.com/coins/images/22173/large/circle-black-256.png?1696521517",
+    "isStablecoin": false,
+    "name": "LooksRare",
+    "symbol": "LOOKS"
+  },
+  {
+    "coingeckoId": "request-network",
+    "image": "https://assets.coingecko.com/coins/images/1031/large/Request_icon_green.png?1696502140",
+    "isStablecoin": false,
+    "name": "Request",
+    "symbol": "REQ"
+  },
+  {
+    "coingeckoId": "creditcoin-2",
+    "image": "https://assets.coingecko.com/coins/images/10569/large/ctc.png?1696510552",
+    "isStablecoin": false,
+    "name": "Creditcoin",
+    "symbol": "CTC"
+  },
+  {
+    "coingeckoId": "marinade",
+    "image": "https://assets.coingecko.com/coins/images/18867/large/MNDE.png?1696518327",
+    "isStablecoin": false,
+    "name": "Marinade",
+    "symbol": "MNDE"
+  },
+  {
+    "coingeckoId": "keep-network",
+    "image": "https://assets.coingecko.com/coins/images/3373/large/IuNzUb5b_400x400.jpg?1696504072",
+    "isStablecoin": false,
+    "name": "Keep Network",
+    "symbol": "KEEP"
+  },
+  {
+    "coingeckoId": "sx-network",
+    "image": "https://assets.coingecko.com/coins/images/13779/large/sx.png?1696513520",
+    "isStablecoin": false,
+    "name": "SX Network",
+    "symbol": "SX"
+  },
+  {
+    "coingeckoId": "constitutiondao",
+    "image": "https://assets.coingecko.com/coins/images/20612/large/GN_UVm3d_400x400.jpg?1696520017",
+    "isStablecoin": false,
+    "name": "ConstitutionDAO",
+    "symbol": "PEOPLE"
+  },
+  {
+    "coingeckoId": "taraxa",
+    "image": "https://assets.coingecko.com/coins/images/4372/large/CPuCDZX.jpg?1696504972",
+    "isStablecoin": false,
+    "name": "Taraxa",
+    "symbol": "TARA"
+  },
+  {
+    "coingeckoId": "euler",
+    "image": "https://assets.coingecko.com/coins/images/26149/large/YCvKDfl8_400x400.jpeg?1696525238",
+    "isStablecoin": false,
+    "name": "Euler",
+    "symbol": "EUL"
+  },
+  {
+    "coingeckoId": "oasys",
+    "image": "https://assets.coingecko.com/coins/images/27909/large/OAS.png?1696526929",
+    "isStablecoin": false,
+    "name": "Oasys",
+    "symbol": "OAS"
+  },
+  {
+    "coingeckoId": "marblex",
+    "image": "https://assets.coingecko.com/coins/images/24423/large/AgYzKzLt_400x400.jpg?1696523604",
+    "isStablecoin": false,
+    "name": "Marblex",
+    "symbol": "MBX"
+  },
+  {
+    "coingeckoId": "radio-caca",
+    "image": "https://assets.coingecko.com/coins/images/17841/large/ez44_BSs_400x400.jpg?1696517365",
+    "isStablecoin": false,
+    "name": "Radio Caca",
+    "symbol": "RACA"
+  },
+  {
+    "coingeckoId": "steem-dollars",
+    "image": "https://assets.coingecko.com/coins/images/652/large/steem_dollars.png?1696501846",
+    "isStablecoin": false,
+    "name": "Steem Dollars",
+    "symbol": "SBD"
+  },
+  {
+    "coingeckoId": "mobox",
+    "image": "https://assets.coingecko.com/coins/images/14751/large/mobox.PNG?1696514420",
+    "isStablecoin": false,
+    "name": "Mobox",
+    "symbol": "MBOX"
+  },
+  {
+    "coingeckoId": "dora-factory-2",
+    "image": "https://assets.coingecko.com/coins/images/31552/large/DORA.jpg?1696530364",
+    "isStablecoin": false,
+    "name": "Dora Factory",
+    "symbol": "DORA"
+  },
+  {
+    "coingeckoId": "mainframe",
+    "image": "https://assets.coingecko.com/coins/images/3293/large/Mainframe_Token_Logo.png?1696504003",
+    "isStablecoin": false,
+    "name": "Mainframe",
+    "symbol": "MFT"
+  },
+  {
+    "coingeckoId": "truefi",
+    "image": "https://assets.coingecko.com/coins/images/13180/large/truefi_glyph_color.png?1696512963",
+    "isStablecoin": false,
+    "name": "TrueFi",
+    "symbol": "TRU"
+  },
+  {
+    "coingeckoId": "nexacoin",
+    "image": "https://assets.coingecko.com/coins/images/28729/large/200x200.png?1696527709",
+    "isStablecoin": false,
+    "name": "Nexa",
+    "symbol": "NEXA"
+  },
+  {
+    "coingeckoId": "linear",
+    "image": "https://assets.coingecko.com/coins/images/12509/large/1649227343-linalogo200px.png?1696512324",
+    "isStablecoin": false,
+    "name": "Linear",
+    "symbol": "LINA"
+  },
+  {
+    "coingeckoId": "tokenlon",
+    "image": "https://assets.coingecko.com/coins/images/13454/large/lon_logo.png?1696513217",
+    "isStablecoin": false,
+    "name": "Tokenlon",
+    "symbol": "LON"
+  },
+  {
+    "coingeckoId": "tbtc",
+    "image": "https://assets.coingecko.com/coins/images/11224/large/0x18084fba666a33d37592fa2633fd49a74dd93a88.png?1696511155",
+    "isStablecoin": false,
+    "name": "tBTC",
+    "symbol": "TBTC"
+  },
+  {
+    "coingeckoId": "trac",
+    "image": "https://assets.coingecko.com/coins/images/30288/large/trac.jpg?1696529193",
+    "isStablecoin": false,
+    "name": "TRAC (Ordinals)",
+    "symbol": "TRAC"
+  },
+  {
+    "coingeckoId": "gmt-token",
+    "image": "https://assets.coingecko.com/coins/images/15662/large/gmt.png?1696515292",
+    "isStablecoin": false,
+    "name": "Gomining Token",
+    "symbol": "GMT"
+  },
+  {
+    "coingeckoId": "thorswap",
+    "image": "https://assets.coingecko.com/coins/images/19292/large/THORSwap_Logo-removebg-preview.png?1696518735",
+    "isStablecoin": false,
+    "name": "THORSwap",
+    "symbol": "THOR"
+  },
+  {
+    "coingeckoId": "gamefi",
+    "image": "https://assets.coingecko.com/coins/images/18292/large/gamefi.PNG?1696517784",
+    "isStablecoin": false,
+    "name": "GameFi.org",
+    "symbol": "GAFI"
+  },
+  {
+    "coingeckoId": "republic-protocol",
+    "image": "https://assets.coingecko.com/coins/images/3139/large/REN.png?1696503862",
+    "isStablecoin": false,
+    "name": "Ren",
+    "symbol": "REN"
+  },
+  {
+    "coingeckoId": "hermez-network-token",
+    "image": "https://assets.coingecko.com/coins/images/12826/large/hermez_logo.png?1696512617",
+    "isStablecoin": false,
+    "name": "Hermez Network",
+    "symbol": "HEZ"
+  },
+  {
+    "coingeckoId": "victoria-vr",
+    "image": "https://assets.coingecko.com/coins/images/21178/large/vr.png?1696520554",
+    "isStablecoin": false,
+    "name": "Victoria VR",
+    "symbol": "VR"
+  },
+  {
+    "coingeckoId": "somesing",
+    "image": "https://assets.coingecko.com/coins/images/10089/large/ico_ss_4x.png?1696510118",
+    "isStablecoin": false,
+    "name": "SOMESING Exchange",
+    "symbol": "SSX"
+  },
+  {
+    "coingeckoId": "sun-token",
+    "image": "https://assets.coingecko.com/coins/images/12424/large/RSFOmQ.png?1696512245",
+    "isStablecoin": false,
+    "name": "Sun Token",
+    "symbol": "SUN"
+  },
+  {
+    "coingeckoId": "hashflow",
+    "image": "https://assets.coingecko.com/coins/images/26136/large/hashflow-icon-cmc.png?1696525224",
+    "isStablecoin": false,
+    "name": "Hashflow",
+    "symbol": "HFT"
+  },
+  {
+    "coingeckoId": "carry",
+    "image": "https://assets.coingecko.com/coins/images/3994/large/Carry.png?1696504635",
+    "isStablecoin": false,
+    "name": "Carry",
+    "symbol": "CRE"
+  },
+  {
+    "coingeckoId": "vertex-protocol",
+    "image": "https://assets.coingecko.com/coins/images/27927/large/vrtx.png?1696526947",
+    "isStablecoin": false,
+    "name": "Vertex Protocol",
+    "symbol": "VRTX"
+  },
+  {
+    "coingeckoId": "verge",
+    "image": "https://assets.coingecko.com/coins/images/203/large/Verge_Coin_%28native%29_icon_200x200.jpg?1699220755",
+    "isStablecoin": false,
+    "name": "Verge",
+    "symbol": "XVG"
+  },
+  {
+    "coingeckoId": "moonriver",
+    "image": "https://assets.coingecko.com/coins/images/17984/large/9285.png?1696517502",
+    "isStablecoin": false,
+    "name": "Moonriver",
+    "symbol": "MOVR"
+  },
+  {
+    "coingeckoId": "alien-worlds",
+    "image": "https://assets.coingecko.com/coins/images/14676/large/kY-C4o7RThfWrDQsLCAG4q4clZhBDDfJQVhWUEKxXAzyQYMj4Jmq1zmFwpRqxhAJFPOa0AsW_PTSshoPuMnXNwq3rU7Imp15QimXTjlXMx0nC088mt1rIwRs75GnLLugWjSllxgzvQ9YrP4tBgclK4_rb17hjnusGj_c0u2fx0AvVokjSNB-v2poTj0xT9BZRCbzRE3-lF1.jpg?1696514350",
+    "isStablecoin": false,
+    "name": "Alien Worlds",
+    "symbol": "TLM"
+  },
+  {
+    "coingeckoId": "euro-coin",
+    "image": "https://assets.coingecko.com/coins/images/26045/large/euro.png?1696525125",
+    "isStablecoin": false,
+    "name": "EURC",
+    "symbol": "EURC"
+  },
+  {
+    "coingeckoId": "shardus",
+    "image": "https://assets.coingecko.com/coins/images/8383/large/final_logo_photoshop.png?1696508575",
+    "isStablecoin": false,
+    "name": "Shardus",
+    "symbol": "ULT"
+  },
+  {
+    "coingeckoId": "strike",
+    "image": "https://assets.coingecko.com/coins/images/14607/large/Jw-36llq_400x400.jpg?1696514286",
+    "isStablecoin": false,
+    "name": "Strike",
+    "symbol": "STRK"
+  },
+  {
+    "coingeckoId": "ampleforth",
+    "image": "https://assets.coingecko.com/coins/images/4708/large/Ampleforth.png?1696505273",
+    "isStablecoin": false,
+    "name": "Ampleforth",
+    "symbol": "AMPL"
+  },
+  {
+    "coingeckoId": "tectum",
+    "image": "https://assets.coingecko.com/coins/images/29575/large/Icon_TET.png?1696528514",
+    "isStablecoin": false,
+    "name": "Tectum",
+    "symbol": "TET"
+  },
+  {
+    "coingeckoId": "aurora-near",
+    "image": "https://assets.coingecko.com/coins/images/20582/large/aurora.jpeg?1696519989",
+    "isStablecoin": false,
+    "name": "Aurora",
+    "symbol": "AURORA"
+  },
+  {
+    "coingeckoId": "lcx",
+    "image": "https://assets.coingecko.com/coins/images/9985/large/zRPSu_0o_400x400.jpg?1696510023",
+    "isStablecoin": false,
+    "name": "LCX",
+    "symbol": "LCX"
+  },
+  {
+    "coingeckoId": "fulcrom",
+    "image": "https://assets.coingecko.com/coins/images/29684/large/FUL_Token_%281%29.png?1696528618",
+    "isStablecoin": false,
+    "name": "Fulcrom",
+    "symbol": "FUL"
+  },
+  {
+    "coingeckoId": "wazirx",
+    "image": "https://assets.coingecko.com/coins/images/10547/large/WazirX.png?1696510532",
+    "isStablecoin": false,
+    "name": "WazirX",
+    "symbol": "WRX"
+  },
+  {
+    "coingeckoId": "solend",
+    "image": "https://assets.coingecko.com/coins/images/19573/large/i6AMOwun_400x400.jpg?1696519005",
+    "isStablecoin": false,
+    "name": "Solend",
+    "symbol": "SLND"
+  },
+  {
+    "coingeckoId": "crown-by-third-time-games",
+    "image": "https://assets.coingecko.com/coins/images/30452/large/crown_200_transparent.png?1696529338",
+    "isStablecoin": false,
+    "name": "Crown by Third Time Games",
+    "symbol": "CROWN"
+  },
+  {
+    "coingeckoId": "route",
+    "image": "https://assets.coingecko.com/coins/images/13709/large/route_token_200x200-19.png?1696513454",
+    "isStablecoin": false,
+    "name": "Router Protocol",
+    "symbol": "ROUTE"
+  },
+  {
+    "coingeckoId": "fidu",
+    "image": "https://assets.coingecko.com/coins/images/25944/large/GFI-asset-icon.png?1696525023",
+    "isStablecoin": false,
+    "name": "Fidu",
+    "symbol": "FIDU"
+  },
+  {
+    "coingeckoId": "solo-coin",
+    "image": "https://assets.coingecko.com/coins/images/10771/large/solo.png?1696510734",
+    "isStablecoin": false,
+    "name": "Sologenic",
+    "symbol": "SOLO"
+  },
+  {
+    "coingeckoId": "bazaars",
+    "image": "https://assets.coingecko.com/coins/images/26392/large/bazaars_logo-color-black-icon.png?1696525469",
+    "isStablecoin": false,
+    "name": "Bazaars",
+    "symbol": "BZR"
+  },
+  {
+    "coingeckoId": "firmachain",
+    "image": "https://assets.coingecko.com/coins/images/9892/large/6mHcLurm_400x400.jpg?1696509941",
+    "isStablecoin": false,
+    "name": "Firmachain",
+    "symbol": "FCT"
+  },
+  {
+    "coingeckoId": "chainge-finance",
+    "image": "https://assets.coingecko.com/coins/images/16526/large/symbol-only-on-dark.png?1696516089",
+    "isStablecoin": false,
+    "name": "Chainge Finance",
+    "symbol": "CHNG"
+  },
+  {
+    "coingeckoId": "unizen",
+    "image": "https://assets.coingecko.com/coins/images/14830/large/logo128px.png?1700169101",
+    "isStablecoin": false,
+    "name": "Unizen",
+    "symbol": "ZCX"
+  },
+  {
+    "coingeckoId": "acala",
+    "image": "https://assets.coingecko.com/coins/images/20634/large/upOKBONH_400x400.jpg?1696520038",
+    "isStablecoin": false,
+    "name": "Acala",
+    "symbol": "ACA"
+  },
+  {
+    "coingeckoId": "polygon-ecosystem-token",
+    "image": "https://assets.coingecko.com/coins/images/32440/large/polygon.png?1698233684",
+    "isStablecoin": false,
+    "name": "Polygon Ecosystem Token",
+    "symbol": "POL"
+  },
+  {
+    "coingeckoId": "uwu-lend",
+    "image": "https://assets.coingecko.com/coins/images/27408/large/uwu_logo_no-bg_1024.png?1696526449",
+    "isStablecoin": false,
+    "name": "UwU Lend",
+    "symbol": "UWU"
+  },
+  {
+    "coingeckoId": "coinweb",
+    "image": "https://assets.coingecko.com/coins/images/21607/large/Logo_200x200.png?1696520967",
+    "isStablecoin": false,
+    "name": "Coinweb",
+    "symbol": "CWEB"
+  },
+  {
+    "coingeckoId": "ankreth",
+    "image": "https://assets.coingecko.com/coins/images/13403/large/aETHc.png?1696513165",
+    "isStablecoin": false,
+    "name": "Ankr Staked ETH",
+    "symbol": "ANKRETH"
+  },
+  {
+    "coingeckoId": "boba-network",
+    "image": "https://assets.coingecko.com/coins/images/20285/large/Boba-200x200---white.png?1696519690",
+    "isStablecoin": false,
+    "name": "Boba Network",
+    "symbol": "BOBA"
+  },
+  {
+    "coingeckoId": "rocketx",
+    "image": "https://assets.coingecko.com/coins/images/14728/large/avatar-correct-size-official.png?1696514397",
+    "isStablecoin": false,
+    "name": "RocketX exchange",
+    "symbol": "RVF"
+  },
+  {
+    "coingeckoId": "dextools",
+    "image": "https://assets.coingecko.com/coins/images/11603/large/dext.png?1696511498",
+    "isStablecoin": false,
+    "name": "DexTools",
+    "symbol": "DEXT"
+  }
+]

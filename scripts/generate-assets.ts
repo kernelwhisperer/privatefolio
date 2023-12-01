@@ -16,7 +16,7 @@ async function main() {
       (_, index) =>
         `${COINGECKO_BASE_API}/${ENDPOINT}?vs_currency=usd&order=market_cap_desc&per_page=100&page=${
           index + 1
-        }`
+        }?x_cg_demo_api_key=CG-vYui9UAExP3fuAH5sYv7D6Ch`
     )
   console.log("URLs:", URLs)
 
@@ -26,7 +26,11 @@ async function main() {
   await Promise.all(
     URLs.map(async (url, index) => {
       const res = await fetch(url)
-      const list: unknown[] = await res.json()
+      const list = await res.json()
+
+      if (list?.status?.error_message) {
+        throw new Error(list.status.error_message)
+      }
 
       // "id": "bitcoin",
       // "symbol": "btc",
@@ -54,7 +58,7 @@ async function main() {
       // "atl_date": "2013-07-06T00:00:00.000Z",
       // "roi": null,
       // "last_updated": "2023-11-14T12:46:54.888Z"
-      const assets: Asset[] = list.map((x: any) => {
+      const assets: Asset[] = list.map((x) => {
         const symbol = x.symbol.toUpperCase()
 
         return {
