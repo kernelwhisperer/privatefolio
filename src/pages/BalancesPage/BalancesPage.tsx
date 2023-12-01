@@ -1,39 +1,33 @@
 import { Typography } from "@mui/material"
 import React, { useEffect, useState } from "react"
 
-import { findAssets } from "../../api/assets-api"
-import { Balance, computeBalances, getBalances } from "../../api/balances-api"
-import { findExchanges } from "../../api/exchanges-api"
+import { getBalances } from "../../api/balances-api"
 import { StaggeredList } from "../../components/StaggeredList"
-import { Asset, Exchange } from "../../interfaces"
+import { Asset, Balance, Exchange } from "../../interfaces"
 import { SerifFont } from "../../theme"
-import { AuditLogsTable } from "../AuditLogsPage/AuditLogTable"
+import { BalanceTable } from "./BalanceTable"
 
 export function BalancesPage({ show }: { show: boolean }) {
-  const [rows, setRows] = useState<Balance[]>([])
+  const [balances, setBalances] = useState<Balance[]>([])
   const [assetMap, setAssetMap] = useState<Record<string, Asset>>({})
   const [integrationMap, setIntegrationMap] = useState<Record<string, Exchange>>({})
 
   useEffect(() => {
-    getBalances().then(async (balances) => {
-      setRows(balances)
+    getBalances().then(async ({ map, timestamp }) => {
+      setBalances(Object.keys(map).map((x) => ({ balance: map[x], symbol: x })))
 
-      const symbolMap = {}
-      const integrationMap = {}
-      balances.forEach((x) => {
-        symbolMap[x.symbol] = true
-        integrationMap[x.integration] = true
-      })
+      // const symbolMap = {}
+      // const integrationMap = {}
+      // balances.forEach((x) => {
+      //   symbolMap[x.symbol] = true
+      //   integrationMap[x.integration] = true
+      // })
 
-      const assets = await findAssets(symbolMap)
-      setAssetMap(assets)
+      // const assets = await findAssets(symbolMap)
+      // setAssetMap(assets)
 
-      const integrations = await findExchanges(integrationMap)
-      setIntegrationMap(integrations)
-    })
-
-    computeBalances().then((balances) => {
-      console.log("📜 LOG > computeBalances > balances:", balances)
+      // const integrations = await findExchanges(integrationMap)
+      // setIntegrationMap(integrations)
     })
   }, [])
 
@@ -63,7 +57,7 @@ export function BalancesPage({ show }: { show: boolean }) {
           />
         </Stack> */}
       </Typography>
-      <AuditLogsTable rows={rows} assetMap={assetMap} integrationMap={integrationMap} />
+      <BalanceTable rows={balances} integrationMap={integrationMap} />
     </StaggeredList>
   )
 }

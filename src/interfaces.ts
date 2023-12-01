@@ -60,6 +60,7 @@ export interface Exchange {
 
 export interface AuditLog {
   _id: string
+  balance?: number
   change: string
   changeN: number
   integration: Integration
@@ -100,5 +101,16 @@ export interface FileImport {
   }
   name: string
   size: number
+  timestamp: number
+}
+
+export interface Balance {
+  balance: number
+  symbol: string
+}
+
+export interface Balances {
+  _id: string
+  map: Record<string, number>
   timestamp: number
 }

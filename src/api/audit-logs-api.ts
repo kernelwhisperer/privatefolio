@@ -61,21 +61,26 @@ type FindAuditLogsRequest = {
   fields?: string[]
   filters?: ActiveFilterMap
   limit?: number
+  /**
+   * orderBy = timestamp, always
+   *
+   * @default "desc"
+   */
   order?: "asc" | "desc"
   skip?: number
 }
 
-export async function findAuditLogs(request: FindAuditLogsRequest) {
+export async function findAuditLogs(request: FindAuditLogsRequest = {}) {
   const { filters = {}, limit, skip, order = "desc", fields } = request
 
   // Algorithm to help PouchDB find the best index to use
   const preferredFilter = _filterOrderBySpecificity.find((x) => filters[x])
 
   const selector: PouchDB.Find.Selector = !preferredFilter
-    ? { timestamp: { $gt: 0 } }
+    ? { timestamp: { $exists: true } }
     : {
         [preferredFilter]: filters[preferredFilter],
-        timestamp: { $gt: 0 },
+        timestamp: { $exists: true },
       }
 
   if (preferredFilter) {
@@ -96,11 +101,10 @@ export async function findAuditLogs(request: FindAuditLogsRequest) {
     skip,
     sort,
   }
-  // console.log("📜 LOG > findAuditLogs > _req:", _req)
+  console.log("📜 LOG > findAuditLogs > _req:", _req)
 
-  //
-  // const explain = await (auditLogsDB as any).explain(_req)
-  // console.log("📜 LOG > findAuditLogs > explain:", explain.index)
+  const explain = await (auditLogsDB as any).explain(_req)
+  console.log("📜 LOG > findAuditLogs > explain:", explain.index)
 
   //
   const { docs, warning } = await auditLogsDB.find(_req)

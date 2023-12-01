@@ -1,38 +1,57 @@
-import { getAuditLogs } from "./audit-logs-api"
-import { auditLogsDB } from "./database"
-
-export interface Balance {
-  balance: number
-  symbol: string
-  timestamp: number
-  // wallet: string
-}
+import { findAuditLogs } from "./audit-logs-api"
+import { auditLogsDB, balancesDB } from "./database"
 
 export async function getBalances() {
-  const res = await auditLogsDB.allDocs<Balance>({
-    // attachments: true,
-    // descending: true,
-    include_docs: true,
-  })
-  return res.rows.map((row) => row.doc).filter((x) => x?.symbol === "ETH") as Balance[]
+  return balancesDB.get("balances")
 }
 
-export async function computeBalances() {
-  const logs = await getAuditLogs()
-  logs.sort((a, b) => a.timestamp - b.timestamp)
+export async function computeBalances(symbol?: string) {
+  const { length: count } = await findAuditLogs({ fields: [], filters: { symbol } })
+  console.log("Recompute balances total logs:", count)
 
-  const map: Record<string, Record<number, number>> = {}
-  const currentBalances: Record<string, number> = {}
+  const balances: Record<string, number> = {}
+  for (let i = 0; i < count; i += 500) {
+    console.log("Recompute balances processing logs from", i, "to", i + 500)
+    const logs = await findAuditLogs({
+      filters: { symbol },
+      limit: 500,
+      order: "asc",
+      skip: i,
+    })
+    console.log(
+      "Recompute balances processing logs from",
+      i,
+      "to",
+      i + 500,
+      "fetch completed",
+      logs
+    )
+    for (const log of logs) {
+      const { symbol, changeN } = log
 
-  for (const log of logs) {
-    const { symbol, changeN, timestamp } = log
+      if (!balances[symbol]) balances[symbol] = 0
+      balances[symbol] += changeN
 
-    if (!map[symbol]) map[symbol] = {}
-    if (!currentBalances[symbol]) currentBalances[symbol] = 0
-
-    currentBalances[symbol] += changeN
-    map[symbol][timestamp] = currentBalances[symbol]
+      log.balance = balances[symbol]
+    }
+    console.log("Recompute balances processing logs from", i, "to", i + 500, "compute completed")
+    await auditLogsDB.bulkDocs(logs)
+    console.log("Recompute balances processing logs from", i, "to", i + 500, "save completed")
   }
 
-  return map
+  // update balancesDB
+  const existing = await balancesDB.get("balances")
+  if (!existing) {
+    balancesDB.put({ _id: "balances", map: balances, timestamp: Date.now() })
+    return
+  }
+
+  if (symbol) {
+    existing.map[symbol] = balances[symbol]
+  } else {
+    existing.map = balances
+  }
+  existing.timestamp = Date.now()
+
+  balancesDB.put(existing)
 }

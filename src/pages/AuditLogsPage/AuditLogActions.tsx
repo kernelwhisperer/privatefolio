@@ -1,8 +1,9 @@
-import { MemoryRounded, MoreHoriz } from "@mui/icons-material"
+import { CalculateOutlined, MemoryRounded, MoreHoriz } from "@mui/icons-material"
 import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem } from "@mui/material"
 import React from "react"
 
 import { indexAuditLogs } from "../../api/audit-logs-api"
+import { computeBalances } from "../../api/balances-api"
 import { enqueueTask, TaskPriority } from "../../stores/task-store"
 
 export function AuditLogActions() {
@@ -48,6 +49,24 @@ export function AuditLogActions() {
             <MemoryRounded fontSize="small" />
           </ListItemIcon>
           <ListItemText>Recompute indexes</ListItemText>
+        </MenuItem>
+        <MenuItem
+          dense
+          onClick={() => {
+            enqueueTask({
+              function: async () => {
+                await computeBalances()
+              },
+              name: "Recompute balances",
+              priority: TaskPriority.Low,
+            })
+            handleClose()
+          }}
+        >
+          <ListItemIcon>
+            <CalculateOutlined fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Recompute balances</ListItemText>
         </MenuItem>
       </Menu>
     </>

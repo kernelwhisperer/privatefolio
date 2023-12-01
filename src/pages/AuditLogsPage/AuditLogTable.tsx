@@ -83,8 +83,7 @@ const HEAD_CELLS: HeadCell[] = [
     label: "Asset",
   },
   {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    key: "balance" as any,
+    key: "balance",
     label: "New balance",
     numeric: true,
   },
@@ -148,7 +147,7 @@ export function AuditLogsTable() {
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows = page > 0 ? Math.max(0, rowsPerPage - rows.length) : 0
-  console.log("📜 LOG > AuditLogsTable > emptyRows:", emptyRows)
+  // TODO
 
   const handleSort = useCallback(
     (_event: MouseEvent<unknown>, property: SortableKey) => {

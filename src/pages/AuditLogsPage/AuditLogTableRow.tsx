@@ -52,7 +52,7 @@ const OPERATION_ICONS: Partial<Record<AuditLogOperation, SvgIconComponent>> = {
 
 export function AuditLogTableRow(props: AuditLogTableRowProps) {
   const { auditLog, assetMap, integrationMap, relativeTime, ...rest } = props
-  const { symbol, change, changeN, operation, timestamp, integration, wallet } = auditLog
+  const { symbol, change, changeN, operation, timestamp, integration, wallet, balance } = auditLog
 
   const color = OPERATION_COLORS[operation] || grey[500]
   const OpIconComponent = OPERATION_ICONS[operation]
@@ -127,9 +127,9 @@ export function AuditLogTableRow(props: AuditLogTableRowProps) {
         </Stack>
       </TableCell>
       <TableCell align="right" sx={{ fontFamily: MonoFont }}>
-        <Tooltip title={<Box sx={{ fontFamily: MonoFont }}>{change}</Box>}>
+        <Tooltip title={<Box sx={{ fontFamily: MonoFont }}>{balance}</Box>}>
           <span>
-            {formatNumber(0, {
+            {formatNumber(balance, {
               maximumFractionDigits: 2, // TODO make this configurable
               minimumFractionDigits: 2,
               // signDisplay: "always",
