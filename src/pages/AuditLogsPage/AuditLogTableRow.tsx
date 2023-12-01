@@ -26,6 +26,7 @@ import { formatNumber } from "../../utils/client-utils"
 interface AuditLogTableRowProps extends TableRowProps {
   auditLog: AuditLog
   relativeTime: boolean
+  symbol?: string
 }
 
 const redColor = red[400]
@@ -50,7 +51,7 @@ const OPERATION_ICONS: Partial<Record<AuditLogOperation, SvgIconComponent>> = {
 }
 
 export function AuditLogTableRow(props: AuditLogTableRowProps) {
-  const { auditLog, relativeTime, ...rest } = props
+  const { auditLog, relativeTime, symbol: predefinedSymbol, ...rest } = props
   const { symbol, change, changeN, operation, timestamp, integration, wallet, balance } = auditLog
 
   const assetMap = useStore($assetMap)
@@ -116,18 +117,20 @@ export function AuditLogTableRow(props: AuditLogTableRowProps) {
           </span>
         </Tooltip>
       </TableCell>
-      <TableCell sx={{ maxWidth: 140, minWidth: 140, width: 140 }}>
-        <Stack
-          direction="row"
-          gap={0.5}
-          alignItems="center"
-          component="div"
-          // justifyContent="flex-end"
-        >
-          <AssetAvatar size="small" src={assetMap[symbol]?.image} alt={symbol} />
-          <span>{symbol}</span>
-        </Stack>
-      </TableCell>
+      {!predefinedSymbol && (
+        <TableCell sx={{ maxWidth: 140, minWidth: 140, width: 140 }}>
+          <Stack
+            direction="row"
+            gap={0.5}
+            alignItems="center"
+            component="div"
+            // justifyContent="flex-end"
+          >
+            <AssetAvatar size="small" src={assetMap[symbol]?.image} alt={symbol} />
+            <span>{symbol}</span>
+          </Stack>
+        </TableCell>
+      )}
       <TableCell align="right" sx={{ fontFamily: MonoFont }}>
         <Tooltip title={<Box sx={{ fontFamily: MonoFont }}>{balance || "TBD"}</Box>}>
           <span>

@@ -1,4 +1,4 @@
-import { Box, Stack, TableCell, TableRow, TableRowProps, Tooltip } from "@mui/material"
+import { Box, Stack, TableCell, TableRow, TableRowProps, Tooltip, Typography } from "@mui/material"
 import { useStore } from "@nanostores/react"
 // import TableCell from "@mui/material/Unstable_TableCell2" // TableCell version 2
 import React from "react"
@@ -30,20 +30,23 @@ export function BalanceTableRow(props: BalanceTableRowProps) {
       //   },
       // })}
     >
-      <TableCell sx={{ maxWidth: 140, minWidth: 140, width: 140 }}>
+      <TableCell sx={{ maxWidth: 260, minWidth: 260, width: 260 }}>
         <Stack
           direction="row"
-          gap={0.5}
+          gap={1}
           alignItems="center"
           component="div"
           // justifyContent="flex-end"
         >
           <AssetAvatar src={assetMap[symbol]?.image} alt={symbol} />
-          <span>{symbol}</span>
+          <Stack>
+            <span>{symbol}</span>
+            <Typography color="text.secondary" variant="caption">
+              {assetMap[symbol]?.name}
+            </Typography>
+          </Stack>
         </Stack>
       </TableCell>
-
-      {/* <TableCell sx={{ maxWidth: 140, minWidth: 140, width: 140 }}>{}</TableCell> */}
       <TableCell align="right" sx={{ fontFamily: MonoFont }}>
         <Tooltip title={<Box sx={{ fontFamily: MonoFont }}>{balance}</Box>}>
           <span>

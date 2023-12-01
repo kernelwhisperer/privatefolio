@@ -17,7 +17,7 @@ import TablePagination, { tablePaginationClasses } from "@mui/material/TablePagi
 import TableRow from "@mui/material/TableRow"
 import { useStore } from "@nanostores/react"
 import { a, useTransition } from "@react-spring/web"
-import React, { ChangeEvent, MouseEvent, useCallback, useEffect, useState } from "react"
+import React, { ChangeEvent, MouseEvent, useCallback, useEffect, useMemo, useState } from "react"
 import { Link } from "react-router-dom"
 
 import { findAuditLogs } from "../../api/audit-logs-api"
@@ -31,7 +31,7 @@ import { formatNumber } from "../../utils/client-utils"
 import { stringToColor } from "../../utils/color-utils"
 import { Order } from "../../utils/table-utils"
 import { SPRING_CONFIGS } from "../../utils/utils"
-import { AuditLogTableHead, AuditLogTableHeadProps } from "./AuditLogTableHead"
+import { AuditLogTableHead } from "./AuditLogTableHead"
 import { AuditLogTableRow } from "./AuditLogTableRow"
 
 type SortableKey = keyof AuditLog
@@ -44,71 +44,13 @@ interface HeadCell {
   sortable?: boolean
 }
 
-const HEAD_CELLS: HeadCell[] = [
-  {
-    key: "timestamp",
-    label: "Timestamp",
-    sortable: true,
-  },
-  {
-    filterable: true,
-    key: "integration",
-    label: "Integration",
-  },
-  {
-    filterable: true,
-    key: "wallet",
-    label: "Wallet",
-  },
-  {
-    filterable: true,
-    key: "operation",
-    label: "Operation",
-  },
-  {
-    key: "changeN",
-    label: "Change",
-    numeric: true,
-  },
-  {
-    filterable: true,
-    key: "symbol",
-    label: "Asset",
-  },
-  {
-    key: "balance",
-    label: "New balance",
-    numeric: true,
-  },
-]
-
-function TableHead(props: Omit<AuditLogTableHeadProps, "headCell">) {
-  return (
-    <MuiTableHead
-      sx={{
-        background: "var(--mui-palette-background-paper)",
-        height: 52,
-        position: "sticky",
-        top: 0,
-        zIndex: 2,
-      }}
-    >
-      <TableRow>
-        {HEAD_CELLS.map((headCell, index) => (
-          <TableCell
-            key={index}
-            padding="normal"
-            sortDirection={props.orderBy === headCell.key ? props.order : false}
-          >
-            <AuditLogTableHead headCell={headCell} {...props} />
-          </TableCell>
-        ))}
-      </TableRow>
-    </MuiTableHead>
-  )
+interface AuditLogsTableProps {
+  symbol?: string
 }
 
-export function AuditLogsTable() {
+export function AuditLogsTable(props: AuditLogsTableProps) {
+  const { symbol } = props
+
   const [queryTime, setQueryTime] = useState<number | null>(null)
   const [rowCount, setRowCount] = useState<number | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
@@ -116,7 +58,7 @@ export function AuditLogsTable() {
   const [page, setPage] = useState(0)
   const [order, setOrder] = useState<Order>("desc")
   const [orderBy, setOrderBy] = useState<SortableKey>("timestamp") // THIS IS A CONST NOW
-  const [rowsPerPage, setRowsPerPage] = useState(25)
+  const [rowsPerPage, setRowsPerPage] = useState(symbol ? 10 : 25)
 
   const [relativeTime, setRelativeTime] = useState(true)
 
@@ -179,12 +121,53 @@ export function AuditLogsTable() {
   )
 
   useEffect(() => {
-    queryRows(activeFilters, rowsPerPage, page, order).then()
-  }, [queryRows, activeFilters, rowsPerPage, page, order])
+    queryRows({ symbol, ...activeFilters }, rowsPerPage, page, order).then()
+  }, [symbol, queryRows, activeFilters, rowsPerPage, page, order])
 
-  // useEffect(() => {
-  //   setPage(0)
-  // }, [rows])
+  const headCells = useMemo<HeadCell[]>(
+    () => [
+      {
+        key: "timestamp",
+        label: "Timestamp",
+        sortable: true,
+      },
+      {
+        filterable: true,
+        key: "integration",
+        label: "Integration",
+      },
+      {
+        filterable: true,
+        key: "wallet",
+        label: "Wallet",
+      },
+      {
+        filterable: true,
+        key: "operation",
+        label: "Operation",
+      },
+      {
+        key: "changeN",
+        label: "Change",
+        numeric: true,
+      },
+      ...(!symbol
+        ? ([
+            {
+              filterable: true,
+              key: "symbol",
+              label: "Asset",
+            },
+          ] as HeadCell[])
+        : []),
+      {
+        key: "balance",
+        label: "New balance",
+        numeric: true,
+      },
+    ],
+    [symbol]
+  )
 
   const transitions = useTransition(loading, {
     config: SPRING_CONFIGS.veryQuick,
@@ -250,14 +233,35 @@ export function AuditLogsTable() {
               >
                 <TableContainer sx={{ overflowX: "unset" }}>
                   <Table sx={{ minWidth: 750 }} size="small">
-                    <TableHead
-                      order={order}
-                      orderBy={orderBy}
-                      onSort={handleSort}
-                      // onRequestSort={handleRequestSort}
-                      onRelativeTime={handleRelativeTime}
-                      relativeTime={relativeTime}
-                    />
+                    <MuiTableHead
+                      sx={{
+                        background: "var(--mui-palette-background-paper)",
+                        height: 52,
+                        position: "sticky",
+                        top: 0,
+                        zIndex: 2,
+                      }}
+                    >
+                      <TableRow>
+                        {headCells.map((headCell, index) => (
+                          <TableCell
+                            key={index}
+                            padding="normal"
+                            sortDirection={orderBy === headCell.key ? order : false}
+                          >
+                            <AuditLogTableHead
+                              headCell={headCell}
+                              order={order}
+                              orderBy={orderBy}
+                              onSort={handleSort}
+                              // onRequestSort={handleRequestSort}
+                              onRelativeTime={handleRelativeTime}
+                              relativeTime={relativeTime}
+                            />
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    </MuiTableHead>
                     <TableBody>
                       {rows.map((x) => (
                         <AuditLogTableRow
@@ -266,11 +270,12 @@ export function AuditLogsTable() {
                           relativeTime={relativeTime}
                           key={x._id}
                           auditLog={x}
+                          symbol={symbol}
                         />
                       ))}
                       {emptyRows > 0 && (
                         <TableRow style={{ height: 37 * emptyRows }}>
-                          <TableCell colSpan={HEAD_CELLS.length} />
+                          <TableCell colSpan={headCells.length} />
                         </TableRow>
                       )}
                     </TableBody>

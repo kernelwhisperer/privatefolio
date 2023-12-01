@@ -1,11 +1,12 @@
 import Container from "@mui/material/Container"
 import { a, useTransition } from "@react-spring/web"
 import React, { useEffect } from "react"
-import { Route, Routes, useLocation } from "react-router-dom"
+import { Navigate, Route, Routes, useLocation } from "react-router-dom"
 
 import { findAssets } from "./api/assets-api"
 import { findExchanges } from "./api/exchanges-api"
 import { Header } from "./components/Header/Header"
+import AssetPage from "./pages/AssetPage/AssetPage"
 import { AuditLogsPage } from "./pages/AuditLogsPage/AuditLogsPage"
 import { BalancesPage } from "./pages/BalancesPage/BalancesPage"
 import { ImportDataPage } from "./pages/ImportDataPage/ImportDataPage"
@@ -63,9 +64,11 @@ export default function App() {
             }
           >
             <Routes location={item}>
-              {/* <Route path="/asset/:assetSymbol" element={<AssetPage show={pathname === ""}/>} /> */}
-              {/* <Route path="/transactions" element={<TransactionsPage show={pathname === ""}/>} /> */}
               <Route path="/" element={<BalancesPage show={pathname === "/"} />} />
+              <Route
+                path="/asset/:symbol"
+                element={<AssetPage show={pathname.includes("/asset")} />}
+              />
               <Route
                 path="/import-data"
                 element={<ImportDataPage show={pathname === "/import-data"} />}
@@ -74,6 +77,7 @@ export default function App() {
                 path="/audit-logs"
                 element={<AuditLogsPage show={pathname === "/audit-logs"} />}
               />
+              <Route path="*" element={<Navigate to="/" />} />
             </Routes>
           </a.div>
         ))}

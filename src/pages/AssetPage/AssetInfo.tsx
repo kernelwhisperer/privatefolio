@@ -4,9 +4,9 @@ import { Box, Stack, Typography } from "@mui/material"
 // import icons from "base64-cryptocurrency-icons";
 import React from "react"
 
-import EnhancedTable, { HeadCell } from "../../components/EnhancedTable"
-import { formatNumber } from "../../utils/client-utils"
+import { HeadCell } from "../../components/EnhancedTable"
 import { Transaction } from "../../interfaces"
+import { formatNumber } from "../../utils/client-utils"
 
 interface AssetInfoProps {
   amountBought: number
@@ -144,7 +144,6 @@ export function AssetInfo(props: AssetInfoProps) {
           }))}
         /> */}
       </Stack>
-      <EnhancedTable<Transaction> rows={tradeHistory} headCells={headCells} />
     </Box>
   )
 }

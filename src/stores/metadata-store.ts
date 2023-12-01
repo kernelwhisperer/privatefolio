@@ -14,7 +14,6 @@ type FilterMap = {
 export type FilterKey = keyof FilterMap
 
 export const $filterMap = map<FilterMap>()
-keepMount($filterMap)
 
 export const LABEL_MAP: Record<FilterKey, string> = {
   integration: "Integration",
@@ -61,5 +60,9 @@ export const $assetMap = map<AssetMap>({})
 
 export type IntegrationMap = Record<string, Exchange>
 export const $integrationMap = map<IntegrationMap>({})
+
+keepMount($assetMap)
+keepMount($filterMap)
+keepMount($integrationMap)
 
 logAtoms({ $assetMap, $filterMap, $integrationMap })
