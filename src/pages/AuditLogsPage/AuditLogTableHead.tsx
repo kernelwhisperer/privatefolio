@@ -18,7 +18,8 @@ import React from "react"
 
 import { useBoolean } from "../../hooks/useBoolean"
 import { AuditLog } from "../../interfaces"
-import { $activeFilters, $filterMap, FilterKey } from "../../stores/audit-log-store"
+import { $activeFilters } from "../../stores/audit-log-store"
+import { $filterMap, FilterKey } from "../../stores/metadata-store"
 import { Order } from "../../utils/table-utils"
 
 type SortableKeys = keyof AuditLog

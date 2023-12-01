@@ -20,19 +20,12 @@ import { a, useTransition } from "@react-spring/web"
 import React, { ChangeEvent, MouseEvent, useCallback, useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 
-import { findAssets } from "../../api/assets-api"
 import { findAuditLogs } from "../../api/audit-logs-api"
-import { findExchanges } from "../../api/exchanges-api"
 import { FilterChip } from "../../components/FilterChip"
 import { TablePaginationActions } from "../../components/TableActions"
-import { Asset, AuditLog, Exchange } from "../../interfaces"
-import {
-  $activeFilters,
-  ActiveFilterMap,
-  computeFilterMap,
-  FilterKey,
-  LABEL_MAP,
-} from "../../stores/audit-log-store"
+import { AuditLog } from "../../interfaces"
+import { $activeFilters, ActiveFilterMap } from "../../stores/audit-log-store"
+import { FilterKey, LABEL_MAP } from "../../stores/metadata-store"
 import { MonoFont } from "../../theme"
 import { formatNumber } from "../../utils/client-utils"
 import { stringToColor } from "../../utils/color-utils"
@@ -120,8 +113,6 @@ export function AuditLogsTable() {
   const [rowCount, setRowCount] = useState<number | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
   const [rows, setRows] = useState<AuditLog[]>([])
-  const [assetMap, setAssetMap] = useState<Record<string, Asset>>({})
-  const [integrationMap, setIntegrationMap] = useState<Record<string, Exchange>>({})
   const [page, setPage] = useState(0)
   const [order, setOrder] = useState<Order>("desc")
   const [orderBy, setOrderBy] = useState<SortableKey>("timestamp") // THIS IS A CONST NOW
@@ -160,10 +151,6 @@ export function AuditLogsTable() {
 
   const activeFilters = useStore($activeFilters)
 
-  useEffect(() => {
-    computeFilterMap().then()
-  }, [])
-
   const queryRows = useCallback(
     async (filters: ActiveFilterMap, rowsPerPage: number, page: number, order: Order) => {
       setQueryTime(null)
@@ -181,19 +168,6 @@ export function AuditLogsTable() {
       setRows(auditLogs)
       setLoading(false)
       setQueryTime(Date.now() - start)
-
-      const symbolMap = {}
-      const integrationMap = {}
-      auditLogs.forEach((x) => {
-        symbolMap[x.symbol] = true
-        integrationMap[x.integration] = true
-      })
-
-      const assets = await findAssets(symbolMap)
-      setAssetMap(assets)
-
-      const integrations = await findExchanges(integrationMap)
-      setIntegrationMap(integrations)
 
       const count = await findAuditLogs({
         fields: [],
@@ -292,8 +266,6 @@ export function AuditLogsTable() {
                           relativeTime={relativeTime}
                           key={x._id}
                           auditLog={x}
-                          assetMap={assetMap}
-                          integrationMap={integrationMap}
                         />
                       ))}
                       {emptyRows > 0 && (

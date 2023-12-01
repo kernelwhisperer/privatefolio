@@ -1,8 +1,9 @@
 import { Asset } from "../interfaces"
 import { ASSET_FILES_LOCATION, ASSET_PAGES } from "../settings"
+import { AssetMap } from "../stores/metadata-store"
 
 export async function findAssets(symbolMap: Record<string, boolean>) {
-  const map: Record<string, Asset> = {}
+  const map: AssetMap = {}
 
   if (Object.keys(symbolMap).length === 0) {
     return map

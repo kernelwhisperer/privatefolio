@@ -9,26 +9,29 @@ import {
   TableRowProps,
   Tooltip,
 } from "@mui/material"
+import { useStore } from "@nanostores/react"
 // import TableCell from "@mui/material/Unstable_TableCell2" // TableCell version 2
 import React, { MouseEvent, useState } from "react"
 
 import { removeFileImport } from "../../api/file-import-api"
 import { IntegrationAvatar } from "../../components/IntegrationAvatar"
 import { TimestampCell } from "../../components/TimestampCell"
-import { Exchange, FileImport } from "../../interfaces"
+import { FileImport } from "../../interfaces"
+import { $integrationMap } from "../../stores/metadata-store"
 import { MonoFont } from "../../theme"
 import { formatFileSize, formatNumber } from "../../utils/client-utils"
 
 interface FileImportTableRowProps extends TableRowProps {
   fileImport: FileImport
-  integrationMap: Record<string, Exchange>
   relativeTime: boolean
 }
 
 export function FileImportTableRow(props: FileImportTableRowProps) {
-  const { fileImport, integrationMap, relativeTime, ...rest } = props
+  const { fileImport, relativeTime, ...rest } = props
   const { name, meta, timestamp, lastModified, size } = fileImport
   const integration = meta?.integration
+
+  const integrationMap = useStore($integrationMap)
 
   const [loading, setLoading] = useState(false)
 

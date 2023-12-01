@@ -10,8 +10,9 @@ import TableRow from "@mui/material/TableRow"
 import TableSortLabel from "@mui/material/TableSortLabel"
 import { visuallyHidden } from "@mui/utils"
 import React, { ChangeEvent, MouseEvent, useCallback, useMemo, useState } from "react"
+import { useNavigate } from "react-router-dom"
 
-import { Balance, Exchange } from "../../interfaces"
+import { Balance } from "../../interfaces"
 import { getComparator, Order } from "../../utils/table-utils"
 import { BalanceTableRow } from "./BalanceTableRow"
 
@@ -55,15 +56,13 @@ const HEAD_CELLS: HeadCell[] = [
 ]
 
 interface TableHeadProps {
-  onRelativeTime: (event: React.MouseEvent<unknown>) => void
   onSort: (event: React.MouseEvent<unknown>, property: SortableKeys) => void
   order: Order
   orderBy: string
-  relativeTime: boolean
 }
 
 function TableHead(props: TableHeadProps) {
-  const { order, orderBy, onSort, onRelativeTime, relativeTime } = props
+  const { order, orderBy, onSort } = props
 
   const createSortHandler = (property: SortableKeys) => (event: React.MouseEvent<unknown>) => {
     onSort(event, property)
@@ -111,17 +110,16 @@ function TableHead(props: TableHeadProps) {
 }
 
 type FileImportsTableProps = {
-  integrationMap: Record<string, Exchange>
   rows: Balance[]
 }
 
 export function BalanceTable(props: FileImportsTableProps) {
-  const { rows, integrationMap } = props
+  const { rows } = props
   const [order, setOrder] = useState<Order>("desc")
   const [orderBy, setOrderBy] = useState<SortableKeys>("balance")
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
-  const [relativeTime, setRelativeTime] = useState(true)
+  const navigate = useNavigate()
 
   const handleSort = useCallback(
     (_event: MouseEvent<unknown>, property: SortableKeys) => {
@@ -131,10 +129,6 @@ export function BalanceTable(props: FileImportsTableProps) {
     },
     [orderBy, order]
   )
-
-  const handleRelativeTime = useCallback((_event: MouseEvent<unknown>) => {
-    setRelativeTime((prev) => !prev)
-  }, [])
 
   const handleChangePage = useCallback(
     (_event: MouseEvent<HTMLButtonElement> | null, newPage: number) => {
@@ -173,18 +167,21 @@ export function BalanceTable(props: FileImportsTableProps) {
               orderBy={orderBy}
               onSort={handleSort}
               // onRequestSort={handleRequestSort}
-              onRelativeTime={handleRelativeTime}
-              relativeTime={relativeTime}
             />
             <TableBody>
               {visibleRows.map((x) => (
                 <BalanceTableRow
+                  sx={{
+                    "&:hover": {
+                      cursor: "pointer",
+                    },
+                  }}
                   hover
-                  onClick={console.log}
-                  relativeTime={relativeTime}
+                  onClick={() => {
+                    navigate(`/asset/${x.symbol}`)
+                  }}
                   key={x.symbol}
                   balance={x}
-                  integrationMap={integrationMap}
                 />
               ))}
               {emptyRows > 0 && (

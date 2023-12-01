@@ -1,20 +1,23 @@
-import { TableCell, TableRow, TableRowProps } from "@mui/material"
+import { Box, Stack, TableCell, TableRow, TableRowProps, Tooltip } from "@mui/material"
+import { useStore } from "@nanostores/react"
 // import TableCell from "@mui/material/Unstable_TableCell2" // TableCell version 2
 import React from "react"
 
-import { Balance, Exchange } from "../../interfaces"
+import { AssetAvatar } from "../../components/AssetAvatar"
+import { Balance } from "../../interfaces"
+import { $assetMap } from "../../stores/metadata-store"
 import { MonoFont } from "../../theme"
 import { formatNumber } from "../../utils/client-utils"
 
 interface BalanceTableRowProps extends TableRowProps {
   balance: Balance
-  integrationMap: Record<string, Exchange>
-  relativeTime: boolean
 }
 
 export function BalanceTableRow(props: BalanceTableRowProps) {
-  const { balance, integrationMap, relativeTime, ...rest } = props
-  const { symbol } = balance
+  const { balance: balanceObj, ...rest } = props
+  const { symbol, balance } = balanceObj
+
+  const assetMap = useStore($assetMap)
 
   return (
     <TableRow
@@ -27,13 +30,29 @@ export function BalanceTableRow(props: BalanceTableRowProps) {
       //   },
       // })}
     >
-      <TableCell sx={{ maxWidth: 200, minWidth: 200, width: 200 }}>{symbol}</TableCell>
+      <TableCell sx={{ maxWidth: 140, minWidth: 140, width: 140 }}>
+        <Stack
+          direction="row"
+          gap={0.5}
+          alignItems="center"
+          component="div"
+          // justifyContent="flex-end"
+        >
+          <AssetAvatar src={assetMap[symbol]?.image} alt={symbol} />
+          <span>{symbol}</span>
+        </Stack>
+      </TableCell>
+
       {/* <TableCell sx={{ maxWidth: 140, minWidth: 140, width: 140 }}>{}</TableCell> */}
-      <TableCell
-        sx={{ fontFamily: MonoFont, maxWidth: 140, minWidth: 140, width: 140 }}
-        align="right"
-      >
-        {formatNumber(balance.balance)}
+      <TableCell align="right" sx={{ fontFamily: MonoFont }}>
+        <Tooltip title={<Box sx={{ fontFamily: MonoFont }}>{balance}</Box>}>
+          <span>
+            {formatNumber(balance, {
+              maximumFractionDigits: 2, // TODO make this configurable
+              minimumFractionDigits: 2,
+            })}
+          </span>
+        </Tooltip>
       </TableCell>
     </TableRow>
   )

@@ -21,11 +21,11 @@ export const balancesDB = new PouchDB<Balances>("balances")
 //   console.log("Error replicating database")
 // }
 
-// fileImportsDB.on("indexing", function (event) {
-//   console.log("Indexing fileImportsDB:", event)
-//   // called when indexes are updated
-// })
-// auditLogsDB.on("indexing", function (event) {
-//   console.log("Indexing auditLogsDB:", event)
-//   // called when indexes are updated
-// })
+fileImportsDB.on("indexing", function (event) {
+  console.log("Indexing fileImportsDB:", event)
+  // called when indexes are updated
+})
+auditLogsDB.on("indexing", function (event) {
+  console.log("Indexing auditLogsDB:", event)
+  // called when indexes are updated
+})

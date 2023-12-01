@@ -12,7 +12,7 @@ import TableSortLabel from "@mui/material/TableSortLabel"
 import { visuallyHidden } from "@mui/utils"
 import React, { ChangeEvent, MouseEvent, useCallback, useMemo, useState } from "react"
 
-import { Exchange, FileImport } from "../../interfaces"
+import { FileImport } from "../../interfaces"
 import { getComparator, Order } from "../../utils/table-utils"
 import { FileImportTableRow } from "./FileImportTableRow"
 
@@ -130,12 +130,11 @@ function TableHead(props: TableHeadProps) {
 }
 
 type FileImportsTableProps = {
-  integrationMap: Record<string, Exchange>
   rows: FileImport[]
 }
 
 export function FileImportsTable(props: FileImportsTableProps) {
-  const { rows, integrationMap } = props
+  const { rows } = props
   const [order, setOrder] = useState<Order>("desc")
   const [orderBy, setOrderBy] = useState<SortableKeys>("timestamp")
   const [page, setPage] = useState(0)
@@ -203,7 +202,6 @@ export function FileImportsTable(props: FileImportsTableProps) {
                   relativeTime={relativeTime}
                   key={x._id}
                   fileImport={x}
-                  integrationMap={integrationMap}
                 />
               ))}
               {emptyRows > 0 && (

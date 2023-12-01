@@ -11,21 +11,20 @@ import {
   Tooltip,
 } from "@mui/material"
 import { green, grey, red } from "@mui/material/colors"
+import { useStore } from "@nanostores/react"
 // import TableCell from "@mui/material/Unstable_TableCell2" // TableCell version 2
 import React from "react"
 
-import { AuditLog } from "../../api/audit-logs-api"
 import { AssetAvatar } from "../../components/AssetAvatar"
 import { TimestampCell } from "../../components/TimestampCell"
 import { Truncate } from "../../components/Truncate"
-import { Asset, AuditLogOperation, Exchange } from "../../interfaces"
+import { AuditLog, AuditLogOperation } from "../../interfaces"
+import { $assetMap, $integrationMap } from "../../stores/metadata-store"
 import { MonoFont } from "../../theme"
 import { formatNumber } from "../../utils/client-utils"
 
 interface AuditLogTableRowProps extends TableRowProps {
-  assetMap: Record<string, Asset>
   auditLog: AuditLog
-  integrationMap: Record<string, Exchange>
   relativeTime: boolean
 }
 
@@ -51,8 +50,11 @@ const OPERATION_ICONS: Partial<Record<AuditLogOperation, SvgIconComponent>> = {
 }
 
 export function AuditLogTableRow(props: AuditLogTableRowProps) {
-  const { auditLog, assetMap, integrationMap, relativeTime, ...rest } = props
+  const { auditLog, relativeTime, ...rest } = props
   const { symbol, change, changeN, operation, timestamp, integration, wallet, balance } = auditLog
+
+  const assetMap = useStore($assetMap)
+  const integrationMap = useStore($integrationMap)
 
   const color = OPERATION_COLORS[operation] || grey[500]
   const OpIconComponent = OPERATION_ICONS[operation]
@@ -127,13 +129,14 @@ export function AuditLogTableRow(props: AuditLogTableRowProps) {
         </Stack>
       </TableCell>
       <TableCell align="right" sx={{ fontFamily: MonoFont }}>
-        <Tooltip title={<Box sx={{ fontFamily: MonoFont }}>{balance}</Box>}>
+        <Tooltip title={<Box sx={{ fontFamily: MonoFont }}>{balance || "TBD"}</Box>}>
           <span>
-            {formatNumber(balance, {
-              maximumFractionDigits: 2, // TODO make this configurable
-              minimumFractionDigits: 2,
-              // signDisplay: "always",
-            })}
+            {balance
+              ? formatNumber(balance, {
+                  maximumFractionDigits: 2, // TODO make this configurable
+                  minimumFractionDigits: 2,
+                })
+              : "TBD"}
           </span>
         </Tooltip>
       </TableCell>
