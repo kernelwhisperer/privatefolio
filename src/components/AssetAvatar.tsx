@@ -13,21 +13,24 @@ const StyledAvatar = styled(Avatar)`
 
 export interface AssetAvatarProps extends AvatarProps {
   alt: string
-  size?: "small" | "large"
+  size?: "small" | "medium" | "large"
 }
 
-const smallSize = 16
-const largeSize = 40
+const SIZE_MAP = {
+  large: 50,
+  medium: 40,
+  small: 16,
+}
 
 export function AssetAvatar(props: AssetAvatarProps) {
-  const { alt, size = "large", sx, ...rest } = props
+  const { alt, size = "medium", sx, ...rest } = props
   const color = stringToColor(alt)
 
   return (
     <StyledAvatar
       sx={{
-        height: size === "small" ? smallSize : largeSize,
-        width: size === "small" ? smallSize : largeSize,
+        height: SIZE_MAP[size],
+        width: SIZE_MAP[size],
         ...sx,
       }}
       color={color}

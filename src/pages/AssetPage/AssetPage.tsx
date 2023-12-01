@@ -1,10 +1,13 @@
+import { Stack, Typography } from "@mui/material"
 import { useStore } from "@nanostores/react"
 import React from "react"
 import { Navigate, useParams } from "react-router-dom"
 
 import { AssetAvatar } from "../../components/AssetAvatar"
+import { BackButton } from "../../components/BackButton"
 import { StaggeredList } from "../../components/StaggeredList"
 import { $assetMap, $filterMap } from "../../stores/metadata-store"
+import { SerifFont } from "../../theme"
 import { AuditLogsTable } from "../AuditLogsPage/AuditLogTable"
 
 export default function AssetPage({ show }: { show: boolean }) {
@@ -21,8 +24,27 @@ export default function AssetPage({ show }: { show: boolean }) {
 
   return (
     <StaggeredList gap={1} show={show}>
-      <AssetAvatar src={assetMap[symbol]?.image} alt={symbol} />
+      <BackButton to="/balances">Balances</BackButton>
+      <Stack
+        direction="row"
+        gap={1}
+        alignItems="center"
+        component="div"
+        // justifyContent="flex-end"
+      >
+        <AssetAvatar size="large" src={assetMap[symbol]?.image} alt={symbol} />
+        <Stack>
+          <Typography variant="h6" fontFamily={SerifFont} sx={{ marginBottom: -0.5 }}>
+            <span>{symbol}</span>
+          </Typography>
+          <Typography color="text.secondary" variant="subtitle2">
+            {assetMap[symbol]?.name}
+          </Typography>
+        </Stack>
+      </Stack>
+      <br />
 
+      <Typography>Audit logs</Typography>
       <AuditLogsTable symbol={symbol} />
       {/* <AssetInfo
            assetSymbol={assetSymbol}

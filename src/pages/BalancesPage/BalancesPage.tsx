@@ -21,27 +21,6 @@ export function BalancesPage({ show }: { show: boolean }) {
     <StaggeredList gap={1} show={show}>
       <Typography variant="h6" fontFamily={SerifFont}>
         <span>Balances</span>
-        {/* <Stack direction="row" alignItems={"baseline"}>
-          <Chip
-            component={"span"}
-            size="small"
-            label={
-              <Typography variant="h6" fontFamily={SerifFont}>
-                {rows.length}
-              </Typography>
-            }
-            sx={{
-              // background: alpha(color, 0.075),
-              // color: "text.secondary",
-              fontFamily: "inherit",
-
-              fontSize: 14,
-              fontWeight: 300,
-              marginLeft: 1,
-              // letterSpacing: 0.5,
-            }}
-          />
-        </Stack> */}
       </Typography>
       <BalanceTable rows={balances} />
     </StaggeredList>
