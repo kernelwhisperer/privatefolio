@@ -1,17 +1,19 @@
 import { Stack, TablePagination, Typography } from "@mui/material"
+import { useStore } from "@nanostores/react"
 import React, { useEffect, useState } from "react"
 
-import { getAuditLogs } from "../../api/audit-logs-api"
-import { Asset, Transaction } from "../../interfaces"
+import { getTransactions } from "../../api/transactions-api"
+import { Transaction } from "../../interfaces"
+import { $assetMap } from "../../stores/metadata-store"
 import { SerifFont } from "../../theme"
 import { TransactionCard } from "./TransactionCard"
 
-export function TransactionsPage() {
+export function TransactionsPage({ show }: { show: boolean }) {
   const [rows, setRows] = useState<Transaction[]>([])
-  const [assetMap, setAssetMap] = useState<Record<string, Asset>>({})
+  const assetMap = useStore($assetMap)
 
   useEffect(() => {
-    getAuditLogs().then(async (transactions) => {
+    getTransactions().then(async (transactions) => {
       setRows(transactions)
     })
   }, [])
@@ -36,11 +38,11 @@ export function TransactionsPage() {
   return (
     <Stack gap={2}>
       <Typography variant="h6" fontFamily={SerifFont}>
-        Transaction ledger
+        Transactions
       </Typography>
       <Stack gap={0.5}>
         {visibleRows.map((tx) => (
-          <TransactionCard key={tx.id} tx={tx} assetMap={assetMap} />
+          <TransactionCard key={tx._id} tx={tx} assetMap={assetMap} />
         ))}
       </Stack>
       <TablePagination

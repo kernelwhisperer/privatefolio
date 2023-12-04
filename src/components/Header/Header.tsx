@@ -63,6 +63,7 @@ export function Header() {
             </Grid>
             <Grid item md={6} gap={0.5} component={Stack} justifyContent="center">
               <NavButton to={`/`}>Balances</NavButton>
+              <NavButton to={`/transactions`}>Transactions</NavButton>
               <NavButton to={`/audit-logs`}>Audit logs</NavButton>
               <NavButton to={`/import-data`}>Import data</NavButton>
             </Grid>

@@ -111,7 +111,3 @@ export async function findAuditLogs(request: FindAuditLogsRequest = {}) {
   if (warning) console.warn("findAuditLogs", warning)
   return docs as AuditLog[]
 }
-
-export async function getAuditLogs() {
-  return []
-}

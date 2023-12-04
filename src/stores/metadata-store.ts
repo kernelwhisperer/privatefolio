@@ -4,18 +4,18 @@ import { getFileImports } from "../api/file-import-api"
 import { Asset, AuditLogOperation, Exchange } from "../interfaces"
 import { logAtoms } from "../utils/utils"
 
-type FilterMap = {
+type FilterOptionsMap = {
   integration: string[]
   operation: AuditLogOperation[]
   symbol: string[]
   wallet: string[]
 }
 
-export type FilterKey = keyof FilterMap
+export type FilterKey = "integration" | "operation" | "symbol" | "wallet"
 
-export const $filterMap = map<FilterMap>()
+export const $filterOptionsMap = map<FilterOptionsMap>()
 
-export const LABEL_MAP: Record<FilterKey, string> = {
+export const FILTER_LABEL_MAP: Record<FilterKey, string> = {
   integration: "Integration",
   operation: "Operation",
   symbol: "Asset",
@@ -23,7 +23,7 @@ export const LABEL_MAP: Record<FilterKey, string> = {
 }
 
 export async function computeFilterMap() {
-  const filterMap = $filterMap.get()
+  const filterMap = $filterOptionsMap.get()
   if (Object.keys(filterMap).length > 0) return filterMap
 
   const fileImports = await getFileImports()
@@ -44,14 +44,14 @@ export async function computeFilterMap() {
     meta.operations.forEach((x) => operations.add(x))
   }
 
-  const map: FilterMap = {
+  const map: FilterOptionsMap = {
     integration: [...integrations].sort(),
     operation: [...operations].sort(),
     symbol: [...symbols].sort(),
     wallet: [...wallets].sort(),
   }
 
-  $filterMap.set(map)
+  $filterOptionsMap.set(map)
   return map
 }
 
@@ -62,7 +62,7 @@ export type IntegrationMap = Record<string, Exchange>
 export const $integrationMap = map<IntegrationMap>({})
 
 keepMount($assetMap)
-keepMount($filterMap)
+keepMount($filterOptionsMap)
 keepMount($integrationMap)
 
-logAtoms({ $assetMap, $filterMap, $integrationMap })
+logAtoms({ $assetMap, $filterMap: $filterOptionsMap, $integrationMap })

@@ -6,7 +6,7 @@ import { Navigate, useParams } from "react-router-dom"
 import { AssetAvatar } from "../../components/AssetAvatar"
 import { BackButton } from "../../components/BackButton"
 import { StaggeredList } from "../../components/StaggeredList"
-import { $assetMap, $filterMap } from "../../stores/metadata-store"
+import { $assetMap, $filterOptionsMap } from "../../stores/metadata-store"
 import { SerifFont } from "../../theme"
 import { AuditLogsTable } from "../AuditLogsPage/AuditLogTable"
 
@@ -16,7 +16,7 @@ export default function AssetPage({ show }: { show: boolean }) {
   console.log("📜 LOG > AssetPage > symbol:", symbol)
   const assetMap = useStore($assetMap)
 
-  const filterMap = useStore($filterMap)
+  const filterMap = useStore($filterOptionsMap)
 
   if (!symbol || (filterMap.symbol && !filterMap.symbol.includes(symbol))) {
     return <Navigate to="/" replace={true} />

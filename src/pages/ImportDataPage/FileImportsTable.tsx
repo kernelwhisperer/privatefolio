@@ -53,6 +53,11 @@ const HEAD_CELLS: HeadCell[] = [
     numeric: true,
   },
   {
+    key: "txns",
+    label: "Transactions",
+    numeric: true,
+  },
+  {
     label: "",
   },
 ]

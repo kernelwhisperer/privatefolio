@@ -1,15 +1,18 @@
 import { FileImport } from "../interfaces"
 import { parseCsv } from "../utils/csv-utils"
 import { hashString } from "../utils/utils"
-import { auditLogsDB, fileImportsDB } from "./database"
+import { auditLogsDB, fileImportsDB, transactionsDB } from "./database"
 
 export async function processFileImport(_id: string, file: File) {
   // parse file
   const text = await file.text()
-  const { metadata, logs } = await parseCsv(text, _id)
+  const { metadata, logs, transactions } = await parseCsv(text, _id)
 
   // save logs
   await auditLogsDB.bulkDocs(logs)
+
+  // save transactions
+  await transactionsDB.bulkDocs(transactions)
 
   // save metadata
   const fileImport = await fileImportsDB.get(_id)

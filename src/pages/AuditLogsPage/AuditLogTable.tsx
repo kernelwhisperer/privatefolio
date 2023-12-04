@@ -25,7 +25,7 @@ import { FilterChip } from "../../components/FilterChip"
 import { TablePaginationActions } from "../../components/TableActions"
 import { AuditLog } from "../../interfaces"
 import { $activeFilters, ActiveFilterMap } from "../../stores/audit-log-store"
-import { FilterKey, LABEL_MAP } from "../../stores/metadata-store"
+import { FilterKey, FILTER_LABEL_MAP } from "../../stores/metadata-store"
 import { MonoFont } from "../../theme"
 import { formatNumber } from "../../utils/client-utils"
 import { stringToColor } from "../../utils/color-utils"
@@ -218,7 +218,7 @@ export function AuditLogsTable(props: AuditLogsTableProps) {
                   {Object.keys(activeFilters).map((x) => (
                     <FilterChip
                       key={x}
-                      label={`${LABEL_MAP[x]} = ${activeFilters[x]}`}
+                      label={`${FILTER_LABEL_MAP[x]} = ${activeFilters[x]}`}
                       color={stringToColor(x)}
                       onDelete={() => {
                         $activeFilters.setKey(x as FilterKey, undefined)

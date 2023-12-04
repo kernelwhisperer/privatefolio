@@ -1,7 +1,7 @@
 import PouchDB from "pouchdb"
 import PouchDBFind from "pouchdb-find"
 
-import { AuditLog, Balances, FileImport } from "../interfaces"
+import { AuditLog, Balances, FileImport, Transaction } from "../interfaces"
 
 // declare module "pouchdb-core" {
 //   interface Database<Content extends {} = {}> {
@@ -17,6 +17,7 @@ const defaultDbOptions = {
 
 export const fileImportsDB = new PouchDB<Omit<FileImport, "_rev">>("file-imports", defaultDbOptions)
 export const auditLogsDB = new PouchDB<AuditLog>("audit-logs", defaultDbOptions)
+export const transactionsDB = new PouchDB<Transaction>("transactions", defaultDbOptions)
 export const balancesDB = new PouchDB<Balances>("balances", defaultDbOptions)
 
 // try {

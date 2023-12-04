@@ -10,7 +10,8 @@
 html {
   scrollbar-width: thin;
   -webkit-tap-highlight-color: transparent;
-  /* scrollbar-gutter: stable; */
+  /* TODO */
+  /* scrollbar-gutter: stable; */ 
   overflow-y: scroll;
 }
 

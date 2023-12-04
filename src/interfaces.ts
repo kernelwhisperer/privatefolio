@@ -88,6 +88,7 @@ export interface FileImport {
     operations: AuditLogOperation[]
     rows: number
     symbols: string[]
+    transactions: number
     wallets: string[]
   }
   name: string

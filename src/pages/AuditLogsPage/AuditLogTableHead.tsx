@@ -19,7 +19,7 @@ import React from "react"
 import { useBoolean } from "../../hooks/useBoolean"
 import { AuditLog } from "../../interfaces"
 import { $activeFilters } from "../../stores/audit-log-store"
-import { $filterMap, FilterKey } from "../../stores/metadata-store"
+import { $filterOptionsMap, FilterKey } from "../../stores/metadata-store"
 import { Order } from "../../utils/table-utils"
 
 type SortableKeys = keyof AuditLog
@@ -51,7 +51,7 @@ export function AuditLogTableHead(props: AuditLogTableHeadProps) {
     onSort(event, property)
   }
 
-  const filterMap = useStore($filterMap, { keys: [key as FilterKey] })
+  const filterMap = useStore($filterOptionsMap, { keys: [key as FilterKey] })
   const activeFilters = useStore($activeFilters, { keys: [key as FilterKey] })
   const filterValue = activeFilters[key]
 

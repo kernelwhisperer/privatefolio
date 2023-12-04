@@ -182,6 +182,7 @@ export async function parseCsv(text: string, _fileImportId: string) {
   const parser = PARSERS[integration]
 
   const logs: AuditLog[] = []
+  let transactions: Transaction[] = []
   const symbolMap: Record<string, boolean> = {}
   const walletMap: Record<string, boolean> = {}
   const operationMap: Partial<Record<AuditLogOperation, boolean>> = {}
@@ -189,13 +190,17 @@ export async function parseCsv(text: string, _fileImportId: string) {
   // Skip header
   rows.slice(1).forEach((row, index) => {
     try {
-      const { logs: newLogs } = parser(row, index, _fileImportId)
+      const { logs: newLogs, txns } = parser(row, index, _fileImportId)
 
       for (const log of newLogs) {
         logs.push(log)
         symbolMap[log.symbol] = true
         walletMap[log.wallet] = true
         operationMap[log.operation] = true
+      }
+
+      if (txns) {
+        transactions = transactions.concat(txns)
       }
     } catch {}
   })
@@ -206,9 +211,10 @@ export async function parseCsv(text: string, _fileImportId: string) {
     operations: Object.keys(operationMap) as AuditLogOperation[],
     rows: rows.length - 1,
     symbols: Object.keys(symbolMap),
+    transactions: transactions.length,
     wallets: Object.keys(walletMap),
   }
   console.log("📜 LOG > parseCsv > metadata:", metadata)
 
-  return { logs, metadata }
+  return { logs, metadata, transactions }
 }

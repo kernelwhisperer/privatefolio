@@ -10,6 +10,7 @@ import AssetPage from "./pages/AssetPage/AssetPage"
 import { AuditLogsPage } from "./pages/AuditLogsPage/AuditLogsPage"
 import { BalancesPage } from "./pages/BalancesPage/BalancesPage"
 import { ImportDataPage } from "./pages/ImportDataPage/ImportDataPage"
+import { TransactionsPage } from "./pages/TransactionPage/TransactionsPage"
 import { $assetMap, $integrationMap, computeFilterMap } from "./stores/metadata-store"
 import { SPRING_CONFIGS } from "./utils/utils"
 
@@ -72,6 +73,10 @@ export default function App() {
               <Route
                 path="/import-data"
                 element={<ImportDataPage show={pathname === "/import-data"} />}
+              />
+              <Route
+                path="/transactions"
+                element={<TransactionsPage show={pathname === "/audit-logs"} />}
               />
               <Route
                 path="/audit-logs"

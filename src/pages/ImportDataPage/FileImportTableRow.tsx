@@ -53,17 +53,17 @@ export function FileImportTableRow(props: FileImportTableRowProps) {
       //   },
       // })}
     >
-      <TableCell sx={{ maxWidth: 200, minWidth: 200, width: 200 }}>
+      <TableCell sx={{ maxWidth: 180, minWidth: 180, width: 180 }}>
         <TimestampCell timestamp={timestamp} relative={relativeTime} />
       </TableCell>
       <TableCell sx={{ maxWidth: 200, minWidth: 200, width: 200 }}>{name}</TableCell>
       <TableCell
-        sx={{ fontFamily: MonoFont, maxWidth: 140, minWidth: 140, width: 140 }}
+        sx={{ fontFamily: MonoFont, maxWidth: 100, minWidth: 100, width: 100 }}
         align="right"
       >
         {formatFileSize(size)}
       </TableCell>
-      <TableCell sx={{ maxWidth: 200, minWidth: 200, width: 200 }}>
+      <TableCell sx={{ maxWidth: 180, minWidth: 180, width: 180 }}>
         <TimestampCell timestamp={lastModified} relative={relativeTime} />
       </TableCell>
       <TableCell sx={{ maxWidth: 160, minWidth: 160, width: 140 }}>
@@ -81,7 +81,7 @@ export function FileImportTableRow(props: FileImportTableRowProps) {
         )}
       </TableCell>
       <TableCell
-        sx={{ fontFamily: MonoFont, maxWidth: 160, minWidth: 160, width: 140 }}
+        sx={{ fontFamily: MonoFont, maxWidth: 120, minWidth: 120, width: 120 }}
         align="right"
       >
         {!meta ? (
@@ -98,6 +98,30 @@ export function FileImportTableRow(props: FileImportTableRowProps) {
               >
                 <span>
                   {formatNumber(meta.logs)} ({formatNumber(meta.rows)})
+                </span>
+              </Tooltip>
+            )}
+          </>
+        )}
+      </TableCell>
+      <TableCell
+        sx={{ fontFamily: MonoFont, maxWidth: 120, minWidth: 120, width: 120 }}
+        align="right"
+      >
+        {!meta ? (
+          <Skeleton></Skeleton>
+        ) : (
+          <>
+            {meta.transactions === meta.rows ? (
+              <span>{formatNumber(meta.transactions)}</span>
+            ) : (
+              <Tooltip
+                title={`${formatNumber(
+                  meta.transactions
+                )} transactions extracted from ${formatNumber(meta.rows)} document entries`}
+              >
+                <span>
+                  {formatNumber(meta.transactions)} ({formatNumber(meta.rows)})
                 </span>
               </Tooltip>
             )}
