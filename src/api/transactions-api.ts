@@ -117,7 +117,6 @@ import { transactionsDB } from "./database"
 
 export async function getTransactions() {
   const result = await transactionsDB.allDocs({ include_docs: true })
-  console.log("📜 LOG > getTransactions > result:", result)
 
   return result.rows.map((x) => x.doc) as Transaction[]
 }

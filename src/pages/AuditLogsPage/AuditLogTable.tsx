@@ -93,7 +93,6 @@ export function AuditLogsTable(props: AuditLogsTableProps) {
         order,
         skip: page * rowsPerPage,
       })
-      console.log("📜 LOG > AuditLogsTable > auditLogs:", auditLogs)
 
       console.log(`Query took ${Date.now() - start}ms (audit logs)`)
       setRows(auditLogs)
