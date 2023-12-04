@@ -1,19 +1,10 @@
-import { DataArrayRounded, TimerSharp } from "@mui/icons-material"
-import {
-  CircularProgress,
-  Link as MuiLink,
-  Paper,
-  Skeleton,
-  Stack,
-  Tooltip,
-  Typography,
-} from "@mui/material"
+import { DataArrayRounded } from "@mui/icons-material"
+import { Link as MuiLink, Paper, Skeleton, Stack, Typography } from "@mui/material"
 import Table from "@mui/material/Table"
 import TableBody from "@mui/material/TableBody"
 import TableCell from "@mui/material/TableCell"
 import TableContainer from "@mui/material/TableContainer"
 import MuiTableHead from "@mui/material/TableHead"
-import TablePagination, { tablePaginationClasses } from "@mui/material/TablePagination"
 import TableRow from "@mui/material/TableRow"
 import { useStore } from "@nanostores/react"
 import { a, useTransition } from "@react-spring/web"
@@ -22,12 +13,10 @@ import { Link } from "react-router-dom"
 
 import { findAuditLogs } from "../../api/audit-logs-api"
 import { FilterChip } from "../../components/FilterChip"
-import { TablePaginationActions } from "../../components/TableActions"
+import { TableFooter } from "../../components/TableFooter"
 import { AuditLog } from "../../interfaces"
 import { $activeFilters, ActiveFilterMap } from "../../stores/audit-log-store"
 import { FILTER_LABEL_MAP, FilterKey } from "../../stores/metadata-store"
-import { MonoFont } from "../../theme"
-import { formatNumber } from "../../utils/client-utils"
 import { stringToColor } from "../../utils/color-utils"
 import { Order } from "../../utils/table-utils"
 import { SPRING_CONFIGS } from "../../utils/utils"
@@ -273,110 +262,15 @@ export function AuditLogsTable(props: AuditLogsTableProps) {
                     </TableBody>
                   </Table>
                 </TableContainer>
-                <Stack
-                  direction="row"
-                  sx={{
-                    background: "var(--mui-palette-background-paper)",
-                    borderTop: "1px solid var(--mui-palette-TableCell-border)",
-                    bottom: 0,
-                    position: "sticky",
-                  }}
-                  justifyContent="space-between"
-                  alignItems="center"
-                >
-                  <Tooltip
-                    title={null}
-                    // title={
-                    //   queryTime ? (
-                    //     <Stack>
-                    //       <span>Fetch query time: 0.1s</span>
-                    //       <span>Count query time: 0.1s</span>
-                    //       <Typography color={grey[400]} component="i" variant="inherit">
-                    //         these operations can take a long time because they are read from the
-                    //         disk
-                    //       </Typography>
-                    //     </Stack>
-                    //   ) : null
-                    // }
-                  >
-                    <Typography
-                      variant="caption"
-                      color="text.secondary"
-                      component={Stack}
-                      padding={1.5}
-                      sx={{ minWidth: 100 }}
-                      fontFamily={MonoFont}
-                      direction="row"
-                      gap={1}
-                      marginBottom={0.25}
-                    >
-                      {queryTime === null ? (
-                        <CircularProgress size={14} color="inherit" sx={{ margin: "3px" }} />
-                      ) : (
-                        <TimerSharp fontSize="small" />
-                      )}
-                      {queryTime === null ? (
-                        <Skeleton sx={{ flexGrow: 1 }}></Skeleton>
-                      ) : (
-                        <span>
-                          {formatNumber(queryTime / 1000, {
-                            maximumFractionDigits: 2,
-                            minimumFractionDigits: 2,
-                          })}
-                          s
-                        </span>
-                      )}
-                    </Typography>
-                  </Tooltip>
-                  <TablePagination
-                    component="div"
-                    sx={{
-                      border: 0,
-                      width: "100%",
-                      [`& .${tablePaginationClasses.spacer}`]: {
-                        flexBasis: 0,
-                        flexGrow: 0,
-                      },
-                      [`& .${tablePaginationClasses.input}`]: {
-                        marginRight: "auto",
-                      },
-                      [`& .${tablePaginationClasses.toolbar}`]: {
-                        paddingLeft: 0,
-                      },
-                      [`& .${tablePaginationClasses.select}, & .${tablePaginationClasses.selectIcon}`]:
-                        {
-                          color: "var(--mui-palette-text-secondary)",
-                        },
-                      [`& .${tablePaginationClasses.select}`]: {
-                        borderRadius: 1,
-                      },
-                      [`& .${tablePaginationClasses.select}:hover`]: {
-                        background: "rgba(var(--mui-palette-common-onBackgroundChannel) / 0.05)",
-                      },
-                    }}
-                    rowsPerPageOptions={[10, 25, 50, 100]}
-                    count={rowCount ?? 0}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                    labelRowsPerPage=""
-                    labelDisplayedRows={({ from, to, count }) => (
-                      <>
-                        {from}-{to}{" "}
-                        <Typography variant="body2" component="span" color="text.secondary">
-                          of {count}
-                        </Typography>
-                      </>
-                    )}
-                    slotProps={{
-                      select: {
-                        renderValue: (value) => `${value} rows per page`,
-                      },
-                    }}
-                    ActionsComponent={TablePaginationActions}
-                  />
-                </Stack>
+                <TableFooter
+                  queryTime={queryTime}
+                  count={rowCount ?? 0}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  onPageChange={handleChangePage}
+                  rowsPerPageOptions={[10, 25, 50, 100]}
+                  onRowsPerPageChange={handleChangeRowsPerPage}
+                />
               </Paper>
             </Stack>
           )}

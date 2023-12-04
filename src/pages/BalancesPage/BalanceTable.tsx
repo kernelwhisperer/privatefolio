@@ -5,13 +5,13 @@ import TableBody from "@mui/material/TableBody"
 import TableCell from "@mui/material/TableCell"
 import TableContainer from "@mui/material/TableContainer"
 import MuiTableHead from "@mui/material/TableHead"
-import TablePagination from "@mui/material/TablePagination"
 import TableRow from "@mui/material/TableRow"
 import TableSortLabel from "@mui/material/TableSortLabel"
 import { visuallyHidden } from "@mui/utils"
 import React, { ChangeEvent, MouseEvent, useCallback, useMemo, useState } from "react"
 import { useNavigate } from "react-router-dom"
 
+import { TableFooter } from "../../components/TableFooter"
 import { Balance } from "../../interfaces"
 import { getComparator, Order } from "../../utils/table-utils"
 import { BalanceTableRow } from "./BalanceTableRow"
@@ -185,31 +185,23 @@ export function BalanceTable(props: FileImportsTableProps) {
                 />
               ))}
               {emptyRows > 0 && (
-                <TableRow style={{ height: 37 * emptyRows }}>
+                <TableRow style={{ height: 53 * emptyRows }}>
+                  {/* TODO */}
                   <TableCell colSpan={HEAD_CELLS.length} />
                 </TableRow>
               )}
             </TableBody>
           </Table>
         </TableContainer>
-        <TablePagination
-          component="div"
-          sx={{
-            background: "var(--mui-palette-background-paper)",
-            bottom: 0,
-            position: "sticky",
-          }}
-          rowsPerPageOptions={[10, 25, 50, 100]}
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
+        <TableFooter
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
-          showFirstButton
-          showLastButton
+          rowsPerPageOptions={[10, 25, 50, 100]}
+          count={rows.length}
+          rowsPerPage={rowsPerPage}
         />
       </Paper>
-      {/* <Drawer open /> */}
     </>
   )
 }
