@@ -132,14 +132,20 @@ export function AuditLogTableRow(props: AuditLogTableRowProps) {
         </TableCell>
       )}
       <TableCell align="right" sx={{ fontFamily: MonoFont }}>
-        <Tooltip title={<Box sx={{ fontFamily: MonoFont }}>{balance || "TBD"}</Box>}>
+        <Tooltip
+          title={
+            <Box sx={{ fontFamily: MonoFont }}>
+              {typeof balance === "number" ? balance : "To be determined"}
+            </Box>
+          }
+        >
           <span>
-            {balance
+            {typeof balance === "number"
               ? formatNumber(balance, {
                   maximumFractionDigits: 2, // TODO make this configurable
                   minimumFractionDigits: 2,
                 })
-              : "TBD"}
+              : "Tbd"}
           </span>
         </Tooltip>
       </TableCell>

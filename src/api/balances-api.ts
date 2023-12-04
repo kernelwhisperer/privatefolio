@@ -40,18 +40,16 @@ export async function computeBalances(symbol?: string) {
   }
 
   // update balancesDB
-  const existing = await balancesDB.get("balances")
-  if (!existing) {
+  try {
+    const existing = await balancesDB.get("balances")
+    if (symbol) {
+      existing.map[symbol] = balances[symbol]
+    } else {
+      existing.map = balances
+    }
+    existing.timestamp = Date.now()
+    balancesDB.put(existing)
+  } catch {
     balancesDB.put({ _id: "balances", map: balances, timestamp: Date.now() })
-    return
   }
-
-  if (symbol) {
-    existing.map[symbol] = balances[symbol]
-  } else {
-    existing.map = balances
-  }
-  existing.timestamp = Date.now()
-
-  balancesDB.put(existing)
 }

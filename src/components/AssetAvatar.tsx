@@ -5,7 +5,9 @@ import { MonoFont } from "../theme"
 import { stringToColor } from "../utils/color-utils"
 
 const StyledAvatar = styled(Avatar)`
+  border-radius: 0;
   &.MuiAvatar-colorDefault {
+    border-radius: 50%;
     border: 1px solid ${({ color = "#fff" }) => alpha(color, 0.25)};
     background: ${({ color = "#fff" }) => alpha(color, 0.15)};
   }
@@ -18,7 +20,7 @@ export interface AssetAvatarProps extends AvatarProps {
 
 const SIZE_MAP = {
   large: 50,
-  medium: 40,
+  medium: 34,
   small: 16,
 }
 

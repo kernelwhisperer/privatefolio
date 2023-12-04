@@ -16,7 +16,7 @@ import { FileImport } from "../../interfaces"
 import { getComparator, Order } from "../../utils/table-utils"
 import { FileImportTableRow } from "./FileImportTableRow"
 
-type SortableKeys = keyof Omit<FileImport, "_attachments" | "_rev">
+type SortableKeys = keyof Omit<FileImport, "_rev">
 
 interface HeadCell {
   key?: SortableKeys

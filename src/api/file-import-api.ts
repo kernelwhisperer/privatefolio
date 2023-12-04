@@ -3,28 +3,18 @@ import { parseCsv } from "../utils/csv-utils"
 import { hashString } from "../utils/utils"
 import { auditLogsDB, fileImportsDB } from "./database"
 
-export interface NewFileImport extends Omit<FileImport, "_attachments"> {
-  _attachments: {
-    0: {
-      content_type: string
-      data: File
-    }
-  }
-}
-
-export async function processFileImport(_id: string) {
+export async function processFileImport(_id: string, file: File) {
   // parse file
-  const fileImport = await fileImportsDB.get<FileImport>(_id, { attachments: true })
-  const { metadata, logs } = await parseCsv(atob(fileImport._attachments[0].data), fileImport._id)
+  const text = await file.text()
+  const { metadata, logs } = await parseCsv(text, _id)
 
   // save logs
   await auditLogsDB.bulkDocs(logs)
 
   // save metadata
-  await fileImportsDB.put<FileImport>({
-    ...fileImport,
-    meta: metadata,
-  })
+  const fileImport = await fileImportsDB.get(_id)
+  fileImport.meta = metadata
+  await fileImportsDB.put<FileImport>(fileImport)
 }
 
 export async function addFileImport(file: File) {
@@ -37,13 +27,7 @@ export async function addFileImport(file: File) {
   const timestamp = new Date().getTime()
   const _id = hashString(`${name}_${size}_${lastModified}`)
 
-  await fileImportsDB.put<Omit<FileImport, "_id" | "_rev" | "_attachments">>({
-    _attachments: {
-      0: {
-        content_type: type,
-        data: file,
-      },
-    },
+  await fileImportsDB.put({
     _id,
     lastModified,
     name,
@@ -56,8 +40,6 @@ export async function addFileImport(file: File) {
 
 export async function getFileImports() {
   const res = await fileImportsDB.allDocs<FileImport>({
-    // attachments: true,
-    // descending: true,
     include_docs: true,
   })
   return res.rows.map((row) => row.doc) as FileImport[]

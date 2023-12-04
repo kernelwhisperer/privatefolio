@@ -1,49 +1,128 @@
-import { AuditLog, BinanceAuditLog } from "../api/audit-logs-api"
-import { AuditLogOperation, Integration } from "../interfaces"
+import {
+  AuditLog,
+  AuditLogOperation,
+  BinanceAuditLog,
+  Integration,
+  Transaction,
+  TransactionRole,
+  TransactionSide,
+} from "../interfaces"
 import { TZ_OFFSET } from "./client-utils"
 import { hashString } from "./utils"
 
-type Parser = (csvRow: string, index: number, fileImportId: string) => AuditLog
+type ParserResult = { logs: AuditLog[]; txns?: Transaction[] }
+type Parser = (csvRow: string, index: number, fileImportId: string) => ParserResult
 
-// export function mexcParser(csvRow: string[], index: number): AuditLog {
-//   const marketPair = csvRow[0]
-//   const filledPriceBN = new Decimal(csvRow[3].split(" ")[0])
-//   const amountBN = new Decimal(csvRow[4].split(" ")[0])
-//   const symbol = marketPair.split("_")[0]
-//   const quoteSymbol = marketPair.split("_")[1]
-//   const totalBN = new Decimal(csvRow[5].split(" ")[0])
-//   const feeBN = new Decimal(csvRow[6])
-//   // const fee = new Decimal(csvRow[6].split(" ")[0])
-//   // const feeSymbol = csvRow[6].split(" ")[1]
-//   const side = csvRow[2] as TransactionSide
-//   const timestamp = new Date(csvRow[1]).getTime() - TZ_OFFSET
+export function mexcParser(csvRow: string, index: number, fileImportId: string): ParserResult {
+  const columns = csvRow.split(",")
+  //
+  const marketPair = columns[0]
+  const symbol = marketPair.split("_")[0]
+  const quoteSymbol = marketPair.split("_")[1]
+  const timestamp = new Date(columns[1]).getTime() - TZ_OFFSET
+  //
+  const side = columns[2] as TransactionSide
+  const price = columns[3]
+  const amount = columns[4]
+  const total = columns[5]
+  const fee = columns[6]
+  const role = columns[7] as TransactionRole
+  //
+  const hash = hashString(`${index}_${csvRow}`)
+  const txId = `${fileImportId}_${hash}`
+  const amountN = parseFloat(amount)
+  const priceN = parseFloat(price)
+  const feeN = parseFloat(fee)
+  const totalN = parseFloat(total)
+  const feeSymbol = quoteSymbol // ?
+  //
+  const integration = "MEXC"
+  const wallet = "Spot"
 
-//   return {
-//     amount: amountBN.toNumber(),
-//     amountBN,
-//     exchange: "mexc",
-//     fee: feeBN.toNumber(),
-//     feeBN,
-//     feeSymbol: quoteSymbol,
-//     filledPrice: filledPriceBN.toNumber(),
-//     filledPriceBN,
-//     id: index,
-//     quoteSymbol,
-//     role: csvRow[7] as TransactionRole,
-//     side,
-//     symbol,
-//     timestamp,
-//     total: totalBN.toNumber(),
-//     totalBN,
-//     type: side === "BUY" ? "Buy" : "Sell",
-//   }
-// }
+  const txns: Transaction[] = [
+    {
+      _id: txId,
+      amount,
+      amountN,
+      fee,
+      feeN,
+      feeSymbol,
+      integration,
+      price,
+      priceN,
+      quoteSymbol,
+      role,
+      symbol,
+      timestamp,
+      total,
+      totalN,
+      type: side === "BUY" ? "Buy" : "Sell",
+      wallet,
+    },
+  ]
 
-export function binanceParser(
-  csvRow: string,
-  index: number,
-  fileImportId: string
-): BinanceAuditLog {
+  const logs: AuditLog[] = []
+
+  if (side === "BUY") {
+    logs.push({
+      _id: `${txId}_0`,
+      change: `-${total}`,
+      changeN: parseFloat(`-${total}`),
+      integration,
+      operation: "Sell",
+      symbol: quoteSymbol,
+      timestamp,
+      wallet,
+    })
+    logs.push({
+      _id: `${txId}_1`,
+      change: amount,
+      changeN: parseFloat(amount),
+      integration,
+      operation: "Buy",
+      symbol,
+      timestamp,
+      wallet,
+    })
+  } else {
+    // SIDE === "SELL"
+    logs.push({
+      _id: `${txId}_0`,
+      change: `-${amount}`,
+      changeN: parseFloat(`-${amount}`),
+      integration,
+      operation: "Sell",
+      symbol,
+      timestamp,
+      wallet,
+    })
+    logs.push({
+      _id: `${txId}_1`,
+      change: total,
+      changeN: parseFloat(total),
+      integration,
+      operation: "Buy",
+      symbol: quoteSymbol,
+      timestamp,
+      wallet,
+    })
+  }
+
+  logs.push({
+    _id: `${txId}_2`,
+    change: `-${fee}}`,
+    changeN: parseFloat(`-${fee}}`),
+    integration,
+    operation: "Fee",
+    symbol: quoteSymbol,
+    timestamp,
+    wallet,
+  })
+
+  return { logs, txns }
+}
+
+export function binanceParser(csvRow: string, index: number, fileImportId: string): ParserResult {
   const row = csvRow.replaceAll('"', "")
   const columns = row.split(",")
   //
@@ -64,7 +143,7 @@ export function binanceParser(
   const symbol = coin
   const wallet = account
 
-  return {
+  const log: BinanceAuditLog = {
     _id,
     account,
     change,
@@ -79,18 +158,18 @@ export function binanceParser(
     utcTime,
     wallet,
   }
+
+  return { logs: [log] }
 }
 
 const INTEGRATIONS: Record<string, Integration> = {
   '"User_ID","UTC_Time","Account","Operation","Coin","Change","Remark"': "Binance",
-  "Pairs,Time,Side,Filled Price,Executed Amount,Total,Fee,Role": "Mexc Global",
+  "Pairs,Time,Side,Filled Price,Executed Amount,Total,Fee,Role": "MEXC",
 }
 
 const PARSERS: Record<Integration, Parser> = {
   Binance: binanceParser,
-  "Mexc Global": function () {
-    throw new Error("Function not implemented.")
-  },
+  MEXC: mexcParser,
 }
 
 export async function parseCsv(text: string, _fileImportId: string) {
@@ -98,7 +177,7 @@ export async function parseCsv(text: string, _fileImportId: string) {
   const rows = text.trim().split("\n")
   // const rows = rowsAsText.map((row) => row.split(","))
 
-  const header = rows[0]
+  const header = rows[0].replace("ï»¿", "") // MEXC
   const integration = INTEGRATIONS[header]
   const parser = PARSERS[integration]
 
@@ -110,12 +189,14 @@ export async function parseCsv(text: string, _fileImportId: string) {
   // Skip header
   rows.slice(1).forEach((row, index) => {
     try {
-      const obj = parser(row, index, _fileImportId)
-      logs.push(obj)
+      const { logs: newLogs } = parser(row, index, _fileImportId)
 
-      symbolMap[obj.symbol] = true
-      walletMap[obj.wallet] = true
-      operationMap[obj.operation] = true
+      for (const log of newLogs) {
+        logs.push(log)
+        symbolMap[log.symbol] = true
+        walletMap[log.wallet] = true
+        operationMap[log.operation] = true
+      }
     } catch {}
   })
 

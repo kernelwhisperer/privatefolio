@@ -5,8 +5,10 @@ import { addFileImport, processFileImport } from "../api/file-import-api"
 import { enqueueTask } from "../stores/task-store"
 // import PouchDB from "pouchdb"; // Uncomment to use PouchDB
 
-export function FileDrop(props: PaperProps) {
-  const { children, sx, ...rest } = props
+export function FileDrop(props: PaperProps & { defaultBg?: string }) {
+  const theme = useTheme()
+
+  const { children, defaultBg = theme.palette.background.paper, sx, ...rest } = props
 
   const [dragOver, setDragOver] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -26,7 +28,7 @@ export function FileDrop(props: PaperProps) {
       function: async () => {
         const _id = await addFileImport(file)
         enqueueTask({
-          function: () => processFileImport(_id),
+          function: () => processFileImport(_id, file),
           name: `Extract audit logs from ${file.name}`,
           priority: 5,
         })
@@ -51,8 +53,6 @@ export function FileDrop(props: PaperProps) {
     }
   }
 
-  const theme = useTheme()
-
   return (
     <Paper
       variant="outlined"
@@ -65,7 +65,7 @@ export function FileDrop(props: PaperProps) {
         "&:hover": {
           backgroundColor: theme.palette.action.hover,
         },
-        backgroundColor: dragOver ? theme.palette.action.hover : theme.palette.background.paper,
+        backgroundColor: dragOver ? theme.palette.action.hover : defaultBg,
         borderStyle: "dashed",
         // borderWidth: 2,
         color: theme.palette.text.primary,

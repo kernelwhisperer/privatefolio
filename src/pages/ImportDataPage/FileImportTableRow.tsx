@@ -56,7 +56,7 @@ export function FileImportTableRow(props: FileImportTableRowProps) {
       <TableCell sx={{ maxWidth: 200, minWidth: 200, width: 200 }}>
         <TimestampCell timestamp={timestamp} relative={relativeTime} />
       </TableCell>
-      <TableCell sx={{ maxWidth: 140, minWidth: 140, width: 140 }}>{name}</TableCell>
+      <TableCell sx={{ maxWidth: 200, minWidth: 200, width: 200 }}>{name}</TableCell>
       <TableCell
         sx={{ fontFamily: MonoFont, maxWidth: 140, minWidth: 140, width: 140 }}
         align="right"
@@ -84,7 +84,25 @@ export function FileImportTableRow(props: FileImportTableRowProps) {
         sx={{ fontFamily: MonoFont, maxWidth: 160, minWidth: 160, width: 140 }}
         align="right"
       >
-        {!meta ? <Skeleton></Skeleton> : formatNumber(meta.logs)}
+        {!meta ? (
+          <Skeleton></Skeleton>
+        ) : (
+          <>
+            {meta.logs === meta.rows ? (
+              <span>{formatNumber(meta.logs)}</span>
+            ) : (
+              <Tooltip
+                title={`${formatNumber(meta.logs)} audit logs extracted from ${formatNumber(
+                  meta.rows
+                )} document entries`}
+              >
+                <span>
+                  {formatNumber(meta.logs)} ({formatNumber(meta.rows)})
+                </span>
+              </Tooltip>
+            )}
+          </>
+        )}
       </TableCell>
       <TableCell sx={{ maxWidth: 40, minWidth: 40, width: 40 }}>
         <Tooltip title="Delete file import (including its audit logs)">

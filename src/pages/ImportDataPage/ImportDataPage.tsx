@@ -50,7 +50,12 @@ export function ImportDataPage({ show }: { show: boolean }) {
       ) : (
         <StaggeredList gap={1} show={show}>
           <FileImportsTable rows={rows} />
-          <FileDrop sx={{ background: "var(--mui-palette-background-default)", marginX: -2 }} />
+          <FileDrop
+            defaultBg="var(--mui-palette-background-default)"
+            sx={{
+              marginX: -2,
+            }}
+          />
         </StaggeredList>
       )}
     </StaggeredList>

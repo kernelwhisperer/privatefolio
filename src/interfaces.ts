@@ -3,28 +3,28 @@ import type Decimal from "decimal.js"
 export type TransactionRole = "Maker" | "Taker"
 export type TransactionSide = "BUY" | "SELL"
 export type TransactionType = "Buy" | "Sell"
-export type ExchangeId = "mexc" | "binance"
+// type ExchangeId = "mexc" | "binance"
 
 export type BigNumber = Decimal
 
 export interface Transaction {
-  amount: number
-  amountBN: BigNumber
-  exchange: ExchangeId
-  fee: number
-  feeBN: BigNumber
+  _id: string
+  amount: string
+  amountN: number
+  fee: string
+  feeN: number
   feeSymbol: string
-  filledPrice: number
-  filledPriceBN: BigNumber
-  id: number
+  integration: Integration
+  price: string
+  priceN: number
   quoteSymbol: string
-  role: TransactionRole
-  side: TransactionSide
+  role?: TransactionRole
   symbol: string
   timestamp: number
-  total: number
-  totalBN: BigNumber
+  total: string
+  totalN: number
   type: TransactionType
+  wallet: string
 }
 
 export type AuditLogOperation =
@@ -36,7 +36,7 @@ export type AuditLogOperation =
   | "Withdraw"
   | "Funding Fee"
 
-export type Integration = "Binance" | "Mexc Global"
+export type Integration = "Binance" | "MEXC"
 
 export interface Asset {
   coingeckoId: string
@@ -79,15 +79,6 @@ export interface BinanceAuditLog extends AuditLog {
 }
 
 export interface FileImport {
-  _attachments: {
-    0: {
-      content_type: string
-      /**
-       * base64 encoded
-       */
-      data: string
-    }
-  }
   _id: string
   _rev: string
   lastModified: number

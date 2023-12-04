@@ -10,9 +10,14 @@ import { AuditLog, Balances, FileImport } from "../interfaces"
 // }
 PouchDB.plugin(PouchDBFind)
 
-export const fileImportsDB = new PouchDB<FileImport>("file-imports")
-export const auditLogsDB = new PouchDB<AuditLog>("audit-logs")
-export const balancesDB = new PouchDB<Balances>("balances")
+const defaultDbOptions = {
+  auto_compaction: true,
+  revs_limit: 1,
+}
+
+export const fileImportsDB = new PouchDB<Omit<FileImport, "_rev">>("file-imports", defaultDbOptions)
+export const auditLogsDB = new PouchDB<AuditLog>("audit-logs", defaultDbOptions)
+export const balancesDB = new PouchDB<Balances>("balances", defaultDbOptions)
 
 // try {
 //   PouchDB.replicate("file-imports", "http://localhost:5984/file-imports", { live: true })
