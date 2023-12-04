@@ -105,7 +105,14 @@ export function AuditLogTableRow(props: AuditLogTableRowProps) {
       </TableCell>
       <TableCell
         align="right"
-        sx={{ color: changeN < 0 ? redColor : greenColor, fontFamily: MonoFont }}
+        sx={{
+          color: changeN < 0 ? redColor : greenColor,
+          fontFamily: MonoFont,
+          //
+          maxWidth: 140,
+          minWidth: 140,
+          width: 140,
+        }}
       >
         <Tooltip title={<Box sx={{ fontFamily: MonoFont }}>{change}</Box>}>
           <span>

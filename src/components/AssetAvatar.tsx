@@ -43,7 +43,8 @@ export function AssetAvatar(props: AssetAvatarProps) {
     >
       <Typography
         fontWeight={500}
-        fontSize={size === "small" ? "0.65rem" : "0.85rem"}
+        fontSize={size === "small" ? "0.65rem" : "0.8rem"}
+        lineHeight={1.5}
         fontFamily={MonoFont}
         color={color}
       >

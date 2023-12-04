@@ -13,7 +13,7 @@ export function SettingsDrawer() {
   return (
     <>
       <Tooltip title="Open Settings">
-        <IconButton onClick={toggleOpen} sx={{ marginRight: { lg: -1 } }}>
+        <IconButton color="secondary" onClick={toggleOpen} sx={{ marginRight: { lg: -1 } }}>
           <SettingsIcon fontSize="small" />
         </IconButton>
       </Tooltip>

@@ -219,6 +219,9 @@ export const theme: CssVarsThemeOptions = {
     // },
     MuiTableCell: {
       styleOverrides: {
+        head: {
+          padding: "4px 16px 6px 16px",
+        },
         root: {
           "tbody tr:last-of-type &": {
             borderBottom: "none",
