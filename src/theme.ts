@@ -241,8 +241,12 @@ export const theme: CssVarsThemeOptions = {
     },
     MuiTablePagination: {
       styleOverrides: {
+        displayedRows: {
+          margin: 0,
+        },
         toolbar: {
-          minHeight: "48px !important",
+          minHeight: "38px !important",
+          paddingTop: "4px",
         },
       },
     },

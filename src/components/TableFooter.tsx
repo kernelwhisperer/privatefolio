@@ -49,12 +49,12 @@ export function TableFooter(props: TableFooterProps) {
             variant="caption"
             color="text.secondary"
             component={Stack}
-            padding={1.5}
+            paddingX={1.5}
             sx={{ minWidth: 100 }}
             fontFamily={MonoFont}
             direction="row"
             gap={1}
-            marginBottom={0.25}
+            marginTop={0.25}
           >
             {queryTime === null ? (
               <>

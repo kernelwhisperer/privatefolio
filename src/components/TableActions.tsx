@@ -4,7 +4,7 @@ import {
   KeyboardDoubleArrowLeftRounded,
   KeyboardDoubleArrowRightRounded,
 } from "@mui/icons-material"
-import { inputBaseClasses, Stack, TextField, Typography } from "@mui/material"
+import { inputBaseClasses, Stack, TextField, Tooltip, Typography } from "@mui/material"
 import IconButton from "@mui/material/IconButton"
 import * as React from "react"
 
@@ -40,23 +40,27 @@ export function TablePaginationActions(props: TablePaginationActionsProps) {
 
   return (
     <Stack sx={{ flexShrink: 0, ml: 2.5 }} direction="row" alignItems="center">
-      <IconButton
-        size="small"
-        onClick={handleFirstPageButtonClick}
-        disabled={page === 0}
-        aria-label="first page"
-      >
-        <KeyboardDoubleArrowLeftRounded />
-      </IconButton>
-      <IconButton
-        size="small"
-        onClick={handleBackButtonClick}
-        disabled={page === 0}
-        aria-label="previous page"
-      >
-        <KeyboardArrowLeftRounded />
-      </IconButton>
-      <Stack gap={1} padding={1} direction="row" alignItems="center">
+      <Tooltip title="Go to first page">
+        <IconButton
+          size="small"
+          onClick={handleFirstPageButtonClick}
+          disabled={page === 0}
+          aria-label="first page"
+        >
+          <KeyboardDoubleArrowLeftRounded />
+        </IconButton>
+      </Tooltip>
+      <Tooltip title="Go to previous page">
+        <IconButton
+          size="small"
+          onClick={handleBackButtonClick}
+          disabled={page === 0}
+          aria-label="previous page"
+        >
+          <KeyboardArrowLeftRounded />
+        </IconButton>
+      </Tooltip>
+      <Stack gap={1} paddingX={1} direction="row" alignItems="center">
         <TextField
           size="small"
           variant="outlined"
@@ -85,22 +89,26 @@ export function TablePaginationActions(props: TablePaginationActionsProps) {
           of {lastPage + 1}
         </Typography>
       </Stack>
-      <IconButton
-        size="small"
-        onClick={handleNextButtonClick}
-        disabled={page >= lastPage}
-        aria-label="next page"
-      >
-        <KeyboardArrowRightRounded />
-      </IconButton>
-      <IconButton
-        size="small"
-        onClick={handleLastPageButtonClick}
-        disabled={page >= lastPage}
-        aria-label="last page"
-      >
-        <KeyboardDoubleArrowRightRounded />
-      </IconButton>
+      <Tooltip title="Go to next page">
+        <IconButton
+          size="small"
+          onClick={handleNextButtonClick}
+          disabled={page >= lastPage}
+          aria-label="next page"
+        >
+          <KeyboardArrowRightRounded />
+        </IconButton>
+      </Tooltip>
+      <Tooltip title="Go to last page">
+        <IconButton
+          size="small"
+          onClick={handleLastPageButtonClick}
+          disabled={page >= lastPage}
+          aria-label="last page"
+        >
+          <KeyboardDoubleArrowRightRounded />
+        </IconButton>
+      </Tooltip>
     </Stack>
   )
 }
