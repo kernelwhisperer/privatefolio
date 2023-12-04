@@ -59,7 +59,7 @@ export const theme: CssVarsThemeOptions = {
           main: blue.A100,
         },
         primary: {
-          main: "rgb(200,200,200)",
+          main: "rgb(240,240,240)",
         },
         secondary: {
           main: "rgb(160, 160, 160)",

@@ -71,7 +71,7 @@ export function TaskDropdown() {
       <Button
         size="small"
         variant="outlined"
-        color={pendingTask ? "info" : "secondary"}
+        color={pendingTask ? "info" : "primary"}
         onClick={handleClick}
         startIcon={
           pendingTask ? <CircularProgress size={14} color="inherit" /> : <DoneAllRounded />

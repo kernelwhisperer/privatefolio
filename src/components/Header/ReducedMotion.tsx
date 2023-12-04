@@ -21,7 +21,7 @@ export function ReducedMotion() {
   return (
     <Tabs
       variant="fullWidth"
-      textColor="inherit"
+      // textColor="inherit"
       value={reducedMotion === "always" ? 0 : reducedMotion === "user" ? 1 : 2}
       onChange={handleTabChange}
       sx={(theme) => ({
@@ -41,13 +41,12 @@ export function ReducedMotion() {
           borderRadius: 0.75,
           minHeight: 20,
           textTransform: "none !important",
-          transition: theme.transitions.create("background"),
+          transition: theme.transitions.create("color"),
           willChange: "background",
           zIndex: 2,
         },
         [`& .${tabsClasses.flexContainer} > button:hover`]: {
-          background:
-            theme.palette.mode === "dark" ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.75)",
+          color: theme.palette.text.primary,
         },
       })}
     >

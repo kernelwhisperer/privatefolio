@@ -24,7 +24,7 @@ export function ThemeMode() {
       <meta name="theme-color" content={bgColor} />
       <Tabs
         variant="fullWidth"
-        textColor="inherit"
+        // textColor="inherit"
         value={mode === "light" ? 0 : mode === "system" ? 1 : 2}
         onChange={handleTabChange}
         sx={(theme) => ({
@@ -44,13 +44,12 @@ export function ThemeMode() {
             borderRadius: 0.75,
             minHeight: 20,
             textTransform: "none !important",
-            transition: theme.transitions.create("background"),
+            transition: theme.transitions.create("color"),
             willChange: "background",
             zIndex: 2,
           },
           [`& .${tabsClasses.flexContainer} > button:hover`]: {
-            background:
-              theme.palette.mode === "dark" ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.75)",
+            color: theme.palette.text.primary,
           },
         })}
       >

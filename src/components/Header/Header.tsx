@@ -3,32 +3,40 @@
 import {
   AppBar,
   Button,
-  ButtonProps,
   Container,
   Grid,
   Stack,
+  Tab,
+  TabProps,
+  Tabs,
+  tabsClasses,
   Toolbar,
   Tooltip,
 } from "@mui/material"
+import { grey } from "@mui/material/colors"
 import React from "react"
-import { Link, NavLink } from "react-router-dom"
+import { Link, NavLink, useLocation } from "react-router-dom"
 
 import { TaskDropdown } from "../Tasks/TaskDropdown"
 import { Logo } from "./Logo"
 import { SettingsDrawer } from "./SettingsDrawer"
 
-export function NavButton(props: ButtonProps<typeof NavLink>) {
+export function NavButton(props: TabProps<typeof NavLink>) {
   return (
-    <Button
+    <Tab
       component={NavLink}
-      color="inherit"
-      sx={{ "&.active": { textDecoration: "underline", textDecorationThickness: 2 }, paddingX: 2 }}
+      disableRipple
+      LinkComponent={NavLink}
+      sx={{ textTransform: "none" }}
       {...props}
     />
   )
 }
 
 export function Header() {
+  const location = useLocation()
+  const { pathname } = location
+
   return (
     <AppBar
       position="static"
@@ -61,11 +69,34 @@ export function Header() {
                 </Button>
               </Tooltip>
             </Grid>
-            <Grid item md={6} gap={0.5} component={Stack} justifyContent="center">
-              <NavButton to={`/`}>Balances</NavButton>
-              <NavButton to={`/transactions`}>Transactions</NavButton>
-              <NavButton to={`/audit-logs`}>Audit logs</NavButton>
-              <NavButton to={`/import-data`}>Import data</NavButton>
+            <Grid item md={6} component={Stack} justifyContent="center">
+              <Tabs
+                value={pathname}
+                sx={(theme) => ({
+                  [`& .${tabsClasses.indicator}`]: {
+                    background: grey[600],
+                    borderRadius: 1,
+                    bottom: 8,
+                    height: 4,
+                  },
+                  [`& .${tabsClasses.flexContainer}`]: {
+                    gap: 2,
+                  },
+                  [`& .${tabsClasses.flexContainer} > a`]: {
+                    minWidth: 0,
+                    paddingX: 0,
+                    transition: theme.transitions.create("color"),
+                  },
+                  [`& .${tabsClasses.flexContainer} > a:hover`]: {
+                    color: theme.palette.text.primary,
+                  },
+                })}
+              >
+                <NavButton value="/" to="/" label="Balances" />
+                <NavButton value="/transactions" to="/transactions" label="Transactions" />
+                <NavButton value="/audit-logs" to="/audit-logs" label="Audit logs" />
+                <NavButton value="/import-data" to="/import-data" label="Import data" />
+              </Tabs>
             </Grid>
             <Grid
               item
