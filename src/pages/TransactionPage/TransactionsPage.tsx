@@ -3,6 +3,7 @@ import { useStore } from "@nanostores/react"
 import React, { useEffect, useState } from "react"
 
 import { getTransactions } from "../../api/transactions-api"
+import { StaggeredList } from "../../components/StaggeredList"
 import { Transaction } from "../../interfaces"
 import { $assetMap } from "../../stores/metadata-store"
 import { SerifFont } from "../../theme"
@@ -36,11 +37,11 @@ export function TransactionsPage({ show }: { show: boolean }) {
   }
 
   return (
-    <Stack gap={2}>
+    <StaggeredList gap={1} show={show}>
       <Typography variant="h6" fontFamily={SerifFont}>
         Transactions
       </Typography>
-      <Stack gap={0.5}>
+      <Stack gap={0.5} sx={{ marginX: -2 }}>
         {visibleRows.map((tx) => (
           <TransactionCard key={tx._id} tx={tx} assetMap={assetMap} />
         ))}
@@ -56,6 +57,6 @@ export function TransactionsPage({ show }: { show: boolean }) {
         showFirstButton
         showLastButton
       />
-    </Stack>
+    </StaggeredList>
   )
 }

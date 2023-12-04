@@ -6,6 +6,9 @@ import { stringToColor } from "../utils/color-utils"
 
 const StyledAvatar = styled(Avatar)`
   border-radius: 0;
+  & img {
+    object-fit: contain;
+  }
   &.MuiAvatar-colorDefault {
     border-radius: 50%;
     border: 1px solid ${({ color = "#fff" }) => alpha(color, 0.25)};

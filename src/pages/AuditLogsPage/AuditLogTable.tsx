@@ -25,7 +25,7 @@ import { FilterChip } from "../../components/FilterChip"
 import { TablePaginationActions } from "../../components/TableActions"
 import { AuditLog } from "../../interfaces"
 import { $activeFilters, ActiveFilterMap } from "../../stores/audit-log-store"
-import { FilterKey, FILTER_LABEL_MAP } from "../../stores/metadata-store"
+import { FILTER_LABEL_MAP, FilterKey } from "../../stores/metadata-store"
 import { MonoFont } from "../../theme"
 import { formatNumber } from "../../utils/client-utils"
 import { stringToColor } from "../../utils/color-utils"
@@ -232,16 +232,8 @@ export function AuditLogsTable(props: AuditLogsTableProps) {
                 sx={{ marginX: { lg: -2 }, overflowX: { lg: "unset", xs: "auto" }, paddingY: 0.5 }}
               >
                 <TableContainer sx={{ overflowX: "unset" }}>
-                  <Table sx={{ minWidth: 750 }} size="small">
-                    <MuiTableHead
-                      sx={{
-                        background: "var(--mui-palette-background-paper)",
-                        height: 52,
-                        position: "sticky",
-                        top: 0,
-                        zIndex: 2,
-                      }}
-                    >
+                  <Table sx={{ minWidth: 750 }} size="small" stickyHeader>
+                    <MuiTableHead>
                       <TableRow>
                         {headCells.map((headCell, index) => (
                           <TableCell
@@ -285,6 +277,7 @@ export function AuditLogsTable(props: AuditLogsTableProps) {
                   direction="row"
                   sx={{
                     background: "var(--mui-palette-background-paper)",
+                    borderTop: "1px solid var(--mui-palette-TableCell-border)",
                     bottom: 0,
                     position: "sticky",
                   }}

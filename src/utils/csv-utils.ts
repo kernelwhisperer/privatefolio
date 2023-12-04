@@ -110,8 +110,8 @@ export function mexcParser(csvRow: string, index: number, fileImportId: string):
 
   logs.push({
     _id: `${txId}_2`,
-    change: `-${fee}}`,
-    changeN: parseFloat(`-${fee}}`),
+    change: `-${fee}`,
+    changeN: parseFloat(`-${fee}`),
     integration,
     operation: "Fee",
     symbol: quoteSymbol,

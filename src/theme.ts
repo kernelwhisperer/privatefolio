@@ -43,7 +43,6 @@ export const theme: CssVarsThemeOptions = {
           bg: "rgb(65, 65, 65)",
         },
         TableCell: {
-          // border: "none",
           border: "rgba(255,255,255, 0.05)",
         },
         accent: {
@@ -213,15 +212,51 @@ export const theme: CssVarsThemeOptions = {
         // animation: false,
       },
     },
-    // MuiTableRow: {
+    // MuiTable: {
     //   styleOverrides: {
-    //     root: {
-    //       "&:nth-of-type(odd)": {
-    //         backgroundColor: "rgba(45, 45, 45, 0.5)",
-    //       },
-    //     },
+    //     root: {}
     //   },
     // },
+    MuiTableCell: {
+      styleOverrides: {
+        root: {
+          "tbody tr:last-of-type &": {
+            borderBottom: "none",
+          },
+        },
+        stickyHeader: {
+          background: "var(--mui-palette-background-paper)",
+        },
+      },
+    },
+    MuiTableHead: {
+      styleOverrides: {
+        root: {
+          height: "10px !important",
+        },
+      },
+    },
+    MuiTablePagination: {
+      styleOverrides: {
+        toolbar: {
+          minHeight: "48px !important",
+        },
+      },
+    },
+    MuiTableRow: {
+      styleOverrides: {
+        root: {
+          "tbody &:hover": {
+            background: "rgba(var(--mui-palette-primary-mainChannel) / 0.075) !important",
+            outline: "1px dashed rgba(var(--mui-palette-primary-mainChannel) / 0.5)",
+            outlineOffset: -1,
+          },
+          // "&:nth-of-type(odd)": {
+          //   backgroundColor: "rgba(45, 45, 45, 0.5)",
+          // },
+        },
+      },
+    },
     MuiTooltip: {
       defaultProps: {
         PopperProps: {

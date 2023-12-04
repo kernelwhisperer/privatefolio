@@ -161,7 +161,7 @@ export function BalanceTable(props: FileImportsTableProps) {
         sx={{ marginX: { lg: -2 }, overflowX: { lg: "unset", xs: "auto" }, paddingY: 0.5 }}
       >
         <TableContainer sx={{ overflowX: "unset" }}>
-          <Table sx={{ minWidth: 750 }} size="small">
+          <Table sx={{ minWidth: 750 }}>
             <TableHead
               order={order}
               orderBy={orderBy}

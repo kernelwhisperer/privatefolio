@@ -76,7 +76,7 @@ export default function App() {
               />
               <Route
                 path="/transactions"
-                element={<TransactionsPage show={pathname === "/audit-logs"} />}
+                element={<TransactionsPage show={pathname === "/transactions"} />}
               />
               <Route
                 path="/audit-logs"
