@@ -28,7 +28,10 @@ export function SettingsDrawer() {
         onClose={toggleOpen}
         sx={{
           "& .MuiDrawer-paper": {
+            borderBottom: "none",
             borderBottomLeftRadius: 16,
+            borderRight: "none",
+            borderTop: "none",
             borderTopLeftRadius: 16,
           },
         }}

@@ -48,20 +48,17 @@ export function formatDateWithHour(date: Date | number, opts: Intl.DateTimeForma
   }).format(date)
 }
 
-export function formatFileSize(bytes: number) {
+export function formatFileSize(bytes: number, longFormat = false) {
   if (bytes === 0) return "0 Bytes"
 
   const k = 1024
-  const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
+  const sizes = longFormat
+    ? ["Bytes", "Kibibytes", "Mebibytes", "Gibibytes", "Tebibytes", "Pebibytes"]
+    : ["Bytes", "KiB", "MiB", "GiB", "TiB", "PiB"]
 
   const i = Math.floor(Math.log(bytes) / Math.log(k))
 
-  return (
-    formatNumber(bytes / Math.pow(k, i), {
-      maximumFractionDigits: 2,
-      // minimumFractionDigits: 2,
-    }) +
-    " " +
-    sizes[i]
-  )
+  return `${formatNumber(bytes / Math.pow(k, i), {
+    maximumFractionDigits: longFormat ? undefined : 2,
+  })} ${sizes[i]}`
 }

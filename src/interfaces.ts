@@ -101,8 +101,7 @@ export interface Balance {
   symbol: string
 }
 
-export interface Balances {
-  _id: string
-  map: Record<string, number>
+export interface BalanceMap {
+  [symbol: string]: number
   timestamp: number
 }

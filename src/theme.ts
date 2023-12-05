@@ -196,6 +196,7 @@ export const theme: CssVarsThemeOptions = {
     MuiPopover: {
       defaultProps: {
         TransitionComponent: Fade,
+        disableScrollLock: true,
       },
     },
     MuiSelect: {
@@ -253,9 +254,13 @@ export const theme: CssVarsThemeOptions = {
     MuiTableRow: {
       styleOverrides: {
         root: {
-          "tbody &:hover": {
+          "html[data-mui-color-scheme='dark'] tbody &:hover": {
             background: "rgba(var(--mui-palette-primary-mainChannel) / 0.075) !important",
             outline: "1px dashed rgba(var(--mui-palette-primary-mainChannel) / 0.5)",
+          },
+          "tbody &:hover": {
+            background: "rgba(var(--mui-palette-secondary-mainChannel) / 0.075) !important",
+            outline: "1px dashed rgba(var(--mui-palette-secondary-mainChannel) / 0.5)",
             outlineOffset: -1,
           },
           // "&:nth-of-type(odd)": {

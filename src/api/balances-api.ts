@@ -1,15 +1,39 @@
+import { BalanceMap } from "../interfaces"
 import { findAuditLogs } from "./audit-logs-api"
 import { auditLogsDB, balancesDB } from "./database"
+import { getValue, setValue } from "./kv-api"
 
-export async function getBalances() {
-  return balancesDB.get("balances")
+export async function getLatestBalances() {
+  const balancesCursor = await getValue("balancesCursor")
+
+  try {
+    return await balancesDB.get(String(balancesCursor))
+  } catch {
+    return undefined
+  }
+}
+
+export async function getHistoricalBalances(symbol: string) {
+  const balances = await balancesDB.find({
+    fields: [symbol, "timestamp"],
+    selector: {
+      [symbol]: { $exists: true },
+    },
+  })
+
+  return balances.docs
 }
 
 export async function computeBalances(symbol?: string) {
   const { length: count } = await findAuditLogs({ fields: [], filters: { symbol } })
   console.log("Recompute balances total logs:", count)
 
-  const balances: Record<string, number> = {}
+  const latestBalances: BalanceMap = {
+    _id: 0,
+    timestamp: 0,
+  }
+  let historicalBalances: Record<number, BalanceMap> = {}
+
   for (let i = 0; i < count; i += 500) {
     console.log("Recompute balances processing logs from", i, "to", i + 500)
     const logs = await findAuditLogs({
@@ -26,30 +50,67 @@ export async function computeBalances(symbol?: string) {
       "fetch completed",
       logs
     )
+
+    let latestDay = 0
+
     for (const log of logs) {
-      const { symbol, changeN } = log
+      const { symbol, changeN, timestamp } = log
 
-      if (!balances[symbol]) balances[symbol] = 0
-      balances[symbol] += changeN
+      const nextDay = timestamp - (timestamp % 86400000)
 
-      log.balance = balances[symbol]
+      // fill the daily gaps
+      if (latestDay !== 0) {
+        const daysDiff = (nextDay - latestDay) / 86400000
+        if (daysDiff > 1) {
+          for (let i = 1; i < daysDiff; i++) {
+            const gapDay = latestDay + i * 86400000
+            historicalBalances[gapDay] = Object.assign({}, latestBalances)
+          }
+        }
+      }
+
+      // update balance
+      if (!latestBalances[symbol]) {
+        latestBalances[symbol] = 0
+      }
+      latestBalances[symbol] += changeN
+
+      // update audit log
+      log.balance = latestBalances[symbol]
+
+      // update historical balances
+      if (!historicalBalances[nextDay]) {
+        historicalBalances[nextDay] = Object.assign({}, latestBalances)
+      } else {
+        historicalBalances[nextDay][symbol] = latestBalances[symbol]
+      }
+
+      latestDay = nextDay
     }
     console.log("Recompute balances processing logs from", i, "to", i + 500, "compute completed")
     await auditLogsDB.bulkDocs(logs)
-    console.log("Recompute balances processing logs from", i, "to", i + 500, "save completed")
-  }
 
-  // update balancesDB
-  try {
-    const existing = await balancesDB.get("balances")
-    if (symbol) {
-      existing.map[symbol] = balances[symbol]
-    } else {
-      existing.map = balances
+    //
+    console.log("Recompute balances processing logs from", i, "to", i + 500, "audit logs saved")
+    const balancesIds = Object.keys(historicalBalances).map((x) => ({ id: x }))
+    const { results: balancesDocs } = await balancesDB.bulkGet({ docs: balancesIds })
+    console.log("📜 LOG > computeBalances > balancesDocs:", balancesDocs)
+
+    // eslint-disable-next-line no-loop-func
+    const balances: BalanceMap[] = balancesDocs.map((doc) => ({
+      ...historicalBalances[doc.id],
+      _id: doc.id,
+      _rev: "ok" in doc.docs[0] ? doc.docs[0].ok._rev : undefined,
+      timestamp: Number(doc.id),
+    }))
+    console.log("📜 LOG > constbalances:BalanceMap[]=Object.keys > balances:", balances)
+    await balancesDB.bulkDocs(balances)
+    await setValue("balancesCursor", latestDay)
+    console.log("Recompute balances processing logs from", i, "to", i + 500, "balances saved")
+
+    // free memory, only keep last day
+    historicalBalances = {
+      [latestDay]: historicalBalances[latestDay],
     }
-    existing.timestamp = Date.now()
-    balancesDB.put(existing)
-  } catch {
-    balancesDB.put({ _id: "balances", map: balances, timestamp: Date.now() })
   }
 }

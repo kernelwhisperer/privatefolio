@@ -1,7 +1,7 @@
 import { Typography } from "@mui/material"
 import React, { useEffect, useState } from "react"
 
-import { getBalances } from "../../api/balances-api"
+import { getLatestBalances } from "../../api/balances-api"
 import { StaggeredList } from "../../components/StaggeredList"
 import { Balance } from "../../interfaces"
 import { SerifFont } from "../../theme"
@@ -11,8 +11,12 @@ export function BalancesPage({ show }: { show: boolean }) {
   const [balances, setBalances] = useState<Balance[]>([])
 
   useEffect(() => {
-    getBalances().then(async ({ map, timestamp }) => {
+    getLatestBalances().then((balanceMap) => {
+      if (!balanceMap) return
+
+      const { _id, _rev, timestamp: _timestamp, ...map } = balanceMap
       const balances = Object.keys(map).map((x) => ({ balance: map[x], symbol: x }))
+
       setBalances(balances)
     })
   }, [])

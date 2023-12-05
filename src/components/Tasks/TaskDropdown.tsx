@@ -1,4 +1,9 @@
-import { CheckRounded, DoneAllRounded, HourglassEmptyRounded } from "@mui/icons-material"
+import {
+  CheckRounded,
+  DoneAllRounded,
+  HourglassEmptyRounded,
+  StorageRounded,
+} from "@mui/icons-material"
 import {
   Button,
   CircularProgress,
@@ -6,15 +11,19 @@ import {
   ListItem,
   ListItemText,
   Menu,
+  Skeleton,
   Stack,
+  Tooltip,
   Typography,
 } from "@mui/material"
+import { grey } from "@mui/material/colors"
 import { useStore } from "@nanostores/react"
 import React, { useEffect, useState } from "react"
 
 import { $pendingTask, $taskHistory, $taskQueue } from "../../stores/task-store"
 import { MonoFont } from "../../theme"
-import { formatNumber } from "../../utils/client-utils"
+import { formatFileSize, formatNumber } from "../../utils/client-utils"
+import { SectionTitle } from "../SectionTitle"
 import { Truncate } from "../Truncate"
 
 export function TaskDropdown() {
@@ -66,6 +75,14 @@ export function TaskDropdown() {
     // })
   }, [])
 
+  const [storageUsage, setStorageUsage] = useState<number | null>(null)
+
+  useEffect(() => {
+    window.navigator.storage.estimate().then((estimate: any) => {
+      setStorageUsage(estimate.usageDetails?.indexedDB ?? null)
+    })
+  }, [anchorEl])
+
   return (
     <div>
       <Button
@@ -81,7 +98,6 @@ export function TaskDropdown() {
           {pendingTask ? `${pendingTask.name}` : "Up to date"}
         </Truncate>
       </Button>
-
       <Menu
         open={open}
         anchorEl={anchorEl}
@@ -97,6 +113,35 @@ export function TaskDropdown() {
         sx={{ marginTop: 0.5 }}
         MenuListProps={{ sx: { maxHeight: 256 } }}
       >
+        <Stack sx={{ paddingTop: 1, paddingX: 1.5 }} gap={2}>
+          <div>
+            <SectionTitle>Database info</SectionTitle>
+            <Stack direction="row" gap={1} marginLeft={1}>
+              <Tooltip title="Disk usage">
+                <StorageRounded fontSize="small" />
+              </Tooltip>
+              {storageUsage === null ? (
+                <Skeleton></Skeleton>
+              ) : (
+                <Tooltip
+                  title={
+                    <Stack>
+                      <span>{formatFileSize(storageUsage, true)}</span>
+                      <Typography color={grey[400]} component="i" variant="inherit">
+                        <span>{formatNumber(storageUsage)} Bytes</span>
+                      </Typography>
+                    </Stack>
+                  }
+                >
+                  <Typography fontFamily={MonoFont} variant="body2">
+                    <span>{formatFileSize(storageUsage)}</span>
+                  </Typography>
+                </Tooltip>
+              )}
+            </Stack>
+          </div>
+          <SectionTitle>Task list</SectionTitle>
+        </Stack>
         <List
           dense
           sx={{

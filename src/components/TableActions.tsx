@@ -41,24 +41,28 @@ export function TablePaginationActions(props: TablePaginationActionsProps) {
   return (
     <Stack sx={{ flexShrink: 0, ml: 2.5 }} direction="row" alignItems="center">
       <Tooltip title="Go to first page">
-        <IconButton
-          size="small"
-          onClick={handleFirstPageButtonClick}
-          disabled={page === 0}
-          aria-label="first page"
-        >
-          <KeyboardDoubleArrowLeftRounded />
-        </IconButton>
+        <span>
+          <IconButton
+            size="small"
+            onClick={handleFirstPageButtonClick}
+            disabled={page === 0}
+            aria-label="first page"
+          >
+            <KeyboardDoubleArrowLeftRounded />
+          </IconButton>
+        </span>
       </Tooltip>
       <Tooltip title="Go to previous page">
-        <IconButton
-          size="small"
-          onClick={handleBackButtonClick}
-          disabled={page === 0}
-          aria-label="previous page"
-        >
-          <KeyboardArrowLeftRounded />
-        </IconButton>
+        <span>
+          <IconButton
+            size="small"
+            onClick={handleBackButtonClick}
+            disabled={page === 0}
+            aria-label="previous page"
+          >
+            <KeyboardArrowLeftRounded />
+          </IconButton>
+        </span>
       </Tooltip>
       <Stack gap={1} paddingX={1} direction="row" alignItems="center">
         <TextField
@@ -90,24 +94,28 @@ export function TablePaginationActions(props: TablePaginationActionsProps) {
         </Typography>
       </Stack>
       <Tooltip title="Go to next page">
-        <IconButton
-          size="small"
-          onClick={handleNextButtonClick}
-          disabled={page >= lastPage}
-          aria-label="next page"
-        >
-          <KeyboardArrowRightRounded />
-        </IconButton>
+        <span>
+          <IconButton
+            size="small"
+            onClick={handleNextButtonClick}
+            disabled={page >= lastPage}
+            aria-label="next page"
+          >
+            <KeyboardArrowRightRounded />
+          </IconButton>
+        </span>
       </Tooltip>
       <Tooltip title="Go to last page">
-        <IconButton
-          size="small"
-          onClick={handleLastPageButtonClick}
-          disabled={page >= lastPage}
-          aria-label="last page"
-        >
-          <KeyboardDoubleArrowRightRounded />
-        </IconButton>
+        <span>
+          <IconButton
+            size="small"
+            onClick={handleLastPageButtonClick}
+            disabled={page >= lastPage}
+            aria-label="last page"
+          >
+            <KeyboardDoubleArrowRightRounded />
+          </IconButton>
+        </span>
       </Tooltip>
     </Stack>
   )

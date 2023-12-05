@@ -1,16 +1,10 @@
 import { CloseRounded, GitHub, Telegram, Twitter } from "@mui/icons-material"
-import {
-  IconButton,
-  Link as MuiLink,
-  MenuItem,
-  Stack,
-  Typography,
-  TypographyProps,
-} from "@mui/material"
+import { IconButton, Link as MuiLink, MenuItem, Stack, Typography } from "@mui/material"
 import React from "react"
 
 import { AppVerProps, PopoverToggleProps } from "../../stores/app-store"
 import { MonoFont } from "../../theme"
+import { SectionTitle } from "../SectionTitle"
 import { StaggeredList } from "../StaggeredList"
 import { ReducedMotion } from "./ReducedMotion"
 import { ThemeMode } from "./ThemeMode"
@@ -32,16 +26,6 @@ const CustomLink = ({ children, ...rest }: any) => (
   </MenuItem>
 )
 
-const SectionTitle = (props: TypographyProps) => (
-  <Typography
-    variant="subtitle2"
-    color="text.secondary"
-    letterSpacing="0.025rem"
-    sx={{ marginBottom: 0.5 }}
-    {...props}
-  />
-)
-
 type MenuContentsProps = AppVerProps & PopoverToggleProps
 
 export const SettingsDrawerContents = ({
@@ -56,7 +40,7 @@ export const SettingsDrawerContents = ({
         <Typography variant="subtitle1" letterSpacing="0.025rem">
           Settings
         </Typography>
-        <IconButton onClick={toggleOpen} edge="end">
+        <IconButton onClick={toggleOpen} edge="end" color="secondary">
           <CloseRounded fontSize="small" />
         </IconButton>
       </Stack>

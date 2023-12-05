@@ -37,6 +37,8 @@ export function Header() {
   const location = useLocation()
   const { pathname } = location
 
+  const overriddenPathname = pathname.includes("/asset/") ? "/" : pathname
+
   return (
     <AppBar
       position="static"
@@ -71,13 +73,16 @@ export function Header() {
             </Grid>
             <Grid item md={6} component={Stack} justifyContent="center">
               <Tabs
-                value={pathname}
+                value={overriddenPathname}
                 sx={(theme) => ({
                   [`& .${tabsClasses.indicator}`]: {
                     background: grey[600],
-                    borderRadius: 1,
+                    borderRadius: 2,
+                    // borderTopLeftRadius: 8,
+                    // borderTopRightRadius: 8,
                     bottom: 8,
                     height: 4,
+                    marginLeft: "0.5px",
                   },
                   [`& .${tabsClasses.flexContainer}`]: {
                     gap: 2,

@@ -8,7 +8,9 @@ import {
   TableRow,
   TableRowProps,
   Tooltip,
+  Typography,
 } from "@mui/material"
+import { grey } from "@mui/material/colors"
 import { useStore } from "@nanostores/react"
 // import TableCell from "@mui/material/Unstable_TableCell2" // TableCell version 2
 import React, { MouseEvent, useState } from "react"
@@ -58,10 +60,21 @@ export function FileImportTableRow(props: FileImportTableRowProps) {
       </TableCell>
       <TableCell sx={{ maxWidth: 200, minWidth: 200, width: 200 }}>{name}</TableCell>
       <TableCell
-        sx={{ fontFamily: MonoFont, maxWidth: 100, minWidth: 100, width: 100 }}
+        sx={{ fontFamily: MonoFont, maxWidth: 120, minWidth: 120, width: 120 }}
         align="right"
       >
-        {formatFileSize(size)}
+        <Tooltip
+          title={
+            <Stack>
+              <span>{formatFileSize(size, true)}</span>
+              <Typography color={grey[400]} component="i" variant="inherit">
+                <span>{formatNumber(size)} Bytes</span>
+              </Typography>
+            </Stack>
+          }
+        >
+          <span>{formatFileSize(size)}</span>
+        </Tooltip>
       </TableCell>
       <TableCell sx={{ maxWidth: 180, minWidth: 180, width: 180 }}>
         <TimestampCell timestamp={lastModified} relative={relativeTime} />

@@ -13,7 +13,7 @@ export type ChartProps = {
   unitLabel: string
 }
 
-function Chart(props: ChartProps) {
+function ChartBase(props: ChartProps) {
   const { chartRef, unitLabel, significantDigits, allowCompactPriceScale } = props
 
   const theme = useTheme()
@@ -31,7 +31,7 @@ function Chart(props: ChartProps) {
     const primaryColor = theme.palette.primary.main
     const textColor = theme.palette.text.primary
     const borderColor = theme.palette.divider
-    const bgColor = theme.palette.background.default
+    const bgColor = "transparent" // theme.palette.background.default
 
     chartRef.current = createChart(containerRef.current, {
       crosshair: {
@@ -89,7 +89,8 @@ function Chart(props: ChartProps) {
   return (
     <Box
       sx={{
-        "& tr:first-child td": { cursor: "crosshair" },
+        // TESTME
+        "& tr:first-of-type td": { cursor: "crosshair" },
         height: "100%",
         width: "100%",
       }}
@@ -98,4 +99,4 @@ function Chart(props: ChartProps) {
   )
 }
 
-export const MemoChart = memo(Chart, () => true)
+export const Chart = memo(ChartBase, () => true)

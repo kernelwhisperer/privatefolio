@@ -9,11 +9,11 @@ import { StaggeredList } from "../../components/StaggeredList"
 import { $assetMap, $filterOptionsMap } from "../../stores/metadata-store"
 import { SerifFont } from "../../theme"
 import { AuditLogsTable } from "../AuditLogsPage/AuditLogTable"
+import { BalanceChart } from "./BalanceChart"
 
 export default function AssetPage({ show }: { show: boolean }) {
   const params = useParams()
   const symbol = params.symbol?.toLocaleUpperCase()
-  console.log("📜 LOG > AssetPage > symbol:", symbol)
   const assetMap = useStore($assetMap)
 
   const filterMap = useStore($filterOptionsMap)
@@ -24,14 +24,8 @@ export default function AssetPage({ show }: { show: boolean }) {
 
   return (
     <StaggeredList gap={1} show={show}>
-      <BackButton to="/balances">Balances</BackButton>
-      <Stack
-        direction="row"
-        gap={1}
-        alignItems="center"
-        component="div"
-        // justifyContent="flex-end"
-      >
+      <BackButton to="/">Balances</BackButton>
+      <Stack direction="row" gap={1} alignItems="center" component="div">
         <AssetAvatar size="large" src={assetMap[symbol]?.image} alt={symbol} />
         <Stack>
           <Typography variant="h6" fontFamily={SerifFont} sx={{ marginBottom: -0.5 }}>
@@ -42,9 +36,13 @@ export default function AssetPage({ show }: { show: boolean }) {
           </Typography>
         </Stack>
       </Stack>
-      <br />
-
-      <Typography>Audit logs</Typography>
+      <Typography fontFamily={SerifFont} fontWeight={400} marginTop={2}>
+        Historical balance
+      </Typography>
+      <BalanceChart symbol={symbol} />
+      <Typography fontFamily={SerifFont} fontWeight={400} marginTop={2}>
+        Audit logs
+      </Typography>
       <AuditLogsTable symbol={symbol} />
       {/* <AssetInfo
            assetSymbol={assetSymbol}
