@@ -18,7 +18,10 @@ export function formatDateRelative(date: Date | number) {
 
 export function formatDate(date: Date | number) {
   return new Intl.DateTimeFormat(window.navigator.language, {
-    dateStyle: "medium",
+    // dateStyle: "medium",
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
   }).format(date)
 }
 

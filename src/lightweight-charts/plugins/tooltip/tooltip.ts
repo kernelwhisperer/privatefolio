@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/member-ordering */
 import { CanvasRenderingTarget2D } from "fancy-canvas"
 import {
   CandlestickData,
@@ -13,6 +14,7 @@ import {
   WhitespaceData,
 } from "lightweight-charts"
 
+import { formatNumber } from "../../../utils/client-utils"
 import { positionsLine } from "../../helpers/dimensions/positions"
 import { convertTime, formattedDateAndTime } from "../../helpers/time"
 import { TooltipElement, TooltipOptions } from "./tooltip-element"
@@ -67,13 +69,13 @@ interface TooltipCrosshairLineData {
 }
 
 const defaultOptions: TooltipPrimitiveOptions = {
-  lineColor: "rgba(0, 0, 0, 0.2)",
+  lineColor: "rgba(127, 127, 127, 0.5)",
   priceExtractor: (data: LineData | CandlestickData | WhitespaceData) => {
     if ((data as LineData).value !== undefined) {
-      return (data as LineData).value.toFixed(2)
+      return formatNumber((data as LineData).value)
     }
     if ((data as CandlestickData).close !== undefined) {
-      return (data as CandlestickData).close.toFixed(2)
+      return formatNumber((data as CandlestickData).close)
     }
     return ""
   },
@@ -83,6 +85,7 @@ export interface TooltipPrimitiveOptions {
   lineColor: string
   tooltip?: Partial<TooltipOptions>
   priceExtractor: <T extends WhitespaceData>(dataPoint: T) => string
+  // significantDigits
 }
 
 export class TooltipPrimitive implements ISeriesPrimitive<Time> {
@@ -90,7 +93,7 @@ export class TooltipPrimitive implements ISeriesPrimitive<Time> {
   private _tooltip: TooltipElement | undefined = undefined
   _paneViews: MultiTouchCrosshairPaneView[]
   _data: TooltipCrosshairLineData = {
-    color: "rgba(0, 0, 0, 0.2)",
+    color: "rgba(0, 0, 0, 0)",
     topMargin: 0,
     visible: false,
     x: 0,
@@ -98,7 +101,7 @@ export class TooltipPrimitive implements ISeriesPrimitive<Time> {
 
   _attachedParams: SeriesAttachedParameter<Time> | undefined
 
-  constructor(options: Partial<TooltipPrimitiveOptions>) {
+  constructor(options: Partial<TooltipPrimitiveOptions> = {}) {
     this._options = {
       ...defaultOptions,
       ...options,
@@ -221,7 +224,7 @@ export class TooltipPrimitive implements ISeriesPrimitive<Time> {
     const [date, time] = formattedDateAndTime(param.time ? convertTime(param.time) : undefined)
     if (this._tooltip) {
       const tooltipOptions = this._tooltip.options()
-      const topMargin = tooltipOptions.followMode == "top" ? tooltipOptions.topOffset + 10 : 0
+      const topMargin = tooltipOptions.followMode === "top" ? tooltipOptions.topOffset + 10 : 0
       this.setData({
         color: this.currentColor(),
         topMargin,

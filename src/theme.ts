@@ -292,7 +292,7 @@ export const theme: CssVarsThemeOptions = {
           color: "rgba(0,0,0,1)",
         },
         tooltip: {
-          background: grey[900],
+          background: "var(--mui-palette-grey-900)",
           border: "1px solid rgba(0,0,0,1)",
           borderRadius: 0,
           fontSize: "0.8rem",

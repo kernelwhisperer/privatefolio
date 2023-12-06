@@ -1,4 +1,7 @@
+/* eslint-disable @typescript-eslint/member-ordering */
 import { IChartApi } from "lightweight-charts"
+
+import { MonoFont } from "../../../theme"
 
 export interface TooltipOptions {
   title: string
@@ -12,11 +15,11 @@ export interface TooltipOptions {
 }
 
 const defaultOptions: TooltipOptions = {
-  followMode: "tracking",
+  followMode: "top",
   horizontalDeadzoneWidth: 45,
   title: "",
   topOffset: 20,
-  verticalDeadzoneHeight: 100,
+  verticalDeadzoneHeight: 60,
   verticalSpacing: 20,
 }
 
@@ -55,59 +58,67 @@ export class TooltipElement {
 
     const element = document.createElement("div")
     applyStyle(element, {
-      "align-items": "center",
-      "background-color": "white",
-      "border-radius": "4px",
+      // "align-items": "center",
+      "background-color": "var(--mui-palette-grey-900)",
+      border: "1px solid rgba(0,0,0,1)",
+      // "border-radius": "4px",
+      // "box-shadow": "0px 2px 4px rgba(0, 0, 0, 0.2)",
+      color: "var(--mui-palette-common-white)",
       display: "flex",
       "flex-direction": "column",
       "font-family":
         "-apple-system, BlinkMacSystemFont, 'Trebuchet MS', Roboto, Ubuntu, sans-serif",
-      "font-size": "12px",
-      "box-shadow": "0px 2px 4px rgba(0, 0, 0, 0.2)",
+      "font-size": "14px",
+      "font-weight": "300",
       left: "0%",
-      color: "#131722",
-      opacity: "0",
-      "font-weight": "400",
-      position: "absolute",
       "line-height": "16px",
-      transform: "translate(calc(0px - 50%), 0px)",
+      opacity: "0",
       padding: "5px 10px",
-      top: "0",
       "pointer-events": "none",
+      position: "absolute",
+      top: "0",
+      transform: "translate(calc(0px - 50%), 0px)",
       "z-index": "100",
     })
 
     const titleElement = document.createElement("div")
     applyStyle(titleElement, {
       "font-size": "16px",
-      "font-weight": "590",
-      "line-height": "24px",
+      "font-weight": "500",
+      "line-height": "20px",
     })
     setElementText(titleElement, this._options.title)
     element.appendChild(titleElement)
 
+    const dateContainer = document.createElement("div")
+    applyStyle(dateContainer, {
+      display: "flex",
+      "flex-direction": "row",
+      gap: "5px",
+      "margin-bottom": "8px",
+    })
+    element.appendChild(dateContainer)
+
+    const dateElement = document.createElement("div")
+    setElementText(dateElement, "")
+    dateContainer.appendChild(dateElement)
+
+    const timeElement = document.createElement("div")
+    applyStyle(timeElement, {
+      color: "var(--mui-palette-grey-400)",
+    })
+    setElementText(timeElement, "")
+    dateContainer.appendChild(timeElement)
+
     const priceElement = document.createElement("div")
     applyStyle(priceElement, {
+      "font-family": MonoFont,
       "font-size": "14px",
-      "font-weight": "590",
+      "font-weight": "500",
       "line-height": "18px",
     })
     setElementText(priceElement, "")
     element.appendChild(priceElement)
-
-    const dateElement = document.createElement("div")
-    applyStyle(dateElement, {
-      color: "#787B86",
-    })
-    setElementText(dateElement, "")
-    element.appendChild(dateElement)
-
-    const timeElement = document.createElement("div")
-    applyStyle(timeElement, {
-      color: "#787B86",
-    })
-    setElementText(timeElement, "")
-    element.appendChild(timeElement)
 
     this._element = element
     this._titleElement = titleElement
@@ -180,7 +191,7 @@ export class TooltipElement {
   }
 
   private _calculateYPosition(positionData: TooltipPosition): string {
-    if (this._options.followMode == "top") {
+    if (this._options.followMode === "top") {
       return `${this._options.topOffset}px`
     }
     const y = positionData.paneY

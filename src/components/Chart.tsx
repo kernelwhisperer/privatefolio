@@ -119,6 +119,7 @@ function BaseChart(props: ChartProps) {
       sx={{
         "& tr:first-of-type td": { cursor: "crosshair" },
         height: "100%",
+        position: "relative",
         width: "100%",
       }}
       ref={containerRef}

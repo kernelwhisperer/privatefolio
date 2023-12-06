@@ -32,7 +32,7 @@ export function BaselineChart(props: BalanceChartProps) {
       baseLineColor: "rgba(0, 0, 0, 0)",
       baseLineVisible: false,
       baseValue: { price: 0, type: "price" },
-      lineType: 2,
+      lineType: 0,
       lineWidth: 1,
       priceLineVisible: false,
     })
@@ -43,12 +43,7 @@ export function BaselineChart(props: BalanceChartProps) {
 
     // seriesRef.current.attachPrimitive(tooltipPrimitive)
 
-    const tooltipPrimitive = new TooltipPrimitive({
-      lineColor: "rgba(0, 0, 0, 0.2)",
-      tooltip: {
-        followMode: "top",
-      },
-    })
+    const tooltipPrimitive = new TooltipPrimitive()
 
     seriesRef.current.attachPrimitive(tooltipPrimitive)
 

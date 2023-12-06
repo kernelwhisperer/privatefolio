@@ -1,5 +1,7 @@
 import { isBusinessDay, isUTCTimestamp, Time } from "lightweight-charts"
 
+import { formatDate, formatHour } from "../../utils/client-utils"
+
 export function convertTime(t: Time): number {
   if (isUTCTimestamp(t)) return t * 1000
   if (isBusinessDay(t)) return new Date(t.year, t.month, t.day).valueOf()
@@ -17,18 +19,20 @@ export function displayTime(time: Time): string {
 
 export function formattedDateAndTime(timestamp: number | undefined): [string, string] {
   if (!timestamp) return ["", ""]
-  const dateObj = new Date(timestamp)
+  //   const dateObj = new Date(timestamp)
 
-  // Format date string
-  const year = dateObj.getFullYear()
-  const month = dateObj.toLocaleString("default", { month: "short" })
-  const date = dateObj.getDate().toString().padStart(2, "0")
-  const formattedDate = `${date} ${month} ${year}`
+  //   // Format date string
+  //   const year = dateObj.getFullYear()
+  //   const month = dateObj.toLocaleString("default", { month: "short" })
+  //   const date = dateObj.getDate().toString().padStart(2, "0")
+  //   const formattedDate = `${date} ${month} ${year}`
 
-  // Format time string
-  const hours = dateObj.getHours().toString().padStart(2, "0")
-  const minutes = dateObj.getMinutes().toString().padStart(2, "0")
-  const formattedTime = `${hours}:${minutes}`
+  //   // Format time string
+  //   const hours = dateObj.getHours().toString().padStart(2, "0")
+  //   const minutes = dateObj.getMinutes().toString().padStart(2, "0")
+  //   const formattedTime = `${hours}:${minutes}`
 
-  return [formattedDate, formattedTime]
+  //   return [formattedDate, formattedTime]
+
+  return [formatDate(timestamp), formatHour(timestamp)]
 }
