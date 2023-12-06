@@ -1,53 +1,54 @@
 import { Paper } from "@mui/material"
-import { IChartApi } from "lightweight-charts"
-import React, { useEffect, useRef } from "react"
+import { UTCTimestamp } from "lightweight-charts"
+import React, { useCallback, useEffect, useState } from "react"
 
 import { getHistoricalBalances } from "../../api/balances-api"
-import { Chart } from "../../components/Chart"
+import { BaselineChart, BaselineDataType } from "../../components/BaselineChart"
 
 type BalanceChartProps = {
   symbol: string
 }
 
+const CHART_HEIGHT = (1184 / 16) * 9
+
 export function BalanceChart(props: BalanceChartProps) {
   const { symbol } = props
 
-  const chartRef = useRef<IChartApi | undefined>(undefined)
+  const [loading, setLoading] = useState<boolean>(true)
+  const [data, setData] = useState<BaselineDataType>([])
+
+  const query = useCallback(async (symbol: string) => {
+    setLoading(true)
+    const docs = await getHistoricalBalances(symbol)
+
+    const previousDay = docs[0].timestamp - 86400000
+    const records = docs.map((item) => ({
+      time: (item.timestamp / 1000) as UTCTimestamp,
+      value: item[symbol],
+    }))
+    records.unshift({
+      time: (previousDay / 1000) as UTCTimestamp,
+      value: 0,
+    })
+    setData(records)
+    setLoading(false)
+  }, [])
 
   useEffect(() => {
-    setTimeout(async () => {
-      const res = await getHistoricalBalances(symbol)
-      const previousDay = res[0].timestamp - 86400000
-      const data = res.map((item) => ({
-        // color: item.amount > 0 ? "green" : "red",
-        time: item.timestamp / 1000,
-        value: item[symbol],
-      }))
-      data.unshift({
-        time: previousDay / 1000,
-        value: 0,
-      })
-      console.log("📜 LOG > setTimeout > res:", res)
-
-      const series = chartRef.current?.addAreaSeries({
-        lineType: 0,
-      })
-      series?.setData(data)
-      chartRef.current?.timeScale().fitContent()
-    }, 500)
-  }, [])
+    query(symbol)
+  }, [query, symbol])
 
   return (
     <Paper
       sx={{
         height: 500,
         marginX: -2,
-
-        // paddingY: 0.5
-        overflow: "hidden",
+        maxHeight: 500,
+        minHeight: 500,
+        overflow: "hidden", // because of borderRadius
       }}
     >
-      <Chart chartRef={chartRef} unitLabel={"symbol"} significantDigits={0} />
+      <BaselineChart data={data} unitLabel={"symbol"} significantDigits={0} />
     </Paper>
   )
 }

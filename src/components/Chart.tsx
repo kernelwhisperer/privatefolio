@@ -2,68 +2,76 @@
 
 import { Box, useTheme } from "@mui/material"
 import { createChart, CrosshairMode, IChartApi } from "lightweight-charts"
-import React, { memo, MutableRefObject, useEffect, useRef } from "react"
+import React, { memo, MutableRefObject, useEffect, useMemo, useRef } from "react"
 
 import { MonoFont } from "../theme"
+import { noop } from "../utils/utils"
 
 export type ChartProps = {
   allowCompactPriceScale?: boolean
   chartRef: MutableRefObject<IChartApi | undefined>
+  onChartReady?: () => void
   significantDigits: number
   unitLabel: string
 }
 
-function ChartBase(props: ChartProps) {
-  const { chartRef, unitLabel, significantDigits, allowCompactPriceScale } = props
+function BaseChart(props: ChartProps) {
+  const {
+    chartRef,
+    unitLabel,
+    significantDigits,
+    allowCompactPriceScale,
+    onChartReady = noop,
+  } = props
 
   const theme = useTheme()
   const containerRef = useRef<HTMLElement>()
 
-  useEffect(() => {
-    if (!containerRef.current) return
-
-    const handleResize = () => {
-      chartRef.current?.applyOptions({
-        height: containerRef.current?.clientHeight,
-        width: containerRef.current?.clientWidth,
-      })
-    }
-    const primaryColor = theme.palette.primary.main
-    const textColor = theme.palette.text.primary
-    const borderColor = theme.palette.divider
-    const bgColor = "transparent" // theme.palette.background.default
-
-    chartRef.current = createChart(containerRef.current, {
+  const chartOptions = useMemo(
+    () => ({
       crosshair: {
         horzLine: {
-          labelBackgroundColor: primaryColor,
+          labelBackgroundColor: theme.palette.primary.main,
         },
         mode: CrosshairMode.Normal,
         vertLine: {
-          labelBackgroundColor: primaryColor,
+          labelBackgroundColor: theme.palette.primary.main,
         },
       },
       grid: {
         horzLines: {
-          color: borderColor,
+          color: theme.palette.divider,
         },
         vertLines: {
-          color: borderColor,
+          color: theme.palette.divider,
         },
       },
+      // handleScale: false,
+      // handleScroll: false,
+
       // handleScroll: {
-      //   mouseWheel: false,
+      // mouseWheel: false,
       // },
       layout: {
-        background: { color: bgColor },
+        background: {
+          color: "transparent", // theme.palette.background.default
+        },
         fontFamily: MonoFont,
-        textColor,
+        textColor: theme.palette.text.primary,
       },
       // localization: {
       //   priceFormatter: createPriceFormatter(significantDigits, unitLabel, allowCompactPriceScale),
       // },
-      width: containerRef.current.clientWidth,
-    })
+      width: containerRef.current?.clientWidth,
+    }),
+    [theme]
+  )
+
+  useEffect(() => {
+    console.log("📜 LOG > BaseChart > useEffect > init", !!containerRef.current)
+    if (!containerRef.current) return
+
+    chartRef.current = createChart(containerRef.current, chartOptions)
 
     chartRef.current.timeScale().applyOptions({
       borderVisible: false,
@@ -77,19 +85,38 @@ function ChartBase(props: ChartProps) {
       // entireTextOnly: true,
     })
 
+    const handleResize = () => {
+      chartRef.current?.applyOptions({
+        height: containerRef.current?.clientHeight,
+        width: containerRef.current?.clientWidth,
+      })
+    }
     window.addEventListener("resize", handleResize)
+
+    onChartReady()
 
     return function cleanup() {
       window.removeEventListener("resize", handleResize)
-
       chartRef.current?.remove()
+      chartRef.current = undefined
     }
-  }, [chartRef, theme, containerRef, unitLabel, significantDigits, allowCompactPriceScale])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chartRef, containerRef])
+
+  useEffect(() => {
+    chartRef.current?.applyOptions(chartOptions)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chartOptions])
+
+  // TODO
+  // unitLabel,
+  // significantDigits,
+  // allowCompactPriceScale,
+  // onChartReady,
 
   return (
     <Box
       sx={{
-        // TESTME
         "& tr:first-of-type td": { cursor: "crosshair" },
         height: "100%",
         width: "100%",
@@ -99,4 +126,4 @@ function ChartBase(props: ChartProps) {
   )
 }
 
-export const Chart = memo(ChartBase, () => true)
+export const Chart = memo(BaseChart)

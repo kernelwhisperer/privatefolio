@@ -1,5 +1,5 @@
 {
-  "name": "trade-journal",
+  "name": "privatefolio",
   "version": "0.0.1",
   "private": true,
   "license": "UNLICENSED",
@@ -30,7 +30,7 @@
     "decimal.js": "^10.4.3",
     "events": "^3.3.0",
     "jsbi": "^4.3.0",
-    "lightweight-charts": "^3.8.0",
+    "lightweight-charts": "^4.1.1",
     "lodash": "^4.17.21",
     "nanostores": "^0.9.5",
     "pouchdb": "^8.0.1",
