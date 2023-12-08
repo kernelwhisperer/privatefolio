@@ -46,7 +46,10 @@ export const theme: CssVarsThemeOptions = {
           border: "rgba(255,255,255, 0.05)",
         },
         accent: {
-          main: "rgb(136, 101, 160)",
+          // main: "rgb(136, 101, 160)",
+          dark: blue[800],
+          light: blue[400],
+          main: blue[600],
         },
         // Tooltip: {
         //   bg: "rgb(240, 240, 240)",
@@ -113,10 +116,30 @@ export const theme: CssVarsThemeOptions = {
     },
     MuiButton: {
       styleOverrides: {
+        contained: {
+          "&:hover": {
+            boxShadow: "unset",
+          },
+          boxShadow: "unset",
+        },
         root: {
           borderRadius: "32px",
           textTransform: "none",
         },
+        sizeSmall: {
+          lineHeight: 1.2,
+          minWidth: "unset",
+        },
+        textSecondary: {
+          "&:hover": {
+            color: "var(--mui-palette-primary-main)",
+          },
+        },
+      },
+    },
+    MuiButtonBase: {
+      defaultProps: {
+        disableRipple: true, // No more ripple, on the whole application 💣!
       },
     },
     MuiCheckbox: {
@@ -254,15 +277,31 @@ export const theme: CssVarsThemeOptions = {
     MuiTableRow: {
       styleOverrides: {
         root: {
-          "html[data-mui-color-scheme='dark'] tbody &:hover": {
-            background: "rgba(var(--mui-palette-primary-mainChannel) / 0.075) !important",
-            outline: "1px dashed rgba(var(--mui-palette-primary-mainChannel) / 0.5)",
+          "&.TableRow-open-bottom": {
+            background: "var(--mui-palette-background-paper)",
+            backgroundImage: "var(--mui-overlays-1)",
+            // background: "var(--mui-palette-background-default) !important",
           },
-          "tbody &:hover": {
-            background: "rgba(var(--mui-palette-secondary-mainChannel) / 0.075) !important",
-            outline: "1px dashed rgba(var(--mui-palette-secondary-mainChannel) / 0.5)",
-            outlineOffset: -1,
+          "&.TableRow-open-top": {
+            "--mui-palette-TableCell-border": "rgba(0,0,0,0)",
+            background: "var(--mui-palette-background-paper)",
+            backgroundImage: "var(--mui-overlays-1)",
+            // borderRadius: 2,
+            overflow: "hidden",
+            // background: "var(--mui-palette-background-default) !important",
+            // outline: "1px dashed red !important",
+            // border: "1px dashed red !important",
           },
+          // cursor: "pointer",
+          // "html[data-mui-color-scheme='dark'] tbody &:hover": {
+          //   background: "rgba(var(--mui-palette-primary-mainChannel) / 0.075) !important",
+          //   outline: "1px dashed rgba(var(--mui-palette-primary-mainChannel) / 0.5)",
+          // },
+          // "tbody &:hover": {
+          //   background: "rgba(var(--mui-palette-secondary-mainChannel) / 0.075) !important",
+          //   outline: "1px dashed rgba(var(--mui-palette-secondary-mainChannel) / 0.5)",
+          //   outlineOffset: -1,
+          // },
           // "&:nth-of-type(odd)": {
           //   backgroundColor: "rgba(45, 45, 45, 0.5)",
           // },

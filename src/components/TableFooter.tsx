@@ -95,7 +95,7 @@ export function TableFooter(props: TableFooterProps) {
             color: "var(--mui-palette-text-secondary)",
           },
           [`& .${tablePaginationClasses.select}`]: {
-            borderRadius: 1,
+            borderRadius: "8px !important",
           },
           [`& .${tablePaginationClasses.select}:hover`]: {
             background: "rgba(var(--mui-palette-common-onBackgroundChannel) / 0.05)",

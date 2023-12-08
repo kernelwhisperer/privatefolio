@@ -1,7 +1,14 @@
 "use client"
 
 import { Box, useTheme } from "@mui/material"
-import { createChart, CrosshairMode, IChartApi } from "lightweight-charts"
+import {
+  ChartOptions,
+  createChart,
+  CrosshairMode,
+  DeepPartial,
+  IChartApi,
+  PriceScaleOptions,
+} from "lightweight-charts"
 import React, { memo, MutableRefObject, useEffect, useMemo, useRef } from "react"
 
 import { MonoFont } from "../theme"
@@ -9,25 +16,19 @@ import { noop } from "../utils/utils"
 
 export type ChartProps = {
   allowCompactPriceScale?: boolean
+  chartOptions?: DeepPartial<ChartOptions>
   chartRef: MutableRefObject<IChartApi | undefined>
+  logScale?: boolean
   onChartReady?: () => void
-  significantDigits: number
-  unitLabel: string
 }
 
 function BaseChart(props: ChartProps) {
-  const {
-    chartRef,
-    unitLabel,
-    significantDigits,
-    allowCompactPriceScale,
-    onChartReady = noop,
-  } = props
+  const { chartRef, logScale = false, onChartReady = noop, chartOptions = {} } = props
 
   const theme = useTheme()
   const containerRef = useRef<HTMLElement>()
 
-  const chartOptions = useMemo(
+  const chartOpts = useMemo<DeepPartial<ChartOptions>>(
     () => ({
       crosshair: {
         horzLine: {
@@ -46,12 +47,6 @@ function BaseChart(props: ChartProps) {
           color: theme.palette.divider,
         },
       },
-      // handleScale: false,
-      // handleScroll: false,
-
-      // handleScroll: {
-      // mouseWheel: false,
-      // },
       layout: {
         background: {
           color: "transparent", // theme.palette.background.default
@@ -59,31 +54,41 @@ function BaseChart(props: ChartProps) {
         fontFamily: MonoFont,
         textColor: theme.palette.text.primary,
       },
-      // localization: {
-      //   priceFormatter: createPriceFormatter(significantDigits, unitLabel, allowCompactPriceScale),
-      // },
       width: containerRef.current?.clientWidth,
+      ...chartOptions,
     }),
-    [theme]
+    [theme, chartOptions]
+  )
+
+  const priceScaleOptions = useMemo<DeepPartial<PriceScaleOptions>>(
+    () => ({
+      borderVisible: false,
+      entireTextOnly: true,
+      mode: logScale ? 1 : 0,
+      scaleMargins: {
+        bottom: 0,
+        top: 0.2,
+      },
+    }),
+    [logScale]
   )
 
   useEffect(() => {
     console.log("📜 LOG > BaseChart > useEffect > init", !!containerRef.current)
     if (!containerRef.current) return
 
-    chartRef.current = createChart(containerRef.current, chartOptions)
+    chartRef.current = createChart(containerRef.current, chartOpts)
 
     chartRef.current.timeScale().applyOptions({
       borderVisible: false,
+      secondsVisible: true,
+      timeVisible: true,
       // rightOffset: isMobile || window.location.toString().includes("machine=true") ? 4 : 8,
       // secondsVisible: ["Block"].includes($timeframe.get()),
       // timeVisible: ["Hour", "Minute", "Block"].includes($timeframe.get()),
     })
 
-    chartRef.current.priceScale("right").applyOptions({
-      borderVisible: false,
-      // entireTextOnly: true,
-    })
+    chartRef.current.priceScale("right").applyOptions(priceScaleOptions)
 
     const handleResize = () => {
       chartRef.current?.applyOptions({
@@ -104,9 +109,14 @@ function BaseChart(props: ChartProps) {
   }, [chartRef, containerRef])
 
   useEffect(() => {
-    chartRef.current?.applyOptions(chartOptions)
+    chartRef.current?.applyOptions(chartOpts)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chartOptions])
+  }, [chartOpts])
+
+  useEffect(() => {
+    chartRef.current?.priceScale("right").applyOptions(priceScaleOptions)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [priceScaleOptions])
 
   // TODO
   // unitLabel,

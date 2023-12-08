@@ -105,3 +105,37 @@ export interface BalanceMap {
   [symbol: string]: number
   timestamp: number
 }
+
+/**
+ * This is the generic type useful for declaring a nominal type,
+ * which does not structurally matches with the base type and
+ * the other types declared over the same base type
+ *
+ * Usage:
+ * @example
+ * type Index = Nominal<number, 'Index'>;
+ * // let i: Index = 42; // this fails to compile
+ * let i: Index = 42 as Index; // OK
+ * @example
+ * type TagName = Nominal<string, 'TagName'>;
+ */
+export declare type Nominal<T, Name extends string> = T & {
+  [Symbol.species]: Name
+}
+/**
+ * Resolution or time interval is a time period of one bar. Advanced Charts supports tick, intraday (seconds, minutes, hours), and DWM (daily, weekly, monthly) resolutions. The table below describes how to specify different types of resolutions:
+ *
+ * Resolution | Format | Example
+ * ---------|----------|---------
+ * Ticks | `xT` | `1T` — one tick
+ * Seconds | `xS` | `1S` — one second
+ * Minutes | `x` | `1` — one minute
+ * Hours | `x` minutes | `60` — one hour
+ * Days | `xD` | `1D` — one day
+ * Weeks | `xW` | `1W` — one week
+ * Months | `xM` | `1M` — one month
+ * Years | `xM` months | `12M` — one year
+ *
+ * Refer to [Resolution](https://www.tradingview.com/charting-library-docs/latest/core_concepts/Resolution) for more information.
+ */
+export type ResolutionString = Nominal<string, "ResolutionString">

@@ -5,6 +5,7 @@ import { getLatestBalances } from "../../api/balances-api"
 import { StaggeredList } from "../../components/StaggeredList"
 import { Balance } from "../../interfaces"
 import { SerifFont } from "../../theme"
+import { BalancesChart } from "./BalancesChart"
 import { BalanceTable } from "./BalanceTable"
 
 export function BalancesPage({ show }: { show: boolean }) {
@@ -23,6 +24,10 @@ export function BalancesPage({ show }: { show: boolean }) {
 
   return (
     <StaggeredList gap={1} show={show}>
+      <Typography variant="h6" fontFamily={SerifFont}>
+        <span>Breakdown</span>
+      </Typography>
+      <BalancesChart />
       <Typography variant="h6" fontFamily={SerifFont}>
         <span>Balances</span>
       </Typography>

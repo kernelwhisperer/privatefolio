@@ -2,7 +2,7 @@
 
 import {
   AppBar,
-  Button,
+  Box,
   Container,
   Grid,
   Stack,
@@ -11,11 +11,10 @@ import {
   Tabs,
   tabsClasses,
   Toolbar,
-  Tooltip,
 } from "@mui/material"
 import { grey } from "@mui/material/colors"
 import React from "react"
-import { Link, NavLink, useLocation } from "react-router-dom"
+import { NavLink, useLocation } from "react-router-dom"
 
 import { TaskDropdown } from "../Tasks/TaskDropdown"
 import { Logo } from "./Logo"
@@ -56,20 +55,15 @@ export function Header() {
         <Container maxWidth="lg" sx={{ padding: { xs: 0 }, position: "relative" }}>
           <Grid container spacing={0.5} paddingX={2} marginY={1}>
             <Grid item md={3}>
-              <Tooltip title="View Homepage">
-                <Button
-                  to={`/`}
-                  aria-label="View Homepage"
-                  component={Link}
-                  color="inherit"
-                  sx={{
-                    marginLeft: -1,
-                    paddingX: 2,
-                  }}
-                >
-                  <Logo />
-                </Button>
-              </Tooltip>
+              <Box
+                sx={{
+                  marginLeft: -1,
+                  paddingX: 2,
+                  paddingY: 1,
+                }}
+              >
+                <Logo />
+              </Box>
             </Grid>
             <Grid item md={6} component={Stack} justifyContent="center">
               <Tabs
@@ -97,7 +91,7 @@ export function Header() {
                   },
                 })}
               >
-                <NavButton value="/" to="/" label="Balances" />
+                <NavButton value="/" to="/" label="Home" />
                 <NavButton value="/transactions" to="/transactions" label="Transactions" />
                 <NavButton value="/audit-logs" to="/audit-logs" label="Audit logs" />
                 <NavButton value="/import-data" to="/import-data" label="Import data" />

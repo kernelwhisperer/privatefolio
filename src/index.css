@@ -15,6 +15,10 @@ html {
   overflow-y: scroll;
 }
 
+body {
+  background: rgb(40, 40, 40);
+}
+
 ::-webkit-scrollbar-corner {
   background: transparent;
   border-color: transparent;

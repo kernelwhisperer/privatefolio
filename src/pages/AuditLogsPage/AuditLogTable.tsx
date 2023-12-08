@@ -49,7 +49,8 @@ export function AuditLogsTable(props: AuditLogsTableProps) {
   const [orderBy, setOrderBy] = useState<SortableKey>("timestamp") // THIS IS A CONST NOW
   const [rowsPerPage, setRowsPerPage] = useState(symbol ? 10 : 25)
 
-  const [relativeTime, setRelativeTime] = useState(true)
+  // TODO turn into setting
+  const [relativeTime, setRelativeTime] = useState(false)
 
   const handleRelativeTime = useCallback((_event: MouseEvent<unknown>) => {
     setRelativeTime((prev) => !prev)
@@ -245,8 +246,6 @@ export function AuditLogsTable(props: AuditLogsTableProps) {
                     <TableBody>
                       {rows.map((x) => (
                         <AuditLogTableRow
-                          hover
-                          onClick={console.log}
                           relativeTime={relativeTime}
                           key={x._id}
                           auditLog={x}

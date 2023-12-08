@@ -72,10 +72,10 @@ const defaultOptions: TooltipPrimitiveOptions = {
   lineColor: "rgba(127, 127, 127, 0.5)",
   priceExtractor: (data: LineData | CandlestickData | WhitespaceData) => {
     if ((data as LineData).value !== undefined) {
-      return formatNumber((data as LineData).value)
+      return formatNumber((data as LineData).value, { maximumFractionDigits: 18 })
     }
     if ((data as CandlestickData).close !== undefined) {
-      return formatNumber((data as CandlestickData).close)
+      return formatNumber((data as CandlestickData).close, { maximumFractionDigits: 18 })
     }
     return ""
   },

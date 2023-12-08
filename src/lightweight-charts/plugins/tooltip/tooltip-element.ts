@@ -164,7 +164,7 @@ export class TooltipElement {
     }
     setElementText(this._priceElement, tooltipContentData.price)
     setElementText(this._dateElement, tooltipContentData.date)
-    setElementText(this._timeElement, tooltipContentData.time)
+    setElementText(this._timeElement, `at ${tooltipContentData.time}`)
   }
 
   public updatePosition(positionData: TooltipPosition) {

@@ -24,7 +24,7 @@ export default function AssetPage({ show }: { show: boolean }) {
 
   return (
     <StaggeredList gap={1} show={show}>
-      <BackButton to="/">Balances</BackButton>
+      <BackButton to="/">Home</BackButton>
       <Stack direction="row" gap={1} alignItems="center" component="div">
         <AssetAvatar size="large" src={assetMap[symbol]?.image} alt={symbol} />
         <Stack>
@@ -37,7 +37,7 @@ export default function AssetPage({ show }: { show: boolean }) {
         </Stack>
       </Stack>
       <Typography fontFamily={SerifFont} fontWeight={400} marginTop={2}>
-        Historical balance
+        Chart summary
       </Typography>
       <BalanceChart symbol={symbol} />
       <Typography fontFamily={SerifFont} fontWeight={400} marginTop={2}>

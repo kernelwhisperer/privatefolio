@@ -13,15 +13,28 @@ export async function getLatestBalances() {
   }
 }
 
-export async function getHistoricalBalances(symbol: string) {
-  const balances = await balancesDB.find({
-    fields: [symbol, "timestamp"],
-    selector: {
-      [symbol]: { $exists: true },
+export async function getHistoricalBalances(symbol?: string) {
+  await balancesDB.createIndex({
+    index: {
+      fields: ["timestamp"],
+      name: "timestamp",
     },
   })
+  const balances = await balancesDB.find({
+    fields: symbol ? [symbol, "timestamp"] : undefined,
+    limit: 300,
+    selector: symbol
+      ? {
+          [symbol]: { $exists: true },
+          timestamp: { $exists: true },
+        }
+      : {
+          timestamp: { $exists: true },
+        },
+    sort: [{ timestamp: "desc" }],
+  })
 
-  return balances.docs
+  return balances.docs.reverse()
 }
 
 export async function computeBalances(symbol?: string) {
