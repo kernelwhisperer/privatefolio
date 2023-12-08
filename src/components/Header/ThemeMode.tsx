@@ -53,9 +53,9 @@ export function ThemeMode() {
           },
         })}
       >
-        <Tab label="Light" icon={<LightMode />} iconPosition="start" disableRipple />
-        <Tab label="System" icon={<SettingsBrightness />} iconPosition="start" disableRipple />
-        <Tab label="Dark " icon={<DarkModeOutlined />} iconPosition="start" disableRipple />
+        <Tab label="Light" icon={<LightMode />} iconPosition="start" />
+        <Tab label="System" icon={<SettingsBrightness />} iconPosition="start" />
+        <Tab label="Dark " icon={<DarkModeOutlined />} iconPosition="start" />
       </Tabs>
     </>
   )

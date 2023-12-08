@@ -3,16 +3,16 @@ import { Button, ButtonProps } from "@mui/material"
 import React, { ReactNode } from "react"
 import { Link, LinkProps } from "react-router-dom"
 
-export function BackButton(
-  props: Omit<ButtonProps<"a">, "component"> & LinkProps & { children?: ReactNode }
-) {
+type BackButtonProps = Omit<ButtonProps<"a">, "component"> & LinkProps & { children?: ReactNode }
+
+export function BackButton({ sx = {}, ...rest }: BackButtonProps) {
   return (
     <Button
       component={Link}
       size="small"
-      sx={{ borderRadius: 16, paddingLeft: 1, paddingRight: 2 }}
+      sx={{ borderRadius: 16, paddingLeft: 1, paddingRight: 2, ...sx }}
       startIcon={<KeyboardBackspace sx={{ pointerEvents: "none" }} />}
-      {...props}
+      {...rest}
     />
   )
 }

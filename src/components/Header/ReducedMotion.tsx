@@ -50,14 +50,9 @@ export function ReducedMotion() {
         },
       })}
     >
-      <Tab
-        label="Fewer"
-        icon={<RadioButtonUncheckedRounded />}
-        iconPosition="start"
-        disableRipple
-      />
-      <Tab label="System" icon={<DisplaySettingsRounded />} iconPosition="start" disableRipple />
-      <Tab label="More " icon={<AnimationRounded />} iconPosition="start" disableRipple />
+      <Tab label="Fewer" icon={<RadioButtonUncheckedRounded />} iconPosition="start" />
+      <Tab label="System" icon={<DisplaySettingsRounded />} iconPosition="start" />
+      <Tab label="More " icon={<AnimationRounded />} iconPosition="start" />
     </Tabs>
   )
 }

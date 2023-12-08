@@ -22,13 +22,7 @@ import { SettingsDrawer } from "./SettingsDrawer"
 
 export function NavButton(props: TabProps<typeof NavLink>) {
   return (
-    <Tab
-      component={NavLink}
-      disableRipple
-      LinkComponent={NavLink}
-      sx={{ textTransform: "none" }}
-      {...props}
-    />
+    <Tab component={NavLink} LinkComponent={NavLink} sx={{ textTransform: "none" }} {...props} />
   )
 }
 

@@ -1,7 +1,8 @@
-import { Stack, Typography } from "@mui/material"
+import { Stack, Tab, TabProps, Tabs, tabsClasses, Typography } from "@mui/material"
+import { grey } from "@mui/material/colors"
 import { useStore } from "@nanostores/react"
 import React from "react"
-import { Navigate, useParams } from "react-router-dom"
+import { Navigate, NavLink, useParams, useSearchParams } from "react-router-dom"
 
 import { AssetAvatar } from "../../components/AssetAvatar"
 import { BackButton } from "../../components/BackButton"
@@ -11,9 +12,18 @@ import { SerifFont } from "../../theme"
 import { AuditLogsTable } from "../AuditLogsPage/AuditLogTable"
 import { BalanceChart } from "./BalanceChart"
 
+export function NavButton(props: TabProps<typeof NavLink>) {
+  return (
+    <Tab component={NavLink} LinkComponent={NavLink} sx={{ textTransform: "none" }} {...props} />
+  )
+}
+
 export default function AssetPage({ show }: { show: boolean }) {
   const params = useParams()
   const symbol = params.symbol?.toLocaleUpperCase()
+  const [searchParams] = useSearchParams()
+  const tab = searchParams.get("tab") || ""
+  console.log("📜 LOG > AssetPage > searchParams:", searchParams)
   const assetMap = useStore($assetMap)
 
   const filterMap = useStore($filterOptionsMap)
@@ -24,7 +34,9 @@ export default function AssetPage({ show }: { show: boolean }) {
 
   return (
     <StaggeredList gap={1} show={show}>
-      <BackButton to="/">Home</BackButton>
+      <BackButton to="/" sx={{ marginLeft: -1 }}>
+        Home
+      </BackButton>
       <Stack direction="row" gap={1} alignItems="center" component="div">
         <AssetAvatar size="large" src={assetMap[symbol]?.image} alt={symbol} />
         <Stack>
@@ -36,14 +48,59 @@ export default function AssetPage({ show }: { show: boolean }) {
           </Typography>
         </Stack>
       </Stack>
-      <Typography fontFamily={SerifFont} fontWeight={400} marginTop={2}>
-        Chart summary
-      </Typography>
-      <BalanceChart symbol={symbol} />
-      <Typography fontFamily={SerifFont} fontWeight={400} marginTop={2}>
-        Audit logs
-      </Typography>
-      <AuditLogsTable symbol={symbol} />
+      <Stack>
+        <Tabs
+          value={tab}
+          sx={(theme) => ({
+            [`& .${tabsClasses.indicator}`]: {
+              background: grey[600],
+              // borderRadius: 2,
+              borderTopLeftRadius: 32,
+              borderTopRightRadius: 32,
+              // bottom: 6,
+              height: 4,
+              marginLeft: "0.5px",
+            },
+            [`& .${tabsClasses.flexContainer}`]: {
+              gap: 2,
+            },
+            [`& .${tabsClasses.flexContainer} > a`]: {
+              ...theme.typography.body1,
+              fontFamily: SerifFont,
+              fontWeight: 400,
+              minWidth: 0,
+              paddingX: 0,
+              transition: theme.transitions.create("color"),
+            },
+            [`& .${tabsClasses.flexContainer} > a:hover`]: {
+              color: theme.palette.text.primary,
+            },
+          })}
+        >
+          <NavButton value="" to={`/asset/${symbol}`} label="Chart summary" replace />
+          <NavButton
+            value="balance"
+            to={`/asset/${symbol}?tab=balance`}
+            label="Balance history"
+            replace
+          />
+          <NavButton value="pnl" to={`/asset/${symbol}?tab=pnl`} label="Profit & Loss" replace />
+          <NavButton
+            value="drawdown"
+            to={`/asset/${symbol}?tab=drawdown`}
+            label="Drawdown"
+            replace
+          />
+          <NavButton
+            value="audit-logs"
+            to={`/asset/${symbol}?tab=audit-logs`}
+            label="Audit logs"
+            replace
+          />
+        </Tabs>
+        {tab === "balance" && <BalanceChart symbol={symbol} />}
+        {tab === "audit-logs" && <AuditLogsTable symbol={symbol} />}
+      </Stack>
       {/* <AssetInfo
            assetSymbol={assetSymbol}
            amountBought={amounts.amountBought.toNumber()}
