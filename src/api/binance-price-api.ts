@@ -35,12 +35,12 @@ export async function queryPrices(request: QueryRequest): QueryResult {
   const data = (await res.json()) as BinanceKline[]
 
   const candles: Candle[] = data.map((x) => ({
-    close: x[4],
-    high: x[2],
-    low: x[3],
-    open: x[1],
-    timestamp: String(x[0] / 1000),
-    volume: x[5],
+    close: parseFloat(x[4]),
+    high: parseFloat(x[2]),
+    low: parseFloat(x[3]),
+    open: parseFloat(x[1]),
+    time: x[0] / 1000,
+    volume: parseFloat(x[5]),
   }))
 
   return candles

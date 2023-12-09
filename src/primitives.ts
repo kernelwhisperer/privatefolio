@@ -70,12 +70,12 @@ export type CoinbaseBucket = [
 ]
 
 export type Candle = {
-  close: string
-  high: string
-  low: string
-  open: string
-  timestamp: string
-  volume?: string
+  close: number
+  high: number
+  low: number
+  open: number
+  time: number
+  volume?: number
 }
 
 export type QueryRequest = {

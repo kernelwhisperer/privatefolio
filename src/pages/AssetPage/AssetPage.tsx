@@ -11,6 +11,7 @@ import { $assetMap, $filterOptionsMap } from "../../stores/metadata-store"
 import { SerifFont } from "../../theme"
 import { AuditLogsTable } from "../AuditLogsPage/AuditLogTable"
 import { BalanceChart } from "./BalanceChart"
+import { PriceChart } from "./PriceChart"
 
 export function NavButton(props: TabProps<typeof NavLink>) {
   return (
@@ -77,19 +78,19 @@ export default function AssetPage({ show }: { show: boolean }) {
             },
           })}
         >
-          <NavButton value="" to={`/asset/${symbol}`} label="Chart summary" replace />
+          <NavButton value="" to={`/asset/${symbol}`} label="Price history" replace />
           <NavButton
             value="balance"
             to={`/asset/${symbol}?tab=balance`}
             label="Balance history"
             replace
           />
-          <NavButton value="pnl" to={`/asset/${symbol}?tab=pnl`} label="Profit & Loss" replace />
           <NavButton
-            value="drawdown"
-            to={`/asset/${symbol}?tab=drawdown`}
-            label="Drawdown"
+            value="pnl"
+            to={`/asset/${symbol}?tab=pnl`}
+            label="Profit & Loss"
             replace
+            disabled
           />
           <NavButton
             value="audit-logs"
@@ -98,6 +99,7 @@ export default function AssetPage({ show }: { show: boolean }) {
             replace
           />
         </Tabs>
+        {tab === "" && <PriceChart symbol={symbol} />}
         {tab === "balance" && <BalanceChart symbol={symbol} />}
         {tab === "audit-logs" && <AuditLogsTable symbol={symbol} />}
       </Stack>

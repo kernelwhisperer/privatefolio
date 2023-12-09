@@ -8,15 +8,16 @@ import {
 } from "@mui/icons-material"
 import { Box, Button, Divider, IconButton, Stack } from "@mui/material"
 import { useStore } from "@nanostores/react"
-import { IChartApi, ISeriesApi, SeriesDataItemTypeMap } from "lightweight-charts"
-import React, { useCallback, useEffect, useRef } from "react"
+import { IChartApi, ISeriesApi, SeriesDataItemTypeMap, SeriesType } from "lightweight-charts"
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 import { useBoolean } from "../hooks/useBoolean"
 import { TooltipPrimitive } from "../lightweight-charts/plugins/tooltip/tooltip"
-import { $favoriteIntervals, $preferredInterval } from "../stores/chart-store"
+import { $favoriteIntervals, $preferredInterval, $preferredType } from "../stores/chart-store"
 import { Chart, ChartProps } from "./Chart"
+import { QueryTimer } from "./QueryTimer"
 
-export type ChartData = SeriesDataItemTypeMap["Histogram"][]
+export type ChartData = SeriesDataItemTypeMap[SeriesType][]
 
 interface SingleSeriesChartProps extends Omit<Partial<ChartProps>, "chartRef"> {
   data: ChartData
@@ -26,28 +27,50 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
   const { data, ...rest } = props
 
   const chartRef = useRef<IChartApi | undefined>(undefined)
-  const seriesRef = useRef<ISeriesApi<"Histogram"> | undefined>(undefined)
+  const seriesRef = useRef<ISeriesApi<SeriesType> | undefined>(undefined)
+  const preferredType = useStore($preferredType)
 
-  const plotSeries = useCallback((data: ChartData) => {
-    console.log("📜 LOG > HistogramChart > plotSeries > data:", data.length, !!chartRef.current)
-    if (!chartRef.current || data.length === 0) {
-      return
+  const activeType = useMemo(() => {
+    if (data.length <= 0) return preferredType
+
+    const isCandlestickData = "open" in data[0]
+
+    if (preferredType === "Candlestick" && !isCandlestickData) {
+      return "Histogram"
     }
 
-    if (seriesRef.current) {
-      try {
-        chartRef.current.removeSeries(seriesRef.current)
-      } catch {}
-    }
+    return preferredType
+  }, [preferredType, data])
 
-    seriesRef.current = chartRef.current.addHistogramSeries({
-      priceLineVisible: false,
-    })
-    seriesRef.current.setData(data)
-    //
-    const tooltipPrimitive = new TooltipPrimitive()
-    seriesRef.current.attachPrimitive(tooltipPrimitive)
-  }, [])
+  const plotSeries = useCallback(
+    (data: ChartData) => {
+      console.log("📜 LOG > HistogramChart > plotSeries > data:", data.length, !!chartRef.current)
+      if (!chartRef.current || data.length <= 0) {
+        return
+      }
+
+      if (seriesRef.current) {
+        try {
+          chartRef.current.removeSeries(seriesRef.current)
+        } catch {}
+      }
+
+      if (activeType === "Candlestick") {
+        seriesRef.current = chartRef.current.addCandlestickSeries({
+          priceLineVisible: false,
+        })
+      } else {
+        seriesRef.current = chartRef.current.addHistogramSeries({
+          priceLineVisible: false,
+        })
+      }
+      seriesRef.current.setData(data)
+      //
+      const tooltipPrimitive = new TooltipPrimitive()
+      seriesRef.current.attachPrimitive(tooltipPrimitive)
+    },
+    [activeType]
+  )
 
   useEffect(() => {
     plotSeries(data)
@@ -62,6 +85,7 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
 
   const favoriteIntervals = useStore($favoriteIntervals)
   const activeInterval = useStore($preferredInterval)
+  const [queryTime, setQueryTime] = useState<number | null>(2)
 
   return (
     <Stack
@@ -81,7 +105,7 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
       }}
     >
       <Stack
-        sx={{ borderBottom: "1px solid var(--mui-palette-TableCell-border)", minHeight: 34 }}
+        sx={{ borderBottom: "1px solid var(--mui-palette-TableCell-border)", minHeight: 43 }}
         alignItems="center"
         justifyContent="space-between"
         paddingX={1.5}
@@ -122,15 +146,6 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
         </Stack>
 
         <Stack direction="row">
-          <Button
-            color={logScale ? "accent" : "secondary"}
-            size="small"
-            variant="text"
-            onClick={toggleLogScale}
-            sx={{ borderRadius: 0.5 }}
-          >
-            Log scale
-          </Button>
           <IconButton size="small" onClick={toggleFullscreen} color="secondary">
             {fullscreen ? <FullscreenExit fontSize="inherit" /> : <Fullscreen fontSize="inherit" />}
           </IconButton>
@@ -139,13 +154,33 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
           </IconButton>
         </Stack>
       </Stack>
-      <Box
-        sx={{
-          height: "calc(100% - 32px)",
-        }}
-      >
+      <Box sx={{ height: "calc(100%)" }}>
         <Chart chartRef={chartRef} onChartReady={handleChartReady} logScale={logScale} {...rest} />
       </Box>
+      <Stack
+        sx={{ borderTop: "1px solid var(--mui-palette-TableCell-border)", minHeight: 43 }}
+        alignItems="center"
+        justifyContent="space-between"
+        paddingRight={1.5}
+        direction="row"
+      >
+        <Stack direction="row" gap={1}>
+          {queryTime !== undefined && <QueryTimer queryTime={queryTime} />}
+          <Divider orientation="vertical" flexItem sx={{ marginY: 1 }} />
+          <Button size="small" color="secondary">
+            Source: Binance.com
+          </Button>
+        </Stack>
+        <Button
+          color={logScale ? "accent" : "secondary"}
+          size="small"
+          variant="text"
+          onClick={toggleLogScale}
+          sx={{ borderRadius: 0.5 }}
+        >
+          Log scale
+        </Button>
+      </Stack>
     </Stack>
   )
 }
