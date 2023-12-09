@@ -16,6 +16,7 @@ export function TransactionsPage({ show }: { show: boolean }) {
   useEffect(() => {
     getTransactions().then(async (transactions) => {
       setRows(transactions)
+      console.log("📜 LOG > getTransactions > transactions:", transactions)
     })
   }, [])
 

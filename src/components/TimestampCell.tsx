@@ -11,7 +11,7 @@ import {
 
 type TimestampCellProps = {
   relative?: boolean
-  timestamp: number
+  timestamp: Timestamp
 }
 
 export function TimestampCell(props: TimestampCellProps) {

@@ -1,9 +1,17 @@
-import { CalculateOutlined, MemoryRounded, MoreHoriz } from "@mui/icons-material"
+import {
+  CalculateOutlined,
+  CurrencyExchange,
+  MemoryRounded,
+  MoreHoriz,
+  Storage,
+} from "@mui/icons-material"
 import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem } from "@mui/material"
 import React from "react"
 
 import { indexAuditLogs } from "../../api/audit-logs-api"
 import { computeBalances } from "../../api/balances-api"
+import { fetchAssetPrices } from "../../api/daily-prices-api"
+import { resetDatabase } from "../../api/database"
 import { enqueueTask, TaskPriority } from "../../stores/task-store"
 
 export function AuditLogActions() {
@@ -67,6 +75,42 @@ export function AuditLogActions() {
             <CalculateOutlined fontSize="small" />
           </ListItemIcon>
           <ListItemText>Recompute balances</ListItemText>
+        </MenuItem>
+        <MenuItem
+          dense
+          onClick={() => {
+            enqueueTask({
+              function: async () => {
+                await fetchAssetPrices()
+              },
+              name: "Fetch asset prices",
+              priority: TaskPriority.Low,
+            })
+            handleClose()
+          }}
+        >
+          <ListItemIcon>
+            <CurrencyExchange fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Fetch asset prices</ListItemText>
+        </MenuItem>
+        <MenuItem
+          dense
+          onClick={() => {
+            enqueueTask({
+              function: async () => {
+                await resetDatabase()
+              },
+              name: "Reset database",
+              priority: TaskPriority.High,
+            })
+            handleClose()
+          }}
+        >
+          <ListItemIcon>
+            <Storage fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Reset database</ListItemText>
         </MenuItem>
       </Menu>
     </>

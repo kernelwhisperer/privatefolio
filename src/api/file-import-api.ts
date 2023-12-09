@@ -49,6 +49,7 @@ export async function getFileImports() {
 }
 
 export async function removeFileImport(fileImport: FileImport) {
+  // Audit logs
   const logs = await auditLogsDB.allDocs({
     // Prefix search
     // https://pouchdb.com/api.html#batch_fetch
@@ -57,7 +58,20 @@ export async function removeFileImport(fileImport: FileImport) {
   } as PouchDB.Core.AllDocsWithinRangeOptions)
 
   await auditLogsDB.bulkDocs(
-    logs.rows.map((row) => ({ _deleted: true, _id: row.id, _rev: row.value.rev }))
+    logs.rows.map((row) => ({ _deleted: true, _id: row.id, _rev: row.value.rev } as any))
+  )
+
+  // Transactions
+  const txns = await transactionsDB.allDocs({
+    // Prefix search
+    // https://pouchdb.com/api.html#batch_fetch
+    endkey: `${fileImport._id}\ufff0`,
+    startkey: fileImport._id,
+  } as PouchDB.Core.AllDocsWithinRangeOptions)
+  console.log("📜 LOG > removeFileImport > txns:", txns)
+
+  await transactionsDB.bulkDocs(
+    txns.rows.map((row) => ({ _deleted: true, _id: row.id, _rev: row.value.rev } as any))
   )
 
   const res = await fileImportsDB.remove(fileImport)

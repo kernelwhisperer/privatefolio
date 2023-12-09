@@ -8,6 +8,7 @@ import {
   TransactionSide,
 } from "../interfaces"
 import { TZ_OFFSET } from "./client-utils"
+import { extractTransactions } from "./extract-utils"
 import { hashString } from "./utils"
 
 type ParserResult = { logs: AuditLog[]; txns?: Transaction[] }
@@ -204,6 +205,10 @@ export async function parseCsv(text: string, _fileImportId: string) {
       }
     } catch {}
   })
+
+  if (transactions.length === 0) {
+    transactions = extractTransactions(logs, _fileImportId)
+  }
 
   const metadata = {
     integration,

@@ -1,6 +1,6 @@
 import { EastRounded, RemoveRounded, SouthRounded } from "@mui/icons-material"
 import { alpha, Chip, Grid, Paper, Stack, Typography } from "@mui/material"
-import { red } from "@mui/material/colors"
+import { grey } from "@mui/material/colors"
 // import Grid from "@mui/material/Unstable_Grid2" // Grid version 2
 import React from "react"
 
@@ -20,9 +20,9 @@ interface TransactionCardProps {
   tx: Transaction
 }
 
-const color = red[500]
+const color = grey[500]
 
-export function SellTransaction(props: TransactionCardProps) {
+export function SwapTransaction(props: TransactionCardProps) {
   const { tx, assetMap } = props
   const { symbol, type, amountN, totalN, feeN, quoteSymbol, feeSymbol, timestamp } = tx
 

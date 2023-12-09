@@ -17,7 +17,7 @@ export function displayTime(time: Time): string {
   return date.toLocaleDateString()
 }
 
-export function formattedDateAndTime(timestamp: number | undefined): [string, string] {
+export function formattedDateAndTime(timestamp: Timestamp | undefined): [string, string] {
   if (!timestamp) return ["", ""]
   //   const dateObj = new Date(timestamp)
 

@@ -1,9 +1,8 @@
 import { Paper } from "@mui/material"
 import React, { useCallback, useEffect, useState } from "react"
 
-import { queryPrices } from "../../api/binance-price-api"
-import { HistogramDataType, SingleSeriesChart } from "../../components/SingleSeriesChart"
-import { ResolutionString } from "../../interfaces"
+import { getAssetPrices } from "../../api/daily-prices-api"
+import { ChartData, SingleSeriesChart } from "../../components/SingleSeriesChart"
 import { createPriceFormatter } from "../../utils/chart-utils"
 
 type BalanceChartProps = {
@@ -16,16 +15,18 @@ export function PriceChart(props: BalanceChartProps) {
   const { symbol } = props
 
   const [loading, setLoading] = useState<boolean>(true)
-  const [data, setData] = useState<HistogramDataType>([])
+  const [data, setData] = useState<ChartData>([])
 
   const query = useCallback(async (symbol: string) => {
     setLoading(true)
     // const docs = await getHistoricalBalances(symbol)
-    const prices = await queryPrices({
-      // limit: 1,
-      pair: `${symbol}USDT`,
-      timeInterval: "1d" as ResolutionString,
-    })
+    // const klines = await queryPrices({
+    //   // limit: 1,
+    //   pair: `${symbol}USDT`,
+    //   timeInterval: "1d" as ResolutionString,
+    // })
+    // const prices = klines.map(mapToCandle)
+    const prices = await getAssetPrices(symbol)
     console.log("📜 LOG > query > prices:", prices)
 
     // const records = docs.map((item) => ({

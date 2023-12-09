@@ -83,16 +83,18 @@ export function BuyTransaction(props: TransactionCardProps) {
                 imageSrc={assetMap[symbol]?.image}
               />
             </Grid>
-            <Grid item xs={12} lg={2.5}>
-              <AssetChange
-                label="Fee"
-                amount={formatNumber(feeN)}
-                symbol={feeSymbol}
-                valueAmount={"0.1"}
-                imageSrc={assetMap[feeSymbol]?.image}
-                negative
-              />
-            </Grid>
+            {typeof feeN === "number" && (
+              <Grid item xs={12} lg={2.5}>
+                <AssetChange
+                  label="Fee"
+                  amount={formatNumber(feeN)}
+                  symbol={feeSymbol as string}
+                  valueAmount={"0.1"}
+                  imageSrc={assetMap[feeSymbol as string]?.image}
+                  negative
+                />
+              </Grid>
+            )}
           </Grid>
         </Paper>
       </Typography>

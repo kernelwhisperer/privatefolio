@@ -24,7 +24,6 @@ export default function AssetPage({ show }: { show: boolean }) {
   const symbol = params.symbol?.toLocaleUpperCase()
   const [searchParams] = useSearchParams()
   const tab = searchParams.get("tab") || ""
-  console.log("📜 LOG > AssetPage > searchParams:", searchParams)
   const assetMap = useStore($assetMap)
 
   const filterMap = useStore($filterOptionsMap)

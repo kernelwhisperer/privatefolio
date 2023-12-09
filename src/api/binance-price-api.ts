@@ -1,5 +1,4 @@
-import { ResolutionString } from "../interfaces"
-import { BinanceKline, Candle, QueryRequest, QueryResult } from "../primitives"
+import { BinanceKline, Candle, QueryRequest, ResolutionString } from "../interfaces"
 
 // https://binance-docs.github.io/apidocs/spot/en/#general-api-information
 // The following intervalLetter values for headers:
@@ -17,33 +16,34 @@ function getInterval(timeInterval: ResolutionString) {
   return timeInterval
 }
 
-export async function queryPrices(request: QueryRequest): QueryResult {
+export async function queryPrices(request: QueryRequest) {
   const { timeInterval, since, until, limit = 300, pair } = request
   const binanceInterval = getInterval(timeInterval)
 
   let apiUrl = `https://api.binance.com/api/v3/klines?symbol=${pair}&interval=${binanceInterval}&limit=${limit}`
-  if (since) {
-    const timestamp = parseInt(since) * 1000
+  if (typeof since === "number") {
+    const timestamp = since
     apiUrl = `${apiUrl}&startTime=${timestamp}`
   }
-  if (until) {
-    const timestamp = parseInt(until) * 1000
+  if (typeof until === "number") {
+    const timestamp = until
     apiUrl = `${apiUrl}&endTime=${timestamp}`
   }
 
   const res = await fetch(apiUrl)
   const data = (await res.json()) as BinanceKline[]
+  return data
+}
 
-  const candles: Candle[] = data.map((x) => ({
-    close: parseFloat(x[4]),
-    high: parseFloat(x[2]),
-    low: parseFloat(x[3]),
-    open: parseFloat(x[1]),
-    time: x[0] / 1000,
-    volume: parseFloat(x[5]),
-  }))
-
-  return candles
+export function mapToCandle(kline: BinanceKline): Candle {
+  return {
+    close: parseFloat(kline[4]),
+    high: parseFloat(kline[2]),
+    low: parseFloat(kline[3]),
+    open: parseFloat(kline[1]),
+    time: kline[0] / 1000,
+    volume: parseFloat(kline[5]),
+  }
 }
 
 // export function createBinanceSubscribe(query: QueryFn) {
