@@ -46,7 +46,7 @@ export const theme: CssVarsThemeOptions = {
           defaultBg: grey[800],
         },
         Skeleton: {
-          bg: "rgb(65, 65, 65)",
+          bg: "rgb(50, 50, 50)",
         },
         TableCell: {
           border: "rgba(255,255,255, 0.05)",
@@ -81,7 +81,7 @@ export const theme: CssVarsThemeOptions = {
     light: {
       palette: {
         Skeleton: {
-          bg: "rgb(220, 220, 225)",
+          bg: "rgb(225, 225, 230)",
         },
         TableCell: {
           border: "rgba(0,0,0, 0.05)",
@@ -219,6 +219,7 @@ export const theme: CssVarsThemeOptions = {
         color: "secondary",
       },
     },
+
     MuiPaper: {
       defaultProps: {
         elevation: 0,
@@ -251,7 +252,7 @@ export const theme: CssVarsThemeOptions = {
     },
     MuiSkeleton: {
       defaultProps: {
-        // animation: false,
+        animation: false,
       },
     },
     // MuiTable: {

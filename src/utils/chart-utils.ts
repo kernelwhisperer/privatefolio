@@ -1,6 +1,6 @@
 import { formatNumber } from "./client-utils"
 
-export const CHART_HEIGHT = 700
+export const CHART_HEIGHT = 550
 
 export function createPriceFormatter(significantDigits: number, unitLabel: string) {
   return (x: number) =>

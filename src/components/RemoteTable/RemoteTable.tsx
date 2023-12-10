@@ -114,8 +114,6 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
     const start = Date.now()
 
     queryFn(activeFilters, rowsPerPage, page, order).then(([rows, queryCount]) => {
-      console.log(`Query took ${Date.now() - start}ms (audit logs)`)
-
       setRows(rows)
       setLoading(false)
       setQueryTime(Date.now() - start)

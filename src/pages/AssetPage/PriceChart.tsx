@@ -1,10 +1,7 @@
-import { Paper } from "@mui/material"
-import React, { useCallback, useEffect, useState } from "react"
+import React, { useCallback } from "react"
 
 import { getAssetPrices } from "../../api/daily-prices-api"
 import { SingleSeriesChart } from "../../components/SingleSeriesChart"
-import { ChartData } from "../../interfaces"
-import { CHART_HEIGHT } from "../../utils/chart-utils"
 
 type BalanceChartProps = {
   symbol: string
@@ -13,11 +10,7 @@ type BalanceChartProps = {
 export function PriceChart(props: BalanceChartProps) {
   const { symbol } = props
 
-  const [loading, setLoading] = useState<boolean>(true)
-  const [data, setData] = useState<ChartData[]>([])
-
-  const query = useCallback(async (symbol: string) => {
-    setLoading(true)
+  const queryFn = useCallback(async () => {
     // const docs = await getHistoricalBalances(symbol)
     // const klines = await queryPrices({
     //   // limit: 1,
@@ -38,34 +31,8 @@ export function PriceChart(props: BalanceChartProps) {
     //   value: 0,
     // })
 
-    setData(prices)
-    console.log("📜 LOG > query > records:", prices)
-    setLoading(false)
-  }, [])
+    return prices
+  }, [symbol])
 
-  useEffect(() => {
-    query(symbol)
-  }, [query, symbol])
-
-  return (
-    <Paper
-      sx={{
-        height: CHART_HEIGHT,
-        marginX: -2,
-        overflow: "hidden", // because of borderRadius
-        position: "relative",
-      }}
-    >
-      <SingleSeriesChart
-        data={data}
-        chartOptions={
-          {
-            // localization: {
-            //   priceFormatter: createPriceFormatter(0, "USD"),
-            // },
-          }
-        }
-      />
-    </Paper>
-  )
+  return <SingleSeriesChart queryFn={queryFn} />
 }

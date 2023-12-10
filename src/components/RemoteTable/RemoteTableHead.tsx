@@ -17,7 +17,7 @@ import { useStore } from "@nanostores/react"
 import React from "react"
 
 import { useBoolean } from "../../hooks/useBoolean"
-import { $filterOptionsMap } from "../../stores/metadata-store"
+import { $filterOptionsMap, FilterKey } from "../../stores/metadata-store"
 import { Order } from "../../utils/table-utils"
 
 export type BaseType = unknown
@@ -62,7 +62,7 @@ export function RemoteTableHead<T extends BaseType>(props: RemoteTableHeadProps<
     onSort(event, property)
   }
 
-  const filterMap = useStore($filterOptionsMap, { keys: [key as any] })
+  const filterMap = useStore($filterOptionsMap, { keys: [key as FilterKey] })
   const filterValue = activeFilters[key as string]
 
   const handleChange = (event: SelectChangeEvent<string>) => {
