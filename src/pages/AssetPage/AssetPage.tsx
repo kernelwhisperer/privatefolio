@@ -94,7 +94,7 @@ export default function AssetPage({ show }: { show: boolean }) {
         </Tabs>
         {tab === "" && <PriceChart symbol={symbol} />}
         {tab === "balance" && <BalanceChart symbol={symbol} />}
-        {tab === "audit-logs" && <AuditLogTable symbol={symbol} />}
+        {tab === "audit-logs" && <AuditLogTable symbol={symbol} defaultRowsPerPage={10} />}
       </Stack>
       {/* <AssetInfo
            assetSymbol={assetSymbol}

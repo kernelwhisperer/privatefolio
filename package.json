@@ -13,6 +13,7 @@
     "start": "vite preview",
     "lint": "eslint .",
     "lint:fix": "npm run lint -- --fix",
+    "check-types": "tsc --noEmit",
     "db-server": "pouchdb-server -p 5984 -m",
     "gen:assets": "ts-node -O '{\"module\": \"commonjs\"}' scripts/generate-assets.ts",
     "gen:exchanges": "ts-node -O '{\"module\": \"commonjs\"}' scripts/generate-exchanges.ts"

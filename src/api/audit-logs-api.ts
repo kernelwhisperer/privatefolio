@@ -1,6 +1,5 @@
 /* eslint-disable sort-keys-fix/sort-keys-fix */
 import { AuditLog } from "../interfaces"
-import { ActiveFilterMap } from "../stores/audit-log-store"
 import { auditLogsDB } from "./database"
 
 const _filterOrder = ["integration", "wallet", "operation", "symbol"]
@@ -8,58 +7,58 @@ const _filterOrderBySpecificity = ["symbol", "operation", "wallet", "integration
 
 export async function indexAuditLogs() {
   const { indexes } = await auditLogsDB.getIndexes()
-  console.log("📜 LOG > indexAuditLogs > indexes:", indexes)
+  // console.log("📜 LOG > indexAuditLogs > indexes:", indexes)
 
   for (const { name, ddoc } of indexes) {
     if (!ddoc) continue
     await auditLogsDB.deleteIndex({ ddoc, name })
   }
-  console.log("📜 LOG > indexAuditLogs > deleted")
+  // console.log("📜 LOG > indexAuditLogs > deleted")
 
   await auditLogsDB.createIndex({
     index: {
-      // MUST respect the order in _orderedFilters
+      // MUST respect the order in _filterOrder
       fields: ["integration", "timestamp", "wallet", "operation", "symbol"],
       name: "integration",
     },
   })
-  console.log("📜 LOG > indexAuditLogs > created", 1)
+  // console.log("📜 LOG > indexAuditLogs > created", 1)
   await auditLogsDB.createIndex({
     index: {
-      // MUST respect the order in _orderedFilters
+      // MUST respect the order in _filterOrder
       fields: ["wallet", "timestamp", "integration", "operation", "symbol"],
       name: "wallet",
     },
   })
-  console.log("📜 LOG > indexAuditLogs > created", 2)
+  // console.log("📜 LOG > indexAuditLogs > created", 2)
   await auditLogsDB.createIndex({
     index: {
-      // MUST respect the order in _orderedFilters
+      // MUST respect the order in _filterOrder
       fields: ["operation", "timestamp", "integration", "wallet", "symbol"],
       name: "operation",
     },
   })
-  console.log("📜 LOG > indexAuditLogs > created", 3)
+  // console.log("📜 LOG > indexAuditLogs > created", 3)
   await auditLogsDB.createIndex({
     index: {
-      // MUST respect the order in _orderedFilters
+      // MUST respect the order in _filterOrder
       fields: ["symbol", "timestamp", "integration", "wallet", "operation"],
       name: "symbol",
     },
   })
-  console.log("📜 LOG > indexAuditLogs > created", 4)
+  // console.log("📜 LOG > indexAuditLogs > created", 4)
   await auditLogsDB.createIndex({
     index: {
       fields: ["timestamp"],
       name: "timestamp",
     },
   })
-  console.log("📜 LOG > indexAuditLogs > created", 5)
+  // console.log("📜 LOG > indexAuditLogs > created", 5)
 }
 
 type FindAuditLogsRequest = {
   fields?: string[]
-  filters?: ActiveFilterMap
+  filters?: Partial<Record<keyof AuditLog, string | number>>
   limit?: number
   /**
    * orderBy = timestamp, always

@@ -2,6 +2,7 @@ import { Stack, Tooltip, Typography } from "@mui/material"
 import { grey } from "@mui/material/colors"
 import React from "react"
 
+import { Timestamp } from "../interfaces"
 import {
   formatDate,
   formatDateRelative,

@@ -30,7 +30,16 @@ const OPERATION_ICONS: Partial<Record<TransactionType, SvgIconComponent>> = {
 
 export function TransactionTableRow(props: TableRowComponentProps<Transaction>) {
   const { relativeTime, row } = props
-  const { symbol, amountN, type, timestamp, integration, wallet, quoteSymbol, totalN } = row
+  const {
+    incomingN,
+    incomingSymbol,
+    type,
+    timestamp,
+    integration,
+    wallet,
+    outgoingN,
+    outgoingSymbol,
+  } = row
 
   const assetMap = useStore($assetMap)
   const integrationMap = useStore($integrationMap)
@@ -53,7 +62,7 @@ export function TransactionTableRow(props: TableRowComponentProps<Transaction>) 
                 height: 16,
                 width: 16,
               }}
-              alt={symbol}
+              alt={integration}
             />
             <span>{integration}</span>
           </Stack>
@@ -84,9 +93,9 @@ export function TransactionTableRow(props: TableRowComponentProps<Transaction>) 
             width: 140,
           }}
         >
-          <Tooltip title={<Box sx={{ fontFamily: MonoFont }}>{amountN}</Box>}>
+          <Tooltip title={<Box sx={{ fontFamily: MonoFont }}>{outgoingN}</Box>}>
             <span>
-              {formatNumber(amountN * -1, {
+              {formatNumber(outgoingN * -1, {
                 maximumFractionDigits: 2, // TODO make this configurable
                 minimumFractionDigits: 2,
                 signDisplay: "always",
@@ -96,8 +105,8 @@ export function TransactionTableRow(props: TableRowComponentProps<Transaction>) 
         </TableCell>
         <TableCell sx={{ maxWidth: 140, minWidth: 140, width: 140 }}>
           <Stack direction="row" gap={0.5} alignItems="center" component="div">
-            <AssetAvatar size="small" src={assetMap[symbol]?.image} alt={symbol} />
-            <span>{symbol}</span>
+            <AssetAvatar size="small" src={assetMap[outgoingSymbol]?.image} alt={outgoingSymbol} />
+            <span>{outgoingSymbol}</span>
           </Stack>
         </TableCell>
         <TableCell
@@ -111,9 +120,9 @@ export function TransactionTableRow(props: TableRowComponentProps<Transaction>) 
             width: 140,
           }}
         >
-          <Tooltip title={<Box sx={{ fontFamily: MonoFont }}>{amountN}</Box>}>
+          <Tooltip title={<Box sx={{ fontFamily: MonoFont }}>{incomingN}</Box>}>
             <span>
-              {formatNumber(totalN, {
+              {formatNumber(incomingN, {
                 maximumFractionDigits: 2, // TODO make this configurable
                 minimumFractionDigits: 2,
                 signDisplay: "always",
@@ -123,8 +132,8 @@ export function TransactionTableRow(props: TableRowComponentProps<Transaction>) 
         </TableCell>
         <TableCell sx={{ maxWidth: 140, minWidth: 140, width: 140 }}>
           <Stack direction="row" gap={0.5} alignItems="center" component="div">
-            <AssetAvatar size="small" src={assetMap[quoteSymbol]?.image} alt={symbol} />
-            <span>{quoteSymbol}</span>
+            <AssetAvatar size="small" src={assetMap[incomingSymbol]?.image} alt={incomingSymbol} />
+            <span>{incomingSymbol}</span>
           </Stack>
         </TableCell>
       </TableRow>

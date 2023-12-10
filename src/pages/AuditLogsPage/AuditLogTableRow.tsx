@@ -81,7 +81,7 @@ export function AuditLogTableRow(props: TableRowComponentProps<AuditLog>) {
                 height: 16,
                 width: 16,
               }}
-              alt={symbol}
+              alt={integration}
             />
             <span>{integration}</span>
           </Stack>

@@ -6,7 +6,6 @@ import TableCell from "@mui/material/TableCell"
 import TableContainer from "@mui/material/TableContainer"
 import MuiTableHead from "@mui/material/TableHead"
 import TableRow from "@mui/material/TableRow"
-import { useStore } from "@nanostores/react"
 import { a, useTransition } from "@react-spring/web"
 import React, {
   ChangeEvent,
@@ -18,14 +17,14 @@ import React, {
 } from "react"
 import { Link } from "react-router-dom"
 
-import { $activeFilters, ActiveFilterMap } from "../../stores/audit-log-store"
-import { FILTER_LABEL_MAP, FilterKey } from "../../stores/metadata-store"
+import { FILTER_LABEL_MAP } from "../../stores/metadata-store"
 import { stringToColor } from "../../utils/color-utils"
 import { Order } from "../../utils/table-utils"
 import { SPRING_CONFIGS } from "../../utils/utils"
 import { FilterChip } from "../FilterChip"
 import { TableFooter } from "../TableFooter"
-import { BaseType, HeadCell, RemoteTableHead } from "./RemoteTableHead"
+import { ActiveFilterMap, BaseType, HeadCell, RemoteTableHead } from "./RemoteTableHead"
+export type { ActiveFilterMap, BaseType, HeadCell, RemoteTableHead } from "./RemoteTableHead"
 
 export type TableRowComponentProps<T extends BaseType> = {
   headCells: HeadCell<T>[]
@@ -34,20 +33,24 @@ export type TableRowComponentProps<T extends BaseType> = {
 }
 
 export type QueryFunction<T extends BaseType> = (
-  filters: ActiveFilterMap,
+  filters: ActiveFilterMap<T>,
   rowsPerPage: number,
   page: number,
   order: Order
 ) => Promise<[T[], number | (() => Promise<number>)]>
 
-interface RemoteTableProps<T extends BaseType> {
+export interface RemoteTableProps<T extends BaseType> {
   TableRowComponent: ComponentType<TableRowComponentProps<T>>
+  /**
+   * @default 20
+   */
+  defaultRowsPerPage?: number
   headCells: HeadCell<T>[]
   queryFn: QueryFunction<T>
 }
 
 export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
-  const { headCells, queryFn, TableRowComponent } = props
+  const { headCells, queryFn, TableRowComponent, defaultRowsPerPage = 20 } = props
 
   const [queryTime, setQueryTime] = useState<number | null>(null)
   const [rowCount, setRowCount] = useState<number | null>(null)
@@ -56,7 +59,7 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
   const [page, setPage] = useState(0)
   const [order, setOrder] = useState<Order>("desc")
   const [orderBy, setOrderBy] = useState<string>("timestamp")
-  const [rowsPerPage, setRowsPerPage] = useState(10)
+  const [rowsPerPage, setRowsPerPage] = useState(defaultRowsPerPage)
 
   // TODO turn into setting
   const [relativeTime, setRelativeTime] = useState(false)
@@ -90,7 +93,21 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
     [orderBy, order]
   )
 
-  const activeFilters = useStore($activeFilters)
+  const [activeFilters, setActiveFilters] = useState<ActiveFilterMap<T>>({})
+
+  const setFilterKey = useCallback((key: keyof T, value: string | number | undefined) => {
+    setActiveFilters((previous) => {
+      const next = { ...previous }
+
+      if (value === undefined) {
+        delete next[key]
+      } else {
+        next[key] = value
+      }
+
+      return next
+    })
+  }, [])
 
   useEffect(() => {
     setQueryTime(null)
@@ -163,7 +180,7 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
                       label={`${FILTER_LABEL_MAP[x]} = ${activeFilters[x]}`}
                       color={stringToColor(x)}
                       onDelete={() => {
-                        $activeFilters.setKey(x as FilterKey, undefined)
+                        setFilterKey(x as keyof T, undefined)
                       }}
                     />
                   ))}
@@ -184,6 +201,8 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
                             sortDirection={orderBy === headCell.key ? order : false}
                           >
                             <RemoteTableHead<T>
+                              activeFilters={activeFilters}
+                              setFilterKey={setFilterKey}
                               headCell={headCell}
                               order={order}
                               orderBy={orderBy}
@@ -219,7 +238,7 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
                   rowsPerPage={rowsPerPage}
                   page={page}
                   onPageChange={handleChangePage}
-                  rowsPerPageOptions={[10, 25, 50, 100]}
+                  rowsPerPageOptions={[10, 20, 50, 100]}
                   onRowsPerPageChange={handleChangeRowsPerPage}
                 />
               </Paper>

@@ -25,20 +25,20 @@ export type Time = number
 
 export interface Transaction {
   _id: string
-  amount: string
-  amountN: number
   fee?: string
   feeN?: number
   feeSymbol?: string
+  incoming: string
+  incomingN: number
+  incomingSymbol: string
   integration: Integration
-  price: string
-  priceN: number
-  quoteSymbol: string
+  outgoing: string
+  outgoingN: number
+  outgoingSymbol: string
+  price?: string
+  priceN?: number
   role?: TransactionRole
-  symbol: string
   timestamp: Timestamp
-  total: string
-  totalN: number
   type: TransactionType
   wallet: string
 }

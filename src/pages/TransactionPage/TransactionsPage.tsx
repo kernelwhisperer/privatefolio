@@ -1,65 +1,17 @@
-import { Stack, TablePagination, Typography } from "@mui/material"
-import { useStore } from "@nanostores/react"
-import React, { useEffect, useState } from "react"
+import { Typography } from "@mui/material"
+import React from "react"
 
-import { getTransactions } from "../../api/transactions-api"
 import { StaggeredList } from "../../components/StaggeredList"
-import { Transaction } from "../../interfaces"
-import { $assetMap } from "../../stores/metadata-store"
 import { SerifFont } from "../../theme"
-import { TransactionCard } from "./TransactionCard"
 import { TransactionTable } from "./TransactionTable"
 
 export function TransactionsPage({ show }: { show: boolean }) {
-  const [rows, setRows] = useState<Transaction[]>([])
-  const assetMap = useStore($assetMap)
-
-  useEffect(() => {
-    getTransactions().then(async (transactions) => {
-      setRows(transactions)
-      console.log("📜 LOG > getTransactions > transactions:", transactions)
-    })
-  }, [])
-
-  const [page, setPage] = React.useState(0)
-  const [rowsPerPage, setRowsPerPage] = React.useState(5)
-
-  const visibleRows = React.useMemo(
-    () => rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
-    [rows, page, rowsPerPage]
-  )
-
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage)
-  }
-
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(parseInt(event.target.value, 10))
-    setPage(0)
-  }
-
   return (
     <StaggeredList gap={1} show={show}>
       <Typography variant="h6" fontFamily={SerifFont}>
         Transactions
       </Typography>
       <TransactionTable />
-      <Stack gap={0.5} sx={{ marginX: -2 }}>
-        {visibleRows.map((tx) => (
-          <TransactionCard key={tx._id} tx={tx} assetMap={assetMap} />
-        ))}
-      </Stack>
-      <TablePagination
-        rowsPerPageOptions={[5, 10, 25]}
-        component="div"
-        count={rows.length}
-        page={page}
-        onPageChange={handleChangePage}
-        rowsPerPage={rowsPerPage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-        showFirstButton
-        showLastButton
-      />
     </StaggeredList>
   )
 }

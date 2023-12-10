@@ -17,11 +17,12 @@ import { useStore } from "@nanostores/react"
 import React from "react"
 
 import { useBoolean } from "../../hooks/useBoolean"
-import { $activeFilters } from "../../stores/audit-log-store"
-import { $filterOptionsMap, FilterKey } from "../../stores/metadata-store"
+import { $filterOptionsMap } from "../../stores/metadata-store"
 import { Order } from "../../utils/table-utils"
 
 export type BaseType = unknown
+
+export type ActiveFilterMap<T extends BaseType> = Partial<Record<keyof T, string | number>>
 
 export interface HeadCell<T extends BaseType> {
   filterable?: boolean
@@ -32,16 +33,27 @@ export interface HeadCell<T extends BaseType> {
 }
 
 export interface RemoteTableHeadProps<T extends BaseType> {
+  activeFilters: ActiveFilterMap<T>
   headCell: HeadCell<T>
   onRelativeTime: (event: React.MouseEvent<unknown>) => void
   onSort: (event: React.MouseEvent<unknown>, property: string) => void
   order: Order
   orderBy: string
   relativeTime: boolean
+  setFilterKey: (key: keyof T, value: string | number | undefined) => void
 }
 
 export function RemoteTableHead<T extends BaseType>(props: RemoteTableHeadProps<T>) {
-  const { headCell, order, orderBy, onSort, relativeTime, onRelativeTime } = props
+  const {
+    headCell,
+    order,
+    orderBy,
+    onSort,
+    relativeTime,
+    onRelativeTime,
+    activeFilters,
+    setFilterKey,
+  } = props
   const { key, numeric, label, filterable, sortable } = headCell
 
   const { value: open, toggle: toggleOpen } = useBoolean(false)
@@ -50,12 +62,11 @@ export function RemoteTableHead<T extends BaseType>(props: RemoteTableHeadProps<
     onSort(event, property)
   }
 
-  const filterMap = useStore($filterOptionsMap, { keys: [key as FilterKey] })
-  const activeFilters = useStore($activeFilters, { keys: [key as FilterKey] })
+  const filterMap = useStore($filterOptionsMap, { keys: [key as any] })
   const filterValue = activeFilters[key as string]
 
   const handleChange = (event: SelectChangeEvent<string>) => {
-    $activeFilters.setKey(key as FilterKey, event.target.value || undefined)
+    setFilterKey(key, event.target.value || undefined)
   }
 
   return (

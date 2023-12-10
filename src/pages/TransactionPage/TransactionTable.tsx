@@ -1,11 +1,9 @@
 import React, { useCallback, useMemo } from "react"
 
-import { getTransactions } from "../../api/transactions-api"
+import { findTransactions } from "../../api/transactions-api"
 import { QueryFunction, RemoteTable } from "../../components/RemoteTable/RemoteTable"
 import { HeadCell } from "../../components/RemoteTable/RemoteTableHead"
 import { Transaction } from "../../interfaces"
-import { ActiveFilterMap } from "../../stores/audit-log-store"
-import { Order } from "../../utils/table-utils"
 import { TransactionTableRow } from "./TransactionTableRow"
 
 interface TransactionsTableProps {
@@ -18,7 +16,7 @@ export function TransactionTable(props: TransactionsTableProps) {
   const headCells = useMemo<HeadCell<Transaction>[]>(
     () => [
       {
-        key: "symbol",
+        key: "timestamp",
         label: "Timestamp",
         sortable: true,
       },
@@ -38,21 +36,23 @@ export function TransactionTable(props: TransactionsTableProps) {
         label: "Type",
       },
       {
-        key: "amountN",
+        key: "outgoingN",
         label: "Outgoing",
         numeric: true,
       },
       {
-        key: "symbol",
+        filterable: true,
+        key: "outgoingSymbol",
         label: "Asset",
       },
       {
-        key: "totalN",
+        key: "incomingN",
         label: "Incoming",
         numeric: true,
       },
       {
-        key: "quoteSymbol",
+        filterable: true,
+        key: "incomingSymbol",
         label: "Asset",
       },
     ],
@@ -60,22 +60,23 @@ export function TransactionTable(props: TransactionsTableProps) {
   )
 
   const queryFn: QueryFunction<Transaction> = useCallback(
-    async (filters: ActiveFilterMap, rowsPerPage: number, page: number, order: Order) => {
-      const transactions = await getTransactions()
-      //   {
-      //   filters,
-      //   limit: rowsPerPage,
-      //   order,
-      //   skip: page * rowsPerPage,
-      // }
+    async (filters, rowsPerPage, page, order) => {
+      const transactions = await findTransactions({
+        filters,
+        limit: rowsPerPage,
+        order,
+        skip: page * rowsPerPage,
+      })
       console.log("📜 LOG > getTransactions > transactions:", transactions)
 
-      // const count = await findAuditLogs({
-      //   fields: [],
-      //   filters,
-      // })
-      // setRowCount(count.length)
-      return [transactions.slice(0, 10), transactions.length] as const
+      return [
+        transactions,
+        () =>
+          findTransactions({
+            fields: [],
+            filters,
+          }).then((logs) => logs.length),
+      ]
     },
     []
   )

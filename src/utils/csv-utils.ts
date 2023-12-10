@@ -40,31 +40,30 @@ export function mexcParser(csvRow: string, index: number, fileImportId: string):
   const integration = "MEXC"
   const wallet = "Spot"
 
-  const txns: Transaction[] = [
-    {
-      _id: txId,
-      amount,
-      amountN,
-      fee,
-      feeN,
-      feeSymbol,
-      integration,
-      price,
-      priceN,
-      quoteSymbol,
-      role,
-      symbol,
-      timestamp,
-      total,
-      totalN,
-      type: side === "BUY" ? "Buy" : "Sell",
-      wallet,
-    },
-  ]
+  const txns: Transaction[] = []
 
   const logs: AuditLog[] = []
 
   if (side === "BUY") {
+    txns.push({
+      _id: txId,
+      fee,
+      feeN,
+      feeSymbol,
+      incoming: amount,
+      incomingN: amountN,
+      incomingSymbol: symbol,
+      integration,
+      outgoing: total,
+      outgoingN: totalN,
+      outgoingSymbol: quoteSymbol,
+      price,
+      priceN,
+      role,
+      timestamp,
+      type: "Buy",
+      wallet,
+    })
     logs.push({
       _id: `${txId}_0`,
       change: `-${total}`,
@@ -87,6 +86,25 @@ export function mexcParser(csvRow: string, index: number, fileImportId: string):
     })
   } else {
     // SIDE === "SELL"
+    txns.push({
+      _id: txId,
+      fee,
+      feeN,
+      feeSymbol,
+      incoming: total,
+      incomingN: totalN,
+      incomingSymbol: quoteSymbol,
+      integration,
+      outgoing: amount,
+      outgoingN: amountN,
+      outgoingSymbol: symbol,
+      price,
+      priceN,
+      role,
+      timestamp,
+      type: "Sell",
+      wallet,
+    })
     logs.push({
       _id: `${txId}_0`,
       change: `-${amount}`,

@@ -1,22 +1,24 @@
 import React, { useCallback, useMemo } from "react"
 
 import { findAuditLogs } from "../../api/audit-logs-api"
-import { QueryFunction, RemoteTable } from "../../components/RemoteTable/RemoteTable"
+import {
+  QueryFunction,
+  RemoteTable,
+  RemoteTableProps,
+} from "../../components/RemoteTable/RemoteTable"
 import { HeadCell } from "../../components/RemoteTable/RemoteTableHead"
 import { AuditLog } from "../../interfaces"
-import { ActiveFilterMap } from "../../stores/audit-log-store"
-import { Order } from "../../utils/table-utils"
 import { AuditLogTableRow } from "./AuditLogTableRow"
 
-interface AuditLogsTableProps {
+interface AuditLogsTableProps extends Pick<RemoteTableProps<AuditLog>, "defaultRowsPerPage"> {
   symbol?: string
 }
 
 export function AuditLogTable(props: AuditLogsTableProps) {
-  const { symbol } = props
+  const { symbol, ...rest } = props
 
   const queryFn: QueryFunction<AuditLog> = useCallback(
-    async (filters: ActiveFilterMap, rowsPerPage: number, page: number, order: Order) => {
+    async (filters, rowsPerPage, page, order) => {
       const auditLogs = await findAuditLogs({
         filters: { symbol, ...filters },
         limit: rowsPerPage,
@@ -87,6 +89,7 @@ export function AuditLogTable(props: AuditLogsTableProps) {
         headCells={headCells}
         queryFn={queryFn}
         TableRowComponent={AuditLogTableRow}
+        {...rest}
         //
       />
     </>

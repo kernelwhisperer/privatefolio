@@ -5,20 +5,26 @@ import { Asset, AuditLogOperation, Exchange } from "../interfaces"
 import { logAtoms } from "../utils/utils"
 
 type FilterOptionsMap = {
+  incomingSymbol: string[]
   integration: string[]
   operation: AuditLogOperation[]
+  outgoingSymbol: string[]
   symbol: string[]
+  type: string[]
   wallet: string[]
 }
 
-export type FilterKey = "integration" | "operation" | "symbol" | "wallet"
+export type FilterKey = keyof FilterOptionsMap
 
 export const $filterOptionsMap = map<FilterOptionsMap>()
 
 export const FILTER_LABEL_MAP: Record<FilterKey, string> = {
+  incomingSymbol: "Incoming Asset",
   integration: "Integration",
   operation: "Operation",
+  outgoingSymbol: "Outgoing Asset",
   symbol: "Asset",
+  type: "Type",
   wallet: "Wallet",
 }
 
@@ -44,10 +50,15 @@ export async function computeFilterMap() {
     meta.operations.forEach((x) => operations.add(x))
   }
 
+  const symbolOptions = [...symbols].sort()
+
   const map: FilterOptionsMap = {
+    incomingSymbol: symbolOptions,
     integration: [...integrations].sort(),
     operation: [...operations].sort(),
-    symbol: [...symbols].sort(),
+    outgoingSymbol: symbolOptions,
+    symbol: symbolOptions,
+    type: ["Sell", "Buy", "Swap"],
     wallet: [...wallets].sort(),
   }
 

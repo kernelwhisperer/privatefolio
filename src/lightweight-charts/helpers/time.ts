@@ -1,5 +1,6 @@
 import { isBusinessDay, isUTCTimestamp, Time } from "lightweight-charts"
 
+import { Timestamp } from "../../interfaces"
 import { formatDate, formatHour } from "../../utils/client-utils"
 
 export function convertTime(t: Time): number {
