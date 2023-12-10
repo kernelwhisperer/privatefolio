@@ -4,7 +4,7 @@ import React from "react"
 import { StaggeredList } from "../../components/StaggeredList"
 import { SerifFont } from "../../theme"
 import { AuditLogActions } from "./AuditLogActions"
-import { AuditLogsTable } from "./AuditLogTable"
+import { AuditLogTable } from "./AuditLogTable"
 
 export function AuditLogsPage({ show }: { show: boolean }) {
   return (
@@ -15,7 +15,7 @@ export function AuditLogsPage({ show }: { show: boolean }) {
           <AuditLogActions />
         </Stack>
       </Typography>
-      <AuditLogsTable />
+      <AuditLogTable />
     </StaggeredList>
   )
 }

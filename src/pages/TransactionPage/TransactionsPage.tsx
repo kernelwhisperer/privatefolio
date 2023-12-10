@@ -8,6 +8,7 @@ import { Transaction } from "../../interfaces"
 import { $assetMap } from "../../stores/metadata-store"
 import { SerifFont } from "../../theme"
 import { TransactionCard } from "./TransactionCard"
+import { TransactionTable } from "./TransactionTable"
 
 export function TransactionsPage({ show }: { show: boolean }) {
   const [rows, setRows] = useState<Transaction[]>([])
@@ -42,6 +43,7 @@ export function TransactionsPage({ show }: { show: boolean }) {
       <Typography variant="h6" fontFamily={SerifFont}>
         Transactions
       </Typography>
+      <TransactionTable />
       <Stack gap={0.5} sx={{ marginX: -2 }}>
         {visibleRows.map((tx) => (
           <TransactionCard key={tx._id} tx={tx} assetMap={assetMap} />

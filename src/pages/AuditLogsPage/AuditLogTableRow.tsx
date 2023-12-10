@@ -1,34 +1,18 @@
-import { AddRounded, RemoveRounded, SvgIconComponent } from "@mui/icons-material"
-import {
-  alpha,
-  Avatar,
-  Box,
-  Chip,
-  Stack,
-  TableCell,
-  TableRow,
-  TableRowProps,
-  Tooltip,
-} from "@mui/material"
+import { AddRounded, RemoveRounded, SvgIconComponent, TrendingFlat } from "@mui/icons-material"
+import { alpha, Avatar, Box, Chip, Stack, TableCell, TableRow, Tooltip } from "@mui/material"
 import { green, grey, red } from "@mui/material/colors"
 import { useStore } from "@nanostores/react"
 // import TableCell from "@mui/material/Unstable_TableCell2" // TableCell version 2
 import React from "react"
 
 import { AssetAvatar } from "../../components/AssetAvatar"
+import { TableRowComponentProps } from "../../components/RemoteTable/RemoteTable"
 import { TimestampCell } from "../../components/TimestampCell"
 import { Truncate } from "../../components/Truncate"
-import { useBoolean } from "../../hooks/useBoolean"
 import { AuditLog, AuditLogOperation } from "../../interfaces"
 import { $assetMap, $integrationMap } from "../../stores/metadata-store"
 import { MonoFont } from "../../theme"
 import { formatNumber } from "../../utils/client-utils"
-
-interface AuditLogTableRowProps extends TableRowProps {
-  auditLog: AuditLog
-  relativeTime: boolean
-  symbol?: string
-}
 
 const redColor = red[400]
 const greenColor = green[400]
@@ -43,7 +27,7 @@ const OPERATION_COLORS: Partial<Record<AuditLogOperation, string>> = {
 
 const OPERATION_ICONS: Partial<Record<AuditLogOperation, SvgIconComponent>> = {
   Buy: AddRounded,
-  Deposit: AddRounded,
+  Deposit: TrendingFlat,
   Distribution: AddRounded,
   Fee: RemoveRounded,
   "Funding Fee": RemoveRounded,
@@ -51,9 +35,10 @@ const OPERATION_ICONS: Partial<Record<AuditLogOperation, SvgIconComponent>> = {
   Withdraw: RemoveRounded,
 }
 
-export function AuditLogTableRow(props: AuditLogTableRowProps) {
-  const { auditLog, relativeTime, symbol: predefinedSymbol, ...rest } = props
-  const { symbol, change, changeN, operation, timestamp, integration, wallet, balance } = auditLog
+export function AuditLogTableRow(props: TableRowComponentProps<AuditLog>) {
+  const { row, relativeTime, headCells, ...rest } = props
+  const { symbol, change, changeN, operation, timestamp, integration, wallet, balance } = row
+  const showAssetColumn = headCells.length === 7
 
   const assetMap = useStore($assetMap)
   const integrationMap = useStore($integrationMap)
@@ -61,14 +46,14 @@ export function AuditLogTableRow(props: AuditLogTableRowProps) {
   const color = OPERATION_COLORS[operation] || grey[500]
   const OpIconComponent = OPERATION_ICONS[operation]
 
-  const { value: open, toggle: toggleOpen } = useBoolean(false)
+  // const { value: open, toggle: toggleOpen } = useBoolean(false)
 
   return (
     <>
       <TableRow
-        hover={!open}
-        onClick={toggleOpen}
-        className={open ? "TableRow-open-top" : undefined}
+        // hover={!open}
+        // onClick={toggleOpen}
+        // className={open ? "TableRow-open-top" : undefined}
         sx={() => ({
           // ...(open
           //   ? {
@@ -137,7 +122,7 @@ export function AuditLogTableRow(props: AuditLogTableRowProps) {
             </span>
           </Tooltip>
         </TableCell>
-        {!predefinedSymbol && (
+        {showAssetColumn && (
           <TableCell sx={{ maxWidth: 140, minWidth: 140, width: 140 }}>
             <Stack
               direction="row"
@@ -170,12 +155,12 @@ export function AuditLogTableRow(props: AuditLogTableRowProps) {
           </Tooltip>
         </TableCell>
       </TableRow>
-      {open && (
+      {/* {open && (
         <TableRow className={open ? "TableRow-open-bottom" : undefined} sx={{ height: 200 }}>
           <TableCell colSpan={2}>File Import</TableCell>
           <TableCell colSpan={5}>Transaction</TableCell>
         </TableRow>
-      )}
+      )} */}
     </>
   )
 }

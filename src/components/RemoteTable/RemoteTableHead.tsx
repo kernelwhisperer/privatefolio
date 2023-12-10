@@ -17,43 +17,42 @@ import { useStore } from "@nanostores/react"
 import React from "react"
 
 import { useBoolean } from "../../hooks/useBoolean"
-import { AuditLog } from "../../interfaces"
 import { $activeFilters } from "../../stores/audit-log-store"
 import { $filterOptionsMap, FilterKey } from "../../stores/metadata-store"
 import { Order } from "../../utils/table-utils"
 
-type SortableKeys = keyof AuditLog
+export type BaseType = unknown
 
-export interface HeadCell {
+export interface HeadCell<T extends BaseType> {
   filterable?: boolean
-  key: SortableKeys
+  key: keyof T
   label: string
   numeric?: boolean
   sortable?: boolean
 }
 
-export interface AuditLogTableHeadProps {
-  headCell: HeadCell
+export interface RemoteTableHeadProps<T extends BaseType> {
+  headCell: HeadCell<T>
   onRelativeTime: (event: React.MouseEvent<unknown>) => void
-  onSort: (event: React.MouseEvent<unknown>, property: SortableKeys) => void
+  onSort: (event: React.MouseEvent<unknown>, property: string) => void
   order: Order
   orderBy: string
   relativeTime: boolean
 }
 
-export function AuditLogTableHead(props: AuditLogTableHeadProps) {
+export function RemoteTableHead<T extends BaseType>(props: RemoteTableHeadProps<T>) {
   const { headCell, order, orderBy, onSort, relativeTime, onRelativeTime } = props
   const { key, numeric, label, filterable, sortable } = headCell
 
   const { value: open, toggle: toggleOpen } = useBoolean(false)
 
-  const createSortHandler = (property: SortableKeys) => (event: React.MouseEvent<unknown>) => {
+  const createSortHandler = (property: string) => (event: React.MouseEvent<unknown>) => {
     onSort(event, property)
   }
 
   const filterMap = useStore($filterOptionsMap, { keys: [key as FilterKey] })
   const activeFilters = useStore($activeFilters, { keys: [key as FilterKey] })
-  const filterValue = activeFilters[key]
+  const filterValue = activeFilters[key as string]
 
   const handleChange = (event: SelectChangeEvent<string>) => {
     $activeFilters.setKey(key as FilterKey, event.target.value || undefined)
@@ -104,8 +103,8 @@ export function AuditLogTableHead(props: AuditLogTableHeadProps) {
                   <ListItemText primary={<em>None</em>} />
                 </MenuItem>
               )}
-              {filterMap[key] &&
-                filterMap[key].map((x: string) => (
+              {filterMap[key as string] &&
+                filterMap[key as string].map((x: string) => (
                   <MenuItem key={x} value={x} dense>
                     <ListItemText primary={x} />
                   </MenuItem>
@@ -124,7 +123,7 @@ export function AuditLogTableHead(props: AuditLogTableHeadProps) {
           <TableSortLabel
             active={orderBy === key}
             direction={orderBy === key ? order : "asc"}
-            onClick={createSortHandler(key)}
+            onClick={createSortHandler(key as string)}
           >
             {label}
             {orderBy === key ? (
