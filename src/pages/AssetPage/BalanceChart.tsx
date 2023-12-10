@@ -3,20 +3,19 @@ import { UTCTimestamp } from "lightweight-charts"
 import React, { useCallback, useEffect, useState } from "react"
 
 import { getHistoricalBalances } from "../../api/balances-api"
-import { HistogramDataType, SingleSeriesChart } from "../../components/SingleSeriesChart"
-import { createPriceFormatter } from "../../utils/chart-utils"
+import { SingleSeriesChart } from "../../components/SingleSeriesChart"
+import { ChartData } from "../../interfaces"
+import { CHART_HEIGHT } from "../../utils/chart-utils"
 
 type BalanceChartProps = {
   symbol: string
 }
 
-const CHART_HEIGHT = (1184 / 16) * 9
-
 export function BalanceChart(props: BalanceChartProps) {
   const { symbol } = props
 
   const [loading, setLoading] = useState<boolean>(true)
-  const [data, setData] = useState<HistogramDataType>([])
+  const [data, setData] = useState<ChartData[]>([])
 
   const query = useCallback(async (symbol: string) => {
     setLoading(true)
@@ -48,7 +47,7 @@ export function BalanceChart(props: BalanceChartProps) {
   return (
     <Paper
       sx={{
-        height: 500,
+        height: CHART_HEIGHT,
         marginX: -2,
         overflow: "hidden", // because of borderRadius
         position: "relative",
@@ -56,11 +55,14 @@ export function BalanceChart(props: BalanceChartProps) {
     >
       <SingleSeriesChart
         data={data}
-        chartOptions={{
-          localization: {
-            priceFormatter: createPriceFormatter(0, symbol),
-          },
-        }}
+        initType="Histogram"
+        chartOptions={
+          {
+            // localization: {
+            //   priceFormatter: createPriceFormatter(0, symbol),
+            // },
+          }
+        }
       />
     </Paper>
   )

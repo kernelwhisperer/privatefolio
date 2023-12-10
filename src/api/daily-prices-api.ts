@@ -1,5 +1,5 @@
 import { ResolutionString, SavedPrice, Timestamp } from "../interfaces"
-import { mapToCandle, queryPrices } from "./binance-price-api"
+import { mapToChartData, queryPrices } from "./binance-price-api"
 import { dailyPricesDB } from "./database"
 
 export async function getAssetPrices(symbol: string) {
@@ -55,7 +55,7 @@ export async function fetchAssetPrices() {
       const docs: SavedPrice[] = results.map((result) => ({
         _id: `${pair}-${source}-${result[0]}`,
         pair,
-        price: mapToCandle(result),
+        price: mapToChartData(result),
         source,
         symbol,
         timestamp: result[0],

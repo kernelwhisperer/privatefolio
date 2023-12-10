@@ -1,4 +1,6 @@
-import { BinanceKline, Candle, QueryRequest, ResolutionString } from "../interfaces"
+import { UTCTimestamp } from "lightweight-charts"
+
+import { BinanceKline, ChartData, QueryRequest, ResolutionString } from "../interfaces"
 
 // https://binance-docs.github.io/apidocs/spot/en/#general-api-information
 // The following intervalLetter values for headers:
@@ -35,14 +37,22 @@ export async function queryPrices(request: QueryRequest) {
   return data
 }
 
-export function mapToCandle(kline: BinanceKline): Candle {
+export function mapToChartData(kline: BinanceKline): ChartData {
+  const open = parseFloat(kline[1])
+  const high = parseFloat(kline[2])
+  const low = parseFloat(kline[3])
+  const close = parseFloat(kline[4])
+  const volume = parseFloat(kline[5])
+  const time = (kline[0] / 1000) as UTCTimestamp
+
   return {
-    close: parseFloat(kline[4]),
-    high: parseFloat(kline[2]),
-    low: parseFloat(kline[3]),
-    open: parseFloat(kline[1]),
-    time: kline[0] / 1000,
-    volume: parseFloat(kline[5]),
+    close,
+    high,
+    low,
+    open,
+    time,
+    value: close,
+    volume,
   }
 }
 

@@ -8,27 +8,31 @@ import {
 } from "@mui/icons-material"
 import { Box, Button, Divider, IconButton, Stack } from "@mui/material"
 import { useStore } from "@nanostores/react"
-import { IChartApi, ISeriesApi, SeriesDataItemTypeMap, SeriesType } from "lightweight-charts"
+import { IChartApi, ISeriesApi, SeriesType } from "lightweight-charts"
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 import { useBoolean } from "../hooks/useBoolean"
+import { ChartData } from "../interfaces"
 import { TooltipPrimitive } from "../lightweight-charts/plugins/tooltip/tooltip"
-import { $favoriteIntervals, $preferredInterval, $preferredType } from "../stores/chart-store"
+import { $favoriteIntervals, $preferredInterval } from "../stores/chart-store"
 import { Chart, ChartProps } from "./Chart"
 import { QueryTimer } from "./QueryTimer"
 
-export type ChartData = SeriesDataItemTypeMap[SeriesType][]
-
 interface SingleSeriesChartProps extends Omit<Partial<ChartProps>, "chartRef"> {
-  data: ChartData
+  data: ChartData[]
+  /**
+   * @default "Candlestick"
+   */
+  initType?: SeriesType
 }
 
 export function SingleSeriesChart(props: SingleSeriesChartProps) {
-  const { data, ...rest } = props
+  const { data, initType = "Candlestick", ...rest } = props
 
   const chartRef = useRef<IChartApi | undefined>(undefined)
   const seriesRef = useRef<ISeriesApi<SeriesType> | undefined>(undefined)
-  const preferredType = useStore($preferredType)
+  // const preferredType = useStore($preferredType)
+  const [preferredType, setPreferredType] = useState<SeriesType>(initType)
 
   const activeType = useMemo(() => {
     if (data.length <= 0) return preferredType
@@ -36,15 +40,14 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
     const isCandlestickData = "open" in data[0]
 
     if (preferredType === "Candlestick" && !isCandlestickData) {
-      return "Histogram"
+      return "Area"
     }
 
     return preferredType
   }, [preferredType, data])
 
   const plotSeries = useCallback(
-    (data: ChartData) => {
-      console.log("📜 LOG > HistogramChart > plotSeries > data:", data.length, !!chartRef.current)
+    (data: ChartData[]) => {
       if (!chartRef.current || data.length <= 0) {
         return
       }
@@ -59,8 +62,12 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
         seriesRef.current = chartRef.current.addCandlestickSeries({
           priceLineVisible: false,
         })
-      } else {
+      } else if (activeType === "Histogram") {
         seriesRef.current = chartRef.current.addHistogramSeries({
+          priceLineVisible: false,
+        })
+      } else {
+        seriesRef.current = chartRef.current.addAreaSeries({
           priceLineVisible: false,
         })
       }
@@ -85,7 +92,7 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
 
   const favoriteIntervals = useStore($favoriteIntervals)
   const activeInterval = useStore($preferredInterval)
-  const [queryTime, setQueryTime] = useState<number | null>(2)
+  const [queryTime, setQueryTime] = useState<number | null>(1230)
 
   return (
     <Stack
@@ -116,8 +123,9 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
             {favoriteIntervals.map((interval) => (
               <Button
                 size="small"
-                sx={{ borderRadius: 0.5 }}
+                sx={{ borderRadius: 0.5, paddingX: 1 }}
                 key={interval}
+                disabled={interval !== "1d"}
                 // disabled={timeframes ? !timeframes.includes(interval as Timeframe) : false}
                 // className={timeframe === interval ? "active" : undefined}
                 title={interval}
@@ -133,13 +141,35 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
           </Stack>
           <Divider orientation="vertical" flexItem sx={{ marginY: 1 }} />
           <Stack direction="row">
-            <IconButton size="small" color="accent">
+            <IconButton
+              size="small"
+              sx={{ borderRadius: 0.5 }}
+              disabled={data.length > 0 && !("open" in data[0])}
+              color={activeType === "Candlestick" ? "accent" : "secondary"}
+              onClick={() => {
+                setPreferredType("Candlestick")
+              }}
+            >
               <CandlestickChartSharp fontSize="inherit" />
             </IconButton>
-            <IconButton size="small" color="secondary">
+            <IconButton
+              size="small"
+              sx={{ borderRadius: 0.5 }}
+              color={activeType === "Area" ? "accent" : "secondary"}
+              onClick={() => {
+                setPreferredType("Area")
+              }}
+            >
               <ShowChart fontSize="inherit" />
             </IconButton>
-            <IconButton size="small" color="secondary">
+            <IconButton
+              size="small"
+              sx={{ borderRadius: 0.5 }}
+              color={activeType === "Histogram" ? "accent" : "secondary"}
+              onClick={() => {
+                setPreferredType("Histogram")
+              }}
+            >
               <BarChartOutlined fontSize="inherit" />
             </IconButton>
           </Stack>
@@ -167,7 +197,7 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
         <Stack direction="row" gap={1}>
           {queryTime !== undefined && <QueryTimer queryTime={queryTime} />}
           <Divider orientation="vertical" flexItem sx={{ marginY: 1 }} />
-          <Button size="small" color="secondary">
+          <Button sx={{ borderRadius: 0.5, paddingX: 1 }} size="small" color="secondary">
             Source: Binance.com
           </Button>
         </Stack>
@@ -176,7 +206,7 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
           size="small"
           variant="text"
           onClick={toggleLogScale}
-          sx={{ borderRadius: 0.5 }}
+          sx={{ borderRadius: 0.5, paddingX: 1 }}
         >
           Log scale
         </Button>

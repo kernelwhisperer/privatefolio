@@ -109,9 +109,7 @@ export function FileImportTableRow(props: FileImportTableRowProps) {
                   meta.rows
                 )} document entries`}
               >
-                <span>
-                  {formatNumber(meta.logs)} ({formatNumber(meta.rows)})
-                </span>
+                <span>{formatNumber(meta.logs)}</span>
               </Tooltip>
             )}
           </>
@@ -125,19 +123,13 @@ export function FileImportTableRow(props: FileImportTableRowProps) {
           <Skeleton></Skeleton>
         ) : (
           <>
-            {meta.transactions === meta.rows ? (
+            <Tooltip
+              title={`${formatNumber(meta.transactions)} transactions extracted from ${formatNumber(
+                meta.rows
+              )} document entries`}
+            >
               <span>{formatNumber(meta.transactions)}</span>
-            ) : (
-              <Tooltip
-                title={`${formatNumber(
-                  meta.transactions
-                )} transactions extracted from ${formatNumber(meta.rows)} document entries`}
-              >
-                <span>
-                  {formatNumber(meta.transactions)} ({formatNumber(meta.rows)})
-                </span>
-              </Tooltip>
-            )}
+            </Tooltip>
           </>
         )}
       </TableCell>

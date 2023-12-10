@@ -4,6 +4,7 @@ import React from "react"
 
 import { AppVerProps, PopoverToggleProps } from "../../stores/app-store"
 import { MonoFont } from "../../theme"
+import { formatDate } from "../../utils/client-utils"
 import { SectionTitle } from "../SectionTitle"
 import { StaggeredList } from "../StaggeredList"
 import { ReducedMotion } from "./ReducedMotion"
@@ -14,7 +15,7 @@ const CustomLink = ({ children, ...rest }: any) => (
     <Typography
       variant="h6"
       component="div"
-      fontWeight={600}
+      fontWeight={500}
       sx={{
         alignItems: "center",
         display: "flex",
@@ -79,6 +80,9 @@ export const SettingsDrawerContents = ({
         </Typography>
         <Typography sx={{ opacity: 0.5 }} fontFamily={MonoFont} variant="body2">
           App digest: {gitHash.slice(0, 7)}
+        </Typography>
+        <Typography sx={{ opacity: 0.5 }} fontFamily={MonoFont} variant="body2">
+          Release date: {formatDate(new Date())}
         </Typography>
       </div>
     </StaggeredList>

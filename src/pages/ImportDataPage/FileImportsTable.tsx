@@ -105,9 +105,9 @@ function TableHead(props: TableHeadProps) {
                   onClick={onRelativeTime}
                 >
                   {relativeTime ? (
-                    <AccessTimeRounded fontSize="inherit" />
-                  ) : (
                     <AccessTimeFilledRounded fontSize="inherit" />
+                  ) : (
+                    <AccessTimeRounded fontSize="inherit" />
                   )}
                 </IconButton>
               </Tooltip>

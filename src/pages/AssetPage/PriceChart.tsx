@@ -2,20 +2,19 @@ import { Paper } from "@mui/material"
 import React, { useCallback, useEffect, useState } from "react"
 
 import { getAssetPrices } from "../../api/daily-prices-api"
-import { ChartData, SingleSeriesChart } from "../../components/SingleSeriesChart"
-import { createPriceFormatter } from "../../utils/chart-utils"
+import { SingleSeriesChart } from "../../components/SingleSeriesChart"
+import { ChartData } from "../../interfaces"
+import { CHART_HEIGHT } from "../../utils/chart-utils"
 
 type BalanceChartProps = {
   symbol: string
 }
 
-const CHART_HEIGHT = (1184 / 16) * 9
-
 export function PriceChart(props: BalanceChartProps) {
   const { symbol } = props
 
   const [loading, setLoading] = useState<boolean>(true)
-  const [data, setData] = useState<ChartData>([])
+  const [data, setData] = useState<ChartData[]>([])
 
   const query = useCallback(async (symbol: string) => {
     setLoading(true)
@@ -51,7 +50,7 @@ export function PriceChart(props: BalanceChartProps) {
   return (
     <Paper
       sx={{
-        height: 700,
+        height: CHART_HEIGHT,
         marginX: -2,
         overflow: "hidden", // because of borderRadius
         position: "relative",
@@ -59,11 +58,13 @@ export function PriceChart(props: BalanceChartProps) {
     >
       <SingleSeriesChart
         data={data}
-        chartOptions={{
-          localization: {
-            priceFormatter: createPriceFormatter(0, "USD"),
-          },
-        }}
+        chartOptions={
+          {
+            // localization: {
+            //   priceFormatter: createPriceFormatter(0, "USD"),
+            // },
+          }
+        }
       />
     </Paper>
   )

@@ -44,7 +44,12 @@ export default function AssetPage({ show }: { show: boolean }) {
           <Typography variant="h6" fontFamily={SerifFont} sx={{ marginBottom: -0.5 }}>
             <span>{symbol}</span>
           </Typography>
-          <Typography color="text.secondary" variant="subtitle2">
+          <Typography
+            color="text.secondary"
+            variant="subtitle2"
+            fontWeight={300}
+            letterSpacing={0.5}
+          >
             {assetMap[symbol]?.name}
           </Typography>
         </Stack>
@@ -68,7 +73,8 @@ export default function AssetPage({ show }: { show: boolean }) {
             [`& .${tabsClasses.flexContainer} > a`]: {
               ...theme.typography.body1,
               fontFamily: SerifFont,
-              fontWeight: 400,
+              fontWeight: 500,
+              letterSpacing: 0.5,
               minWidth: 0,
               paddingX: 0,
               transition: theme.transitions.create("color"),
@@ -85,7 +91,7 @@ export default function AssetPage({ show }: { show: boolean }) {
             label="Balance history"
             replace
           />
-          <NavButton value="pnl" to={`/asset/${symbol}?tab=pnl`} label="Profit & Loss" replace />
+          {/* <NavButton value="pnl" to={`/asset/${symbol}?tab=pnl`} label="Profit & Loss" replace /> */}
           <NavButton
             value="transactions"
             to={`/asset/${symbol}?tab=transactions`}

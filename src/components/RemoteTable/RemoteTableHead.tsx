@@ -86,9 +86,9 @@ export function RemoteTableHead<T extends BaseType>(props: RemoteTableHeadProps<
               onClick={onRelativeTime}
             >
               {relativeTime ? (
-                <AccessTimeRounded fontSize="inherit" />
-              ) : (
                 <AccessTimeFilledRounded fontSize="inherit" />
+              ) : (
+                <AccessTimeRounded fontSize="inherit" />
               )}
             </IconButton>
           </Tooltip>

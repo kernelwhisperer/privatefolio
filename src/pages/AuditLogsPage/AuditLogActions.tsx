@@ -1,14 +1,7 @@
-import {
-  CalculateOutlined,
-  CurrencyExchange,
-  MemoryRounded,
-  MoreHoriz,
-  Storage,
-} from "@mui/icons-material"
+import { CalculateOutlined, CurrencyExchange, MoreHoriz, Storage } from "@mui/icons-material"
 import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem } from "@mui/material"
 import React from "react"
 
-import { indexAuditLogs } from "../../api/audit-logs-api"
 import { computeBalances } from "../../api/balances-api"
 import { fetchAssetPrices } from "../../api/daily-prices-api"
 import { resetDatabase } from "../../api/database"
@@ -40,7 +33,7 @@ export function AuditLogActions() {
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
         transformOrigin={{ horizontal: "right", vertical: "top" }}
       >
-        <MenuItem
+        {/* <MenuItem
           dense
           onClick={() => {
             enqueueTask({
@@ -57,7 +50,7 @@ export function AuditLogActions() {
             <MemoryRounded fontSize="small" />
           </ListItemIcon>
           <ListItemText>Recompute indexes</ListItemText>
-        </MenuItem>
+        </MenuItem> */}
         <MenuItem
           dense
           onClick={() => {

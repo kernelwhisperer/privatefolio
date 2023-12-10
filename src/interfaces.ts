@@ -1,4 +1,5 @@
 import type Decimal from "decimal.js"
+import { OhlcData, SingleValueData, UTCTimestamp } from "lightweight-charts"
 
 export type TransactionRole = "Maker" | "Taker"
 export type TransactionSide = "BUY" | "SELL"
@@ -21,7 +22,7 @@ export type Timestamp = number // Nominal<number, "Timestamp">
  * @example 161213760
  * @example Date.now() - TZ_OFFSET / 1000
  */
-export type Time = number
+export type Time = UTCTimestamp
 
 export interface Transaction {
   _id: string
@@ -122,9 +123,14 @@ export interface BalanceMap {
   timestamp: Timestamp
 }
 
+export type ChartData = SingleValueData &
+  Partial<OhlcData> & {
+    volume?: number
+  }
+
 export interface SavedPrice {
   pair: string
-  price: Candle | number
+  price: ChartData
   source: string
   symbol: string
 }
@@ -232,15 +238,6 @@ export type CoinbaseBucket = [
   number // volume
 ]
 
-export type Candle = {
-  close: number
-  high: number
-  low: number
-  open: number
-  time: Time
-  volume?: number
-}
-
 export type QueryRequest = {
   /**
    * @default 300
@@ -253,29 +250,4 @@ export type QueryRequest = {
   until?: Timestamp
   variant?: number
 }
-export type QueryResult = Promise<Candle[]>
-export type QueryFn = (request: QueryRequest) => QueryResult
-
 export const DEFAULT_POLLING_INTERVAL = 2_000
-
-export type SubscribeRequest = {
-  onError?: (error: unknown) => void
-  onNewData: (data: Candle) => void
-  /**
-   * in milliseconds
-   * @default 2000
-   */
-  pollingInterval?: number
-  priceUnit?: PriceUnit
-  since?: string
-  timeframe: Timeframe
-  variant?: number
-}
-
-export type LoggerFn = (message: string, metadata?: object) => void
-
-/**
- * @returns cleanup function used to unsubscribe
- */
-export type SubscribeResult = () => void
-export type SubscribeFn = (request: SubscribeRequest, logger?: LoggerFn) => SubscribeResult

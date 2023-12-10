@@ -122,6 +122,11 @@ export const theme: CssVarsThemeOptions = {
     },
     MuiButton: {
       styleOverrides: {
+        // textSecondary: {
+        //   "&:hover": {
+        //     color: "var(--mui-palette-primary-main)",
+        //   },
+        // },
         contained: {
           "&:hover": {
             boxShadow: "unset",
@@ -129,17 +134,15 @@ export const theme: CssVarsThemeOptions = {
           boxShadow: "unset",
         },
         root: {
+          "&.MuiButton-textSecondary:hover, &.MuiButton-outlinedSecondary:hover": {
+            color: "var(--mui-palette-primary-main)",
+          },
           borderRadius: "32px",
           textTransform: "none",
         },
         sizeSmall: {
           lineHeight: 1.2,
           minWidth: "unset",
-        },
-        textSecondary: {
-          "&:hover": {
-            color: "var(--mui-palette-primary-main)",
-          },
         },
       },
     },
@@ -169,6 +172,15 @@ export const theme: CssVarsThemeOptions = {
     MuiDrawer: {
       defaultProps: {
         disableScrollLock: true,
+      },
+    },
+    MuiIconButton: {
+      styleOverrides: {
+        root: {
+          "&.MuiIconButton-colorSecondary:hover": {
+            color: "var(--mui-palette-primary-main)",
+          },
+        },
       },
     },
     MuiList: {
@@ -283,34 +295,34 @@ export const theme: CssVarsThemeOptions = {
     MuiTableRow: {
       styleOverrides: {
         root: {
-          "&.TableRow-open-bottom": {
-            background: "var(--mui-palette-background-paper)",
-            backgroundImage: "var(--mui-overlays-1)",
-            // background: "var(--mui-palette-background-default) !important",
-          },
-          "&.TableRow-open-top": {
-            "--mui-palette-TableCell-border": "rgba(0,0,0,0)",
-            background: "var(--mui-palette-background-paper)",
-            backgroundImage: "var(--mui-overlays-1)",
-            // borderRadius: 2,
-            overflow: "hidden",
-            // background: "var(--mui-palette-background-default) !important",
-            // outline: "1px dashed red !important",
-            // border: "1px dashed red !important",
-          },
-          // cursor: "pointer",
-          // "html[data-mui-color-scheme='dark'] tbody &:hover": {
-          //   background: "rgba(var(--mui-palette-primary-mainChannel) / 0.075) !important",
-          //   outline: "1px dashed rgba(var(--mui-palette-primary-mainChannel) / 0.5)",
-          // },
-          // "tbody &:hover": {
-          //   background: "rgba(var(--mui-palette-secondary-mainChannel) / 0.075) !important",
-          //   outline: "1px dashed rgba(var(--mui-palette-secondary-mainChannel) / 0.5)",
-          //   outlineOffset: -1,
-          // },
           // "&:nth-of-type(odd)": {
           //   backgroundColor: "rgba(45, 45, 45, 0.5)",
           // },
+          // "&.TableRow-open-bottom": {
+          //   background: "var(--mui-palette-background-paper)",
+          //   backgroundImage: "var(--mui-overlays-1)",
+          //   // background: "var(--mui-palette-background-default) !important",
+          // },
+          // "&.TableRow-open-top": {
+          //   "--mui-palette-TableCell-border": "rgba(0,0,0,0)",
+          //   background: "var(--mui-palette-background-paper)",
+          //   backgroundImage: "var(--mui-overlays-1)",
+          //   // borderRadius: 2,
+          //   overflow: "hidden",
+          //   // background: "var(--mui-palette-background-default) !important",
+          //   // outline: "1px dashed red !important",
+          //   // border: "1px dashed red !important",
+          // },
+          // cursor: "pointer",
+          "html[data-mui-color-scheme='dark'] tbody &:hover": {
+            background: "rgba(var(--mui-palette-primary-mainChannel) / 0.05) !important",
+            outline: "1px dashed rgba(var(--mui-palette-primary-mainChannel) / 0.33)",
+          },
+          "tbody &:hover": {
+            background: "rgba(var(--mui-palette-secondary-mainChannel) / 0.075) !important",
+            outline: "1px dashed rgba(var(--mui-palette-secondary-mainChannel) / 0.5)",
+            outlineOffset: -1,
+          },
         },
       },
     },

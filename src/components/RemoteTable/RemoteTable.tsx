@@ -165,7 +165,7 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
                     to="/import-data"
                     underline="hover"
                   >
-                    Visit <i>Import data</i> to get started
+                    Visit <u>Import data</u> to get started
                   </MuiLink>
                 </Stack>
               </Typography>
