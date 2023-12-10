@@ -90,7 +90,6 @@ export function AuditLogTable(props: AuditLogsTableProps) {
         queryFn={queryFn}
         TableRowComponent={AuditLogTableRow}
         {...rest}
-        //
       />
     </>
   )

@@ -38,13 +38,14 @@ const OPERATION_ICONS: Partial<Record<AuditLogOperation, SvgIconComponent>> = {
 export function AuditLogTableRow(props: TableRowComponentProps<AuditLog>) {
   const { row, relativeTime, headCells, ...rest } = props
   const { symbol, change, changeN, operation, timestamp, integration, wallet, balance } = row
-  const showAssetColumn = headCells.length === 7
 
   const assetMap = useStore($assetMap)
   const integrationMap = useStore($integrationMap)
 
   const color = OPERATION_COLORS[operation] || grey[500]
   const OpIconComponent = OPERATION_ICONS[operation]
+
+  const showAssetColumn = headCells.length === 7
 
   // const { value: open, toggle: toggleOpen } = useBoolean(false)
 

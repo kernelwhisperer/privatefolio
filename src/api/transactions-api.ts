@@ -71,13 +71,14 @@ type FindTransactionsRequest = {
    * @default "desc"
    */
   order?: "asc" | "desc"
+  selectorOverrides?: PouchDB.Find.Selector
   skip?: number
 }
 
 export async function findTransactions(request: FindTransactionsRequest = {}) {
   await indexTransactions()
 
-  const { filters = {}, limit, skip, order = "desc", fields } = request
+  const { filters = {}, limit, skip, order = "desc", fields, selectorOverrides = {} } = request
 
   // Algorithm to help PouchDB find the best index to use
   const preferredFilter = _filterOrderBySpecificity.find((x) => filters[x])
@@ -103,7 +104,10 @@ export async function findTransactions(request: FindTransactionsRequest = {}) {
   const _req: PouchDB.Find.FindRequest<Transaction> = {
     fields,
     limit,
-    selector,
+    selector: {
+      ...selector,
+      ...selectorOverrides,
+    },
     skip,
     sort,
   }

@@ -10,6 +10,7 @@ import { StaggeredList } from "../../components/StaggeredList"
 import { $assetMap, $filterOptionsMap } from "../../stores/metadata-store"
 import { SerifFont } from "../../theme"
 import { AuditLogTable } from "../AuditLogsPage/AuditLogTable"
+import { TransactionTable } from "../TransactionPage/TransactionTable"
 import { BalanceChart } from "./BalanceChart"
 import { PriceChart } from "./PriceChart"
 
@@ -86,6 +87,12 @@ export default function AssetPage({ show }: { show: boolean }) {
           />
           <NavButton value="pnl" to={`/asset/${symbol}?tab=pnl`} label="Profit & Loss" replace />
           <NavButton
+            value="transactions"
+            to={`/asset/${symbol}?tab=transactions`}
+            label="Transactions"
+            replace
+          />
+          <NavButton
             value="audit-logs"
             to={`/asset/${symbol}?tab=audit-logs`}
             label="Audit logs"
@@ -94,6 +101,7 @@ export default function AssetPage({ show }: { show: boolean }) {
         </Tabs>
         {tab === "" && <PriceChart symbol={symbol} />}
         {tab === "balance" && <BalanceChart symbol={symbol} />}
+        {tab === "transactions" && <TransactionTable symbol={symbol} defaultRowsPerPage={10} />}
         {tab === "audit-logs" && <AuditLogTable symbol={symbol} defaultRowsPerPage={10} />}
       </Stack>
       {/* <AssetInfo

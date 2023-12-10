@@ -1,17 +1,55 @@
 import React, { useCallback, useMemo } from "react"
 
 import { findTransactions } from "../../api/transactions-api"
-import { QueryFunction, RemoteTable } from "../../components/RemoteTable/RemoteTable"
+import {
+  QueryFunction,
+  RemoteTable,
+  RemoteTableProps,
+} from "../../components/RemoteTable/RemoteTable"
 import { HeadCell } from "../../components/RemoteTable/RemoteTableHead"
 import { Transaction } from "../../interfaces"
 import { TransactionTableRow } from "./TransactionTableRow"
 
-interface TransactionsTableProps {
+interface TransactionsTableProps extends Pick<RemoteTableProps<Transaction>, "defaultRowsPerPage"> {
   symbol?: string
 }
 
 export function TransactionTable(props: TransactionsTableProps) {
-  const { symbol } = props
+  const { symbol, ...rest } = props
+
+  const queryFn: QueryFunction<Transaction> = useCallback(
+    async (filters, rowsPerPage, page, order) => {
+      const selectorOverrides: PouchDB.Find.Selector = symbol
+        ? {
+            $or: [
+              { outgoingSymbol: symbol },
+              { incomingSymbol: symbol },
+              // { feeSymbol: symbol }, TODO
+            ],
+          }
+        : {}
+
+      const transactions = await findTransactions({
+        filters,
+        limit: rowsPerPage,
+        order,
+        selectorOverrides,
+        skip: page * rowsPerPage,
+      })
+      console.log("📜 LOG > getTransactions > transactions:", transactions)
+
+      return [
+        transactions,
+        () =>
+          findTransactions({
+            fields: [],
+            filters,
+            selectorOverrides,
+          }).then((logs) => logs.length),
+      ]
+    },
+    [symbol]
+  )
 
   const headCells = useMemo<HeadCell<Transaction>[]>(
     () => [
@@ -59,34 +97,13 @@ export function TransactionTable(props: TransactionsTableProps) {
     []
   )
 
-  const queryFn: QueryFunction<Transaction> = useCallback(
-    async (filters, rowsPerPage, page, order) => {
-      const transactions = await findTransactions({
-        filters,
-        limit: rowsPerPage,
-        order,
-        skip: page * rowsPerPage,
-      })
-      console.log("📜 LOG > getTransactions > transactions:", transactions)
-
-      return [
-        transactions,
-        () =>
-          findTransactions({
-            fields: [],
-            filters,
-          }).then((logs) => logs.length),
-      ]
-    },
-    []
-  )
-
   return (
     <>
       <RemoteTable
         headCells={headCells}
         queryFn={queryFn}
         TableRowComponent={TransactionTableRow}
+        {...rest}
       />
     </>
   )
