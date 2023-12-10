@@ -31,7 +31,7 @@ export async function indexTransactions() {
   await transactionsDB.createIndex({
     index: {
       // MUST respect the order in _filterOrder
-      fields: ["type", "timestamp", "wallet", "outgoingSymbol", "incomingSymbol"],
+      fields: ["type", "timestamp", "integration", "wallet", "outgoingSymbol", "incomingSymbol"],
       name: "type",
     },
   })
