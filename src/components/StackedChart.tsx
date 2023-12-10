@@ -21,7 +21,7 @@ export function StackedChart(props: StackedChartProps) {
   const seriesRef = useRef<ISeriesApi<any> | undefined>(undefined)
 
   const plotSeries = useCallback((data: StackedDataType) => {
-    console.log("📜 LOG > StackedChart > plotSeries > data:", data.length, !!chartRef.current)
+    // console.log("📜 LOG > StackedChart > plotSeries > data:", data.length, !!chartRef.current)
     if (!chartRef.current || data.length === 0) {
       return
     }

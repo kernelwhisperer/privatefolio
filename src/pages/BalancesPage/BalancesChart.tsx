@@ -1,7 +1,6 @@
 import { Paper } from "@mui/material"
 import React, { useCallback, useEffect, useState } from "react"
 
-import { getHistoricalBalances } from "../../api/balances-api"
 import { StackedChart, StackedDataType } from "../../components/StackedChart"
 import { multipleBarData } from "../../lightweight-charts/sample-data"
 
@@ -11,8 +10,8 @@ export function BalancesChart() {
 
   const query = useCallback(async () => {
     setLoading(true)
-    const docs = await getHistoricalBalances()
-    console.log("📜 LOG > query > docs:", docs)
+    // const docs = await getHistoricalBalances()
+    // console.log("📜 LOG > query > docs:", docs)
 
     // const records: StackedDataType = docs.map(({ _id, _rev, timestamp, ...x }) => ({
     //   // customValues: [docs.ETH, docs.CRV, docs.SNX],
@@ -21,7 +20,7 @@ export function BalancesChart() {
     // }))
     const records: StackedDataType = multipleBarData(5, 200, 2)
     setData(records)
-    console.log("📜 LOG > query > records:", records)
+    // console.log("📜 LOG > query > records:", records)
     setLoading(false)
   }, [])
 
@@ -32,7 +31,7 @@ export function BalancesChart() {
   return (
     <Paper
       sx={{
-        height: 500,
+        height: 300,
         marginX: -2,
         overflow: "hidden", // because of borderRadius
       }}

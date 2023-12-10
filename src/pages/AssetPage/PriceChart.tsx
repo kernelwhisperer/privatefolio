@@ -19,7 +19,6 @@ export function PriceChart(props: BalanceChartProps) {
     // })
     // const prices = klines.map(mapToCandle)
     const prices = await getAssetPrices(symbol)
-    console.log("📜 LOG > query > prices:", prices)
 
     // const records = docs.map((item) => ({
     //   time: (item.timestamp / 1000) as UTCTimestamp,

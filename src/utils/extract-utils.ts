@@ -16,11 +16,9 @@ export function extractTransactions(logs: AuditLog[], fileImportId: string): Tra
   const transactions: Transaction[] = []
 
   const timestampGroups = groupBy(logs, "timestamp")
-  console.log("📜 LOG > extractTransactions > timestampGroups:", timestampGroups)
 
   for (const i in timestampGroups) {
     const logs = timestampGroups[i]
-    console.log("📜 LOG > extractTransactions > logs:", logs)
 
     if (validGrouping(logs)) {
       const wallet = logs[0].wallet

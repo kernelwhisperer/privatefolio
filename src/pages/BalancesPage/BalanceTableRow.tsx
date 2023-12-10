@@ -1,4 +1,4 @@
-import { Box, Stack, TableCell, TableRow, TableRowProps, Tooltip, Typography } from "@mui/material"
+import { Box, Stack, TableCell, TableRow, TableRowProps, Tooltip } from "@mui/material"
 import { useStore } from "@nanostores/react"
 // import TableCell from "@mui/material/Unstable_TableCell2" // TableCell version 2
 import React from "react"
@@ -38,12 +38,9 @@ export function BalanceTableRow(props: BalanceTableRowProps) {
           component="div"
           // justifyContent="flex-end"
         >
-          <AssetAvatar src={assetMap[symbol]?.image} alt={symbol} />
+          <AssetAvatar src={assetMap[symbol]?.image} alt={symbol} size="small" />
           <Stack>
             <span>{symbol}</span>
-            <Typography color="text.secondary" variant="caption">
-              {assetMap[symbol]?.name}
-            </Typography>
           </Stack>
         </Stack>
       </TableCell>

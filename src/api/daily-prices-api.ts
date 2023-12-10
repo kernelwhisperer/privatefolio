@@ -15,11 +15,11 @@ export async function getAssetPrices(symbol: string) {
       name: "symbol",
     },
   })
-  const explain = await (dailyPricesDB as any).explain({
-    selector: { symbol, timestamp: { $exists: true } },
-    sort: [{ timestamp: "asc" }],
-  })
-  console.log("📜 LOG > getAssetPrices > explain:", explain)
+  // const explain = await (dailyPricesDB as any).explain({
+  //   selector: { symbol, timestamp: { $exists: true } },
+  //   sort: [{ timestamp: "asc" }],
+  // })
+  // console.log("📜 LOG > getAssetPrices > explain:", explain)
 
   const prices = await dailyPricesDB.find({
     selector: { symbol, timestamp: { $exists: true } },

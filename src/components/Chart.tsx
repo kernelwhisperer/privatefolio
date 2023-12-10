@@ -74,7 +74,7 @@ function BaseChart(props: ChartProps) {
   )
 
   useEffect(() => {
-    console.log("📜 LOG > BaseChart > useEffect > init", !!containerRef.current)
+    // console.log("📜 LOG > BaseChart > useEffect > init", !!containerRef.current)
     if (!containerRef.current) return
 
     chartRef.current = createChart(containerRef.current, chartOpts)

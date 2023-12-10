@@ -237,7 +237,7 @@ export async function parseCsv(text: string, _fileImportId: string) {
     transactions: transactions.length,
     wallets: Object.keys(walletMap),
   }
-  console.log("📜 LOG > parseCsv > metadata:", metadata)
+  console.log("CSV metadata:", metadata)
 
   return { logs, metadata, transactions }
 }

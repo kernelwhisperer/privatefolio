@@ -144,7 +144,7 @@ export function FileImportsTable(props: FileImportsTableProps) {
   const [orderBy, setOrderBy] = useState<SortableKeys>("timestamp")
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
-  const [relativeTime, setRelativeTime] = useState(true)
+  const [relativeTime, setRelativeTime] = useState(false)
 
   const handleSort = useCallback(
     (_event: MouseEvent<unknown>, property: SortableKeys) => {

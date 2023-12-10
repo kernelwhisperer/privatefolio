@@ -36,7 +36,6 @@ export function TransactionTable(props: TransactionsTableProps) {
         selectorOverrides,
         skip: page * rowsPerPage,
       })
-      console.log("📜 LOG > getTransactions > transactions:", transactions)
 
       return [
         transactions,
