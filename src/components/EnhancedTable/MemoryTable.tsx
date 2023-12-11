@@ -176,7 +176,7 @@ export function MemoryTable<T extends BaseType>(props: MemoryTableProps<T>) {
       {transitions((styles, isLoading) => (
         <a.div style={styles}>
           {isLoading ? (
-            <Stack gap={1.5} sx={{ marginX: { lg: -2 } }}>
+            <Stack gap={1.5} sx={{}}>
               <Stack direction="row" gap={1.5}>
                 <Skeleton variant="rounded" height={56} width={240}></Skeleton>
                 <Skeleton variant="rounded" height={56} width={240}></Skeleton>
@@ -205,7 +205,7 @@ export function MemoryTable<T extends BaseType>(props: MemoryTableProps<T>) {
               )}
               <Paper
                 variant="outlined"
-                sx={{ marginX: { lg: -2 }, overflowX: { lg: "unset", xs: "auto" }, paddingY: 0.5 }}
+                sx={{ overflowX: { lg: "unset", xs: "auto" }, paddingY: 0.5 }}
               >
                 <TableContainer sx={{ overflowX: "unset" }}>
                   <Table sx={{ minWidth: 750 }} size="small">

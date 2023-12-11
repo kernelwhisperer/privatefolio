@@ -30,7 +30,7 @@ export async function getLatestBalances(): Promise<Balance[]> {
   }
 }
 
-export async function getHistoricalBalances(symbol?: string, limit = 300) {
+export async function getHistoricalBalances(symbol?: string, limit = 200) {
   await balancesDB.createIndex({
     index: {
       fields: ["timestamp"],
@@ -62,6 +62,7 @@ export async function getHistoricalBalances(symbol?: string, limit = 300) {
 }
 
 export async function computeBalances(symbol?: string) {
+  // TODO cursor
   const { length: count } = await findAuditLogs({ fields: [], filters: { symbol } })
   console.log("Recompute balances total logs:", count)
 

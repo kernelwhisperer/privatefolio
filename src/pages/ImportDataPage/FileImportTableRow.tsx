@@ -16,6 +16,7 @@ import React, { MouseEvent, useState } from "react"
 import { removeFileImport } from "../../api/file-import-api"
 import { IntegrationAvatar } from "../../components/IntegrationAvatar"
 import { TimestampCell } from "../../components/TimestampCell"
+import { Truncate } from "../../components/Truncate"
 import { FileImport } from "../../interfaces"
 import { $integrationMap } from "../../stores/metadata-store"
 import { MonoFont } from "../../theme"
@@ -53,7 +54,11 @@ export function FileImportTableRow(props: TableRowComponentProps<FileImport>) {
       <TableCell sx={{ maxWidth: 180, minWidth: 180, width: 180 }}>
         <TimestampCell timestamp={timestamp} relative={relativeTime} />
       </TableCell>
-      <TableCell sx={{ maxWidth: 200, minWidth: 200, width: 200 }}>{name}</TableCell>
+      <TableCell sx={{ maxWidth: 200, minWidth: 200, width: 200 }}>
+        <Tooltip title={name}>
+          <Truncate>{name}</Truncate>
+        </Tooltip>
+      </TableCell>
       <TableCell
         sx={{ fontFamily: MonoFont, maxWidth: 120, minWidth: 120, width: 120 }}
         align="right"

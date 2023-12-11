@@ -339,7 +339,7 @@ export const theme: CssVarsThemeOptions = {
             },
           ],
         },
-        TransitionComponent: Fade,
+        TransitionProps: { timeout: 0 },
         arrow: true,
         disableInteractive: true,
         enterDelay: 0,

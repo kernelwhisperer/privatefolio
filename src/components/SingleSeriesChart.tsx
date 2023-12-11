@@ -128,7 +128,7 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
       {transitions((styles, isLoading) => (
         <a.div style={styles}>
           {isLoading ? (
-            <Stack gap={1.5} sx={{ marginX: { lg: -2 }, marginY: 1 }}>
+            <Stack gap={1.5} sx={{ marginY: 1 }}>
               <Stack direction="row" gap={1.5} alignItems={"flex-end"}>
                 <Skeleton variant="rounded" width={37} height={320}></Skeleton>
                 <Skeleton variant="rounded" width={37} height={260}></Skeleton>
@@ -166,7 +166,6 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
             <Paper
               sx={{
                 height,
-                marginX: -2,
                 overflow: "hidden", // because of borderRadius
                 position: "relative",
                 // height: "100%",

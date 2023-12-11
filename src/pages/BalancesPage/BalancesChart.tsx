@@ -33,5 +33,5 @@ export function BalancesChart() {
     return balances
   }, [])
 
-  return <SingleSeriesChart height={300} queryFn={queryFn} />
+  return <SingleSeriesChart height={360} queryFn={queryFn} />
 }

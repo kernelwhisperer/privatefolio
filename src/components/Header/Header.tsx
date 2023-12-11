@@ -46,7 +46,7 @@ export function Header() {
       }}
     >
       <Toolbar disableGutters>
-        <Container maxWidth="lg" sx={{ padding: { xs: 0 }, position: "relative" }}>
+        <Container maxWidth="lg" sx={{ paddingX: { xs: 2 }, paddingY: 0, position: "relative" }}>
           <Grid container spacing={0.5} paddingX={2} marginY={1}>
             <Grid item md={3}>
               <Box

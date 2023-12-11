@@ -9,6 +9,7 @@ import { StaggeredList } from "../../components/StaggeredList"
 import { FileImport } from "../../interfaces"
 import { SerifFont } from "../../theme"
 import { HeadCell } from "../../utils/table-utils"
+import { DatabaseInfo } from "./DatabaseInfo"
 import { FileImportTableRow } from "./FileImportTableRow"
 
 export function ImportDataPage({ show }: { show: boolean }) {
@@ -90,41 +91,38 @@ export function ImportDataPage({ show }: { show: boolean }) {
   )
 
   return (
-    <StaggeredList
-      // component="main"
-      gap={1}
-      show={show}
-    >
-      <Typography variant="h6" fontFamily={SerifFont}>
-        File imports
-      </Typography>
-      {queryTime !== null && rows.length === 0 ? (
-        <FileDrop sx={{ marginX: -2, padding: 4 }}>
-          <Stack alignItems="center">
-            <FolderOutlined sx={{ height: 64, width: 64 }} />
-            <span>Nothing to see here...</span>
-          </Stack>
-        </FileDrop>
-      ) : (
-        <StaggeredList gap={1} show={show}>
-          <MemoryTable<FileImport>
-            initOrderBy="timestamp"
-            headCells={headCells}
-            TableRowComponent={FileImportTableRow}
-            rows={rows}
-            queryTime={queryTime}
-            //
-          />
-          {showDrop && (
-            <FileDrop
-              defaultBg="var(--mui-palette-background-default)"
-              sx={{
-                marginX: -2,
-              }}
+    <StaggeredList component="main" gap={2} show={show}>
+      <div>
+        <Typography variant="h6" fontFamily={SerifFont} sx={{ marginX: 2 }}>
+          Database info
+        </Typography>
+        <DatabaseInfo />
+      </div>
+      <div>
+        <Typography variant="h6" fontFamily={SerifFont} sx={{ marginX: 2 }}>
+          File imports
+        </Typography>
+        {queryTime !== null && rows.length === 0 ? (
+          <FileDrop sx={{ padding: 4 }}>
+            <Stack alignItems="center">
+              <FolderOutlined sx={{ height: 64, width: 64 }} />
+              <span>Nothing to see here...</span>
+            </Stack>
+          </FileDrop>
+        ) : (
+          <StaggeredList gap={1} show={show}>
+            <MemoryTable<FileImport>
+              initOrderBy="timestamp"
+              headCells={headCells}
+              TableRowComponent={FileImportTableRow}
+              rows={rows}
+              queryTime={queryTime}
+              //
             />
-          )}
-        </StaggeredList>
-      )}
+            {showDrop && <FileDrop defaultBg="var(--mui-palette-background-default)" />}
+          </StaggeredList>
+        )}
+      </div>
     </StaggeredList>
   )
 }

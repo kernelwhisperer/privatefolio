@@ -58,7 +58,6 @@ export function BalancesChart() {
     <Paper
       sx={{
         height: 300,
-        marginX: -2,
         overflow: "hidden", // because of borderRadius
       }}
     >

@@ -139,7 +139,7 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
       {transitions((styles, isLoading) => (
         <a.div style={styles}>
           {isLoading ? (
-            <Stack gap={1.5} sx={{ marginX: { lg: -2 } }}>
+            <Stack gap={1.5}>
               <Stack direction="row" gap={1.5}>
                 <Skeleton variant="rounded" height={56} width={240}></Skeleton>
                 <Skeleton variant="rounded" height={56} width={240}></Skeleton>
@@ -151,7 +151,7 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
               <Skeleton variant="rounded" height={37}></Skeleton>
             </Stack>
           ) : rows.length === 0 && Object.keys(activeFilters).length === 0 ? (
-            <Paper sx={{ marginX: { lg: -2 }, padding: 4 }}>
+            <Paper sx={{ padding: 4 }}>
               <Typography color="text.secondary" variant="body2" component="div">
                 <Stack alignItems="center">
                   <DataArrayRounded sx={{ height: 64, width: 64 }} />
@@ -186,7 +186,7 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
               )}
               <Paper
                 variant="outlined"
-                sx={{ marginX: { lg: -2 }, overflowX: { lg: "unset", xs: "auto" }, paddingY: 0.5 }}
+                sx={{ overflowX: { lg: "unset", xs: "auto" }, paddingY: 0.5 }}
               >
                 <TableContainer sx={{ overflowX: "unset" }}>
                   <Table sx={{ minWidth: 750 }} size="small" stickyHeader>
