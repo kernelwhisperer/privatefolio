@@ -1,13 +1,15 @@
 import { FolderOutlined } from "@mui/icons-material"
 import { Stack, Typography } from "@mui/material"
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 
 import { getFileImports, subscribeToFileImports } from "../../api/file-import-api"
+import { MemoryTable } from "../../components/EnhancedTable/MemoryTable"
 import { FileDrop } from "../../components/FileDrop"
 import { StaggeredList } from "../../components/StaggeredList"
 import { FileImport } from "../../interfaces"
 import { SerifFont } from "../../theme"
-import { FileImportsTable } from "./FileImportsTable"
+import { HeadCell } from "../../utils/table-utils"
+import { FileImportTableRow } from "./FileImportTableRow"
 
 export function ImportDataPage({ show }: { show: boolean }) {
   const [rows, setRows] = useState<FileImport[]>([])
@@ -31,6 +33,57 @@ export function ImportDataPage({ show }: { show: boolean }) {
     }
   }, [])
 
+  const headCells: HeadCell<FileImport>[] = useMemo(
+    () => [
+      {
+        key: "timestamp",
+        label: "Imported",
+        sortable: true,
+      },
+      {
+        key: "name",
+        label: "Name",
+        sortable: true,
+      },
+      {
+        key: "size",
+        label: "File size",
+        numeric: true,
+        sortable: true,
+      },
+      {
+        key: "lastModified",
+        label: "Last modified",
+        sortable: true,
+      },
+      {
+        filterable: true,
+        key: "integration" as keyof FileImport,
+        label: "Integration",
+        sortable: true,
+        valueSelector: (row) => row.meta?.integration,
+      },
+      {
+        key: "logs" as keyof FileImport,
+        label: "Audit logs",
+        numeric: true,
+        sortable: true,
+        valueSelector: (row) => row.meta?.logs,
+      },
+      {
+        key: "transactions" as keyof FileImport,
+        label: "Transactions",
+        numeric: true,
+        sortable: true,
+        valueSelector: (row) => row.meta?.transactions,
+      },
+      {
+        label: "",
+      },
+    ],
+    []
+  )
+
   return (
     <StaggeredList
       // component="main"
@@ -49,7 +102,13 @@ export function ImportDataPage({ show }: { show: boolean }) {
         </FileDrop>
       ) : (
         <StaggeredList gap={1} show={show}>
-          <FileImportsTable rows={rows} />
+          <MemoryTable<FileImport>
+            initOrderBy="timestamp"
+            headCells={headCells}
+            TableRowComponent={FileImportTableRow}
+            rows={rows}
+            //
+          />
           <FileDrop
             defaultBg="var(--mui-palette-background-default)"
             sx={{

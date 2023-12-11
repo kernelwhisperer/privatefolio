@@ -18,32 +18,20 @@ import React from "react"
 
 import { useBoolean } from "../../hooks/useBoolean"
 import { $filterOptionsMap, FilterKey } from "../../stores/metadata-store"
-import { Order } from "../../utils/table-utils"
+import { ActiveFilterMap, BaseType, HeadCell, Order } from "../../utils/table-utils"
 
-export type BaseType = unknown
-
-export type ActiveFilterMap<T extends BaseType> = Partial<Record<keyof T, string | number>>
-
-export interface HeadCell<T extends BaseType> {
-  filterable?: boolean
-  key: keyof T
-  label: string
-  numeric?: boolean
-  sortable?: boolean
-}
-
-export interface RemoteTableHeadProps<T extends BaseType> {
+export interface ConnectedTableHeadProps<T extends BaseType> {
   activeFilters: ActiveFilterMap<T>
   headCell: HeadCell<T>
   onRelativeTime: (event: React.MouseEvent<unknown>) => void
-  onSort: (event: React.MouseEvent<unknown>, property: string) => void
+  onSort: (event: React.MouseEvent<unknown>, property: keyof T) => void
   order: Order
-  orderBy: string
+  orderBy: keyof T
   relativeTime: boolean
   setFilterKey: (key: keyof T, value: string | number | undefined) => void
 }
 
-export function RemoteTableHead<T extends BaseType>(props: RemoteTableHeadProps<T>) {
+export function ConnectedTableHead<T extends BaseType>(props: ConnectedTableHeadProps<T>) {
   const {
     headCell,
     order,
@@ -58,7 +46,7 @@ export function RemoteTableHead<T extends BaseType>(props: RemoteTableHeadProps<
 
   const { value: open, toggle: toggleOpen } = useBoolean(false)
 
-  const createSortHandler = (property: string) => (event: React.MouseEvent<unknown>) => {
+  const createSortHandler = (property: keyof T) => (event: React.MouseEvent<unknown>) => {
     onSort(event, property)
   }
 
@@ -66,6 +54,7 @@ export function RemoteTableHead<T extends BaseType>(props: RemoteTableHeadProps<
   const filterValue = activeFilters[key as string]
 
   const handleChange = (event: SelectChangeEvent<string>) => {
+    if (!key) return
     setFilterKey(key, event.target.value || undefined)
   }
 
@@ -134,7 +123,7 @@ export function RemoteTableHead<T extends BaseType>(props: RemoteTableHeadProps<
           <TableSortLabel
             active={orderBy === key}
             direction={orderBy === key ? order : "asc"}
-            onClick={createSortHandler(key as string)}
+            onClick={key ? createSortHandler(key) : undefined}
           >
             {label}
             {orderBy === key ? (

@@ -1,15 +1,30 @@
-import { BalanceMap } from "../interfaces"
+import { Balance, BalanceMap } from "../interfaces"
 import { findAuditLogs } from "./audit-logs-api"
+import { getAssetPrices } from "./daily-prices-api"
 import { auditLogsDB, balancesDB } from "./database"
 import { getValue, setValue } from "./kv-api"
 
-export async function getLatestBalances() {
+export async function getLatestBalances(): Promise<Balance[]> {
   const balancesCursor = await getValue("balancesCursor")
 
   try {
-    return await balancesDB.get(String(balancesCursor))
+    const balanceMap = await balancesDB.get(String(balancesCursor))
+    const { _id, _rev, timestamp, ...map } = balanceMap
+    const balanceDocs = Object.keys(map).map((x) => ({ balance: map[x], symbol: x }))
+
+    const balances = await Promise.all(
+      balanceDocs.map(async (x) => {
+        const price = await getAssetPrices(x.symbol, timestamp)
+        return {
+          ...x,
+          price: price?.[0],
+        }
+      })
+    )
+    console.log("📜 LOG > getLatestBalances > prices:", balances)
+    return balances
   } catch {
-    return undefined
+    return []
   }
 }
 

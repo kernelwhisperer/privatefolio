@@ -6,13 +6,11 @@ import {
   Stack,
   TableCell,
   TableRow,
-  TableRowProps,
   Tooltip,
   Typography,
 } from "@mui/material"
 import { grey } from "@mui/material/colors"
 import { useStore } from "@nanostores/react"
-// import TableCell from "@mui/material/Unstable_TableCell2" // TableCell version 2
 import React, { MouseEvent, useState } from "react"
 
 import { removeFileImport } from "../../api/file-import-api"
@@ -22,15 +20,11 @@ import { FileImport } from "../../interfaces"
 import { $integrationMap } from "../../stores/metadata-store"
 import { MonoFont } from "../../theme"
 import { formatFileSize, formatNumber } from "../../utils/client-utils"
+import { TableRowComponentProps } from "../../utils/table-utils"
 
-interface FileImportTableRowProps extends TableRowProps {
-  fileImport: FileImport
-  relativeTime: boolean
-}
-
-export function FileImportTableRow(props: FileImportTableRowProps) {
-  const { fileImport, relativeTime, ...rest } = props
-  const { name, meta, timestamp, lastModified, size } = fileImport
+export function FileImportTableRow(props: TableRowComponentProps<FileImport>) {
+  const { row, relativeTime, headCells: _headCells, ...rest } = props
+  const { name, meta, timestamp, lastModified, size } = row
   const integration = meta?.integration
 
   const integrationMap = useStore($integrationMap)
@@ -40,7 +34,7 @@ export function FileImportTableRow(props: FileImportTableRowProps) {
   async function handleDelete(event: MouseEvent<HTMLButtonElement>) {
     event.preventDefault()
     setLoading(true)
-    await removeFileImport(fileImport)
+    await removeFileImport(row)
     setLoading(false)
   }
 

@@ -115,6 +115,7 @@ export interface FileImport {
 
 export interface Balance {
   balance: number
+  price?: ChartData
   symbol: string
 }
 
@@ -133,6 +134,7 @@ export interface SavedPrice {
   price: ChartData
   source: string
   symbol: string
+  timestamp: number
 }
 
 /**

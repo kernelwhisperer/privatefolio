@@ -2,11 +2,10 @@ import { AddRounded, RemoveRounded, SvgIconComponent, TrendingFlat } from "@mui/
 import { alpha, Avatar, Box, Chip, Stack, TableCell, TableRow, Tooltip } from "@mui/material"
 import { green, grey, red } from "@mui/material/colors"
 import { useStore } from "@nanostores/react"
-// import TableCell from "@mui/material/Unstable_TableCell2" // TableCell version 2
 import React from "react"
 
 import { AssetAvatar } from "../../components/AssetAvatar"
-import { TableRowComponentProps } from "../../components/RemoteTable/RemoteTable"
+import { TableRowComponentProps } from "../../components/EnhancedTable"
 import { TimestampCell } from "../../components/TimestampCell"
 import { Truncate } from "../../components/Truncate"
 import { AuditLog, AuditLogOperation } from "../../interfaces"

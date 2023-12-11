@@ -1,20 +1,22 @@
 export type Order = "asc" | "desc"
 
-function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1
-  }
-  return 0
+export type BaseType = unknown
+
+export type ActiveFilterMap<T extends BaseType> = Partial<Record<keyof T, string | number>>
+
+export type ValueSelector<T> = (row: T) => string | number | undefined
+
+export interface HeadCell<T extends BaseType> {
+  filterable?: boolean
+  key?: keyof T
+  label: string
+  numeric?: boolean
+  sortable?: boolean
+  valueSelector?: ValueSelector<T>
 }
 
-export function getComparator<Key extends string | number | symbol>(
-  order: Order,
-  orderBy: Key
-): (a: { [key in Key]: number | string }, b: { [key in Key]: number | string }) => number {
-  return order === "desc"
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy)
+export type TableRowComponentProps<T extends BaseType> = {
+  headCells: HeadCell<T>[]
+  relativeTime: boolean
+  row: T
 }

@@ -1,10 +1,9 @@
 import { DataArrayRounded } from "@mui/icons-material"
-import { Link as MuiLink, Paper, Skeleton, Stack, Typography } from "@mui/material"
+import { Link as MuiLink, Paper, Skeleton, Stack, TableHead, Typography } from "@mui/material"
 import Table from "@mui/material/Table"
 import TableBody from "@mui/material/TableBody"
 import TableCell from "@mui/material/TableCell"
 import TableContainer from "@mui/material/TableContainer"
-import MuiTableHead from "@mui/material/TableHead"
 import TableRow from "@mui/material/TableRow"
 import { a, useTransition } from "@react-spring/web"
 import React, {
@@ -19,18 +18,18 @@ import { Link } from "react-router-dom"
 
 import { FILTER_LABEL_MAP } from "../../stores/metadata-store"
 import { stringToColor } from "../../utils/color-utils"
-import { Order } from "../../utils/table-utils"
+import {
+  ActiveFilterMap,
+  BaseType,
+  HeadCell,
+  Order,
+  TableRowComponentProps,
+} from "../../utils/table-utils"
 import { SPRING_CONFIGS } from "../../utils/utils"
 import { FilterChip } from "../FilterChip"
 import { TableFooter } from "../TableFooter"
-import { ActiveFilterMap, BaseType, HeadCell, RemoteTableHead } from "./RemoteTableHead"
-export type { ActiveFilterMap, BaseType, HeadCell, RemoteTableHead } from "./RemoteTableHead"
-
-export type TableRowComponentProps<T extends BaseType> = {
-  headCells: HeadCell<T>[]
-  relativeTime: boolean
-  row: T
-}
+import { ConnectedTableHead } from "./ConnectedTableHead"
+export type { ConnectedTableHead } from "./ConnectedTableHead"
 
 export type QueryFunction<T extends BaseType> = (
   filters: ActiveFilterMap<T>,
@@ -46,11 +45,12 @@ export interface RemoteTableProps<T extends BaseType> {
    */
   defaultRowsPerPage?: number
   headCells: HeadCell<T>[]
+  initOrderBy: keyof T
   queryFn: QueryFunction<T>
 }
 
 export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
-  const { headCells, queryFn, TableRowComponent, defaultRowsPerPage = 20 } = props
+  const { headCells, queryFn, TableRowComponent, defaultRowsPerPage = 20, initOrderBy } = props
 
   const [queryTime, setQueryTime] = useState<number | null>(null)
   const [rowCount, setRowCount] = useState<number | null>(null)
@@ -58,7 +58,7 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
   const [rows, setRows] = useState<T[]>([])
   const [page, setPage] = useState(0)
   const [order, setOrder] = useState<Order>("desc")
-  const [orderBy, setOrderBy] = useState<string>("timestamp")
+  const [orderBy, setOrderBy] = useState<keyof T>(initOrderBy)
   const [rowsPerPage, setRowsPerPage] = useState(defaultRowsPerPage)
 
   // TODO turn into setting
@@ -85,10 +85,10 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
   // TODO
 
   const handleSort = useCallback(
-    (_event: MouseEvent<unknown>, property: string) => {
+    (_event: MouseEvent<unknown>, property: keyof T) => {
       const isAsc = orderBy === property && order === "asc"
       setOrder(isAsc ? "desc" : "asc")
-      setOrderBy(property as string)
+      setOrderBy(property)
     },
     [orderBy, order]
   )
@@ -190,7 +190,7 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
               >
                 <TableContainer sx={{ overflowX: "unset" }}>
                   <Table sx={{ minWidth: 750 }} size="small" stickyHeader>
-                    <MuiTableHead>
+                    <TableHead>
                       <TableRow>
                         {headCells.map((headCell, index) => (
                           <TableCell
@@ -198,21 +198,20 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
                             padding="normal"
                             sortDirection={orderBy === headCell.key ? order : false}
                           >
-                            <RemoteTableHead<T>
+                            <ConnectedTableHead<T>
                               activeFilters={activeFilters}
                               setFilterKey={setFilterKey}
                               headCell={headCell}
                               order={order}
                               orderBy={orderBy}
                               onSort={handleSort}
-                              // onRequestSort={handleRequestSort}
                               onRelativeTime={handleRelativeTime}
                               relativeTime={relativeTime}
                             />
                           </TableCell>
                         ))}
                       </TableRow>
-                    </MuiTableHead>
+                    </TableHead>
                     <TableBody>
                       {rows.map((row, index) => (
                         <TableRowComponent

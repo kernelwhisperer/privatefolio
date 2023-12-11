@@ -5,9 +5,9 @@ import {
   QueryFunction,
   RemoteTable,
   RemoteTableProps,
-} from "../../components/RemoteTable/RemoteTable"
-import { HeadCell } from "../../components/RemoteTable/RemoteTableHead"
+} from "../../components/EnhancedTable/RemoteTable"
 import { AuditLog } from "../../interfaces"
+import { HeadCell } from "../../utils/table-utils"
 import { AuditLogTableRow } from "./AuditLogTableRow"
 
 interface AuditLogsTableProps extends Pick<RemoteTableProps<AuditLog>, "defaultRowsPerPage"> {
@@ -86,6 +86,7 @@ export function AuditLogTable(props: AuditLogsTableProps) {
   return (
     <>
       <RemoteTable
+        initOrderBy="timestamp"
         headCells={headCells}
         queryFn={queryFn}
         TableRowComponent={AuditLogTableRow}

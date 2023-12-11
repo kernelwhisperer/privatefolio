@@ -1,8 +1,9 @@
 import { ResolutionString, SavedPrice, Timestamp } from "../interfaces"
+import { $filterOptionsMap } from "../stores/metadata-store"
 import { mapToChartData, queryPrices } from "./binance-price-api"
 import { dailyPricesDB } from "./database"
 
-export async function getAssetPrices(symbol: string) {
+export async function getAssetPrices(symbol: string, timestamp: Timestamp) {
   await dailyPricesDB.createIndex({
     index: {
       fields: ["timestamp"],
@@ -22,53 +23,71 @@ export async function getAssetPrices(symbol: string) {
   // console.log("📜 LOG > getAssetPrices > explain:", explain)
 
   const prices = await dailyPricesDB.find({
-    selector: { symbol, timestamp: { $exists: true } },
+    selector: { symbol, timestamp: timestamp || { $exists: true } },
     sort: [{ timestamp: "asc" }],
   })
 
   return prices.docs.map((x) => x.price)
 }
 
+export async function getPriceCursor(symbol: string): Promise<Timestamp> {
+  const prices = await dailyPricesDB.find({
+    limit: 1,
+    selector: { symbol, timestamp: { $exists: true } },
+    sort: [{ timestamp: "desc" }],
+  })
+
+  if (prices.docs.length === 0) {
+    return 0
+  }
+
+  return prices.docs[0].timestamp
+}
+
 export async function fetchAssetPrices() {
-  // const symbols = $filterOptionsMap.get().symbol
-  // console.log("Fetch daily asset prices:", symbols)
-  const symbols = ["ETH"]
+  const symbols = $filterOptionsMap.get().symbol
+  console.log("Fetch daily asset prices:", symbols)
   const now = Date.now()
-  const today = now - (now % 86400000)
+  const today: Timestamp = now - (now % 86400000)
   console.log("📜 LOG > fetchAssetPrices > today:", today)
 
   for (const symbol of symbols) {
-    let since: Timestamp = 0
-    while (since !== today) {
-      console.log("Fetching daily asset prices:", symbol, since)
-      const pair = `${symbol}USDT`
-      const source = "binance"
+    try {
+      let since: Timestamp = await getPriceCursor(symbol)
 
-      const results = await queryPrices({
-        limit: 300,
-        pair,
-        since,
-        timeInterval: "1d" as ResolutionString,
-      })
-      console.log("Fetched daily asset prices:", symbol, since, results)
+      while (since !== today) {
+        console.log("Fetching daily asset prices:", symbol, since)
+        const pair = `${symbol}USDT`
+        const source = "binance"
 
-      const docs: SavedPrice[] = results.map((result) => ({
-        _id: `${pair}-${source}-${result[0]}`,
-        pair,
-        price: mapToChartData(result),
-        source,
-        symbol,
-        timestamp: result[0],
-      }))
+        const results = await queryPrices({
+          limit: 300,
+          pair,
+          since,
+          timeInterval: "1d" as ResolutionString,
+        })
+        console.log("Fetched daily asset prices:", symbol, since, results)
 
-      dailyPricesDB.bulkDocs(docs)
-      console.log("Saved daily asset prices:", docs)
+        const docs: SavedPrice[] = results.map((result) => ({
+          _id: `${pair}-${source}-${result[0]}`,
+          pair,
+          price: mapToChartData(result),
+          source,
+          symbol,
+          timestamp: result[0],
+        }))
 
-      if (results.length > 0) {
-        since = results[results.length - 1][0]
-      } else {
-        since = today
+        dailyPricesDB.bulkDocs(docs)
+        console.log("Saved daily asset prices:", docs)
+
+        if (results.length > 1) {
+          since = results[results.length - 1][0]
+        } else {
+          since = today
+        }
       }
+    } catch (error) {
+      console.log("Failed to fetch daily asset prices:", symbol)
     }
   }
 }

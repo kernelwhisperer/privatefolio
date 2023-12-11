@@ -5,9 +5,9 @@ import {
   QueryFunction,
   RemoteTable,
   RemoteTableProps,
-} from "../../components/RemoteTable/RemoteTable"
-import { HeadCell } from "../../components/RemoteTable/RemoteTableHead"
+} from "../../components/EnhancedTable/RemoteTable"
 import { Transaction } from "../../interfaces"
+import { HeadCell } from "../../utils/table-utils"
 import { TransactionTableRow } from "./TransactionTableRow"
 
 interface TransactionsTableProps extends Pick<RemoteTableProps<Transaction>, "defaultRowsPerPage"> {
@@ -99,6 +99,7 @@ export function TransactionTable(props: TransactionsTableProps) {
   return (
     <>
       <RemoteTable
+        initOrderBy="timestamp"
         headCells={headCells}
         queryFn={queryFn}
         TableRowComponent={TransactionTableRow}
