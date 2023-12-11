@@ -40,6 +40,7 @@ export function FileImportTableRow(props: TableRowComponentProps<FileImport>) {
 
   return (
     <TableRow
+      hover
       {...rest}
       // sx={(theme) => ({
       //   [theme.breakpoints.down("lg")]: {

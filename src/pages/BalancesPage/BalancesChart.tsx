@@ -1,51 +1,37 @@
-import { Paper } from "@mui/material"
-import React, { useCallback, useEffect, useState } from "react"
+import React, { useCallback } from "react"
 
-import { StackedChart, StackedDataType } from "../../components/StackedChart"
-import { multipleBarData } from "../../lightweight-charts/sample-data"
+import { getHistoricalBalances } from "../../api/balances-api"
+import { getAssetPriceMap } from "../../api/daily-prices-api"
+import { SingleSeriesChart } from "../../components/SingleSeriesChart"
+import { Time } from "../../interfaces"
 
 export function BalancesChart() {
-  const [loading, setLoading] = useState<boolean>(true)
-  const [data, setData] = useState<StackedDataType>([])
+  const queryFn = useCallback(async () => {
+    const docs = await getHistoricalBalances()
 
-  const query = useCallback(async () => {
-    setLoading(true)
-    // const docs = await getHistoricalBalances()
-    // console.log("📜 LOG > query > docs:", docs)
+    const balances = await Promise.all(
+      docs.map(async ({ _id, _rev, timestamp, ...balanceMap }) => {
+        const priceMap = await getAssetPriceMap(timestamp)
 
-    // const records: StackedDataType = docs.map(({ _id, _rev, timestamp, ...x }) => ({
-    //   // customValues: [docs.ETH, docs.CRV, docs.SNX],
-    //   time: (timestamp / 1000) as UTCTimestamp,
-    //   values: Object.values(x),
-    // }))
-    const records: StackedDataType = multipleBarData(5, 200, 2)
-    setData(records)
-    // console.log("📜 LOG > query > records:", records)
-    setLoading(false)
+        const totalValue = Object.keys(priceMap).reduce((acc, symbol) => {
+          const price = priceMap[symbol]
+          const balance = balanceMap[symbol]
+
+          if (!price || !balance) return acc
+
+          return acc + Math.round(price.value * balance * 100) / 100
+        }, 0)
+
+        return {
+          time: (timestamp / 1000) as Time,
+          value: totalValue,
+        }
+      })
+    )
+
+    console.log("📜 LOG > query > records:", balances)
+    return balances
   }, [])
 
-  useEffect(() => {
-    query()
-  }, [query])
-
-  return (
-    <Paper
-      sx={{
-        height: 300,
-        marginX: -2,
-        overflow: "hidden", // because of borderRadius
-      }}
-    >
-      <StackedChart
-        data={data}
-        chartOptions={
-          {
-            // localization: {
-            //   priceFormatter: createPriceFormatter(0, symbol),
-            // },
-          }
-        }
-      />
-    </Paper>
-  )
+  return <SingleSeriesChart height={300} queryFn={queryFn} />
 }

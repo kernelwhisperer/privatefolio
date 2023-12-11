@@ -1,6 +1,6 @@
 import { Balance, BalanceMap } from "../interfaces"
 import { findAuditLogs } from "./audit-logs-api"
-import { getAssetPrices } from "./daily-prices-api"
+import { getPricesForAsset } from "./daily-prices-api"
 import { auditLogsDB, balancesDB } from "./database"
 import { getValue, setValue } from "./kv-api"
 
@@ -14,21 +14,23 @@ export async function getLatestBalances(): Promise<Balance[]> {
 
     const balances = await Promise.all(
       balanceDocs.map(async (x) => {
-        const price = await getAssetPrices(x.symbol, timestamp)
+        const prices = await getPricesForAsset(x.symbol, timestamp)
+        const price = prices.length > 0 ? prices[0] : undefined
+
         return {
           ...x,
-          price: price?.[0],
+          price,
+          value: price ? price.value * x.balance : undefined,
         }
       })
     )
-    console.log("📜 LOG > getLatestBalances > prices:", balances)
     return balances
   } catch {
     return []
   }
 }
 
-export async function getHistoricalBalances(symbol?: string) {
+export async function getHistoricalBalances(symbol?: string, limit = 300) {
   await balancesDB.createIndex({
     index: {
       fields: ["timestamp"],
@@ -37,7 +39,7 @@ export async function getHistoricalBalances(symbol?: string) {
   })
   const balances = await balancesDB.find({
     fields: symbol ? [symbol, "timestamp"] : undefined,
-    limit: 300,
+    limit,
     selector: symbol
       ? {
           [symbol]: { $exists: true },
@@ -46,7 +48,14 @@ export async function getHistoricalBalances(symbol?: string) {
       : {
           timestamp: { $exists: true },
         },
-    sort: [{ timestamp: "desc" }],
+    sort: [
+      symbol
+        ? {
+            symbol: "desc",
+            timestamp: "desc",
+          }
+        : { timestamp: "desc" },
+    ],
   })
 
   return balances.docs.reverse()

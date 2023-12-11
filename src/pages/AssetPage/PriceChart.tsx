@@ -1,6 +1,6 @@
 import React, { useCallback } from "react"
 
-import { getAssetPrices } from "../../api/daily-prices-api"
+import { getPricesForAsset } from "../../api/daily-prices-api"
 import { SingleSeriesChart } from "../../components/SingleSeriesChart"
 
 type BalanceChartProps = {
@@ -11,25 +11,7 @@ export function PriceChart(props: BalanceChartProps) {
   const { symbol } = props
 
   const queryFn = useCallback(async () => {
-    // const docs = await getHistoricalBalances(symbol)
-    // const klines = await queryPrices({
-    //   // limit: 1,
-    //   pair: `${symbol}USDT`,
-    //   timeInterval: "1d" as ResolutionString,
-    // })
-    // const prices = klines.map(mapToCandle)
-    const prices = await getAssetPrices(symbol)
-
-    // const records = docs.map((item) => ({
-    //   time: (item.timestamp / 1000) as UTCTimestamp,
-    //   value: item[symbol],
-    // }))
-    // const previousDay = docs[0].timestamp - 86400000
-    // records.unshift({
-    //   time: (previousDay / 1000) as UTCTimestamp,
-    //   value: 0,
-    // })
-
+    const prices = await getPricesForAsset(symbol)
     return prices
   }, [symbol])
 

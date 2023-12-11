@@ -11,10 +11,15 @@ import { BalancesChart } from "./BalancesChart"
 import { BalanceTableRow } from "./BalanceTableRow"
 
 export function BalancesPage({ show }: { show: boolean }) {
+  const [queryTime, setQueryTime] = useState<number | null>(null)
   const [balances, setBalances] = useState<Balance[]>([])
 
   useEffect(() => {
-    getLatestBalances().then(setBalances)
+    const start = Date.now()
+    getLatestBalances().then((balances) => {
+      setQueryTime(Date.now() - start)
+      setBalances(balances)
+    })
   }, [])
 
   const headCells = useMemo<HeadCell<Balance>[]>(
@@ -26,24 +31,24 @@ export function BalancesPage({ show }: { show: boolean }) {
         sortable: true,
       },
       {
+        key: "price",
+        label: "Price",
+        numeric: true,
+        sortable: true,
+        valueSelector: (row: Balance) => row.price?.value,
+      },
+      {
         key: "balance",
         label: "Balance",
         numeric: true,
         sortable: true,
       },
       {
-        key: "price",
-        label: "Price",
+        key: "value",
+        label: "Value",
         numeric: true,
         sortable: true,
-        valueSelector: (row: Balance) => row.price?.close || 0,
       },
-      // {
-      //   key: "value" as ,
-      //   label: "Value",
-      //   numeric: true,
-      //   sortable: true,
-      // },
     ],
     []
   )
@@ -51,19 +56,19 @@ export function BalancesPage({ show }: { show: boolean }) {
   return (
     <StaggeredList gap={1} show={show}>
       <Typography variant="h6" fontFamily={SerifFont}>
-        <span>Breakdown</span>
+        <span>Net worth</span>
       </Typography>
       <BalancesChart />
       <Typography variant="h6" fontFamily={SerifFont}>
         <span>Balances</span>
       </Typography>
       <MemoryTable<Balance>
-        initOrderBy="balance"
+        initOrderBy="value"
         headCells={headCells}
         TableRowComponent={BalanceTableRow}
         rows={balances}
         defaultRowsPerPage={10}
-        //
+        queryTime={queryTime}
       />
     </StaggeredList>
   )

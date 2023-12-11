@@ -1,9 +1,9 @@
-import { ResolutionString, SavedPrice, Timestamp } from "../interfaces"
+import { ChartData, ResolutionString, SavedPrice, Time, Timestamp } from "../interfaces"
 import { $filterOptionsMap } from "../stores/metadata-store"
 import { mapToChartData, queryPrices } from "./binance-price-api"
 import { dailyPricesDB } from "./database"
 
-export async function getAssetPrices(symbol: string, timestamp: Timestamp) {
+export async function indexDailyPrices() {
   await dailyPricesDB.createIndex({
     index: {
       fields: ["timestamp"],
@@ -16,18 +16,52 @@ export async function getAssetPrices(symbol: string, timestamp: Timestamp) {
       name: "symbol",
     },
   })
-  // const explain = await (dailyPricesDB as any).explain({
-  //   selector: { symbol, timestamp: { $exists: true } },
-  //   sort: [{ timestamp: "asc" }],
-  // })
-  // console.log("📜 LOG > getAssetPrices > explain:", explain)
+}
 
-  const prices = await dailyPricesDB.find({
+export async function getPricesForAsset(symbol: string, timestamp?: Timestamp) {
+  if (symbol === "USDT" && !!timestamp) {
+    return [{ time: timestamp / 1000, value: 1 }] as ChartData[]
+  }
+
+  await indexDailyPrices()
+
+  const _req: PouchDB.Find.FindRequest<SavedPrice> = {
     selector: { symbol, timestamp: timestamp || { $exists: true } },
-    sort: [{ timestamp: "asc" }],
-  })
+    sort: [{ symbol: "asc", timestamp: "asc" }],
+  }
+
+  // console.log("📜 LOG > findTransactions > _req:", _req)
+  // const explain = await (dailyPricesDB as any).explain(_req)
+  // console.log("📜 LOG > findTransactions > explain:", explain.index)
+
+  const prices = await dailyPricesDB.find(_req)
 
   return prices.docs.map((x) => x.price)
+}
+
+export async function getAssetPriceMap(timestamp: Timestamp) {
+  await indexDailyPrices()
+
+  const _req: PouchDB.Find.FindRequest<SavedPrice> = {
+    fields: ["symbol", "price"],
+    selector: { timestamp },
+  }
+
+  // console.log("📜 LOG > findTransactions > _req:", _req)
+  // const explain = await (dailyPricesDB as any).explain(_req)
+  // console.log("📜 LOG > findTransactions > explain:", explain.index)
+
+  const prices = await dailyPricesDB.find(_req)
+
+  return prices.docs.reduce(
+    (map, x) => {
+      map[x.symbol] = x.price
+      return map
+    },
+    {
+      USDT: { time: (timestamp / 1000) as Time, value: 1 },
+    } as Record<string, ChartData>
+  )
 }
 
 export async function getPriceCursor(symbol: string): Promise<Timestamp> {

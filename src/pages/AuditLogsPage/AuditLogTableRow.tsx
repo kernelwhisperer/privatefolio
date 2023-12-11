@@ -5,13 +5,13 @@ import { useStore } from "@nanostores/react"
 import React from "react"
 
 import { AssetAvatar } from "../../components/AssetAvatar"
-import { TableRowComponentProps } from "../../components/EnhancedTable"
 import { TimestampCell } from "../../components/TimestampCell"
 import { Truncate } from "../../components/Truncate"
 import { AuditLog, AuditLogOperation } from "../../interfaces"
 import { $assetMap, $integrationMap } from "../../stores/metadata-store"
 import { MonoFont } from "../../theme"
 import { formatNumber } from "../../utils/client-utils"
+import { TableRowComponentProps } from "../../utils/table-utils"
 
 const redColor = red[400]
 const greenColor = green[400]
@@ -51,6 +51,7 @@ export function AuditLogTableRow(props: TableRowComponentProps<AuditLog>) {
   return (
     <>
       <TableRow
+        hover
         // hover={!open}
         // onClick={toggleOpen}
         // className={open ? "TableRow-open-top" : undefined}

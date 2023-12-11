@@ -24,6 +24,7 @@ import { QueryTimer } from "./QueryTimer"
 export type QueryFunction = () => Promise<ChartData[]>
 
 interface SingleSeriesChartProps extends Omit<Partial<ChartProps>, "chartRef"> {
+  height?: number
   /**
    * @default "Candlestick"
    */
@@ -32,7 +33,7 @@ interface SingleSeriesChartProps extends Omit<Partial<ChartProps>, "chartRef"> {
 }
 
 export function SingleSeriesChart(props: SingleSeriesChartProps) {
-  const { queryFn, initType = "Candlestick", ...rest } = props
+  const { queryFn, initType = "Candlestick", height = CHART_HEIGHT, ...rest } = props
 
   const chartRef = useRef<IChartApi | undefined>(undefined)
   const seriesRef = useRef<ISeriesApi<SeriesType> | undefined>(undefined)
@@ -76,6 +77,8 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
         })
       } else {
         seriesRef.current = chartRef.current.addAreaSeries({
+          lineType: 2,
+          lineWidth: 2,
           priceLineVisible: false,
         })
       }
@@ -125,7 +128,7 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
       {transitions((styles, isLoading) => (
         <a.div style={styles}>
           {isLoading ? (
-            <Stack gap={1.5} sx={{ marginX: { lg: -2 } }}>
+            <Stack gap={1.5} sx={{ marginX: { lg: -2 }, marginY: 1 }}>
               <Stack direction="row" gap={1.5} alignItems={"flex-end"}>
                 <Skeleton variant="rounded" width={37} height={320}></Skeleton>
                 <Skeleton variant="rounded" width={37} height={260}></Skeleton>
@@ -162,7 +165,7 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
           ) : (
             <Paper
               sx={{
-                height: CHART_HEIGHT,
+                height,
                 marginX: -2,
                 overflow: "hidden", // because of borderRadius
                 position: "relative",

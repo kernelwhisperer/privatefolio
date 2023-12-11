@@ -117,6 +117,7 @@ export interface Balance {
   balance: number
   price?: ChartData
   symbol: string
+  value?: number
 }
 
 export interface BalanceMap {

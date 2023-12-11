@@ -1,4 +1,4 @@
-import { Box, Stack, TableCell, TableRow, Tooltip } from "@mui/material"
+import { Box, Stack, TableCell, TableRow, Tooltip, Typography } from "@mui/material"
 import { useStore } from "@nanostores/react"
 import React from "react"
 import { useNavigate } from "react-router-dom"
@@ -12,7 +12,7 @@ import { TableRowComponentProps } from "../../utils/table-utils"
 
 export function BalanceTableRow(props: TableRowComponentProps<Balance>) {
   const { row, headCells: _headCells, relativeTime: _relativeTime, ...rest } = props
-  const { symbol, balance, price } = row
+  const { symbol, balance, price, value } = row
   const navigate = useNavigate()
 
   const assetMap = useStore($assetMap)
@@ -20,12 +20,13 @@ export function BalanceTableRow(props: TableRowComponentProps<Balance>) {
   return (
     <TableRow
       sx={{ cursor: "pointer" }}
+      hover
       onClick={() => {
         navigate(`/asset/${symbol}`)
       }}
       {...rest}
     >
-      <TableCell sx={{ maxWidth: 260, minWidth: 260, width: 260 }}>
+      <TableCell sx={{ maxWidth: 380, minWidth: 380, width: 380 }}>
         <Stack
           direction="row"
           gap={1}
@@ -39,7 +40,40 @@ export function BalanceTableRow(props: TableRowComponentProps<Balance>) {
           </Stack>
         </Stack>
       </TableCell>
-      <TableCell align="right" sx={{ fontFamily: MonoFont }}>
+      <TableCell
+        align="right"
+        sx={{ fontFamily: MonoFont, maxWidth: 220, minWidth: 220, width: 220 }}
+      >
+        <Tooltip
+          title={
+            <Box sx={{ fontFamily: MonoFont }}>
+              {typeof price?.value === "number" ? price.value : "Unknown"}
+            </Box>
+          }
+        >
+          <span>
+            {typeof price?.value !== "number" ? (
+              <Typography color="text.secondary" component="span" variant="inherit">
+                Unknown
+              </Typography>
+            ) : (
+              <>
+                <Typography color="text.secondary" component="span" variant="inherit">
+                  $
+                </Typography>
+                {formatNumber(price.value, {
+                  maximumFractionDigits: 2, // TODO make this configurable
+                  minimumFractionDigits: 2,
+                })}
+              </>
+            )}
+          </span>
+        </Tooltip>
+      </TableCell>
+      <TableCell
+        align="right"
+        sx={{ fontFamily: MonoFont, maxWidth: 220, minWidth: 220, width: 220 }}
+      >
         <Tooltip title={<Box sx={{ fontFamily: MonoFont }}>{balance}</Box>}>
           <span>
             {formatNumber(balance, {
@@ -50,12 +84,33 @@ export function BalanceTableRow(props: TableRowComponentProps<Balance>) {
         </Tooltip>
       </TableCell>
       <TableCell align="right" sx={{ fontFamily: MonoFont }}>
-        <Tooltip title={<Box sx={{ fontFamily: MonoFont }}>{price?.value}</Box>}>
+        <Tooltip
+          title={
+            <Box sx={{ fontFamily: MonoFont }}>
+              {typeof value === "number"
+                ? formatNumber(value, {
+                    maximumFractionDigits: 100,
+                  })
+                : "Unknown"}
+            </Box>
+          }
+        >
           <span>
-            {formatNumber(price?.value || 0, {
-              maximumFractionDigits: 2, // TODO make this configurable
-              minimumFractionDigits: 2,
-            })}
+            {typeof value !== "number" ? (
+              <Typography color="text.secondary" component="span" variant="inherit">
+                Unknown
+              </Typography>
+            ) : (
+              <>
+                <Typography color="text.secondary" component="span" variant="inherit">
+                  $
+                </Typography>
+                {formatNumber(value, {
+                  maximumFractionDigits: 2, // TODO make this configurable
+                  minimumFractionDigits: 2,
+                })}
+              </>
+            )}
           </span>
         </Tooltip>
       </TableCell>

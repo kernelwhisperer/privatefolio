@@ -12,14 +12,19 @@ import { HeadCell } from "../../utils/table-utils"
 import { FileImportTableRow } from "./FileImportTableRow"
 
 export function ImportDataPage({ show }: { show: boolean }) {
+  const [showDrop, setShowDrop] = useState<boolean>(false)
+  const [queryTime, setQueryTime] = useState<number | null>(null)
   const [rows, setRows] = useState<FileImport[]>([])
 
   useEffect(() => {
     async function fetchData() {
       const start = Date.now()
       const rows = await getFileImports()
-      console.log(`Query took ${Date.now() - start}ms (file imports)`)
+      setQueryTime(Date.now() - start)
       setRows(rows)
+      setTimeout(() => {
+        setShowDrop(true)
+      }, 330)
     }
 
     fetchData().then()
@@ -93,7 +98,7 @@ export function ImportDataPage({ show }: { show: boolean }) {
       <Typography variant="h6" fontFamily={SerifFont}>
         File imports
       </Typography>
-      {rows.length === 0 ? (
+      {queryTime !== null && rows.length === 0 ? (
         <FileDrop sx={{ marginX: -2, padding: 4 }}>
           <Stack alignItems="center">
             <FolderOutlined sx={{ height: 64, width: 64 }} />
@@ -107,14 +112,17 @@ export function ImportDataPage({ show }: { show: boolean }) {
             headCells={headCells}
             TableRowComponent={FileImportTableRow}
             rows={rows}
+            queryTime={queryTime}
             //
           />
-          <FileDrop
-            defaultBg="var(--mui-palette-background-default)"
-            sx={{
-              marginX: -2,
-            }}
-          />
+          {showDrop && (
+            <FileDrop
+              defaultBg="var(--mui-palette-background-default)"
+              sx={{
+                marginX: -2,
+              }}
+            />
+          )}
         </StaggeredList>
       )}
     </StaggeredList>

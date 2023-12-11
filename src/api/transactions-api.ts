@@ -112,7 +112,6 @@ export async function findTransactions(request: FindTransactionsRequest = {}) {
     sort,
   }
   // console.log("📜 LOG > findTransactions > _req:", _req)
-
   // const explain = await (transactionsDB as any).explain(_req)
   // console.log("📜 LOG > findTransactions > explain:", explain.index)
 

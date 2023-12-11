@@ -1,9 +1,10 @@
-import { Paper, Stack, TableHead } from "@mui/material"
+import { Paper, Skeleton, Stack, TableHead } from "@mui/material"
 import Table from "@mui/material/Table"
 import TableBody from "@mui/material/TableBody"
 import TableCell from "@mui/material/TableCell"
 import TableContainer from "@mui/material/TableContainer"
 import TableRow from "@mui/material/TableRow"
+import { a, useTransition } from "@react-spring/web"
 import React, {
   ChangeEvent,
   ComponentType,
@@ -24,6 +25,7 @@ import {
   TableRowComponentProps,
   ValueSelector,
 } from "../../utils/table-utils"
+import { SPRING_CONFIGS } from "../../utils/utils"
 import { FilterChip } from "../FilterChip"
 import { ConnectedTableHead } from "./ConnectedTableHead"
 
@@ -34,9 +36,9 @@ function descendingComparator<T extends BaseType>(a: T, b: T, valueSelector: Val
   if (valueA === undefined && valueB === undefined) {
     return 0
   } else if (valueA === undefined) {
-    return -1
-  } else if (valueB === undefined) {
     return 1
+  } else if (valueB === undefined) {
+    return -1
   }
 
   if (valueB < valueA) {
@@ -66,11 +68,19 @@ export type MemoryTableProps<T extends BaseType> = {
   defaultRowsPerPage?: number
   headCells: HeadCell<T>[]
   initOrderBy: keyof T
+  queryTime?: number | null
   rows: T[]
 }
 
 export function MemoryTable<T extends BaseType>(props: MemoryTableProps<T>) {
-  const { headCells, rows, TableRowComponent, defaultRowsPerPage = 20, initOrderBy } = props
+  const {
+    headCells,
+    rows,
+    TableRowComponent,
+    defaultRowsPerPage = 20,
+    initOrderBy,
+    queryTime,
+  } = props
 
   const [order, setOrder] = useState<Order>("desc")
   const [orderBy, setOrderBy] = useState<keyof T>(initOrderBy)
@@ -153,77 +163,106 @@ export function MemoryTable<T extends BaseType>(props: MemoryTableProps<T>) {
     setRelativeTime((prev) => !prev)
   }, [])
 
+  const transitions = useTransition(queryTime === null, {
+    config: SPRING_CONFIGS.veryQuick,
+    enter: { opacity: 2 },
+    exitBeforeEnter: true,
+    from: { opacity: 2 },
+    leave: { opacity: 1 },
+  })
+
   return (
-    <Stack gap={1}>
-      {Object.keys(activeFilters).length > 0 && (
-        <Stack direction="row" spacing={1} marginLeft={0}>
-          {Object.keys(activeFilters).map((x) => (
-            <FilterChip
-              key={x}
-              label={`${FILTER_LABEL_MAP[x]} = ${activeFilters[x]}`}
-              color={stringToColor(x)}
-              onDelete={() => {
-                setFilterKey(x as keyof T, undefined)
-              }}
-            />
-          ))}
-        </Stack>
-      )}
-      <Paper
-        variant="outlined"
-        sx={{ marginX: { lg: -2 }, overflowX: { lg: "unset", xs: "auto" }, paddingY: 0.5 }}
-      >
-        <TableContainer sx={{ overflowX: "unset" }}>
-          <Table sx={{ minWidth: 750 }} size="small">
-            <TableHead>
-              <TableRow>
-                {headCells.map((headCell, index) => (
-                  <TableCell
-                    key={index}
-                    padding="normal"
-                    sortDirection={orderBy === headCell.key ? order : false}
-                  >
-                    <ConnectedTableHead<T>
-                      activeFilters={activeFilters}
-                      setFilterKey={setFilterKey}
-                      headCell={headCell}
-                      order={order}
-                      orderBy={orderBy}
-                      onSort={handleSort}
-                      onRelativeTime={handleRelativeTime}
-                      relativeTime={relativeTime}
+    <>
+      {transitions((styles, isLoading) => (
+        <a.div style={styles}>
+          {isLoading ? (
+            <Stack gap={1.5} sx={{ marginX: { lg: -2 } }}>
+              <Stack direction="row" gap={1.5}>
+                <Skeleton variant="rounded" height={56} width={240}></Skeleton>
+                <Skeleton variant="rounded" height={56} width={240}></Skeleton>
+                <Skeleton variant="rounded" height={56} width={240}></Skeleton>
+              </Stack>
+              <Skeleton variant="rounded" height={37}></Skeleton>
+              <Skeleton variant="rounded" height={37}></Skeleton>
+              <Skeleton variant="rounded" height={37}></Skeleton>
+              <Skeleton variant="rounded" height={37}></Skeleton>
+            </Stack>
+          ) : (
+            <Stack gap={1}>
+              {Object.keys(activeFilters).length > 0 && (
+                <Stack direction="row" spacing={1} marginLeft={0}>
+                  {Object.keys(activeFilters).map((x) => (
+                    <FilterChip
+                      key={x}
+                      label={`${FILTER_LABEL_MAP[x]} = ${activeFilters[x]}`}
+                      color={stringToColor(x)}
+                      onDelete={() => {
+                        setFilterKey(x as keyof T, undefined)
+                      }}
                     />
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {visibleRows.map((row, index) => (
-                <TableRowComponent
-                  key={index}
-                  headCells={headCells}
-                  relativeTime={relativeTime}
-                  row={row}
-                />
-              ))}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: 53 * emptyRows }}>
-                  {/* TODO */}
-                  <TableCell colSpan={headCells.length} />
-                </TableRow>
+                  ))}
+                </Stack>
               )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TableFooter
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-          rowsPerPageOptions={[10, 20, 50, 100]}
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-        />
-      </Paper>
-    </Stack>
+              <Paper
+                variant="outlined"
+                sx={{ marginX: { lg: -2 }, overflowX: { lg: "unset", xs: "auto" }, paddingY: 0.5 }}
+              >
+                <TableContainer sx={{ overflowX: "unset" }}>
+                  <Table sx={{ minWidth: 750 }} size="small">
+                    <TableHead>
+                      <TableRow>
+                        {headCells.map((headCell, index) => (
+                          <TableCell
+                            key={index}
+                            padding="normal"
+                            sortDirection={orderBy === headCell.key ? order : false}
+                          >
+                            <ConnectedTableHead<T>
+                              activeFilters={activeFilters}
+                              setFilterKey={setFilterKey}
+                              headCell={headCell}
+                              order={order}
+                              orderBy={orderBy}
+                              onSort={handleSort}
+                              onRelativeTime={handleRelativeTime}
+                              relativeTime={relativeTime}
+                            />
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {visibleRows.map((row, index) => (
+                        <TableRowComponent
+                          key={index}
+                          headCells={headCells}
+                          relativeTime={relativeTime}
+                          row={row}
+                        />
+                      ))}
+                      {emptyRows > 0 && (
+                        <TableRow style={{ height: 53 * emptyRows }}>
+                          {/* TODO */}
+                          <TableCell colSpan={headCells.length} />
+                        </TableRow>
+                      )}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+                <TableFooter
+                  page={page}
+                  queryTime={queryTime}
+                  onPageChange={handleChangePage}
+                  onRowsPerPageChange={handleChangeRowsPerPage}
+                  rowsPerPageOptions={[10, 20, 50, 100]}
+                  count={rows.length}
+                  rowsPerPage={rowsPerPage}
+                />
+              </Paper>
+            </Stack>
+          )}
+        </a.div>
+      ))}
+    </>
   )
 }
