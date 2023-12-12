@@ -1,9 +1,8 @@
 import { Paper, PaperProps, Stack, Typography, useTheme } from "@mui/material"
 import React, { useRef, useState } from "react"
 
-import { addFileImport, processFileImport } from "../api/file-import-api"
 import { enqueueTask } from "../stores/task-store"
-// import PouchDB from "pouchdb"; // Uncomment to use PouchDB
+import { clancy } from "../workers/remotes"
 
 export function FileDrop(props: PaperProps & { defaultBg?: string }) {
   const theme = useTheme()
@@ -26,9 +25,9 @@ export function FileDrop(props: PaperProps & { defaultBg?: string }) {
   const handleFileUpload = (file: File) => {
     enqueueTask({
       function: async () => {
-        const _id = await addFileImport(file)
+        const _id = await clancy.addFileImport(file)
         enqueueTask({
-          function: () => processFileImport(_id, file),
+          function: () => clancy.processFileImport(_id, file),
           name: `Extract audit logs from ${file.name}`,
           priority: 5,
         })

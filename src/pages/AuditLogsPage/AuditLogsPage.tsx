@@ -3,7 +3,6 @@ import React from "react"
 
 import { StaggeredList } from "../../components/StaggeredList"
 import { SerifFont } from "../../theme"
-import { AuditLogActions } from "./AuditLogActions"
 import { AuditLogTable } from "./AuditLogTable"
 
 export function AuditLogsPage({ show }: { show: boolean }) {
@@ -18,7 +17,7 @@ export function AuditLogsPage({ show }: { show: boolean }) {
             sx={{ marginX: 2 }}
           >
             <span>Audit logs</span>
-            <AuditLogActions />
+            {/* <AuditLogActions /> */}
           </Stack>
         </Typography>
         <AuditLogTable />

@@ -1,17 +1,16 @@
 import React, { useCallback } from "react"
 
-import { getHistoricalBalances } from "../../api/balances-api"
-import { getAssetPriceMap } from "../../api/daily-prices-api"
 import { SingleSeriesChart } from "../../components/SingleSeriesChart"
 import { Time } from "../../interfaces"
+import { clancy } from "../../workers/remotes"
 
 export function BalancesChart() {
   const queryFn = useCallback(async () => {
-    const docs = await getHistoricalBalances()
+    const docs = await clancy.getHistoricalBalances()
 
     const balances = await Promise.all(
       docs.map(async ({ _id, _rev, timestamp, ...balanceMap }) => {
-        const priceMap = await getAssetPriceMap(timestamp)
+        const priceMap = await clancy.getAssetPriceMap(timestamp)
 
         const totalValue = Object.keys(priceMap).reduce((acc, symbol) => {
           const price = priceMap[symbol]

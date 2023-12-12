@@ -3,6 +3,10 @@ import PouchDBFind from "pouchdb-find"
 
 import { AuditLog, BalanceMap, FileImport, SavedPrice, Transaction } from "../interfaces"
 
+if (typeof window !== "undefined") {
+  throw new Error("Database should not be initialized in the browser, only in the web worker")
+}
+
 // declare module "pouchdb-core" {
 //   interface Database<Content extends {} = {}> {
 //     explain(query: any): Promise<any>

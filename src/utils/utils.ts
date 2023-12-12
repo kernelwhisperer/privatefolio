@@ -1,6 +1,3 @@
-import { logger } from "@nanostores/logger"
-import { AnyStore } from "nanostores"
-
 /**
  * Returns a hash code from a string
  * @param  {String} str The string to hash.
@@ -32,18 +29,4 @@ export const SPRING_CONFIGS = {
 
 export async function wait(interval: number) {
   return new Promise((resolve) => setTimeout(resolve, interval))
-}
-
-export const SITE_DOMAIN = "https://privatefolio.app"
-export const isProduction = Boolean(window.location.toString().includes(SITE_DOMAIN))
-
-export function logAtoms(atoms: { [key: string]: AnyStore }) {
-  if (!isProduction) {
-    logger(atoms, {
-      messages: {
-        mount: false,
-        unmount: false,
-      },
-    })
-  }
 }

@@ -1,10 +1,9 @@
 import { Paper } from "@mui/material"
 import React, { useCallback, useEffect, useState } from "react"
 
-import { getHistoricalBalances } from "../../api/balances-api"
-import { getAssetPriceMap } from "../../api/daily-prices-api"
 import { StackedChart, StackedDataType } from "../../components/StackedChart"
 import { Time } from "../../interfaces"
+import { clancy } from "../../workers/remotes"
 
 export function BalancesChart() {
   const [loading, setLoading] = useState<boolean>(true)
@@ -12,12 +11,12 @@ export function BalancesChart() {
 
   const query = useCallback(async () => {
     setLoading(true)
-    const docs = await getHistoricalBalances()
+    const docs = await clancy.getHistoricalBalances()
     console.log("📜 LOG > query > docs:", docs)
 
     const balances = await Promise.all(
       docs.map(async ({ _id, _rev, timestamp, ...symbols }) => {
-        const prices = await getAssetPriceMap(timestamp)
+        const prices = await clancy.getAssetPriceMap(timestamp)
         console.log("📜 LOG > docs.map > prices:", prices)
 
         const assetValues = Object.entries(symbols)

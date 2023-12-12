@@ -1,12 +1,12 @@
 import { Typography } from "@mui/material"
 import React, { useEffect, useMemo, useState } from "react"
 
-import { getLatestBalances } from "../../api/balances-api"
 import { MemoryTable } from "../../components/EnhancedTable/MemoryTable"
 import { StaggeredList } from "../../components/StaggeredList"
 import { Balance } from "../../interfaces"
 import { SerifFont } from "../../theme"
 import { HeadCell } from "../../utils/table-utils"
+import { clancy } from "../../workers/remotes"
 import { BalancesChart } from "./BalancesChart"
 import { BalanceTableRow } from "./BalanceTableRow"
 
@@ -16,7 +16,7 @@ export function BalancesPage({ show }: { show: boolean }) {
 
   useEffect(() => {
     const start = Date.now()
-    getLatestBalances().then((balances) => {
+    clancy.getLatestBalances().then((balances) => {
       setQueryTime(Date.now() - start)
       setBalances(balances)
     })

@@ -2,10 +2,8 @@ import { CalculateOutlined, CurrencyExchange, MoreHoriz, Storage } from "@mui/ic
 import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem } from "@mui/material"
 import React from "react"
 
-import { computeBalances } from "../../api/balances-api"
-import { fetchAssetPrices } from "../../api/daily-prices-api"
-import { resetDatabase } from "../../api/database"
 import { enqueueTask, TaskPriority } from "../../stores/task-store"
+import { clancy } from "../../workers/remotes"
 
 export function AuditLogActions() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
@@ -56,7 +54,7 @@ export function AuditLogActions() {
           onClick={() => {
             enqueueTask({
               function: async () => {
-                await computeBalances()
+                await clancy.computeBalances()
               },
               name: "Recompute balances",
               priority: TaskPriority.Low,
@@ -74,7 +72,7 @@ export function AuditLogActions() {
           onClick={() => {
             enqueueTask({
               function: async () => {
-                await fetchAssetPrices()
+                await clancy.fetchAssetPrices()
               },
               name: "Fetch asset prices",
               priority: TaskPriority.Low,
@@ -92,7 +90,7 @@ export function AuditLogActions() {
           onClick={() => {
             enqueueTask({
               function: async () => {
-                await resetDatabase()
+                await clancy.resetDatabase()
               },
               name: "Reset database",
               priority: TaskPriority.High,

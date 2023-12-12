@@ -4,12 +4,11 @@ import { grey } from "@mui/material/colors"
 import { useStore } from "@nanostores/react"
 import React, { useEffect, useState } from "react"
 
-import { findAuditLogs } from "../../api/audit-logs-api"
 import { transactionsDB } from "../../api/database"
 import { $filterOptionsMap } from "../../stores/metadata-store"
 import { MonoFont } from "../../theme"
 import { formatDate, formatFileSize, formatNumber } from "../../utils/client-utils"
-import { clancy } from "../../worker-remote"
+import { clancy } from "../../workers/remotes"
 
 export function SectionTitle(props: TypographyProps) {
   return <Typography variant="body2" {...props} />
@@ -22,6 +21,7 @@ export function DatabaseInfo() {
   const [genesis, setGenesis] = useState<number | null>(null)
 
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     window.navigator.storage.estimate().then((estimate: any) => {
       setStorageUsage(estimate.usageDetails?.indexedDB ?? null)
     })
@@ -38,7 +38,7 @@ export function DatabaseInfo() {
   }, [])
 
   useEffect(() => {
-    findAuditLogs({ limit: 1, order: "asc" }).then((res) => {
+    clancy.findAuditLogs({ limit: 1, order: "asc" }).then((res) => {
       setGenesis(res?.[0].timestamp)
     })
   }, [])

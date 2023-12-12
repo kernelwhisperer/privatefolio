@@ -1,5 +1,5 @@
 import { ChartData, ResolutionString, SavedPrice, Time, Timestamp } from "../interfaces"
-import { $filterOptionsMap } from "../stores/metadata-store"
+import { FilterOptionsMap } from "../stores/metadata-store"
 import { mapToChartData, queryPrices } from "./binance-price-api"
 import { dailyPricesDB } from "./database"
 
@@ -78,8 +78,8 @@ export async function getPriceCursor(symbol: string): Promise<Timestamp> {
   return prices.docs[0].timestamp
 }
 
-export async function fetchAssetPrices() {
-  const symbols = $filterOptionsMap.get().symbol
+export async function fetchAssetPrices(filterMap: FilterOptionsMap) {
+  const symbols = filterMap.symbol
   console.log("Fetch daily asset prices:", symbols)
   const now = Date.now()
   const today: Timestamp = now - (now % 86400000)

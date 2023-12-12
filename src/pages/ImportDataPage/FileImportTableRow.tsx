@@ -13,7 +13,6 @@ import { grey } from "@mui/material/colors"
 import { useStore } from "@nanostores/react"
 import React, { MouseEvent, useState } from "react"
 
-import { removeFileImport } from "../../api/file-import-api"
 import { IntegrationAvatar } from "../../components/IntegrationAvatar"
 import { TimestampCell } from "../../components/TimestampCell"
 import { Truncate } from "../../components/Truncate"
@@ -22,6 +21,7 @@ import { $integrationMap } from "../../stores/metadata-store"
 import { MonoFont } from "../../theme"
 import { formatFileSize, formatNumber } from "../../utils/client-utils"
 import { TableRowComponentProps } from "../../utils/table-utils"
+import { clancy } from "../../workers/remotes"
 
 export function FileImportTableRow(props: TableRowComponentProps<FileImport>) {
   const { row, relativeTime, headCells: _headCells, ...rest } = props
@@ -35,7 +35,7 @@ export function FileImportTableRow(props: TableRowComponentProps<FileImport>) {
   async function handleDelete(event: MouseEvent<HTMLButtonElement>) {
     event.preventDefault()
     setLoading(true)
-    await removeFileImport(row)
+    await clancy.removeFileImport(row)
     setLoading(false)
   }
 

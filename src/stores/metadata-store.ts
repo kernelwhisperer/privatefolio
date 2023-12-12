@@ -1,10 +1,10 @@
 import { keepMount, map } from "nanostores"
 
-import { getFileImports } from "../api/file-import-api"
 import { Asset, AuditLogOperation, Exchange } from "../interfaces"
-import { logAtoms } from "../utils/utils"
+import { logAtoms } from "../utils/browser-utils"
+import { clancy } from "../workers/remotes"
 
-type FilterOptionsMap = {
+export type FilterOptionsMap = {
   incomingSymbol: string[]
   integration: string[]
   operation: AuditLogOperation[]
@@ -32,7 +32,7 @@ export async function computeFilterMap() {
   const filterMap = $filterOptionsMap.get()
   if (Object.keys(filterMap).length > 0) return filterMap
 
-  const fileImports = await getFileImports()
+  const fileImports = await clancy.getFileImports()
 
   const integrations = new Set<string>()
   const symbols = new Set<string>()

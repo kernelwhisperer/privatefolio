@@ -2,14 +2,13 @@ import { FolderOutlined } from "@mui/icons-material"
 import { Stack, Typography } from "@mui/material"
 import React, { useEffect, useMemo, useState } from "react"
 
-import { getFileImports, subscribeToFileImports } from "../../api/file-import-api"
 import { MemoryTable } from "../../components/EnhancedTable/MemoryTable"
 import { FileDrop } from "../../components/FileDrop"
 import { StaggeredList } from "../../components/StaggeredList"
 import { FileImport } from "../../interfaces"
 import { SerifFont } from "../../theme"
 import { HeadCell } from "../../utils/table-utils"
-import { DatabaseInfo } from "./DatabaseInfo"
+import { clancy } from "../../workers/remotes"
 import { FileImportTableRow } from "./FileImportTableRow"
 
 export function ImportDataPage({ show }: { show: boolean }) {
@@ -20,7 +19,7 @@ export function ImportDataPage({ show }: { show: boolean }) {
   useEffect(() => {
     async function fetchData() {
       const start = Date.now()
-      const rows = await getFileImports()
+      const rows = await clancy.getFileImports()
       setQueryTime(Date.now() - start)
       setRows(rows)
       setTimeout(() => {
@@ -30,13 +29,13 @@ export function ImportDataPage({ show }: { show: boolean }) {
 
     fetchData().then()
 
-    const unsubscribe = subscribeToFileImports(async () => {
-      await fetchData()
-    })
+    // const unsubscribe = clancy.subscribeToFileImports(async () => {
+    //   await fetchData()
+    // })
 
-    return () => {
-      unsubscribe()
-    }
+    // return () => {
+    //   unsubscribe()
+    // }
   }, [])
 
   const headCells: HeadCell<FileImport>[] = useMemo(
@@ -96,7 +95,7 @@ export function ImportDataPage({ show }: { show: boolean }) {
         <Typography variant="h6" fontFamily={SerifFont} sx={{ marginX: 2 }}>
           Database info
         </Typography>
-        <DatabaseInfo />
+        {/* <DatabaseInfo /> */}
       </div>
       <div>
         <Typography variant="h6" fontFamily={SerifFont} sx={{ marginX: 2 }}>

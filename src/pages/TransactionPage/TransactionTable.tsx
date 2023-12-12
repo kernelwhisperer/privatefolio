@@ -1,6 +1,5 @@
 import React, { useCallback, useMemo } from "react"
 
-import { findTransactions } from "../../api/transactions-api"
 import {
   QueryFunction,
   RemoteTable,
@@ -8,6 +7,7 @@ import {
 } from "../../components/EnhancedTable/RemoteTable"
 import { Transaction } from "../../interfaces"
 import { HeadCell } from "../../utils/table-utils"
+import { clancy } from "../../workers/remotes"
 import { TransactionTableRow } from "./TransactionTableRow"
 
 interface TransactionsTableProps extends Pick<RemoteTableProps<Transaction>, "defaultRowsPerPage"> {
@@ -29,7 +29,7 @@ export function TransactionTable(props: TransactionsTableProps) {
           }
         : {}
 
-      const transactions = await findTransactions({
+      const transactions = await clancy.findTransactions({
         filters,
         limit: rowsPerPage,
         order,
@@ -40,11 +40,13 @@ export function TransactionTable(props: TransactionsTableProps) {
       return [
         transactions,
         () =>
-          findTransactions({
-            fields: [],
-            filters,
-            selectorOverrides,
-          }).then((logs) => logs.length),
+          clancy
+            .findTransactions({
+              fields: [],
+              filters,
+              selectorOverrides,
+            })
+            .then((logs) => logs.length),
       ]
     },
     [symbol]

@@ -1,6 +1,6 @@
 import { atom } from "nanostores"
 
-import { logAtoms } from "../utils/utils"
+import { logAtoms } from "../utils/browser-utils"
 
 export enum TaskPriority {
   Low = 2,

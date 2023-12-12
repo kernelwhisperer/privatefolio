@@ -1,6 +1,5 @@
 import React, { useCallback, useMemo } from "react"
 
-import { findAuditLogs } from "../../api/audit-logs-api"
 import {
   QueryFunction,
   RemoteTable,
@@ -8,6 +7,7 @@ import {
 } from "../../components/EnhancedTable/RemoteTable"
 import { AuditLog } from "../../interfaces"
 import { HeadCell } from "../../utils/table-utils"
+import { clancy } from "../../workers/remotes"
 import { AuditLogTableRow } from "./AuditLogTableRow"
 
 interface AuditLogsTableProps extends Pick<RemoteTableProps<AuditLog>, "defaultRowsPerPage"> {
@@ -19,7 +19,7 @@ export function AuditLogTable(props: AuditLogsTableProps) {
 
   const queryFn: QueryFunction<AuditLog> = useCallback(
     async (filters, rowsPerPage, page, order) => {
-      const auditLogs = await findAuditLogs({
+      const auditLogs = await clancy.findAuditLogs({
         filters: { symbol, ...filters },
         limit: rowsPerPage,
         order,
@@ -29,10 +29,12 @@ export function AuditLogTable(props: AuditLogsTableProps) {
       return [
         auditLogs,
         () =>
-          findAuditLogs({
-            fields: [],
-            filters: { symbol, ...filters },
-          }).then((logs) => logs.length),
+          clancy
+            .findAuditLogs({
+              fields: [],
+              filters: { symbol, ...filters },
+            })
+            .then((logs) => logs.length),
       ]
     },
     [symbol]
