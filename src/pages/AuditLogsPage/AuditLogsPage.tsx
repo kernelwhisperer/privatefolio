@@ -10,13 +10,8 @@ export function AuditLogsPage({ show }: { show: boolean }) {
   return (
     <StaggeredList gap={1} show={show}>
       <div>
-        <Typography variant="h6" fontFamily={SerifFont}>
-          <Stack
-            direction="row"
-            alignItems="center"
-            justifyContent="space-between"
-            sx={{ marginX: 2 }}
-          >
+        <Typography variant="h6" fontFamily={SerifFont} sx={{ marginX: 2 }}>
+          <Stack direction="row" alignItems="center" justifyContent="space-between">
             <span>Audit logs</span>
             <AuditLogActions />
           </Stack>

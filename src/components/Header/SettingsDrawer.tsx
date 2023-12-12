@@ -21,7 +21,6 @@ export function SettingsDrawer() {
         keepMounted
         open={open}
         anchor="right"
-        elevation={2}
         // transitionDuration={500}
         // TODO this should have a delay
         slotProps={{ backdrop: { invisible: true } }}

@@ -1,4 +1,4 @@
-import { CssVarsThemeOptions, Fade } from "@mui/material"
+import { CssVarsThemeOptions, Fade, PaperProps } from "@mui/material"
 import { blue, grey } from "@mui/material/colors"
 
 export const MainFont = "'Roboto Flex', sans-serif"
@@ -38,6 +38,12 @@ declare module "@mui/material" {
   }
 }
 
+declare module "@mui/material/Paper" {
+  interface AdditionalProps {
+    transparent: boolean
+  }
+}
+
 export const theme: CssVarsThemeOptions = {
   colorSchemes: {
     dark: {
@@ -74,7 +80,7 @@ export const theme: CssVarsThemeOptions = {
           main: "rgb(160, 160, 160)",
         },
         text: {
-          secondary: "rgba(255, 255, 255, 0.5)",
+          secondary: "rgba(255, 255, 255, 0.66)",
         },
       },
     },
@@ -102,6 +108,9 @@ export const theme: CssVarsThemeOptions = {
         secondary: {
           main: "rgb(120, 120, 120)",
         },
+        text: {
+          secondary: "rgba(0, 0, 0, 0.66)",
+        },
       },
     },
   },
@@ -116,6 +125,19 @@ export const theme: CssVarsThemeOptions = {
         root: {
           "@supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none))": {
             backdropFilter: "blur(20px)",
+          },
+        },
+      },
+    },
+    MuiBackdrop: {
+      styleOverrides: {
+        root: {
+          "@supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none))": {
+            "&:not(.MuiBackdrop-invisible)": {
+              backdropFilter: "blur(1px)",
+              // backgroundColor: "transparent",
+              // backgroundColor: "var(--mui-palette-background-default)",
+            },
           },
         },
       },
@@ -169,8 +191,29 @@ export const theme: CssVarsThemeOptions = {
         },
       },
     },
+    MuiDialog: {
+      defaultProps: {
+        PaperProps: {
+          elevation: 4,
+          transparent: "true",
+        },
+      },
+      styleOverrides: {
+        container: {
+          transition: "none !important",
+        },
+        root: {
+          marginBottom: 48,
+          // marginBottom: "56px !important",
+        },
+      },
+    },
     MuiDrawer: {
       defaultProps: {
+        PaperProps: {
+          elevation: 2,
+          transparent: "true",
+        },
         disableScrollLock: true,
       },
     },
@@ -204,22 +247,11 @@ export const theme: CssVarsThemeOptions = {
         },
       },
     },
-    // MuiBackdrop: {
-    //   styleOverrides: {
-    //     root: {
-    //       "@supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none))": {
-    //         backdropFilter: "blur(8px)",
-    //         backgroundColor: "var(--mui-palette-background-backdrop)",
-    //       },
-    //     },
-    //   },
-    // },
     MuiMenuItem: {
       defaultProps: {
         color: "secondary",
       },
     },
-
     MuiPaper: {
       defaultProps: {
         elevation: 0,
@@ -227,18 +259,36 @@ export const theme: CssVarsThemeOptions = {
       styleOverrides: {
         root: {
           "@supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none))": {
-            backdropFilter: "blur(20px)",
+            "html[data-mui-color-scheme='dark'] &": {
+              backdropFilter: "blur(12px)",
+            },
           },
           border: "1px solid var(--mui-palette-divider)",
           boxShadow: "unset",
-          // clipPath: cutCorners,
         },
       },
+      variants: [
+        {
+          props: { transparent: "true" } as PaperProps,
+          style: {
+            backgroundColor: "rgb(255,255,255) !important",
+            "html[data-mui-color-scheme='dark'] &": {
+              backgroundColor: "rgba(255,255,255, 0.025) !important",
+            },
+          },
+        },
+      ],
     },
     MuiPopover: {
       defaultProps: {
         TransitionComponent: Fade,
         disableScrollLock: true,
+        slotProps: {
+          paper: {
+            elevation: 1,
+            transparent: "true",
+          } as PaperProps,
+        },
       },
     },
     MuiSelect: {
@@ -246,6 +296,7 @@ export const theme: CssVarsThemeOptions = {
         MenuProps: {
           PaperProps: {
             elevation: 1,
+            transparent: "true",
           },
         },
       },

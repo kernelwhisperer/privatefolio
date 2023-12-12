@@ -11,6 +11,7 @@ import { HeadCell } from "../../utils/table-utils"
 import { clancy } from "../../workers/remotes"
 import { DatabaseInfo } from "./DatabaseInfo"
 import { FileImportTableRow } from "./FileImportTableRow"
+import { ImportDataActions } from "./ImportDataActions"
 
 export function ImportDataPage({ show }: { show: boolean }) {
   const [showDrop, setShowDrop] = useState<boolean>(false)
@@ -94,7 +95,10 @@ export function ImportDataPage({ show }: { show: boolean }) {
     <StaggeredList component="main" gap={2} show={show}>
       <div>
         <Typography variant="h6" fontFamily={SerifFont} sx={{ marginX: 2 }}>
-          Database info
+          <Stack direction="row" alignItems="center" justifyContent="space-between">
+            <span>Database info</span>
+            <ImportDataActions />
+          </Stack>
         </Typography>
         <DatabaseInfo />
       </div>

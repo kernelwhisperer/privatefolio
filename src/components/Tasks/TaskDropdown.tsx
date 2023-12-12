@@ -10,9 +10,9 @@ import {
   Typography,
 } from "@mui/material"
 import { useStore } from "@nanostores/react"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 
-import { $pendingTask, $taskHistory, $taskQueue } from "../../stores/task-store"
+import { $pendingTask, $taskHistory, $taskQueue, enqueueTask } from "../../stores/task-store"
 import { MonoFont } from "../../theme"
 import { formatNumber } from "../../utils/client-utils"
 import { Truncate } from "../Truncate"
@@ -33,38 +33,38 @@ export function TaskDropdown() {
 
   const open = Boolean(anchorEl)
 
-  // useEffect(() => {
-  //   enqueueTask({
-  //     function: () =>
-  //       new Promise((resolve) => {
-  //         setTimeout(() => {
-  //           resolve(1)
-  //         }, 2000)
-  //       }),
-  //     name: "Fetch prices",
-  //     priority: 2,
-  //   })
-  //   enqueueTask({
-  //     function: () =>
-  //       new Promise((resolve) => {
-  //         setTimeout(() => {
-  //           resolve(1)
-  //         }, 31000)
-  //       }),
-  //     name: "Import data",
-  //     priority: 2,
-  //   })
-  //   enqueueTask({
-  //     function: () =>
-  //       new Promise((resolve) => {
-  //         setTimeout(() => {
-  //           resolve(1)
-  //         }, 100)
-  //       }),
-  //     name: "Compact data",
-  //     priority: 2,
-  //   })
-  // }, [])
+  useEffect(() => {
+    enqueueTask({
+      function: () =>
+        new Promise((resolve) => {
+          setTimeout(() => {
+            resolve(1)
+          }, 2000)
+        }),
+      name: "Fetch prices",
+      priority: 2,
+    })
+    enqueueTask({
+      function: () =>
+        new Promise((resolve) => {
+          setTimeout(() => {
+            resolve(1)
+          }, 31000)
+        }),
+      name: "Import data",
+      priority: 2,
+    })
+    enqueueTask({
+      function: () =>
+        new Promise((resolve) => {
+          setTimeout(() => {
+            resolve(1)
+          }, 100)
+        }),
+      name: "Compact data",
+      priority: 2,
+    })
+  }, [])
 
   return (
     <div>
@@ -72,6 +72,7 @@ export function TaskDropdown() {
         size="small"
         variant="outlined"
         color={pendingTask ? "info" : "secondary"}
+        sx={{ paddingY: 0.5 }}
         onClick={handleClick}
         startIcon={
           pendingTask ? <CircularProgress size={14} color="inherit" /> : <DoneAllRounded />
