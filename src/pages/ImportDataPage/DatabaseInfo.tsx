@@ -4,7 +4,6 @@ import { grey } from "@mui/material/colors"
 import { useStore } from "@nanostores/react"
 import React, { useEffect, useState } from "react"
 
-import { transactionsDB } from "../../api/database"
 import { $filterOptionsMap } from "../../stores/metadata-store"
 import { MonoFont } from "../../theme"
 import { formatDate, formatFileSize, formatNumber } from "../../utils/client-utils"
@@ -32,9 +31,7 @@ export function DatabaseInfo() {
   }, [])
 
   useEffect(() => {
-    transactionsDB.allDocs({ include_docs: false, limit: 1 }).then((res) => {
-      setTransactions(res.total_rows)
-    })
+    clancy.countTransactions().then(setTransactions)
   }, [])
 
   useEffect(() => {

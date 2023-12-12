@@ -2,6 +2,7 @@ import { CalculateOutlined, CurrencyExchange, MoreHoriz, Storage } from "@mui/ic
 import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem } from "@mui/material"
 import React from "react"
 
+import { $filterOptionsMap } from "../../stores/metadata-store"
 import { enqueueTask, TaskPriority } from "../../stores/task-store"
 import { clancy } from "../../workers/remotes"
 
@@ -72,7 +73,7 @@ export function AuditLogActions() {
           onClick={() => {
             enqueueTask({
               function: async () => {
-                await clancy.fetchAssetPrices()
+                await clancy.fetchAssetPrices($filterOptionsMap.get())
               },
               name: "Fetch asset prices",
               priority: TaskPriority.Low,

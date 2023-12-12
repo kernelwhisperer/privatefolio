@@ -109,3 +109,8 @@ export async function findAuditLogs(request: FindAuditLogsRequest = {}) {
   if (warning) console.warn("findAuditLogs", warning)
   return docs as AuditLog[]
 }
+
+export async function countAuditLogs() {
+  const result = await auditLogsDB.allDocs({ include_docs: false, limit: 1 })
+  return result.total_rows
+}

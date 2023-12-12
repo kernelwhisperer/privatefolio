@@ -120,3 +120,8 @@ export async function findTransactions(request: FindTransactionsRequest = {}) {
   if (warning) console.warn("findTransactions", warning)
   return docs as Transaction[]
 }
+
+export async function countTransactions() {
+  const result = await transactionsDB.allDocs({ include_docs: false, limit: 1 })
+  return result.total_rows
+}

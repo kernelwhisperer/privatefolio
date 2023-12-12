@@ -9,6 +9,7 @@ import { FileImport } from "../../interfaces"
 import { SerifFont } from "../../theme"
 import { HeadCell } from "../../utils/table-utils"
 import { clancy } from "../../workers/remotes"
+import { DatabaseInfo } from "./DatabaseInfo"
 import { FileImportTableRow } from "./FileImportTableRow"
 
 export function ImportDataPage({ show }: { show: boolean }) {
@@ -95,7 +96,7 @@ export function ImportDataPage({ show }: { show: boolean }) {
         <Typography variant="h6" fontFamily={SerifFont} sx={{ marginX: 2 }}>
           Database info
         </Typography>
-        {/* <DatabaseInfo /> */}
+        <DatabaseInfo />
       </div>
       <div>
         <Typography variant="h6" fontFamily={SerifFont} sx={{ marginX: 2 }}>
