@@ -5,10 +5,11 @@ import { useStore } from "@nanostores/react"
 import React, { useEffect, useState } from "react"
 
 import { findAuditLogs } from "../../api/audit-logs-api"
-import { auditLogsDB, transactionsDB } from "../../api/database"
+import { transactionsDB } from "../../api/database"
 import { $filterOptionsMap } from "../../stores/metadata-store"
 import { MonoFont } from "../../theme"
 import { formatDate, formatFileSize, formatNumber } from "../../utils/client-utils"
+import { clancy } from "../../worker-remote"
 
 export function SectionTitle(props: TypographyProps) {
   return <Typography variant="body2" {...props} />
@@ -27,9 +28,7 @@ export function DatabaseInfo() {
   }, [])
 
   useEffect(() => {
-    auditLogsDB.allDocs({ include_docs: false, limit: 1 }).then((res) => {
-      setAuditLogs(res.total_rows)
-    })
+    clancy.countAuditLogs().then(setAuditLogs)
   }, [])
 
   useEffect(() => {

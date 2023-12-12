@@ -254,3 +254,8 @@ export type QueryRequest = {
   variant?: number
 }
 export const DEFAULT_POLLING_INTERVAL = 2_000
+
+export interface Clancy {
+  countAuditLogs(): Promise<number>
+  counter: number
+}

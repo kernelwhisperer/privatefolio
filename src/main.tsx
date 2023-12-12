@@ -1,4 +1,5 @@
 import "./index.css"
+import "./worker-remote"
 
 import * as React from "react"
 import * as ReactDOM from "react-dom/client"
