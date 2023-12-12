@@ -12,8 +12,8 @@ export type StaggeredListProps = StackProps & {
 }
 
 const SHOW_STATE = { opacity: 1, y: 0 }
-const HIDE_STATE = { opacity: 0, y: 15 }
-const INIT_STATE = { opacity: 0, y: 15 }
+const HIDE_STATE = { opacity: 0, y: -15 }
+const INIT_STATE = { opacity: 0, y: -15 }
 
 const SEC_SHOW_STATE = { opacity: 1, x: 0 }
 const SEC_HIDE_STATE = { opacity: 0, x: 30 }
