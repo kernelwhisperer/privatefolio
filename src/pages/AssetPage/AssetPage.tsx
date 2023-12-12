@@ -35,10 +35,10 @@ export default function AssetPage({ show }: { show: boolean }) {
 
   return (
     <StaggeredList gap={1} show={show}>
-      <BackButton to="/" sx={{ marginLeft: -1 }}>
+      <BackButton to="/" sx={{ marginLeft: 1 }}>
         Home
       </BackButton>
-      <Stack direction="row" gap={1} alignItems="center" component="div">
+      <Stack direction="row" gap={1} alignItems="center" component="div" sx={{ marginX: 2 }}>
         <AssetAvatar size="large" src={assetMap[symbol]?.image} alt={symbol} />
         <Stack>
           <Typography variant="h6" fontFamily={SerifFont} sx={{ marginBottom: -0.5 }}>
@@ -58,6 +58,7 @@ export default function AssetPage({ show }: { show: boolean }) {
         <Tabs
           value={tab}
           sx={(theme) => ({
+            marginX: 2,
             [`& .${tabsClasses.indicator}`]: {
               background: grey[600],
               // borderRadius: 2,

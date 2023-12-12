@@ -55,11 +55,11 @@ export function BalancesPage({ show }: { show: boolean }) {
 
   return (
     <StaggeredList gap={1} show={show}>
-      <Typography variant="h6" fontFamily={SerifFont}>
+      <Typography variant="h6" fontFamily={SerifFont} sx={{ marginX: 2 }}>
         <span>Net worth</span>
       </Typography>
       <BalancesChart />
-      <Typography variant="h6" fontFamily={SerifFont}>
+      <Typography variant="h6" fontFamily={SerifFont} sx={{ marginX: 2 }}>
         <span>Balances</span>
       </Typography>
       <MemoryTable<Balance>

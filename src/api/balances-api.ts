@@ -30,7 +30,7 @@ export async function getLatestBalances(): Promise<Balance[]> {
   }
 }
 
-export async function getHistoricalBalances(symbol?: string, limit = 200) {
+export async function getHistoricalBalances(symbol?: string, limit?: number) {
   await balancesDB.createIndex({
     index: {
       fields: ["timestamp"],
@@ -51,7 +51,7 @@ export async function getHistoricalBalances(symbol?: string, limit = 200) {
     sort: [
       symbol
         ? {
-            symbol: "desc",
+            // symbol: "desc",
             timestamp: "desc",
           }
         : { timestamp: "desc" },

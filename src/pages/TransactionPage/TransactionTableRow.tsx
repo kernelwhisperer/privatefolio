@@ -67,7 +67,7 @@ export function TransactionTableRow(props: TableRowComponentProps<Transaction>) 
           </Stack>
         </TableCell>
         <TableCell sx={{ maxWidth: 140, minWidth: 140, width: 140 }}>{wallet}</TableCell>
-        <TableCell sx={{ maxWidth: 120, minWidth: 120, width: 120 }}>
+        <TableCell sx={{ maxWidth: 100, minWidth: 100, width: 100 }}>
           <Tooltip title={type}>
             <Chip
               size="small"
@@ -114,9 +114,9 @@ export function TransactionTableRow(props: TableRowComponentProps<Transaction>) 
             color: greenColor,
             fontFamily: MonoFont,
             //
-            maxWidth: 140,
-            minWidth: 140,
-            width: 140,
+            maxWidth: 120,
+            minWidth: 120,
+            width: 120,
           }}
         >
           <Tooltip title={<Box sx={{ fontFamily: MonoFont }}>{incomingN}</Box>}>

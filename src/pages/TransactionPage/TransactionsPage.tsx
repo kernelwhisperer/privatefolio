@@ -8,7 +8,7 @@ import { TransactionTable } from "./TransactionTable"
 export function TransactionsPage({ show }: { show: boolean }) {
   return (
     <StaggeredList gap={1} show={show}>
-      <Typography variant="h6" fontFamily={SerifFont}>
+      <Typography variant="h6" fontFamily={SerifFont} sx={{ marginX: 2 }}>
         Transactions
       </Typography>
       <TransactionTable />
