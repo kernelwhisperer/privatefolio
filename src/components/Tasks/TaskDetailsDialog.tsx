@@ -43,16 +43,17 @@ export function TaskDetailsDialog({ taskId, ...props }: DialogProps & { taskId: 
   const completed = task && "completedAt" in task && task.completedAt
 
   const progressPercent = useMemo(() => {
-    if (completed) {
+    if (completed && !updates?.length && !task?.errorMessage) {
       return 100
     }
+
     if (!updates?.length) {
-      return undefined
+      return 0
     }
 
     const lastUpdate = updates[updates.length - 1]
-    return updateMap[lastUpdate][0]
-  }, [completed, updateMap, updates])
+    return updateMap[lastUpdate][0] || 0
+  }, [completed, task, updateMap, updates])
 
   const detailsRef = useRef<HTMLDivElement>(null)
 
@@ -101,10 +102,12 @@ export function TaskDetailsDialog({ taskId, ...props }: DialogProps & { taskId: 
             <Box sx={{ width: "100%" }}>
               <LinearProgressWithLabel
                 color={
-                  progressPercent !== 100
-                    ? "info"
+                  task.abortController?.signal.aborted
+                    ? "secondary"
                     : (task as FinishedTask).errorMessage
                     ? "error"
+                    : progressPercent !== 100
+                    ? "info"
                     : "success"
                 }
                 sx={{ height: 8 }}

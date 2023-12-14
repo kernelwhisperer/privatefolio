@@ -18,11 +18,11 @@ export function PendingTaskProgress({ sx = {}, ...rest }: CircularProgressProps)
     const updates = Object.keys(updateMap)
 
     if (!updates?.length) {
-      return 1
+      return 0
     }
 
     const lastUpdate = updates[updates.length - 1]
-    return Math.max(updateMap[lastUpdate][0], 1)
+    return updateMap[lastUpdate][0] || 0
   }, [completed, progressHistory, task])
 
   if (!task) {
@@ -48,7 +48,7 @@ export function PendingTaskProgress({ sx = {}, ...rest }: CircularProgressProps)
       <CircularProgress
         key={task.id}
         variant={task.determinate ? "determinate" : "indeterminate"}
-        disableShrink
+        disableShrink={!task.determinate}
         color="info"
         sx={{
           left: 0,

@@ -1,4 +1,5 @@
 import {
+  Block,
   CancelOutlined,
   CheckRounded,
   ClearRounded,
@@ -46,12 +47,24 @@ export function TaskDropdown() {
 
   // useEffect(() => {
   //   enqueueTask({
+  //     description: "Computing balances",
+  //     function: (progress) =>
+  //       new Promise((resolve, reject) => {
+  //         progress([50, "Almost there"])
+  //         setTimeout(() => {
+  //           reject(new Error("Something went wrong"))
+  //         }, 320)
+  //       }),
+  //     name: "Computing balances",
+  //     priority: 2,
+  //   })
+  //   enqueueTask({
   //     description: "Fetching price data for all assets",
   //     function: () =>
   //       new Promise((resolve, reject) => {
   //         setTimeout(() => {
   //           reject(new Error("Something went wrong"))
-  //         }, 2830)
+  //         }, 1830)
   //       }),
   //     name: "Fetch prices",
   //     priority: 2,
@@ -59,21 +72,26 @@ export function TaskDropdown() {
   //   enqueueTask({
   //     description: "Fetching price data for all assets",
   //     determinate: true,
-  //     function: (progress) =>
-  //       new Promise((resolve) => {
+  //     function: (progress, abortSignal) =>
+  //       new Promise((resolve, reject) => {
   //         const numbers = Array.from({ length: 10 }, (_, i) => i + 1)
   //         numbers.forEach((number) => {
   //           setTimeout(() => {
+  //             if (abortSignal.aborted) {
+  //               reject(new Error(abortSignal.reason))
+  //               return
+  //             }
+
   //             progress([
-  //               number * 3,
+  //               number * 10,
   //               `Fetching price for ${Math.random().toString(36).slice(2, 5).toUpperCase()}`,
   //             ])
+
+  //             if (number === 10) {
+  //               resolve(null)
+  //             }
   //           }, number * 1000)
   //         })
-
-  //         setTimeout(() => {
-  //           resolve(null)
-  //         }, 10_000)
   //       }),
   //     name: "Import data",
   //     priority: 2,
@@ -180,7 +198,7 @@ export function TaskDropdown() {
                     <Stack direction="row" gap={0.5}>
                       <Truncate>{pendingTask.name}</Truncate>
                       <Typography fontFamily={MonoFont} variant="inherit" color="text.secondary">
-                        (<TaskDuration task={pendingTask} />)
+                        (<TaskDuration key={pendingTask.id} task={pendingTask} />)
                       </Typography>
                     </Stack>
                   }
@@ -191,7 +209,9 @@ export function TaskDropdown() {
           {taskHistory.map((task) => (
             <ListItem key={task.id} dense>
               <ListItemButton onClick={() => setSelectedTaskId(task.id)} dense>
-                {task.errorMessage ? (
+                {task.abortController?.signal.aborted ? (
+                  <Block sx={{ marginRight: 1, width: 16 }} color="secondary" />
+                ) : task.errorMessage ? (
                   <ClearRounded sx={{ marginRight: 1, width: 16 }} color="error" />
                 ) : (
                   <CheckRounded sx={{ marginRight: 1, width: 16 }} color="success" />

@@ -12,12 +12,13 @@ export type ProgressUpdate = [] | [number] | [number | undefined, string]
 export type ProgressCallback = (state: ProgressUpdate) => void
 
 export interface Task {
+  abortController?: AbortController
   description: string
   /**
    * @default false
    */
   determinate?: boolean
-  function: (progressCallback: ProgressCallback) => Promise<unknown>
+  function: (progressCallback: ProgressCallback, abortSignal: AbortSignal) => Promise<unknown>
   id: string
   name: string
   priority: TaskPriority
@@ -65,13 +66,14 @@ async function processQueue() {
     if (task) {
       const startTime = Date.now()
       task.startedAt = startTime
+      task.abortController = new AbortController()
       $progressHistory.setKey(task.id, [])
       $pendingTask.set(task)
       let errorMessage: string | undefined
 
       try {
         console.log(`Processing task: ${task.name}`)
-        await task.function(createProgressCallback(task.id))
+        await task.function(createProgressCallback(task.id), task.abortController.signal)
       } catch (error) {
         console.error("Error processing task:", error)
         errorMessage = String(error)
@@ -111,8 +113,10 @@ export function enqueueTask(item: Omit<Task, "id"> & { priority?: TaskPriority }
 }
 
 export function cancelTask(taskId: string) {
-  if ($pendingTask.get()?.id === taskId) {
-    // abort
+  const pendingTask = $pendingTask.get()
+  if (pendingTask?.id === taskId) {
+    console.log("Aborting task with id:", pendingTask.id)
+    pendingTask.abortController?.abort("Task interrupted by user.")
   } else {
     const newQueue = $taskQueue.get().filter((x) => x.id !== taskId)
     $taskQueue.set(newQueue)
