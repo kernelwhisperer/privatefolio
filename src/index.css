@@ -13,7 +13,7 @@ html {
   scrollbar-width: thin;
   -webkit-tap-highlight-color: transparent;
   /* TODO */
-  /* scrollbar-gutter: stable; */ 
+  /* scrollbar-gutter: stable; */
   overflow-y: scroll;
 }
 
@@ -28,6 +28,13 @@ body {
 
 ::-webkit-scrollbar,
 ::-webkit-scrollbar-thumb {
+  width: 8px;
+  height: 8px;
+  border-radius: 4px;
+}
+
+body::-webkit-scrollbar,
+body::-webkit-scrollbar-thumb {
   width: 12px;
   height: 12px;
   border-radius: 2px;
@@ -38,27 +45,27 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.15);
+  /* background: rgba(0, 0, 0, 0.15); */
+  background: rgba(205, 205, 205);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.25);
-}
-
-html[data-mui-color-scheme="dark"] ::-webkit-scrollbar {
-  background: transparent;
+  /* background: rgba(0, 0, 0, 0.25); */
+  background: rgba(185, 185, 185);
 }
 
 html[data-mui-color-scheme="dark"] ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
+  /* background: rgba(255, 255, 255, 0.15); */
+  background: rgba(85, 85, 85);
 }
 
 html[data-mui-color-scheme="dark"] ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.25);
+  /* background: rgba(255, 255, 255, 0.25); */
+  background: rgba(95, 95, 95);
 }
 
-input[type=number]::-webkit-inner-spin-button, 
-input[type=number]::-webkit-outer-spin-button { 
-  -webkit-appearance: none; 
-  margin: 0; 
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }

@@ -9,7 +9,7 @@ import { MonoFont } from "../../theme"
 import { formatDate, formatFileSize, formatNumber } from "../../utils/client-utils"
 import { clancy } from "../../workers/remotes"
 
-export function SectionTitle(props: TypographyProps) {
+function SectionTitle(props: TypographyProps) {
   return <Typography variant="body2" {...props} />
 }
 

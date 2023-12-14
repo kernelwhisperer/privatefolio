@@ -22,7 +22,7 @@ export async function indexAuditLogs() {
       name: "integration",
     },
   })
-  console.log("📜 LOG > indexAuditLogs > created", 1)
+  // console.log("📜 LOG > indexAuditLogs > created", 1)
   await auditLogsDB.createIndex({
     index: {
       // MUST respect the order in _filterOrder
@@ -30,7 +30,7 @@ export async function indexAuditLogs() {
       name: "wallet",
     },
   })
-  console.log("📜 LOG > indexAuditLogs > created", 2)
+  // console.log("📜 LOG > indexAuditLogs > created", 2)
   await auditLogsDB.createIndex({
     index: {
       // MUST respect the order in _filterOrder
@@ -38,7 +38,7 @@ export async function indexAuditLogs() {
       name: "operation",
     },
   })
-  console.log("📜 LOG > indexAuditLogs > created", 3)
+  // console.log("📜 LOG > indexAuditLogs > created", 3)
   await auditLogsDB.createIndex({
     index: {
       // MUST respect the order in _filterOrder
@@ -46,14 +46,14 @@ export async function indexAuditLogs() {
       name: "symbol",
     },
   })
-  console.log("📜 LOG > indexAuditLogs > created", 4)
+  // console.log("📜 LOG > indexAuditLogs > created", 4)
   await auditLogsDB.createIndex({
     index: {
       fields: ["timestamp"],
       name: "timestamp",
     },
   })
-  console.log("📜 LOG > indexAuditLogs > created", 5)
+  // console.log("📜 LOG > indexAuditLogs > created", 5)
 }
 
 type FindAuditLogsRequest = {

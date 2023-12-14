@@ -24,15 +24,17 @@ export function FileDrop(props: PaperProps & { defaultBg?: string }) {
 
   const handleFileUpload = (file: File) => {
     enqueueTask({
+      description: `Importing file ${file.name}`,
       function: async () => {
         const _id = await clancy.addFileImport(file)
         enqueueTask({
+          description: `Extracting audit logs from ${file.name}`,
           function: () => clancy.processFileImport(_id, file),
-          name: `Extract audit logs from ${file.name}`,
+          name: `Extract audit logs`,
           priority: 5,
         })
       },
-      name: `Import file ${file.name}`,
+      name: `Import file`,
       priority: 8,
     })
   }

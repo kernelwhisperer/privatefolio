@@ -137,6 +137,7 @@ export function FileImportTableRow(props: TableRowComponentProps<FileImport>) {
         <Tooltip title="Delete file import (including its audit logs)">
           <IconButton
             size="small"
+            color="secondary"
             sx={{ height: 28, marginLeft: -1 }}
             onClick={handleDelete}
             disabled={loading}

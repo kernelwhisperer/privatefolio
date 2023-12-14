@@ -43,6 +43,11 @@ declare module "@mui/material/Paper" {
     transparent: boolean
   }
 }
+declare module "@mui/material/LinearProgress" {
+  interface LinearProgressPropsColorOverrides {
+    accent: true
+  }
+}
 
 export const theme: CssVarsThemeOptions = {
   colorSchemes: {
@@ -71,7 +76,7 @@ export const theme: CssVarsThemeOptions = {
           paper: "rgb(45, 45, 45)",
         },
         info: {
-          main: blue.A100,
+          main: blue[400],
         },
         primary: {
           main: "rgb(240,240,240)",
@@ -93,14 +98,17 @@ export const theme: CssVarsThemeOptions = {
           border: "rgba(0,0,0, 0.05)",
         },
         accent: {
-          main: "rgb(136, 101, 160)",
+          // main: "rgb(136, 101, 160)",
+          dark: blue[800],
+          light: blue[400],
+          main: blue[600],
         },
         background: {
           default: bgColor,
           paper: "rgb(255, 255, 255)",
         },
         info: {
-          main: blue.A400,
+          main: blue[600],
         },
         primary: {
           main: "rgb(80, 80, 80)",
@@ -226,6 +234,16 @@ export const theme: CssVarsThemeOptions = {
         },
       },
     },
+    MuiLinearProgress: {
+      styleOverrides: {
+        bar: {
+          borderRadius: 2,
+        },
+        root: {
+          borderRadius: 2,
+        },
+      },
+    },
     MuiList: {
       defaultProps: {
         disablePadding: true,
@@ -239,10 +257,6 @@ export const theme: CssVarsThemeOptions = {
       },
       styleOverrides: {
         root: {
-          "& ::-webkit-scrollbar,& ::-webkit-scrollbar-thumb": {
-            borderRadius: "16px",
-            width: "8px",
-          },
           maxHeight: "50vh",
         },
       },

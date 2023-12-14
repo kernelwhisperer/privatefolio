@@ -4,6 +4,7 @@ import { formatDistance } from "date-fns"
 export function formatNumber(number: number, opts: Intl.NumberFormatOptions = {}) {
   return new Intl.NumberFormat(window.navigator.language, {
     notation: "standard",
+    // minimumIntegerDigits: 2,
     ...opts,
   }).format(number)
 }
@@ -25,14 +26,14 @@ export function formatDate(date: Date | number) {
   }).format(date)
 }
 
-export function formatHour(date: Date | number) {
+export function formatHour(date: Date | number, opts: Intl.DateTimeFormatOptions = {}) {
   return new Intl.DateTimeFormat(window.navigator.language, {
     hour: "numeric",
     hour12: false,
     minute: "numeric",
     // second: "numeric",
     // fractionalSecondDigits: 3,
-    // ...opts,
+    ...opts,
   }).format(date)
 }
 

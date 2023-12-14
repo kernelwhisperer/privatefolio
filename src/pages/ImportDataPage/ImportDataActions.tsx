@@ -45,6 +45,7 @@ export function ImportDataActions() {
           dense
           onClick={() => {
             enqueueTask({
+              description: "Recomputing indexes for all audit logs.",
               function: async () => {
                 await clancy.indexAuditLogs()
               },
@@ -63,6 +64,7 @@ export function ImportDataActions() {
           dense
           onClick={() => {
             enqueueTask({
+              description: "Recomputing balances for all assets.",
               function: async () => {
                 await clancy.computeBalances()
               },
@@ -81,6 +83,7 @@ export function ImportDataActions() {
           dense
           onClick={() => {
             enqueueTask({
+              description: "Fetching price data for all assets.",
               function: async () => {
                 await clancy.fetchAssetPrices($filterOptionsMap.get())
               },
@@ -105,6 +108,7 @@ export function ImportDataActions() {
             )
             if (confirmed) {
               enqueueTask({
+                description: "Removing absolutely all data saved on disk.",
                 function: async () => {
                   await clancy.resetDatabase()
                 },

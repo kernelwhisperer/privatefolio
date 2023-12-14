@@ -1,27 +1,38 @@
-import { CheckRounded, DoneAllRounded, HourglassEmptyRounded } from "@mui/icons-material"
+import {
+  CancelOutlined,
+  CheckRounded,
+  ClearRounded,
+  DoneAllRounded,
+  HourglassEmptyRounded,
+} from "@mui/icons-material"
 import {
   Button,
-  CircularProgress,
+  IconButton,
   List,
   ListItem,
+  ListItemButton,
   ListItemText,
   Menu,
   Stack,
   Typography,
 } from "@mui/material"
 import { useStore } from "@nanostores/react"
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 
-import { $pendingTask, $taskHistory, $taskQueue, enqueueTask } from "../../stores/task-store"
+import { $pendingTask, $taskHistory, $taskQueue, cancelTask } from "../../stores/task-store"
 import { MonoFont } from "../../theme"
-import { formatNumber } from "../../utils/client-utils"
 import { Truncate } from "../Truncate"
+import { PendingTaskProgress } from "./PendingTaskProgress"
+import { TaskDetailsDialog } from "./TaskDetailsDialog"
+import { TaskDuration } from "./TaskDuration"
 
 export function TaskDropdown() {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const pendingTask = useStore($pendingTask)
   const taskQueue = useStore($taskQueue)
   const taskHistory = useStore($taskHistory)
+
+  const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null)
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
@@ -33,50 +44,62 @@ export function TaskDropdown() {
 
   const open = Boolean(anchorEl)
 
-  useEffect(() => {
-    enqueueTask({
-      function: () =>
-        new Promise((resolve) => {
-          setTimeout(() => {
-            resolve(1)
-          }, 2000)
-        }),
-      name: "Fetch prices",
-      priority: 2,
-    })
-    enqueueTask({
-      function: () =>
-        new Promise((resolve) => {
-          setTimeout(() => {
-            resolve(1)
-          }, 31000)
-        }),
-      name: "Import data",
-      priority: 2,
-    })
-    enqueueTask({
-      function: () =>
-        new Promise((resolve) => {
-          setTimeout(() => {
-            resolve(1)
-          }, 100)
-        }),
-      name: "Compact data",
-      priority: 2,
-    })
-  }, [])
+  // useEffect(() => {
+  //   enqueueTask({
+  //     description: "Fetching price data for all assets",
+  //     function: () =>
+  //       new Promise((resolve, reject) => {
+  //         setTimeout(() => {
+  //           reject(new Error("Something went wrong"))
+  //         }, 2830)
+  //       }),
+  //     name: "Fetch prices",
+  //     priority: 2,
+  //   })
+  //   enqueueTask({
+  //     description: "Fetching price data for all assets",
+  //     determinate: true,
+  //     function: (progress) =>
+  //       new Promise((resolve) => {
+  //         const numbers = Array.from({ length: 10 }, (_, i) => i + 1)
+  //         numbers.forEach((number) => {
+  //           setTimeout(() => {
+  //             progress([
+  //               number * 3,
+  //               `Fetching price for ${Math.random().toString(36).slice(2, 5).toUpperCase()}`,
+  //             ])
+  //           }, number * 1000)
+  //         })
+
+  //         setTimeout(() => {
+  //           resolve(null)
+  //         }, 10_000)
+  //       }),
+  //     name: "Import data",
+  //     priority: 2,
+  //   })
+  //   enqueueTask({
+  //     description: "Fetching price data for all assets",
+  //     function: () =>
+  //       new Promise((resolve) => {
+  //         setTimeout(() => {
+  //           resolve(null)
+  //         }, 100)
+  //       }),
+  //     name: "Compact data",
+  //     priority: 2,
+  //   })
+  // }, [])
 
   return (
-    <div>
+    <>
       <Button
         size="small"
         variant="outlined"
         color={pendingTask ? "info" : "secondary"}
         sx={{ paddingY: 0.5 }}
         onClick={handleClick}
-        startIcon={
-          pendingTask ? <CircularProgress size={14} color="inherit" /> : <DoneAllRounded />
-        }
+        startIcon={pendingTask ? <PendingTaskProgress /> : <DoneAllRounded />}
       >
         <Truncate sx={{ maxWidth: 260 }}>
           {pendingTask ? `${pendingTask.name}` : "Up to date"}
@@ -95,50 +118,95 @@ export function TaskDropdown() {
           vertical: "top",
         }}
         sx={{ marginTop: 0.5 }}
-        MenuListProps={{ sx: { maxHeight: 256 } }}
+        MenuListProps={{ sx: { maxHeight: 224 } }}
+        slotProps={{ paper: { sx: { overflowY: "scroll" } } }}
       >
         <List
           dense
           sx={{
+            "& .MuiListItem-root": {
+              paddingY: 0,
+            },
+            "& .MuiListItemButton-root": {
+              borderRadius: 1,
+              opacity: "1 !important",
+            },
+            marginX: -1,
             maxWidth: 340,
             minWidth: 340,
+            paddingY: 0.5,
           }}
         >
-          {taskQueue.map((task, index) => (
-            <ListItem key={index}>
-              <HourglassEmptyRounded sx={{ marginRight: 1, width: 16 }} color="info" />
-              <ListItemText primary={<Truncate>{task.name}</Truncate>} />
-            </ListItem>
-          ))}
+          {taskQueue
+            .slice()
+            .reverse()
+            .map((task) => (
+              <ListItem
+                key={task.id}
+                secondaryAction={
+                  <IconButton
+                    edge="end"
+                    aria-label="delete"
+                    size="small"
+                    onClick={() => cancelTask(task.id)}
+                  >
+                    <CancelOutlined fontSize="inherit" />
+                  </IconButton>
+                }
+              >
+                <ListItemButton disabled>
+                  <HourglassEmptyRounded sx={{ marginRight: 1, width: 16 }} color="info" />
+                  <ListItemText primary={<Truncate>{task.name}</Truncate>} />
+                </ListItemButton>
+              </ListItem>
+            ))}
           {pendingTask && (
-            <ListItem>
-              <CircularProgress size={14} sx={{ marginRight: 1 }} color="info" />
-              <ListItemText primary={<Truncate>{pendingTask.name}</Truncate>} />
+            <ListItem
+              secondaryAction={
+                <IconButton
+                  edge="end"
+                  aria-label="delete"
+                  size="small"
+                  onClick={() => cancelTask(pendingTask.id)}
+                >
+                  <CancelOutlined fontSize="inherit" />
+                </IconButton>
+              }
+            >
+              <ListItemButton onClick={() => setSelectedTaskId(pendingTask.id)}>
+                <PendingTaskProgress sx={{ marginRight: 1.25 }} />
+                <ListItemText
+                  primary={
+                    <Stack direction="row" gap={0.5}>
+                      <Truncate>{pendingTask.name}</Truncate>
+                      <Typography fontFamily={MonoFont} variant="inherit" color="text.secondary">
+                        (<TaskDuration task={pendingTask} />)
+                      </Typography>
+                    </Stack>
+                  }
+                />
+              </ListItemButton>
             </ListItem>
           )}
-          {taskHistory.map((task, index) => (
-            <ListItem key={index}>
-              <CheckRounded sx={{ marginRight: 1, width: 16 }} color="success" />
-              <ListItemText
-                primary={
-                  <Stack direction="row" gap={0.5}>
-                    <Truncate>{task.name}</Truncate>
-                    <Typography
-                      fontFamily={MonoFont}
-                      variant="inherit"
-                      component="span"
-                      color="text.secondary"
-                    >
-                      (
-                      {formatNumber(task.duration / 1000, {
-                        maximumFractionDigits: 2,
-                        minimumFractionDigits: 2,
-                      })}
-                      s)
-                    </Typography>
-                  </Stack>
-                }
-              />
+          {taskHistory.map((task) => (
+            <ListItem key={task.id} dense>
+              <ListItemButton onClick={() => setSelectedTaskId(task.id)} dense>
+                {task.errorMessage ? (
+                  <ClearRounded sx={{ marginRight: 1, width: 16 }} color="error" />
+                ) : (
+                  <CheckRounded sx={{ marginRight: 1, width: 16 }} color="success" />
+                )}
+                <ListItemText
+                  primary={
+                    <Stack direction="row" gap={0.5}>
+                      <Truncate>{task.name}</Truncate>
+                      <Typography fontFamily={MonoFont} variant="inherit" color="text.secondary">
+                        (<TaskDuration task={task} />)
+                      </Typography>
+                    </Stack>
+                  }
+                />
+              </ListItemButton>
             </ListItem>
           ))}
           {taskQueue.length === 0 && taskHistory.length === 0 && !pendingTask && (
@@ -148,6 +216,9 @@ export function TaskDropdown() {
           )}
         </List>
       </Menu>
-    </div>
+      {selectedTaskId && (
+        <TaskDetailsDialog open onClose={() => setSelectedTaskId(null)} taskId={selectedTaskId} />
+      )}
+    </>
   )
 }
