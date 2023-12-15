@@ -69,7 +69,7 @@ export async function getPriceCursor(symbol: string): Promise<Timestamp> {
   const prices = await dailyPricesDB.find({
     limit: 1,
     selector: { symbol, timestamp: { $exists: true } },
-    sort: [{ timestamp: "desc" }],
+    sort: [{ symbol: "desc", timestamp: "desc" }],
   })
 
   if (prices.docs.length === 0) {
@@ -137,7 +137,7 @@ export async function fetchAssetPrices(
         }
       }
     } catch (error) {
-      progress([(i * 100) / symbols.length, `Failed to fetch ${symbol}: ${error}`])
+      progress([(i * 100) / symbols.length, `Skipping ${symbol}: ${error}`])
     }
   }
 }
