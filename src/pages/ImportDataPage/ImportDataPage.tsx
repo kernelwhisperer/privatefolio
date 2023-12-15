@@ -1,5 +1,6 @@
 import { FolderOutlined } from "@mui/icons-material"
 import { Stack, Typography } from "@mui/material"
+import { proxy } from "comlink"
 import React, { useEffect, useMemo, useState } from "react"
 
 import { MemoryTable } from "../../components/EnhancedTable/MemoryTable"
@@ -31,13 +32,17 @@ export function ImportDataPage({ show }: { show: boolean }) {
 
     fetchData().then()
 
-    // const unsubscribe = clancy.subscribeToFileImports(async () => {
-    //   await fetchData()
-    // })
+    const unsubscribePromise = clancy.subscribeToFileImports(
+      proxy(async () => {
+        await fetchData()
+      })
+    )
 
-    // return () => {
-    //   unsubscribe()
-    // }
+    return () => {
+      unsubscribePromise.then((unsubscribe) => {
+        unsubscribe()
+      })
+    }
   }, [])
 
   const headCells: HeadCell<FileImport>[] = useMemo(

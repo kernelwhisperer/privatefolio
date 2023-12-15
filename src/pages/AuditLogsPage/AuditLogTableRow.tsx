@@ -1,5 +1,15 @@
 import { AddRounded, RemoveRounded, SvgIconComponent, TrendingFlat } from "@mui/icons-material"
-import { alpha, Avatar, Box, Chip, Stack, TableCell, TableRow, Tooltip } from "@mui/material"
+import {
+  alpha,
+  Avatar,
+  Box,
+  Chip,
+  Stack,
+  TableCell,
+  TableRow,
+  Tooltip,
+  Typography,
+} from "@mui/material"
 import { green, grey, red } from "@mui/material/colors"
 import { useStore } from "@nanostores/react"
 import React from "react"
@@ -20,7 +30,6 @@ const OPERATION_COLORS: Partial<Record<AuditLogOperation, string>> = {
   Buy: greenColor,
   Distribution: greenColor,
   Fee: redColor,
-  "Funding Fee": greenColor,
   Sell: redColor,
 }
 
@@ -29,7 +38,6 @@ const OPERATION_ICONS: Partial<Record<AuditLogOperation, SvgIconComponent>> = {
   Deposit: TrendingFlat,
   Distribution: AddRounded,
   Fee: RemoveRounded,
-  "Funding Fee": RemoveRounded,
   Sell: RemoveRounded,
   Withdraw: RemoveRounded,
 }
@@ -41,8 +49,15 @@ export function AuditLogTableRow(props: TableRowComponentProps<AuditLog>) {
   const assetMap = useStore($assetMap)
   const integrationMap = useStore($integrationMap)
 
-  const color = OPERATION_COLORS[operation] || grey[500]
-  const OpIconComponent = OPERATION_ICONS[operation]
+  const changeColor = changeN < 0 ? redColor : greenColor
+
+  let color = OPERATION_COLORS[operation] || grey[500]
+  let OpIconComponent = OPERATION_ICONS[operation]
+
+  if (operation === "Funding Fee") {
+    color = changeColor
+    OpIconComponent = changeN < 0 ? RemoveRounded : AddRounded
+  }
 
   const showAssetColumn = headCells.length === 7
 
@@ -105,7 +120,7 @@ export function AuditLogTableRow(props: TableRowComponentProps<AuditLog>) {
         <TableCell
           align="right"
           sx={{
-            color: changeN < 0 ? redColor : greenColor,
+            color: changeColor,
             fontFamily: MonoFont,
             //
             maxWidth: 140,
@@ -140,18 +155,24 @@ export function AuditLogTableRow(props: TableRowComponentProps<AuditLog>) {
         <TableCell align="right" sx={{ fontFamily: MonoFont }}>
           <Tooltip
             title={
-              <Box sx={{ fontFamily: MonoFont }}>
-                {typeof balance === "number" ? balance : "To be determined"}
-              </Box>
+              typeof balance === "number" ? (
+                <Box sx={{ fontFamily: MonoFont }}>balance</Box>
+              ) : (
+                "Use the 'Recompute balances' action to compute these values."
+              )
             }
           >
             <span>
-              {typeof balance === "number"
-                ? formatNumber(balance, {
-                    maximumFractionDigits: 2, // TODO make this configurable
-                    minimumFractionDigits: 2,
-                  })
-                : "Tbd"}
+              {typeof balance === "number" ? (
+                formatNumber(balance, {
+                  maximumFractionDigits: 2, // TODO make this configurable
+                  minimumFractionDigits: 2,
+                })
+              ) : (
+                <Typography color="text.secondary" component="span" variant="inherit">
+                  Unknown
+                </Typography>
+              )}
             </span>
           </Tooltip>
         </TableCell>

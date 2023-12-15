@@ -29,13 +29,13 @@ export interface Transaction {
   fee?: string
   feeN?: number
   feeSymbol?: string
-  incoming: string
-  incomingN: number
-  incomingSymbol: string
+  incoming?: string
+  incomingN?: number
+  incomingSymbol?: string
   integration: Integration
-  outgoing: string
-  outgoingN: number
-  outgoingSymbol: string
+  outgoing?: string
+  outgoingN?: number
+  outgoingSymbol?: string
   price?: string
   priceN?: number
   role?: TransactionRole

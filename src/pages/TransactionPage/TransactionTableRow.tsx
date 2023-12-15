@@ -67,7 +67,7 @@ export function TransactionTableRow(props: TableRowComponentProps<Transaction>) 
           </Stack>
         </TableCell>
         <TableCell sx={{ maxWidth: 140, minWidth: 140, width: 140 }}>{wallet}</TableCell>
-        <TableCell sx={{ maxWidth: 100, minWidth: 100, width: 100 }}>
+        <TableCell sx={{ maxWidth: 120, minWidth: 120, width: 120 }}>
           <Tooltip title={type}>
             <Chip
               size="small"
@@ -87,26 +87,34 @@ export function TransactionTableRow(props: TableRowComponentProps<Transaction>) 
             color: redColor,
             fontFamily: MonoFont,
             //
-            maxWidth: 140,
-            minWidth: 140,
-            width: 140,
+            maxWidth: 120,
+            minWidth: 120,
+            width: 120,
           }}
         >
-          <Tooltip title={<Box sx={{ fontFamily: MonoFont }}>{outgoingN}</Box>}>
-            <span>
-              {formatNumber(outgoingN * -1, {
-                maximumFractionDigits: 2, // TODO make this configurable
-                minimumFractionDigits: 2,
-                signDisplay: "always",
-              })}
-            </span>
-          </Tooltip>
+          {outgoingN && (
+            <Tooltip title={<Box sx={{ fontFamily: MonoFont }}>{outgoingN}</Box>}>
+              <span>
+                {formatNumber(outgoingN * -1, {
+                  maximumFractionDigits: 2, // TODO make this configurable
+                  minimumFractionDigits: 2,
+                  signDisplay: "always",
+                })}
+              </span>
+            </Tooltip>
+          )}
         </TableCell>
         <TableCell sx={{ maxWidth: 140, minWidth: 140, width: 140 }}>
-          <Stack direction="row" gap={0.5} alignItems="center" component="div">
-            <AssetAvatar size="small" src={assetMap[outgoingSymbol]?.image} alt={outgoingSymbol} />
-            <span>{outgoingSymbol}</span>
-          </Stack>
+          {outgoingSymbol && (
+            <Stack direction="row" gap={0.5} alignItems="center" component="div">
+              <AssetAvatar
+                size="small"
+                src={assetMap[outgoingSymbol]?.image}
+                alt={outgoingSymbol}
+              />
+              <span>{outgoingSymbol}</span>
+            </Stack>
+          )}
         </TableCell>
         <TableCell
           align="right"
@@ -119,21 +127,29 @@ export function TransactionTableRow(props: TableRowComponentProps<Transaction>) 
             width: 120,
           }}
         >
-          <Tooltip title={<Box sx={{ fontFamily: MonoFont }}>{incomingN}</Box>}>
-            <span>
-              {formatNumber(incomingN, {
-                maximumFractionDigits: 2, // TODO make this configurable
-                minimumFractionDigits: 2,
-                signDisplay: "always",
-              })}
-            </span>
-          </Tooltip>
+          {incomingN && (
+            <Tooltip title={<Box sx={{ fontFamily: MonoFont }}>{incomingN}</Box>}>
+              <span>
+                {formatNumber(incomingN, {
+                  maximumFractionDigits: 2, // TODO make this configurable
+                  minimumFractionDigits: 2,
+                  signDisplay: "always",
+                })}
+              </span>
+            </Tooltip>
+          )}
         </TableCell>
-        <TableCell sx={{ maxWidth: 140, minWidth: 140, width: 140 }}>
-          <Stack direction="row" gap={0.5} alignItems="center" component="div">
-            <AssetAvatar size="small" src={assetMap[incomingSymbol]?.image} alt={incomingSymbol} />
-            <span>{incomingSymbol}</span>
-          </Stack>
+        <TableCell sx={{ maxWidth: 120, minWidth: 120, width: 120 }}>
+          {incomingSymbol && (
+            <Stack direction="row" gap={0.5} alignItems="center" component="div">
+              <AssetAvatar
+                size="small"
+                src={assetMap[incomingSymbol]?.image}
+                alt={incomingSymbol}
+              />
+              <span>{incomingSymbol}</span>
+            </Stack>
+          )}
         </TableCell>
       </TableRow>
     </>

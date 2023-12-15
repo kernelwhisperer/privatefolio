@@ -1,3 +1,5 @@
+import { proxy } from "comlink"
+
 import { FileImport } from "../interfaces"
 import { parseCsv } from "../utils/csv-utils"
 import { hashString } from "../utils/utils"
@@ -68,7 +70,6 @@ export async function removeFileImport(fileImport: FileImport) {
     endkey: `${fileImport._id}\ufff0`,
     startkey: fileImport._id,
   } as PouchDB.Core.AllDocsWithinRangeOptions)
-  console.log("📜 LOG > removeFileImport > txns:", txns)
 
   await transactionsDB.bulkDocs(
     txns.rows.map((row) => ({ _deleted: true, _id: row.id, _rev: row.value.rev } as any))
@@ -79,16 +80,17 @@ export async function removeFileImport(fileImport: FileImport) {
 }
 
 export function subscribeToFileImports(callback: () => void) {
-  const changes = fileImportsDB
+  const changesSub = fileImportsDB
     .changes({
       live: true,
       since: "now",
     })
     .on("change", callback)
 
-  return () => {
+  return proxy(() => {
     try {
-      changes.cancel()
+      // console.log("📜 LOG > subscribeToFileImports > unsubbing")
+      changesSub.cancel()
     } catch {}
-  }
+  })
 }
