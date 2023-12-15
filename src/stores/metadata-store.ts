@@ -40,9 +40,11 @@ async function computeFilterMap() {
   const operations = new Set<AuditLogOperation>()
 
   for (const fileImport of fileImports) {
-    const { meta, lastModified } = fileImport
+    const { meta } = fileImport
 
-    if (!meta) throw new Error("This should not happen")
+    if (!meta) {
+      continue
+    }
 
     integrations.add(meta.integration)
     meta.symbols.forEach((x) => symbols.add(x))

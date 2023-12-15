@@ -2,6 +2,7 @@ import { StorageRounded } from "@mui/icons-material"
 import { Paper, Skeleton, Stack, Tooltip, Typography, TypographyProps } from "@mui/material"
 import { grey } from "@mui/material/colors"
 import { useStore } from "@nanostores/react"
+import { proxy } from "comlink"
 import React, { useEffect, useState } from "react"
 
 import { $filterOptionsMap } from "../../stores/metadata-store"
@@ -28,6 +29,18 @@ export function DatabaseInfo() {
 
   useEffect(() => {
     clancy.countAuditLogs().then(setAuditLogs)
+
+    const unsubscribePromise = clancy.subscribeToAuditLogs(
+      proxy(() => {
+        clancy.countAuditLogs().then(setAuditLogs)
+      })
+    )
+
+    return () => {
+      unsubscribePromise.then((unsubscribe) => {
+        unsubscribe()
+      })
+    }
   }, [])
 
   useEffect(() => {

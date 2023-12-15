@@ -103,9 +103,10 @@ export function ImportDataActions() {
         <MenuItem
           dense
           onClick={async () => {
+            // TODO
             const confirmed = await confirm(
-              "Reset database",
-              "This action is permanent. All data will be lost. Are you sure you wish to continue?",
+              "Wipe database",
+              "This action is permanent. All data will be lost (except for daily prices). Are you sure you wish to continue?",
               "warning"
             )
             if (confirmed) {
@@ -114,7 +115,7 @@ export function ImportDataActions() {
                 function: async () => {
                   await clancy.resetDatabase()
                 },
-                name: "Reset database",
+                name: "Wipe database",
                 priority: TaskPriority.High,
               })
               handleClose()
@@ -124,7 +125,7 @@ export function ImportDataActions() {
           <ListItemIcon>
             <Storage fontSize="small" />
           </ListItemIcon>
-          <ListItemText>Reset database</ListItemText>
+          <ListItemText>Wipe database</ListItemText>
         </MenuItem>
       </Menu>
     </>

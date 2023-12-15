@@ -1,6 +1,7 @@
 import { proxy } from "comlink"
 
 import { FileImport } from "../interfaces"
+import { ProgressCallback } from "../stores/task-store"
 import { parseCsv } from "../utils/csv-utils"
 import { hashString } from "../utils/utils"
 import { auditLogsDB, fileImportsDB, transactionsDB } from "./database"
@@ -50,18 +51,20 @@ export async function getFileImports() {
   return res.rows.map((row) => row.doc) as FileImport[]
 }
 
-export async function removeFileImport(fileImport: FileImport) {
-  // Audit logs
+export async function removeFileImport(fileImport: FileImport, progress: ProgressCallback) {
+  // TODO consider pagination
   const logs = await auditLogsDB.allDocs({
     // Prefix search
     // https://pouchdb.com/api.html#batch_fetch
     endkey: `${fileImport._id}\ufff0`,
     startkey: fileImport._id,
   } as PouchDB.Core.AllDocsWithinRangeOptions)
+  progress([25, `Removing ${logs.rows.length} audit logs`])
 
   await auditLogsDB.bulkDocs(
     logs.rows.map((row) => ({ _deleted: true, _id: row.id, _rev: row.value.rev } as any))
   )
+  progress([50, `Removing ${logs.rows.length} audit logs complete`])
 
   // Transactions
   const txns = await transactionsDB.allDocs({
@@ -70,10 +73,12 @@ export async function removeFileImport(fileImport: FileImport) {
     endkey: `${fileImport._id}\ufff0`,
     startkey: fileImport._id,
   } as PouchDB.Core.AllDocsWithinRangeOptions)
+  progress([25, `Removing ${txns.rows.length} transactions`])
 
   await transactionsDB.bulkDocs(
     txns.rows.map((row) => ({ _deleted: true, _id: row.id, _rev: row.value.rev } as any))
   )
+  progress([75, `Removing ${txns.rows.length} transactions complete`])
 
   const res = await fileImportsDB.remove(fileImport)
   return res.ok

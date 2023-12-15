@@ -59,6 +59,7 @@ export default function App() {
                 paddingBottom: 24,
                 position: "absolute",
                 width: "calc(100% - 48px)",
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
               } as any
             }
           >

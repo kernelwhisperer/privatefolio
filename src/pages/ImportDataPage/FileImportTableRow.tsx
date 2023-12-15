@@ -18,6 +18,7 @@ import { TimestampCell } from "../../components/TimestampCell"
 import { Truncate } from "../../components/Truncate"
 import { FileImport } from "../../interfaces"
 import { $integrationMap } from "../../stores/metadata-store"
+import { enqueueTask } from "../../stores/task-store"
 import { MonoFont } from "../../theme"
 import { formatFileSize, formatNumber } from "../../utils/formatting-utils"
 import { TableRowComponentProps } from "../../utils/table-utils"
@@ -32,11 +33,21 @@ export function FileImportTableRow(props: TableRowComponentProps<FileImport>) {
 
   const [loading, setLoading] = useState(false)
 
-  async function handleDelete(event: MouseEvent<HTMLButtonElement>) {
+  function handleRemove(event: MouseEvent<HTMLButtonElement>) {
     event.preventDefault()
     setLoading(true)
-    await clancy.removeFileImport(row)
-    setLoading(false)
+    enqueueTask({
+      description: `Remove ${row.name} together with all its audit logs and transactions.`,
+      determinate: true,
+      function: async (progress) => {
+        clancy.removeFileImport(row, progress).finally(() => {
+          setLoading(false)
+        })
+      },
+      // abortable: false, TODO
+      name: `Remove file import`,
+      priority: 8,
+    })
   }
 
   return (
@@ -134,12 +145,12 @@ export function FileImportTableRow(props: TableRowComponentProps<FileImport>) {
         )}
       </TableCell>
       <TableCell sx={{ maxWidth: 40, minWidth: 40, width: 40 }}>
-        <Tooltip title="Delete file import (including its audit logs)">
+        <Tooltip title="Remove file import (including its audit logs)">
           <IconButton
             size="small"
             color="secondary"
             sx={{ height: 28, marginLeft: -1 }}
-            onClick={handleDelete}
+            onClick={handleRemove}
             disabled={loading}
           >
             {loading ? (
