@@ -34,7 +34,7 @@ export default function AssetPage({ show }: { show: boolean }) {
   }
 
   return (
-    <StaggeredList gap={1} show={show}>
+    <StaggeredList component="main" gap={2} show={show}>
       <BackButton to="/" sx={{ marginLeft: 1 }}>
         Home
       </BackButton>

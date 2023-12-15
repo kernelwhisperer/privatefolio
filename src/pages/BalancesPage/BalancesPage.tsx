@@ -1,10 +1,9 @@
-import { Typography } from "@mui/material"
 import React, { useEffect, useMemo, useState } from "react"
 
 import { MemoryTable } from "../../components/EnhancedTable/MemoryTable"
 import { StaggeredList } from "../../components/StaggeredList"
+import { Subheading } from "../../components/Subheading"
 import { Balance } from "../../interfaces"
-import { SerifFont } from "../../theme"
 import { HeadCell } from "../../utils/table-utils"
 import { clancy } from "../../workers/remotes"
 import { BalancesChart } from "./BalancesChart"
@@ -54,22 +53,26 @@ export function BalancesPage({ show }: { show: boolean }) {
   )
 
   return (
-    <StaggeredList gap={1} show={show}>
-      <Typography variant="h6" fontFamily={SerifFont} sx={{ marginX: 2 }}>
-        <span>Net worth</span>
-      </Typography>
-      <BalancesChart />
-      <Typography variant="h6" fontFamily={SerifFont} sx={{ marginX: 2 }}>
-        <span>Balances</span>
-      </Typography>
-      <MemoryTable<Balance>
-        initOrderBy="value"
-        headCells={headCells}
-        TableRowComponent={BalanceTableRow}
-        rows={balances}
-        defaultRowsPerPage={10}
-        queryTime={queryTime}
-      />
+    <StaggeredList component="main" gap={2} show={show}>
+      <div>
+        <Subheading>
+          <span>Net worth</span>
+        </Subheading>
+        <BalancesChart />
+      </div>
+      <div>
+        <Subheading>
+          <span>Balances</span>
+        </Subheading>
+        <MemoryTable<Balance>
+          initOrderBy="value"
+          headCells={headCells}
+          TableRowComponent={BalanceTableRow}
+          rows={balances}
+          defaultRowsPerPage={10}
+          queryTime={queryTime}
+        />
+      </div>
     </StaggeredList>
   )
 }

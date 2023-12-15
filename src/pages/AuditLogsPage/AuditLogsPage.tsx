@@ -1,21 +1,18 @@
-import { Stack, Typography } from "@mui/material"
 import React from "react"
 
 import { StaggeredList } from "../../components/StaggeredList"
-import { SerifFont } from "../../theme"
+import { Subheading } from "../../components/Subheading"
 import { AuditLogActions } from "./AuditLogActions"
 import { AuditLogTable } from "./AuditLogTable"
 
 export function AuditLogsPage({ show }: { show: boolean }) {
   return (
-    <StaggeredList gap={1} show={show}>
+    <StaggeredList component="main" gap={2} show={show}>
       <div>
-        <Typography variant="h6" fontFamily={SerifFont} sx={{ marginX: 2 }}>
-          <Stack direction="row" alignItems="center" justifyContent="space-between">
-            <span>Audit logs</span>
-            <AuditLogActions />
-          </Stack>
-        </Typography>
+        <Subheading>
+          <span>Audit logs</span>
+          <AuditLogActions />
+        </Subheading>
         <AuditLogTable />
       </div>
     </StaggeredList>

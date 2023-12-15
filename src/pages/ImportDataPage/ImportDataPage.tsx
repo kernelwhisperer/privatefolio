@@ -1,13 +1,13 @@
 import { FolderOutlined } from "@mui/icons-material"
-import { Stack, Typography } from "@mui/material"
+import { Stack } from "@mui/material"
 import { proxy } from "comlink"
 import React, { useEffect, useMemo, useState } from "react"
 
 import { MemoryTable } from "../../components/EnhancedTable/MemoryTable"
 import { FileDrop } from "../../components/FileDrop"
 import { StaggeredList } from "../../components/StaggeredList"
+import { Subheading } from "../../components/Subheading"
 import { FileImport } from "../../interfaces"
-import { SerifFont } from "../../theme"
 import { HeadCell } from "../../utils/table-utils"
 import { clancy } from "../../workers/remotes"
 import { DatabaseInfo } from "./DatabaseInfo"
@@ -99,18 +99,14 @@ export function ImportDataPage({ show }: { show: boolean }) {
   return (
     <StaggeredList component="main" gap={2} show={show}>
       <div>
-        <Typography variant="h6" fontFamily={SerifFont} sx={{ marginX: 2 }}>
-          <Stack direction="row" alignItems="center" justifyContent="space-between">
-            <span>Database info</span>
-            <ImportDataActions />
-          </Stack>
-        </Typography>
+        <Subheading>
+          <span>Database info</span>
+          <ImportDataActions />
+        </Subheading>
         <DatabaseInfo />
       </div>
       <div>
-        <Typography variant="h6" fontFamily={SerifFont} sx={{ marginX: 2 }}>
-          File imports
-        </Typography>
+        <Subheading>File imports</Subheading>
         {queryTime !== null && rows.length === 0 ? (
           <FileDrop sx={{ padding: 4 }}>
             <Stack alignItems="center">

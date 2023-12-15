@@ -1,17 +1,16 @@
-import { Typography } from "@mui/material"
 import React from "react"
 
 import { StaggeredList } from "../../components/StaggeredList"
-import { SerifFont } from "../../theme"
+import { Subheading } from "../../components/Subheading"
 import { TransactionTable } from "./TransactionTable"
 
 export function TransactionsPage({ show }: { show: boolean }) {
   return (
-    <StaggeredList gap={1} show={show}>
-      <Typography variant="h6" fontFamily={SerifFont} sx={{ marginX: 2 }}>
-        Transactions
-      </Typography>
-      <TransactionTable />
+    <StaggeredList component="main" gap={2} show={show}>
+      <div>
+        <Subheading>Transactions</Subheading>
+        <TransactionTable />
+      </div>
     </StaggeredList>
   )
 }
