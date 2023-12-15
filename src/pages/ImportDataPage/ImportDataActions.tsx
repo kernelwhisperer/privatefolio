@@ -65,8 +65,9 @@ export function ImportDataActions() {
           onClick={() => {
             enqueueTask({
               description: "Recomputing balances for all assets.",
-              function: async () => {
-                await clancy.computeBalances()
+              determinate: true,
+              function: async (progress, signal) => {
+                await clancy.computeBalances(progress, signal)
               },
               name: "Recompute balances",
               priority: TaskPriority.Low,
@@ -85,8 +86,8 @@ export function ImportDataActions() {
             enqueueTask({
               description: "Fetching price data for all assets.",
               determinate: true,
-              function: async (progress, abortSignal) => {
-                await clancy.fetchAssetPrices($filterOptionsMap.get().symbol, progress, abortSignal)
+              function: async (progress, signal) => {
+                await clancy.fetchDailyPrices($filterOptionsMap.get().symbol, progress, signal)
               },
               name: "Fetch asset prices",
               priority: TaskPriority.Low,

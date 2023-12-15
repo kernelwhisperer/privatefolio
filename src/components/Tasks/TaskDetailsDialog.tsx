@@ -40,10 +40,11 @@ export function TaskDetailsDialog({ taskId, ...props }: DialogProps & { taskId: 
   const progressHistory = useStore($progressHistory, { keys: [taskId] })
   const updateMap = progressHistory[taskId]
   const updates = Object.keys(updateMap)
+  console.log("📜 LOG > TaskDetailsDialog > updates:", updateMap)
   const completed = task && "completedAt" in task && task.completedAt
 
   const progressPercent = useMemo(() => {
-    if (completed && !updates?.length && !task?.errorMessage) {
+    if (completed && !task.abortController?.signal.aborted && !task?.errorMessage) {
       return 100
     }
 
@@ -80,8 +81,8 @@ export function TaskDetailsDialog({ taskId, ...props }: DialogProps & { taskId: 
     <Dialog
       sx={{
         [`& .MuiDialog-paper`]: {
-          maxWidth: 460,
-          minWidth: 460,
+          maxWidth: 480,
+          minWidth: 480,
         },
       }}
       // aria-labelledby="task-details-title"

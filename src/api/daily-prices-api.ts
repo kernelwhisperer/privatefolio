@@ -79,7 +79,7 @@ export async function getPriceCursor(symbol: string): Promise<Timestamp> {
   return prices.docs[0].timestamp
 }
 
-export async function fetchAssetPrices(
+export async function fetchDailyPrices(
   symbols: string[] | undefined,
   progress: ProgressCallback,
   signal: AbortSignal

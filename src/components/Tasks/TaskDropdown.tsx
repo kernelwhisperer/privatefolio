@@ -72,13 +72,13 @@ export function TaskDropdown() {
   //   enqueueTask({
   //     description: "Fetching price data for all assets",
   //     determinate: true,
-  //     function: (progress, abortSignal) =>
+  //     function: (progress, signal) =>
   //       new Promise((resolve, reject) => {
   //         const numbers = Array.from({ length: 10 }, (_, i) => i + 1)
   //         numbers.forEach((number) => {
   //           setTimeout(() => {
-  //             if (abortSignal.aborted) {
-  //               reject(new Error(abortSignal.reason))
+  //             if (signal.aborted) {
+  //               reject(new Error(signal.reason))
   //               return
   //             }
 

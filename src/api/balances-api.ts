@@ -1,5 +1,6 @@
 import { Balance, BalanceMap } from "../interfaces"
-import { findAuditLogs } from "./audit-logs-api"
+import { ProgressCallback } from "../stores/task-store"
+import { countAuditLogs, findAuditLogs } from "./audit-logs-api"
 import { getPricesForAsset } from "./daily-prices-api"
 import { auditLogsDB, balancesDB } from "./database"
 import { getValue, setValue } from "./kv-api"
@@ -61,10 +62,12 @@ export async function getHistoricalBalances(symbol?: string, limit?: number) {
   return balances.docs.reverse()
 }
 
-export async function computeBalances(symbol?: string) {
+const PAGE_SIZE = 1000
+
+export async function computeBalances(progress: ProgressCallback, signal: AbortSignal) {
   // TODO cursor
-  const { length: count } = await findAuditLogs({ fields: [], filters: { symbol } })
-  console.log("Recompute balances total logs:", count)
+  const count = await countAuditLogs()
+  progress([0, `Computing balances from ${count} audit logs`])
 
   const latestBalances: BalanceMap = {
     _id: 0,
@@ -72,22 +75,21 @@ export async function computeBalances(symbol?: string) {
   }
   let historicalBalances: Record<number, BalanceMap> = {}
 
-  for (let i = 0; i < count; i += 500) {
-    console.log("Recompute balances processing logs from", i, "to", i + 500)
+  for (let i = 0; i < count; i += PAGE_SIZE) {
+    if (signal.aborted) {
+      throw new Error(signal.reason)
+    }
+
+    const firstIndex = i + 1
+    const lastIndex = Math.min(i + PAGE_SIZE, count)
+
+    progress([(i * 100) / count, `Processing logs ${firstIndex} to ${lastIndex}`])
     const logs = await findAuditLogs({
-      filters: { symbol },
-      limit: 500,
+      limit: PAGE_SIZE,
       order: "asc",
       skip: i,
     })
-    console.log(
-      "Recompute balances processing logs from",
-      i,
-      "to",
-      i + 500,
-      "fetch completed",
-      logs
-    )
+    progress([(i * 100) / count, `Processing logs ${firstIndex} to ${lastIndex} - fetch complete`])
 
     let latestDay = 0
 
@@ -125,14 +127,20 @@ export async function computeBalances(symbol?: string) {
 
       latestDay = nextDay
     }
-    console.log("Recompute balances processing logs from", i, "to", i + 500, "compute completed")
+    progress([
+      (i * 100) / count,
+      `Processing logs ${firstIndex} to ${lastIndex} - compute complete`,
+    ])
     await auditLogsDB.bulkDocs(logs)
 
     //
-    console.log("Recompute balances processing logs from", i, "to", i + 500, "audit logs saved")
+    progress([
+      (i * 100) / count,
+      `Processing logs ${firstIndex} to ${lastIndex} - audit logs updated`,
+    ])
+
     const balancesIds = Object.keys(historicalBalances).map((x) => ({ id: x }))
     const { results: balancesDocs } = await balancesDB.bulkGet({ docs: balancesIds })
-    console.log("📜 LOG > computeBalances > balancesDocs:", balancesDocs)
 
     // eslint-disable-next-line no-loop-func
     const balances: BalanceMap[] = balancesDocs.map((doc) => ({
@@ -141,10 +149,13 @@ export async function computeBalances(symbol?: string) {
       _rev: "ok" in doc.docs[0] ? doc.docs[0].ok._rev : undefined,
       timestamp: Number(doc.id),
     }))
-    console.log("📜 LOG > constbalances:BalanceMap[]=Object.keys > balances:", balances)
+    console.log("ComputeBalances db results", balances)
     await balancesDB.bulkDocs(balances)
     await setValue("balancesCursor", latestDay)
-    console.log("Recompute balances processing logs from", i, "to", i + 500, "balances saved")
+    progress([
+      ((i + PAGE_SIZE) * 100) / count,
+      `Processing logs ${firstIndex} to ${lastIndex} complete`,
+    ])
 
     // free memory, only keep last day
     historicalBalances = {

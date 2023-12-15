@@ -19,7 +19,7 @@ export interface Task {
    * @default false
    */
   determinate?: boolean
-  function: (progressCallback: ProgressCallback, abortSignal: AbortSignal) => Promise<unknown>
+  function: (progressCallback: ProgressCallback, signal: AbortSignal) => Promise<unknown>
   id: string
   name: string
   priority: TaskPriority
