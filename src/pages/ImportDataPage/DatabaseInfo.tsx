@@ -36,7 +36,11 @@ export function DatabaseInfo() {
 
   useEffect(() => {
     clancy.findAuditLogs({ limit: 1, order: "asc" }).then((res) => {
-      setGenesis(res?.[0].timestamp)
+      if (res.length === 0) {
+        setGenesis(0)
+      } else {
+        setGenesis(res[0].timestamp)
+      }
     })
   }, [])
 
@@ -91,7 +95,7 @@ export function DatabaseInfo() {
         </Stack>
         <Stack direction="row" justifyContent="space-between">
           <SectionTitle>Unique assets</SectionTitle>
-          {!filterMap.symbol?.length ? (
+          {filterMap.symbol === undefined ? (
             <Skeleton height={20} width={80}></Skeleton>
           ) : (
             <Typography fontFamily={MonoFont} variant="body2">
@@ -105,7 +109,13 @@ export function DatabaseInfo() {
             <Skeleton height={20} width={80}></Skeleton>
           ) : (
             <Typography fontFamily={MonoFont} variant="body2">
-              <span>{formatDate(genesis)}</span>
+              {genesis === 0 ? (
+                <Typography color="text.secondary" component="span" variant="inherit">
+                  Unknown
+                </Typography>
+              ) : (
+                <span>{formatDate(genesis)}</span>
+              )}
             </Typography>
           )}
         </Stack>

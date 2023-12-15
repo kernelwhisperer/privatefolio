@@ -1,18 +1,18 @@
 import Container from "@mui/material/Container"
 import { a, useTransition } from "@react-spring/web"
+import { proxy } from "comlink"
 import React, { useEffect } from "react"
 import { Navigate, Route, Routes, useLocation } from "react-router-dom"
 
-import { findAssets } from "./api/assets-api"
-import { findExchanges } from "./api/exchanges-api"
 import { Header } from "./components/Header/Header"
 import AssetPage from "./pages/AssetPage/AssetPage"
 import { AuditLogsPage } from "./pages/AuditLogsPage/AuditLogsPage"
 import { BalancesPage } from "./pages/BalancesPage/BalancesPage"
 import { ImportDataPage } from "./pages/ImportDataPage/ImportDataPage"
 import { TransactionsPage } from "./pages/TransactionPage/TransactionsPage"
-import { $assetMap, $integrationMap, computeFilterMap } from "./stores/metadata-store"
+import { computeMetadata, computeMetadataDebounced } from "./stores/metadata-store"
 import { SPRING_CONFIGS } from "./utils/utils"
+import { clancy } from "./workers/remotes"
 
 export default function App() {
   const location = useLocation()
@@ -31,21 +31,19 @@ export default function App() {
   })
 
   useEffect(() => {
-    computeFilterMap().then(async (filterMap) => {
-      const symbolMap = filterMap.symbol.reduce((map, symbol) => {
-        map[symbol] = true
-        return map
-      }, {} as Record<string, boolean>)
+    computeMetadata()
 
-      findAssets(symbolMap).then($assetMap.set)
+    const unsubscribePromise = clancy.subscribeToAuditLogs(
+      proxy(() => {
+        computeMetadataDebounced()
+      })
+    )
 
-      const integrationMap = filterMap.integration.reduce((map, integration) => {
-        map[integration] = true
-        return map
-      }, {} as Record<string, boolean>)
-
-      findExchanges(integrationMap).then($integrationMap.set)
-    })
+    return () => {
+      unsubscribePromise.then((unsubscribe) => {
+        unsubscribe()
+      })
+    }
   }, [])
 
   return (

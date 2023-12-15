@@ -40,7 +40,6 @@ export function TaskDetailsDialog({ taskId, ...props }: DialogProps & { taskId: 
   const progressHistory = useStore($progressHistory, { keys: [taskId] })
   const updateMap = progressHistory[taskId]
   const updates = Object.keys(updateMap)
-  console.log("📜 LOG > TaskDetailsDialog > updates:", updateMap)
   const completed = task && "completedAt" in task && task.completedAt
 
   const progressPercent = useMemo(() => {

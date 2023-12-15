@@ -1,5 +1,8 @@
+import { debounce } from "lodash"
 import { keepMount, map } from "nanostores"
 
+import { findAssets } from "../api/assets-api"
+import { findExchanges } from "../api/exchanges-api"
 import { Asset, AuditLogOperation, Exchange } from "../interfaces"
 import { logAtoms } from "../utils/browser-utils"
 import { clancy } from "../workers/remotes"
@@ -28,10 +31,7 @@ export const FILTER_LABEL_MAP: Record<FilterKey, string> = {
   wallet: "Wallet",
 }
 
-export async function computeFilterMap() {
-  const filterMap = $filterOptionsMap.get()
-  if (Object.keys(filterMap).length > 0) return filterMap
-
+async function computeFilterMap() {
   const fileImports = await clancy.getFileImports()
 
   const integrations = new Set<string>()
@@ -77,3 +77,23 @@ keepMount($filterOptionsMap)
 keepMount($integrationMap)
 
 logAtoms({ $assetMap, $filterMap: $filterOptionsMap, $integrationMap })
+
+export async function computeMetadata() {
+  const filterMap = await computeFilterMap()
+
+  const symbolMap = filterMap.symbol.reduce((map, symbol) => {
+    map[symbol] = true
+    return map
+  }, {} as Record<string, boolean>)
+
+  const integrationMap = filterMap.integration.reduce((map, integration) => {
+    map[integration] = true
+    return map
+  }, {} as Record<string, boolean>)
+
+  await Promise.all([
+    findAssets(symbolMap).then($assetMap.set),
+    findExchanges(integrationMap).then($integrationMap.set),
+  ])
+}
+export const computeMetadataDebounced = debounce(computeMetadata, 500) // TESTME

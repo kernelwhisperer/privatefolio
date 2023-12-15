@@ -122,6 +122,14 @@ export async function findTransactions(request: FindTransactionsRequest = {}) {
 }
 
 export async function countTransactions() {
+  const indexes = await transactionsDB.allDocs({
+    // Prefix search
+    // https://pouchdb.com/api.html#batch_fetch
+    endkey: `_design\ufff0`,
+
+    include_docs: false,
+    startkey: "_design",
+  })
   const result = await transactionsDB.allDocs({ include_docs: false, limit: 1 })
-  return result.total_rows
+  return result.total_rows - indexes.total_rows
 }

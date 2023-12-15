@@ -69,7 +69,7 @@ export function ImportDataActions() {
               function: async (progress, signal) => {
                 await clancy.computeBalances(progress, signal)
               },
-              name: "Recompute balances",
+              name: "Compute balances",
               priority: TaskPriority.Low,
             })
             handleClose()
@@ -78,7 +78,7 @@ export function ImportDataActions() {
           <ListItemIcon>
             <CalculateOutlined fontSize="small" />
           </ListItemIcon>
-          <ListItemText>Recompute balances</ListItemText>
+          <ListItemText>Compute balances</ListItemText>
         </MenuItem>
         <MenuItem
           dense

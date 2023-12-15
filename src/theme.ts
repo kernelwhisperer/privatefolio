@@ -317,7 +317,7 @@ export const theme: CssVarsThemeOptions = {
     },
     MuiSkeleton: {
       defaultProps: {
-        animation: false,
+        animation: "wave",
       },
     },
     // MuiTable: {

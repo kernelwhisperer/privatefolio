@@ -1,4 +1,6 @@
 /* eslint-disable sort-keys-fix/sort-keys-fix */
+import { proxy } from "comlink"
+
 import { AuditLog } from "../interfaces"
 import { auditLogsDB } from "./database"
 
@@ -15,37 +17,38 @@ export async function indexAuditLogs() {
   // }
   // console.log("📜 LOG > indexAuditLogs > deleted")
 
-  await auditLogsDB.createIndex({
-    index: {
-      // MUST respect the order in _filterOrder
-      fields: ["integration", "timestamp", "wallet", "operation", "symbol"],
-      name: "integration",
-    },
-  })
-  // console.log("📜 LOG > indexAuditLogs > created", 1)
-  await auditLogsDB.createIndex({
-    index: {
-      // MUST respect the order in _filterOrder
-      fields: ["wallet", "timestamp", "integration", "operation", "symbol"],
-      name: "wallet",
-    },
-  })
-  // console.log("📜 LOG > indexAuditLogs > created", 2)
-  await auditLogsDB.createIndex({
-    index: {
-      // MUST respect the order in _filterOrder
-      fields: ["operation", "timestamp", "integration", "wallet", "symbol"],
-      name: "operation",
-    },
-  })
-  // console.log("📜 LOG > indexAuditLogs > created", 3)
-  await auditLogsDB.createIndex({
-    index: {
-      // MUST respect the order in _filterOrder
-      fields: ["symbol", "timestamp", "integration", "wallet", "operation"],
-      name: "symbol",
-    },
-  })
+  // TODO
+  // await auditLogsDB.createIndex({
+  //   index: {
+  //     // MUST respect the order in _filterOrder
+  //     fields: ["integration", "timestamp", "wallet", "operation", "symbol"],
+  //     name: "integration",
+  //   },
+  // })
+  // // console.log("📜 LOG > indexAuditLogs > created", 1)
+  // await auditLogsDB.createIndex({
+  //   index: {
+  //     // MUST respect the order in _filterOrder
+  //     fields: ["wallet", "timestamp", "integration", "operation", "symbol"],
+  //     name: "wallet",
+  //   },
+  // })
+  // // console.log("📜 LOG > indexAuditLogs > created", 2)
+  // await auditLogsDB.createIndex({
+  //   index: {
+  //     // MUST respect the order in _filterOrder
+  //     fields: ["operation", "timestamp", "integration", "wallet", "symbol"],
+  //     name: "operation",
+  //   },
+  // })
+  // // console.log("📜 LOG > indexAuditLogs > created", 3)
+  // await auditLogsDB.createIndex({
+  //   index: {
+  //     // MUST respect the order in _filterOrder
+  //     fields: ["symbol", "timestamp", "integration", "wallet", "operation"],
+  //     name: "symbol",
+  //   },
+  // })
   // console.log("📜 LOG > indexAuditLogs > created", 4)
   await auditLogsDB.createIndex({
     index: {
@@ -112,6 +115,28 @@ export async function findAuditLogs(request: FindAuditLogsRequest = {}) {
 }
 
 export async function countAuditLogs() {
+  const indexes = await auditLogsDB.allDocs({
+    include_docs: false,
+    // Prefix search
+    // https://pouchdb.com/api.html#batch_fetch
+    endkey: `_design\ufff0`,
+    startkey: "_design",
+  })
   const result = await auditLogsDB.allDocs({ include_docs: false, limit: 1 })
-  return result.total_rows
+  return result.total_rows - indexes.total_rows
+}
+
+export function subscribeToAuditLogs(callback: () => void) {
+  const changesSub = auditLogsDB
+    .changes({
+      live: true,
+      since: "now",
+    })
+    .on("change", callback)
+
+  return proxy(() => {
+    try {
+      changesSub.cancel()
+    } catch {}
+  })
 }

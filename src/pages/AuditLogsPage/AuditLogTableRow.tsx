@@ -158,7 +158,7 @@ export function AuditLogTableRow(props: TableRowComponentProps<AuditLog>) {
               typeof balance === "number" ? (
                 <Box sx={{ fontFamily: MonoFont }}>balance</Box>
               ) : (
-                "Use the 'Recompute balances' action to compute these values."
+                "Use the 'Compute balances' action to compute these values."
               )
             }
           >

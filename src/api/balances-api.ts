@@ -89,7 +89,7 @@ export async function computeBalances(progress: ProgressCallback, signal: AbortS
       order: "asc",
       skip: i,
     })
-    progress([(i * 100) / count, `Processing logs ${firstIndex} to ${lastIndex} - fetch complete`])
+    // progress([(i * 100) / count, `Processing logs ${firstIndex} to ${lastIndex} - fetch complete`])
 
     let latestDay = 0
 
@@ -127,17 +127,17 @@ export async function computeBalances(progress: ProgressCallback, signal: AbortS
 
       latestDay = nextDay
     }
-    progress([
-      (i * 100) / count,
-      `Processing logs ${firstIndex} to ${lastIndex} - compute complete`,
-    ])
+    // progress([
+    //   (i * 100) / count,
+    //   `Processing logs ${firstIndex} to ${lastIndex} - compute complete`,
+    // ])
     await auditLogsDB.bulkDocs(logs)
 
     //
-    progress([
-      (i * 100) / count,
-      `Processing logs ${firstIndex} to ${lastIndex} - audit logs updated`,
-    ])
+    // progress([
+    //   (i * 100) / count,
+    //   `Processing logs ${firstIndex} to ${lastIndex} - audit logs updated`,
+    // ])
 
     const balancesIds = Object.keys(historicalBalances).map((x) => ({ id: x }))
     const { results: balancesDocs } = await balancesDB.bulkGet({ docs: balancesIds })
@@ -149,7 +149,7 @@ export async function computeBalances(progress: ProgressCallback, signal: AbortS
       _rev: "ok" in doc.docs[0] ? doc.docs[0].ok._rev : undefined,
       timestamp: Number(doc.id),
     }))
-    console.log("ComputeBalances db results", balances)
+    // console.log("ComputeBalances db results", balances)
     await balancesDB.bulkDocs(balances)
     await setValue("balancesCursor", latestDay)
     progress([
