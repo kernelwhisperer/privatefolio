@@ -25,6 +25,15 @@ export function DatabaseInfo() {
     window.navigator.storage.estimate().then((estimate: any) => {
       setStorageUsage(estimate.usageDetails?.indexedDB ?? null)
     })
+
+    const interval = setInterval(() => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      window.navigator.storage.estimate().then((estimate: any) => {
+        setStorageUsage(estimate.usageDetails?.indexedDB ?? null)
+      })
+    }, 2500)
+
+    return () => clearInterval(interval)
   }, [])
 
   useEffect(() => {
@@ -45,6 +54,18 @@ export function DatabaseInfo() {
 
   useEffect(() => {
     clancy.countTransactions().then(setTransactions)
+
+    const unsubscribePromise = clancy.subscribeToTransactions(
+      proxy(() => {
+        clancy.countTransactions().then(setTransactions)
+      })
+    )
+
+    return () => {
+      unsubscribePromise.then((unsubscribe) => {
+        unsubscribe()
+      })
+    }
   }, [])
 
   useEffect(() => {

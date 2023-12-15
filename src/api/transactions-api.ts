@@ -1,4 +1,6 @@
 // /* eslint-disable sort-keys-fix/sort-keys-fix */
+import { proxy } from "comlink"
+
 import { Transaction } from "../interfaces"
 import { transactionsDB } from "./database"
 
@@ -132,4 +134,19 @@ export async function countTransactions() {
   })
   const result = await transactionsDB.allDocs({ include_docs: false, limit: 1 })
   return result.total_rows - indexes.rows.length
+}
+
+export function subscribeToTransactions(callback: () => void) {
+  const changesSub = transactionsDB
+    .changes({
+      live: true,
+      since: "now",
+    })
+    .on("change", callback)
+
+  return proxy(() => {
+    try {
+      changesSub.cancel()
+    } catch {}
+  })
 }
