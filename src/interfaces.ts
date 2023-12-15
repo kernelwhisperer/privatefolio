@@ -56,7 +56,7 @@ export type AuditLogOperation =
 export type Integration = "Binance" | "MEXC"
 
 export interface Asset {
-  coingeckoId: string
+  coingeckoId?: string
   image: string
   isStablecoin: boolean
   name: string
