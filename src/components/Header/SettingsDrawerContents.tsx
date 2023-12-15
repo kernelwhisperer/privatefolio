@@ -4,7 +4,7 @@ import React from "react"
 
 import { AppVerProps, PopoverToggleProps } from "../../stores/app-store"
 import { MonoFont } from "../../theme"
-import { formatDate } from "../../utils/client-utils"
+import { formatDate } from "../../utils/formatting-utils"
 import { SectionTitle } from "../SectionTitle"
 import { StaggeredList } from "../StaggeredList"
 import { ReducedMotion } from "./ReducedMotion"

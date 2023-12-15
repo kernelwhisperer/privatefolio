@@ -1,8 +1,9 @@
 import { formatDistance } from "date-fns"
-// TODO rename to formatting-utils
+
+const locale = typeof window !== "undefined" ? window.navigator.language : "en-US"
 
 export function formatNumber(number: number, opts: Intl.NumberFormatOptions = {}) {
-  return new Intl.NumberFormat(window.navigator.language, {
+  return new Intl.NumberFormat(locale, {
     notation: "standard",
     // minimumIntegerDigits: 2,
     ...opts,
@@ -18,7 +19,7 @@ export function formatDateRelative(date: Date | number) {
 }
 
 export function formatDate(date: Date | number) {
-  return new Intl.DateTimeFormat(window.navigator.language, {
+  return new Intl.DateTimeFormat(locale, {
     // dateStyle: "medium",
     day: "2-digit",
     month: "short",
@@ -27,7 +28,7 @@ export function formatDate(date: Date | number) {
 }
 
 export function formatHour(date: Date | number, opts: Intl.DateTimeFormatOptions = {}) {
-  return new Intl.DateTimeFormat(window.navigator.language, {
+  return new Intl.DateTimeFormat(locale, {
     hour: "numeric",
     hour12: false,
     minute: "numeric",
@@ -38,7 +39,7 @@ export function formatHour(date: Date | number, opts: Intl.DateTimeFormatOptions
 }
 
 export function formatDateWithHour(date: Date | number, opts: Intl.DateTimeFormatOptions = {}) {
-  return new Intl.DateTimeFormat(window.navigator.language, {
+  return new Intl.DateTimeFormat(locale, {
     day: "numeric",
     fractionalSecondDigits: 3, // TODO make this a setting
     hour: "numeric",

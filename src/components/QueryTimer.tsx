@@ -3,7 +3,7 @@ import { CircularProgress, Skeleton, Stack, Tooltip, Typography } from "@mui/mat
 import React from "react"
 
 import { MonoFont } from "../theme"
-import { formatNumber } from "../utils/client-utils"
+import { formatNumber } from "../utils/formatting-utils"
 
 export function QueryTimer({ queryTime }: { queryTime: number | null }) {
   return (

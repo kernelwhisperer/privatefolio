@@ -1,3 +1,5 @@
+import "./comlink-setup"
+
 import { expose } from "comlink"
 
 import * as auditLogs from "../api/audit-logs-api"

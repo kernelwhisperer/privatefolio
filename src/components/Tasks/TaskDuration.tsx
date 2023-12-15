@@ -3,7 +3,7 @@ import { a, useSpring } from "@react-spring/web"
 import React, { useEffect, useState } from "react"
 
 import { FinishedTask, Task } from "../../stores/task-store"
-import { formatNumber } from "../../utils/client-utils"
+import { formatNumber } from "../../utils/formatting-utils"
 
 export function TaskDuration({ task }: { task: Task | FinishedTask }) {
   const completed = "duration" in task

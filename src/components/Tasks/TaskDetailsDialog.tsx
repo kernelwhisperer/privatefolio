@@ -15,7 +15,7 @@ import { useStore } from "@nanostores/react"
 import React, { useEffect, useMemo, useRef } from "react"
 
 import { $pendingTask, $progressHistory, $taskHistory, FinishedTask } from "../../stores/task-store"
-import { formatHour } from "../../utils/client-utils"
+import { formatHour } from "../../utils/formatting-utils"
 import { SectionTitle } from "../SectionTitle"
 import { StaggeredList } from "../StaggeredList"
 import { LinearProgressWithLabel } from "./LinearProgressWithLabel"
@@ -78,11 +78,17 @@ export function TaskDetailsDialog({ taskId, ...props }: DialogProps & { taskId: 
 
   return (
     <Dialog
+      sx={{
+        [`& .MuiDialog-paper`]: {
+          maxWidth: 460,
+          minWidth: 460,
+        },
+      }}
       // aria-labelledby="task-details-title"
       // aria-describedby="task-details-description"
       {...props}
     >
-      <DialogTitle sx={{ minWidth: 420 }}>
+      <DialogTitle>
         <Stack direction="row" justifyContent="space-between" alignItems="center">
           <span>{task.name}</span>
           <IconButton

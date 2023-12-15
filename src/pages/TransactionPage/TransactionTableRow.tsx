@@ -10,7 +10,7 @@ import { Truncate } from "../../components/Truncate"
 import { Transaction, TransactionType } from "../../interfaces"
 import { $assetMap, $integrationMap } from "../../stores/metadata-store"
 import { MonoFont } from "../../theme"
-import { formatNumber } from "../../utils/client-utils"
+import { formatNumber } from "../../utils/formatting-utils"
 import { TableRowComponentProps } from "../../utils/table-utils"
 
 const redColor = red[400]

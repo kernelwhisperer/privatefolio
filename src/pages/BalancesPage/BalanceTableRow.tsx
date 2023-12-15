@@ -7,7 +7,7 @@ import { AssetAvatar } from "../../components/AssetAvatar"
 import { Balance } from "../../interfaces"
 import { $assetMap } from "../../stores/metadata-store"
 import { MonoFont } from "../../theme"
-import { formatNumber } from "../../utils/client-utils"
+import { formatNumber } from "../../utils/formatting-utils"
 import { TableRowComponentProps } from "../../utils/table-utils"
 
 export function BalanceTableRow(props: TableRowComponentProps<Balance>) {

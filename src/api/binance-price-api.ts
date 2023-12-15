@@ -19,7 +19,7 @@ function getInterval(timeInterval: ResolutionString) {
 }
 
 export async function queryPrices(request: QueryRequest) {
-  const { timeInterval, since, until, limit = 300, pair } = request
+  const { timeInterval, since, until, limit = 1000, pair } = request
   const binanceInterval = getInterval(timeInterval)
 
   let apiUrl = `https://api.binance.com/api/v3/klines?symbol=${pair}&interval=${binanceInterval}&limit=${limit}`

@@ -19,7 +19,7 @@ import { Truncate } from "../../components/Truncate"
 import { FileImport } from "../../interfaces"
 import { $integrationMap } from "../../stores/metadata-store"
 import { MonoFont } from "../../theme"
-import { formatFileSize, formatNumber } from "../../utils/client-utils"
+import { formatFileSize, formatNumber } from "../../utils/formatting-utils"
 import { TableRowComponentProps } from "../../utils/table-utils"
 import { clancy } from "../../workers/remotes"
 

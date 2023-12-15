@@ -1,5 +1,6 @@
 import { ChartData, ResolutionString, SavedPrice, Time, Timestamp } from "../interfaces"
-import { FilterOptionsMap } from "../stores/metadata-store"
+import { ProgressCallback } from "../stores/task-store"
+import { formatDate } from "../utils/formatting-utils"
 import { mapToChartData, queryPrices } from "./binance-price-api"
 import { dailyPricesDB } from "./database"
 
@@ -78,29 +79,45 @@ export async function getPriceCursor(symbol: string): Promise<Timestamp> {
   return prices.docs[0].timestamp
 }
 
-export async function fetchAssetPrices(filterMap: FilterOptionsMap) {
-  const symbols = filterMap.symbol
-  console.log("Fetch daily asset prices:", symbols)
+export async function fetchAssetPrices(
+  symbols: string[] | undefined,
+  progress: ProgressCallback,
+  signal: AbortSignal
+) {
+  if (!symbols) {
+    throw new Error("No symbols provided") // TODO prevent this
+  }
+  progress([0, `Fetching asset prices for ${symbols.length} symbols`])
   const now = Date.now()
   const today: Timestamp = now - (now % 86400000)
-  console.log("📜 LOG > fetchAssetPrices > today:", today)
 
-  for (const symbol of symbols) {
+  for (let i = 1; i <= symbols.length; i++) {
+    const symbol = symbols[i - 1]
+
+    if (signal.aborted) {
+      throw new Error(signal.reason)
+    }
+
     try {
       let since: Timestamp = await getPriceCursor(symbol)
 
+      if (since === today) {
+        progress([(i * 100) / symbols.length, `Skipping ${symbol}, already up to date`])
+      }
+
       while (since !== today) {
-        console.log("Fetching daily asset prices:", symbol, since)
+        progress([
+          (i * 100) / symbols.length,
+          `Fetching ${symbol} from ${since !== 0 ? formatDate(since) : "genesis"}`,
+        ])
         const pair = `${symbol}USDT`
         const source = "binance"
 
         const results = await queryPrices({
-          limit: 300,
           pair,
           since,
           timeInterval: "1d" as ResolutionString,
         })
-        console.log("Fetched daily asset prices:", symbol, since, results)
 
         const docs: SavedPrice[] = results.map((result) => ({
           _id: `${pair}-${source}-${result[0]}`,
@@ -112,7 +129,6 @@ export async function fetchAssetPrices(filterMap: FilterOptionsMap) {
         }))
 
         dailyPricesDB.bulkDocs(docs)
-        console.log("Saved daily asset prices:", docs)
 
         if (results.length > 1) {
           since = results[results.length - 1][0]
@@ -121,7 +137,7 @@ export async function fetchAssetPrices(filterMap: FilterOptionsMap) {
         }
       }
     } catch (error) {
-      console.log("Failed to fetch daily asset prices:", symbol)
+      progress([(i * 100) / symbols.length, `Failed to fetch ${symbol}: ${error}`])
     }
   }
 }

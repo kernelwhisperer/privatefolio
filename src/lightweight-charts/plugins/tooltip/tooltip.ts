@@ -14,7 +14,7 @@ import {
   WhitespaceData,
 } from "lightweight-charts"
 
-import { formatNumber } from "../../../utils/client-utils"
+import { formatNumber } from "../../../utils/formatting-utils"
 import { positionsLine } from "../../helpers/dimensions/positions"
 import { convertTime, formattedDateAndTime } from "../../helpers/time"
 import { TooltipElement, TooltipOptions } from "./tooltip-element"

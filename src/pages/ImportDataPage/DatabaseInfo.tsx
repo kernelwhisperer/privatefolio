@@ -6,7 +6,7 @@ import React, { useEffect, useState } from "react"
 
 import { $filterOptionsMap } from "../../stores/metadata-store"
 import { MonoFont } from "../../theme"
-import { formatDate, formatFileSize, formatNumber } from "../../utils/client-utils"
+import { formatDate, formatFileSize, formatNumber } from "../../utils/formatting-utils"
 import { clancy } from "../../workers/remotes"
 
 function SectionTitle(props: TypographyProps) {

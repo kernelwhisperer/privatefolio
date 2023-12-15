@@ -1,3 +1,5 @@
+import "./comlink-setup"
+
 import { Remote, wrap } from "comlink"
 
 import type { Clancy } from "./clancy"

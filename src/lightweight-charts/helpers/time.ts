@@ -1,7 +1,7 @@
 import { isBusinessDay, isUTCTimestamp, Time } from "lightweight-charts"
 
 import { Timestamp } from "../../interfaces"
-import { formatDate, formatHour } from "../../utils/client-utils"
+import { formatDate, formatHour } from "../../utils/formatting-utils"
 
 export function convertTime(t: Time): number {
   if (isUTCTimestamp(t)) return t * 1000

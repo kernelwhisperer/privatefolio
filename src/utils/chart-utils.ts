@@ -1,4 +1,4 @@
-import { formatNumber } from "./client-utils"
+import { formatNumber } from "./formatting-utils"
 
 export const CHART_HEIGHT = 550
 

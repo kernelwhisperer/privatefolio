@@ -8,7 +8,7 @@ import {
   formatDateRelative,
   formatDateWithHour,
   formatHour,
-} from "../utils/client-utils"
+} from "../utils/formatting-utils"
 
 type TimestampCellProps = {
   relative?: boolean

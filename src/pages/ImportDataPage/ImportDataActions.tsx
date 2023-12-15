@@ -84,8 +84,9 @@ export function ImportDataActions() {
           onClick={() => {
             enqueueTask({
               description: "Fetching price data for all assets.",
-              function: async () => {
-                await clancy.fetchAssetPrices($filterOptionsMap.get())
+              determinate: true,
+              function: async (progress, abortSignal) => {
+                await clancy.fetchAssetPrices($filterOptionsMap.get().symbol, progress, abortSignal)
               },
               name: "Fetch asset prices",
               priority: TaskPriority.Low,

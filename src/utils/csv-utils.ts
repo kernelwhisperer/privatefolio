@@ -7,8 +7,8 @@ import {
   TransactionRole,
   TransactionSide,
 } from "../interfaces"
-import { TZ_OFFSET } from "./client-utils"
 import { extractTransactions } from "./extract-utils"
+import { TZ_OFFSET } from "./formatting-utils"
 import { hashString } from "./utils"
 
 type ParserResult = { logs: AuditLog[]; txns?: Transaction[] }
