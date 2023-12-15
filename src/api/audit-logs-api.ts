@@ -123,7 +123,7 @@ export async function countAuditLogs() {
     startkey: "_design",
   })
   const result = await auditLogsDB.allDocs({ include_docs: false, limit: 1 })
-  return result.total_rows - indexes.total_rows
+  return result.total_rows - indexes.rows.length
 }
 
 export function subscribeToAuditLogs(callback: () => void) {

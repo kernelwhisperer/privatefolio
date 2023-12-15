@@ -131,5 +131,5 @@ export async function countTransactions() {
     startkey: "_design",
   })
   const result = await transactionsDB.allDocs({ include_docs: false, limit: 1 })
-  return result.total_rows - indexes.total_rows
+  return result.total_rows - indexes.rows.length
 }
