@@ -21,27 +21,34 @@ export function DatabaseInfo() {
   const [genesis, setGenesis] = useState<number | null>(null)
 
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    window.navigator.storage.estimate().then((estimate: any) => {
-      setStorageUsage(estimate.usageDetails?.indexedDB ?? null)
-    })
-
-    const interval = setInterval(() => {
+    function fetchData() {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       window.navigator.storage.estimate().then((estimate: any) => {
         setStorageUsage(estimate.usageDetails?.indexedDB ?? null)
       })
+    }
+
+    fetchData()
+
+    const interval = setInterval(() => {
+      setStorageUsage(null)
+      fetchData()
     }, 2500)
 
     return () => clearInterval(interval)
   }, [])
 
   useEffect(() => {
-    clancy.countAuditLogs().then(setAuditLogs)
+    function fetchData() {
+      clancy.countAuditLogs().then(setAuditLogs)
+    }
+
+    fetchData()
 
     const unsubscribePromise = clancy.subscribeToAuditLogs(
       proxy(() => {
-        clancy.countAuditLogs().then(setAuditLogs)
+        setAuditLogs(null)
+        fetchData()
       })
     )
 
@@ -53,11 +60,16 @@ export function DatabaseInfo() {
   }, [])
 
   useEffect(() => {
-    clancy.countTransactions().then(setTransactions)
+    function fetchData() {
+      clancy.countTransactions().then(setTransactions)
+    }
+
+    fetchData()
 
     const unsubscribePromise = clancy.subscribeToTransactions(
       proxy(() => {
-        clancy.countTransactions().then(setTransactions)
+        setTransactions(null)
+        fetchData()
       })
     )
 
@@ -69,13 +81,30 @@ export function DatabaseInfo() {
   }, [])
 
   useEffect(() => {
-    clancy.findAuditLogs({ limit: 1, order: "asc" }).then((res) => {
-      if (res.length === 0) {
-        setGenesis(0)
-      } else {
-        setGenesis(res[0].timestamp)
-      }
-    })
+    function fetchData() {
+      clancy.findAuditLogs({ limit: 1, order: "asc" }).then((res) => {
+        if (res.length === 0) {
+          setGenesis(0)
+        } else {
+          setGenesis(res[0].timestamp)
+        }
+      })
+    }
+
+    fetchData()
+
+    const unsubscribePromise = clancy.subscribeToAuditLogs(
+      proxy(() => {
+        setGenesis(null)
+        fetchData()
+      })
+    )
+
+    return () => {
+      unsubscribePromise.then((unsubscribe) => {
+        unsubscribe()
+      })
+    }
   }, [])
 
   const filterMap = useStore($filterOptionsMap)
