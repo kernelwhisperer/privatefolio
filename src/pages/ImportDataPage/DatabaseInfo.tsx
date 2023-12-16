@@ -31,7 +31,6 @@ export function DatabaseInfo() {
     fetchData()
 
     const interval = setInterval(() => {
-      setStorageUsage(null)
       fetchData()
     }, 2500)
 
