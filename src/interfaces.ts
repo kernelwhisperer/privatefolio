@@ -99,10 +99,10 @@ export interface BinanceAuditLog extends AuditLog {
 
 export interface FileImport {
   _id: string
-  // _rev: string
+  _rev: string
   lastModified: number
   meta?: {
-    integration: string
+    integration: Integration
     logs: number
     operations: AuditLogOperation[]
     rows: number

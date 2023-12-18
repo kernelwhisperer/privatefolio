@@ -33,11 +33,7 @@ export default function App() {
   useEffect(() => {
     computeMetadata()
 
-    const unsubscribePromise = clancy.subscribeToAuditLogs(
-      proxy(() => {
-        computeMetadataDebounced()
-      })
-    )
+    const unsubscribePromise = clancy.subscribeToAuditLogs(proxy(computeMetadataDebounced))
 
     return () => {
       unsubscribePromise.then((unsubscribe) => {
