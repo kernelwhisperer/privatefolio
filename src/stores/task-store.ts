@@ -14,6 +14,10 @@ export type ProgressCallback = (state: ProgressUpdate) => void
 
 export interface Task {
   abortController?: AbortController
+  /**
+   * @default false
+   */
+  abortable?: boolean
   description: string
   /**
    * @default false

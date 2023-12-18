@@ -1,52 +1,58 @@
-import React, { createContext, ReactNode, useContext, useState } from "react"
+import React, { createContext, PropsWithChildren, ReactNode, useContext, useState } from "react"
 
 import ConfirmDialog from "../components/ConfirmDialog/ConfirmDialog"
 
+type ConfirmationRequest = {
+  content: string | ReactNode
+  /**
+   * Extra questions to ask the user
+   */
+  extraQuestions?: string[]
+  title: string
+  variant?: "danger" | "warning" | "info" | "success"
+}
+
+type ConfirmationResult = {
+  confirmed: boolean
+  extraAnswers: boolean[]
+}
+
 interface ConfirmDialogContextType {
-  requestConfirmation: (
-    title: string,
-    content: string,
-    variant?: "danger" | "warning" | "info" | "success"
-  ) => Promise<boolean>
+  confirm: (request: ConfirmationRequest) => Promise<ConfirmationResult>
 }
 
 const ConfirmDialogContext = createContext<ConfirmDialogContextType | undefined>(undefined)
 
-export const ConfirmDialogProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [confirmState, setConfirmState] = useState<{
-    content: string
-    resolve: (value: boolean) => void
-    title: string
-    variant?: "danger" | "warning" | "info" | "success"
+export function ConfirmDialogProvider({ children }: PropsWithChildren) {
+  const [state, setState] = useState<{
+    request: ConfirmationRequest
+    resolve: (result: ConfirmationResult) => void
   } | null>(null)
 
-  const requestConfirmation = (
-    title: string,
-    content: string,
-    variant?: "danger" | "warning" | "info" | "success"
-  ) => {
-    return new Promise<boolean>((resolve) => {
-      setConfirmState({ content, resolve, title, variant })
+  const confirm = (request: ConfirmationRequest) => {
+    return new Promise<ConfirmationResult>((resolve) => {
+      setState({ request, resolve })
     })
   }
 
-  const handleClose = (value: boolean) => {
-    if (confirmState) {
-      confirmState.resolve(value)
-      setConfirmState(null)
+  const handleClose = (confirmed: boolean, extraAnswers: boolean[]) => {
+    if (state) {
+      state.resolve({ confirmed, extraAnswers })
+      setState(null)
     }
   }
 
   return (
-    <ConfirmDialogContext.Provider value={{ requestConfirmation }}>
+    <ConfirmDialogContext.Provider value={{ confirm }}>
       {children}
-      {confirmState && (
+      {state && (
         <ConfirmDialog
-          open={!!confirmState}
+          open={!!state}
           onClose={handleClose}
-          title={confirmState.title}
-          content={confirmState.content}
-          variant={confirmState.variant}
+          title={state.request.title}
+          content={state.request.content}
+          variant={state.request.variant}
+          extraQuestions={state.request.extraQuestions}
         />
       )}
     </ConfirmDialogContext.Provider>
@@ -58,5 +64,5 @@ export const useConfirm = () => {
   if (!context) {
     throw new Error("useConfirm must be used within a ConfirmDialogProvider")
   }
-  return context.requestConfirmation
+  return context.confirm
 }

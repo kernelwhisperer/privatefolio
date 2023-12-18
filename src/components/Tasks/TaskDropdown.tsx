@@ -231,7 +231,9 @@ export function TaskDropdown() {
           ))}
           {taskQueue.length === 0 && taskHistory.length === 0 && !pendingTask && (
             <ListItem>
-              <ListItemText primary="Nothing to see here" />
+              <ListItemButton disabled>
+                <ListItemText primary="Nothing to see here" />
+              </ListItemButton>
             </ListItem>
           )}
         </List>

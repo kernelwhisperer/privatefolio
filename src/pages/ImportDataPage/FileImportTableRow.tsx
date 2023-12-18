@@ -44,7 +44,6 @@ export function FileImportTableRow(props: TableRowComponentProps<FileImport>) {
           setLoading(false)
         })
       },
-      // abortable: false, TODO
       name: `Remove file import`,
       priority: 8,
     })

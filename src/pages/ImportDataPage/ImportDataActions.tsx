@@ -64,6 +64,7 @@ export function ImportDataActions() {
           dense
           onClick={() => {
             enqueueTask({
+              abortable: true,
               description: "Recomputing balances for all assets.",
               determinate: true,
               function: async (progress, signal) => {
@@ -84,6 +85,7 @@ export function ImportDataActions() {
           dense
           onClick={() => {
             enqueueTask({
+              abortable: true,
               description: "Fetching price data for all assets.",
               determinate: true,
               function: async (progress, signal) => {
@@ -103,17 +105,23 @@ export function ImportDataActions() {
         <MenuItem
           dense
           onClick={async () => {
-            // TODO
-            const confirmed = await confirm(
-              "Wipe database",
-              "This action is permanent. All data will be lost (except for daily prices). Are you sure you wish to continue?",
-              "warning"
-            )
+            const { confirmed, extraAnswers } = await confirm({
+              content: (
+                <>
+                  This action is permanent. All data will be lost.
+                  <br />
+                  Are you sure you wish to continue?
+                </>
+              ),
+              extraQuestions: ["Remove daily price data too."],
+              title: "Wipe database",
+              variant: "warning",
+            })
             if (confirmed) {
               enqueueTask({
-                description: "Removing absolutely all data saved on disk.",
+                description: "Removing all data saved on disk.",
                 function: async () => {
-                  await clancy.resetDatabase()
+                  await clancy.resetDatabase(extraAnswers[0])
                 },
                 name: "Wipe database",
                 priority: TaskPriority.High,
