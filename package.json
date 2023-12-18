@@ -30,6 +30,7 @@
     "csv-parse": "^5.4.0",
     "date-fns": "^2.30.0",
     "decimal.js": "^10.4.3",
+    "ethers": "^6.9.0",
     "events": "^3.3.0",
     "jsbi": "^4.3.0",
     "lightweight-charts": "^4.1.1",

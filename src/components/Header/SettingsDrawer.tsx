@@ -20,20 +20,9 @@ export function SettingsDrawer() {
       <Drawer
         keepMounted
         open={open}
-        anchor="right"
         // transitionDuration={500}
         // TODO this should have a delay
-        slotProps={{ backdrop: { invisible: true } }}
         onClose={toggleOpen}
-        sx={{
-          "& .MuiDrawer-paper": {
-            borderBottom: "none",
-            borderBottomLeftRadius: 16,
-            borderRight: "none",
-            borderTop: "none",
-            borderTopLeftRadius: 16,
-          },
-        }}
       >
         <SettingsDrawerContents
           open={open}

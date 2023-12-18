@@ -1,7 +1,14 @@
 import PouchDB from "pouchdb"
 import PouchDBFind from "pouchdb-find"
 
-import { AuditLog, BalanceMap, FileImport, SavedPrice, Transaction } from "../interfaces"
+import {
+  AuditLog,
+  BalanceMap,
+  Connection,
+  FileImport,
+  SavedPrice,
+  Transaction,
+} from "../interfaces"
 
 if (typeof window !== "undefined") {
   throw new Error("Database should not be initialized in the browser, only in the web worker")
@@ -19,12 +26,13 @@ const defaultDbOptions = {
   revs_limit: 1,
 }
 
+export let connectionsDB = new PouchDB<Connection>("connections", defaultDbOptions)
 export let fileImportsDB = new PouchDB<Omit<FileImport, "_rev">>("file-imports", defaultDbOptions)
 export let auditLogsDB = new PouchDB<AuditLog>("audit-logs", defaultDbOptions)
 export let transactionsDB = new PouchDB<Transaction>("transactions", defaultDbOptions)
 export let balancesDB = new PouchDB<BalanceMap>("balances", defaultDbOptions)
+export let keyValueDB = new PouchDB<{ value: unknown }>("key-value", defaultDbOptions)
 export const dailyPricesDB = new PouchDB<SavedPrice>("daily-prices", defaultDbOptions)
-export let keyValueDB = new PouchDB<{ value: any }>("key-value", defaultDbOptions)
 
 // try {
 //   PouchDB.replicate("file-imports", "http://localhost:5984/file-imports", { live: true })
@@ -43,16 +51,19 @@ auditLogsDB.on("indexing", function (event) {
 })
 
 export async function resetDatabase() {
+  await connectionsDB.destroy()
   await fileImportsDB.destroy()
   await auditLogsDB.destroy()
   await transactionsDB.destroy()
   await balancesDB.destroy()
-  // await dailyPricesDB.destroy() TODO turn into option
   await keyValueDB.destroy()
-  fileImportsDB = new PouchDB<Omit<FileImport, "_rev">>("file-imports", defaultDbOptions)
+  // await dailyPricesDB.destroy() TODO turn into option
+  //
+  connectionsDB = new PouchDB<Connection>("connections", defaultDbOptions)
+  fileImportsDB = new PouchDB<FileImport>("file-imports", defaultDbOptions)
   auditLogsDB = new PouchDB<AuditLog>("audit-logs", defaultDbOptions)
   transactionsDB = new PouchDB<Transaction>("transactions", defaultDbOptions)
   balancesDB = new PouchDB<BalanceMap>("balances", defaultDbOptions)
+  keyValueDB = new PouchDB<{ value: unknown }>("key-value", defaultDbOptions)
   // dailyPricesDB = new PouchDB<SavedPrice>("daily-prices", defaultDbOptions)
-  keyValueDB = new PouchDB<{ value: any }>("key-value", defaultDbOptions)
 }

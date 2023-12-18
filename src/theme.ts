@@ -222,7 +222,18 @@ export const theme: CssVarsThemeOptions = {
           elevation: 2,
           transparent: "true",
         },
+        anchor: "right",
         disableScrollLock: true,
+        slotProps: { backdrop: { invisible: true } },
+      },
+      styleOverrides: {
+        paper: {
+          borderBottom: "none",
+          borderBottomLeftRadius: 16,
+          borderRight: "none",
+          borderTop: "none",
+          borderTopLeftRadius: 16,
+        },
       },
     },
     MuiIconButton: {

@@ -1,6 +1,8 @@
 import type Decimal from "decimal.js"
 import { OhlcData, SingleValueData, UTCTimestamp } from "lightweight-charts"
 
+import { INTEGRATIONS } from "./settings"
+
 export type TransactionRole = "Maker" | "Taker"
 export type TransactionSide = "BUY" | "SELL"
 export type TransactionType = "Buy" | "Sell" | "Swap"
@@ -53,7 +55,7 @@ export type AuditLogOperation =
   | "Withdraw"
   | "Funding Fee"
 
-export type Integration = "Binance" | "MEXC"
+export type Integration = keyof typeof INTEGRATIONS
 
 export interface Asset {
   coingeckoId?: string
@@ -97,7 +99,7 @@ export interface BinanceAuditLog extends AuditLog {
 
 export interface FileImport {
   _id: string
-  _rev: string
+  // _rev: string
   lastModified: number
   meta?: {
     integration: string
@@ -254,3 +256,12 @@ export type QueryRequest = {
   variant?: number
 }
 export const DEFAULT_POLLING_INTERVAL = 2_000
+
+export interface Connection {
+  _id: string
+  address: string
+  createdAt: number
+  integration: Integration
+  label?: string
+  syncedAt?: number
+}
