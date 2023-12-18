@@ -1,8 +1,17 @@
 import { CloseRounded, GitHub, Telegram, Twitter } from "@mui/icons-material"
-import { IconButton, Link as MuiLink, MenuItem, Stack, Typography } from "@mui/material"
+import {
+  FormControlLabel,
+  IconButton,
+  Link as MuiLink,
+  MenuItem,
+  Stack,
+  Switch,
+  Typography,
+} from "@mui/material"
+import { useStore } from "@nanostores/react"
 import React from "react"
 
-import { AppVerProps, PopoverToggleProps } from "../../stores/app-store"
+import { $devMode, AppVerProps, PopoverToggleProps } from "../../stores/app-store"
 import { MonoFont } from "../../theme"
 import { formatDate } from "../../utils/formatting-utils"
 import { SectionTitle } from "../SectionTitle"
@@ -35,6 +44,8 @@ export const SettingsDrawerContents = ({
   open,
   toggleOpen,
 }: MenuContentsProps) => {
+  const devMode = useStore($devMode)
+
   return (
     <StaggeredList padding={2} gap={4} show={open} secondary sx={{ overflowX: "hidden" }}>
       <Stack direction="row" justifyContent="space-between" alignItems="center">
@@ -75,6 +86,9 @@ export const SettingsDrawerContents = ({
         </CustomLink>
       </div>
       <div>
+        <SectionTitle id="social-links" role="listitem">
+          Debug
+        </SectionTitle>
         <Typography sx={{ opacity: 0.5 }} fontFamily={MonoFont} variant="body2">
           App version: {appVer}
         </Typography>
@@ -84,6 +98,37 @@ export const SettingsDrawerContents = ({
         <Typography sx={{ opacity: 0.5 }} fontFamily={MonoFont} variant="body2">
           Release date: {formatDate(new Date())}
         </Typography>
+
+        <FormControlLabel
+          sx={{
+            "&:hover": {
+              color: "text.primary",
+            },
+            color: "text.secondary",
+            display: "flex",
+            justifyContent: "space-between",
+            marginLeft: 0,
+            paddingY: 1,
+          }}
+          slotProps={{
+            typography: {
+              variant: "body2",
+            },
+          }}
+          control={
+            <Switch
+              color="secondary"
+              size="small"
+              checked={devMode}
+              onChange={(event) => {
+                localStorage.setItem("dev-mode", event.target.checked ? "true" : "false")
+                $devMode.set(event.target.checked)
+              }}
+            />
+          }
+          label="Dev mode"
+          labelPlacement="start"
+        />
       </div>
     </StaggeredList>
   )

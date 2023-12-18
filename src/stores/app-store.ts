@@ -13,7 +13,10 @@ export interface PopoverToggleProps {
 }
 
 export type ReducedMotionSetting = "always" | "never" | "user"
-export const $reducedMotion = atom<ReducedMotionSetting>("user")
+export const $reducedMotion = atom<ReducedMotionSetting>(
+  (localStorage.getItem("reduced-motion") as ReducedMotionSetting) || "user"
+)
 export const $loopsAllowed = atom<boolean>(false)
+export const $devMode = atom<boolean>(localStorage.getItem("dev-mode") === "true")
 
-logAtoms({ $loopsAllowed, $reducedMotion })
+logAtoms({ $devMode, $loopsAllowed, $reducedMotion })

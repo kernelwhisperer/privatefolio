@@ -331,6 +331,58 @@ export const theme: CssVarsThemeOptions = {
         animation: "wave",
       },
     },
+    MuiSwitch: {
+      defaultProps: {
+        focusVisibleClassName: ".Mui-focusVisible",
+      },
+      styleOverrides: {
+        // TODO this needs work
+        root: ({ theme }) => ({
+          "& .MuiSwitch-switchBase": {
+            "&.Mui-checked": {
+              "& + .MuiSwitch-track": {
+                // backgroundColor: theme.palette.mode === "dark" ? "#2ECA45" : "#65C466",
+                border: 0,
+                opacity: 1,
+              },
+              "&.Mui-disabled + .MuiSwitch-track": {
+                opacity: 0.5,
+              },
+              color: "#fff",
+              transform: "translateX(16px)",
+            },
+            "&.Mui-disabled + .MuiSwitch-track": {
+              opacity: theme.palette.mode === "light" ? 0.7 : 0.3,
+            },
+            "&.Mui-disabled .MuiSwitch-thumb": {
+              color:
+                theme.palette.mode === "light" ? theme.palette.grey[100] : theme.palette.grey[600],
+            },
+            "&.Mui-focusVisible .MuiSwitch-thumb": {
+              border: "6px solid #fff",
+              color: theme.palette.accent.main,
+            },
+            margin: 2,
+            padding: 0,
+            transitionDuration: "300ms",
+          },
+          "& .MuiSwitch-thumb": {
+            boxSizing: "border-box",
+            height: 22,
+            width: 22,
+          },
+          "& .MuiSwitch-track": {
+            background: "var(--mui-palette-background-default)",
+            borderRadius: 26 / 2,
+            opacity: 1,
+            transition: theme.transitions.create(["background-color"]),
+          },
+          height: 26,
+          padding: 0,
+          width: 42,
+        }),
+      },
+    },
     // MuiTable: {
     //   styleOverrides: {
     //     root: {}

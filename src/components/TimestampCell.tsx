@@ -1,8 +1,10 @@
 import { Stack, Tooltip, Typography } from "@mui/material"
 import { grey } from "@mui/material/colors"
+import { useStore } from "@nanostores/react"
 import React from "react"
 
 import { Timestamp } from "../interfaces"
+import { $devMode } from "../stores/app-store"
 import {
   formatDate,
   formatDateRelative,
@@ -17,6 +19,8 @@ type TimestampCellProps = {
 
 export function TimestampCell(props: TimestampCellProps) {
   const { timestamp, relative } = props
+
+  const devMode = useStore($devMode)
 
   return (
     <Tooltip
@@ -38,13 +42,14 @@ export function TimestampCell(props: TimestampCellProps) {
               timeZoneName: "short",
             })}
           </span>
-          <span>
-            {/* TODO this should go under a DevMode/Debug option */}
-            {timestamp}{" "}
-            <Typography color={grey[400]} component="i" variant="inherit">
-              unix timestamp
-            </Typography>
-          </span>
+          {devMode && (
+            <span>
+              {timestamp}{" "}
+              <Typography color={grey[400]} component="i" variant="inherit">
+                unix timestamp
+              </Typography>
+            </span>
+          )}
         </Stack>
       }
     >
