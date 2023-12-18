@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react"
 
 import { MemoryTable } from "../../components/EnhancedTable/MemoryTable"
+import { NoDataCard } from "../../components/NoDataCard"
 import { StaggeredList } from "../../components/StaggeredList"
 import { Subheading } from "../../components/Subheading"
 import { Balance } from "../../interfaces"
@@ -11,13 +12,13 @@ import { BalanceTableRow } from "./BalanceTableRow"
 
 export function BalancesPage({ show }: { show: boolean }) {
   const [queryTime, setQueryTime] = useState<number | null>(null)
-  const [balances, setBalances] = useState<Balance[]>([])
+  const [rows, setRows] = useState<Balance[]>([])
 
   useEffect(() => {
     const start = Date.now()
     clancy.getLatestBalances().then((balances) => {
       setQueryTime(Date.now() - start)
-      setBalances(balances)
+      setRows(balances)
     })
   }, [])
 
@@ -54,24 +55,30 @@ export function BalancesPage({ show }: { show: boolean }) {
 
   return (
     <StaggeredList component="main" gap={2} show={show}>
-      <div>
-        <Subheading>
-          <span>Net worth</span>
-        </Subheading>
-        <BalancesChart />
-      </div>
+      {queryTime !== null && rows.length === 0 ? null : (
+        <div>
+          <Subheading>
+            <span>Net worth</span>
+          </Subheading>
+          <BalancesChart />
+        </div>
+      )}
       <div>
         <Subheading>
           <span>Balances</span>
         </Subheading>
-        <MemoryTable<Balance>
-          initOrderBy="value"
-          headCells={headCells}
-          TableRowComponent={BalanceTableRow}
-          rows={balances}
-          defaultRowsPerPage={10}
-          queryTime={queryTime}
-        />
+        {queryTime !== null && rows.length === 0 ? (
+          <NoDataCard />
+        ) : (
+          <MemoryTable<Balance>
+            initOrderBy="value"
+            headCells={headCells}
+            TableRowComponent={BalanceTableRow}
+            rows={rows}
+            defaultRowsPerPage={10}
+            queryTime={queryTime}
+          />
+        )}
       </div>
     </StaggeredList>
   )

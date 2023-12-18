@@ -1,11 +1,4 @@
-import {
-  BarChartOutlined,
-  CandlestickChartSharp,
-  Fullscreen,
-  FullscreenExit,
-  MoreHoriz,
-  ShowChart,
-} from "@mui/icons-material"
+import { BarChartOutlined, CandlestickChartSharp, ShowChart } from "@mui/icons-material"
 import { Box, Button, Divider, IconButton, Paper, Skeleton, Stack } from "@mui/material"
 import { useStore } from "@nanostores/react"
 import { a, useTransition } from "@react-spring/web"
@@ -249,7 +242,7 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
                   </Stack>
                 </Stack>
                 <Stack direction="row">
-                  <IconButton size="small" onClick={toggleFullscreen} color="secondary">
+                  {/* <IconButton size="small" onClick={toggleFullscreen} color="secondary">
                     {fullscreen ? (
                       <FullscreenExit fontSize="inherit" />
                     ) : (
@@ -258,7 +251,7 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
                   </IconButton>
                   <IconButton size="small" color="secondary">
                     <MoreHoriz fontSize="inherit" />
-                  </IconButton>
+                  </IconButton> */}
                 </Stack>
               </Stack>
               <Box sx={{ height: "calc(100% - 86px)" }}>
@@ -278,10 +271,10 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
               >
                 <Stack direction="row" gap={1}>
                   {queryTime !== undefined && <QueryTimer queryTime={queryTime} />}
-                  <Divider orientation="vertical" flexItem sx={{ marginY: 1 }} />
+                  {/* <Divider orientation="vertical" flexItem sx={{ marginY: 1 }} />
                   <Button sx={{ borderRadius: 0.5, paddingX: 1 }} size="small" color="secondary">
                     Source: Binance.com
-                  </Button>
+                  </Button> */}
                 </Stack>
                 <Button
                   color={logScale ? "accent" : "secondary"}

@@ -1,4 +1,4 @@
-import { Paper, Skeleton, Stack, TableHead } from "@mui/material"
+import { Paper, Stack, TableHead } from "@mui/material"
 import Table from "@mui/material/Table"
 import TableBody from "@mui/material/TableBody"
 import TableCell from "@mui/material/TableCell"
@@ -28,6 +28,7 @@ import {
 import { SPRING_CONFIGS } from "../../utils/utils"
 import { FilterChip } from "../FilterChip"
 import { ConnectedTableHead } from "./ConnectedTableHead"
+import { TableSkeleton } from "./TableSkeleton"
 
 function descendingComparator<T extends BaseType>(a: T, b: T, valueSelector: ValueSelector<T>) {
   const valueA = valueSelector(a)
@@ -176,17 +177,7 @@ export function MemoryTable<T extends BaseType>(props: MemoryTableProps<T>) {
       {transitions((styles, isLoading) => (
         <a.div style={styles}>
           {isLoading ? (
-            <Stack gap={1.5} sx={{}}>
-              <Stack direction="row" gap={1.5}>
-                <Skeleton variant="rounded" height={56} width={240}></Skeleton>
-                <Skeleton variant="rounded" height={56} width={240}></Skeleton>
-                <Skeleton variant="rounded" height={56} width={240}></Skeleton>
-              </Stack>
-              <Skeleton variant="rounded" height={37}></Skeleton>
-              <Skeleton variant="rounded" height={37}></Skeleton>
-              <Skeleton variant="rounded" height={37}></Skeleton>
-              <Skeleton variant="rounded" height={37}></Skeleton>
-            </Stack>
+            <TableSkeleton />
           ) : (
             <Stack gap={1}>
               {Object.keys(activeFilters).length > 0 && (

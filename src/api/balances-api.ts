@@ -19,6 +19,7 @@ export async function getLatestBalances(): Promise<Balance[]> {
         const price = prices.length > 0 ? prices[0] : undefined
 
         return {
+          _id: `${timestamp}_${x.symbol}`,
           ...x,
           price,
           value: price ? price.value * x.balance : undefined,

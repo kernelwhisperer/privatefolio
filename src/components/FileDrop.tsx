@@ -2,7 +2,7 @@ import { Paper, PaperProps, Stack, Typography, useTheme } from "@mui/material"
 import React, { useRef, useState } from "react"
 
 import { enqueueTask } from "../stores/task-store"
-import { enqueueIndexDatabase } from "../utils/common-tasks"
+import { handleAuditLogChange } from "../utils/common-tasks"
 import { clancy } from "../workers/remotes"
 
 export function FileDrop(props: PaperProps & { defaultBg?: string }) {
@@ -40,7 +40,7 @@ export function FileDrop(props: PaperProps & { defaultBg?: string }) {
     setDragOver(false)
     if (e.dataTransfer.files) {
       Array.from(e.dataTransfer.files).forEach(handleFileUpload)
-      enqueueIndexDatabase()
+      handleAuditLogChange()
     }
   }
 
@@ -48,7 +48,7 @@ export function FileDrop(props: PaperProps & { defaultBg?: string }) {
     const files = e.target.files
     if (files) {
       Array.from(files).forEach(handleFileUpload)
-      enqueueIndexDatabase()
+      handleAuditLogChange()
     }
   }
 

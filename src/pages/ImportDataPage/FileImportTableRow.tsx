@@ -21,7 +21,7 @@ import { INTEGRATIONS } from "../../settings"
 import { $integrationMap } from "../../stores/metadata-store"
 import { enqueueTask } from "../../stores/task-store"
 import { MonoFont } from "../../theme"
-import { enqueueIndexDatabase } from "../../utils/common-tasks"
+import { handleAuditLogChange } from "../../utils/common-tasks"
 import { formatFileSize, formatNumber } from "../../utils/formatting-utils"
 import { TableRowComponentProps } from "../../utils/table-utils"
 import { clancy } from "../../workers/remotes"
@@ -51,7 +51,7 @@ export function FileImportTableRow(props: TableRowComponentProps<FileImport>) {
       name: `Remove file import`,
       priority: 8,
     })
-    enqueueIndexDatabase()
+    handleAuditLogChange()
   }
 
   return (

@@ -1,5 +1,4 @@
-import { DataArrayRounded } from "@mui/icons-material"
-import { Link as MuiLink, Paper, Skeleton, Stack, TableHead, Typography } from "@mui/material"
+import { Paper, Stack, TableHead } from "@mui/material"
 import Table from "@mui/material/Table"
 import TableBody from "@mui/material/TableBody"
 import TableCell from "@mui/material/TableCell"
@@ -14,7 +13,6 @@ import React, {
   useEffect,
   useState,
 } from "react"
-import { Link } from "react-router-dom"
 
 import { FILTER_LABEL_MAP } from "../../stores/metadata-store"
 import { stringToColor } from "../../utils/color-utils"
@@ -27,8 +25,10 @@ import {
 } from "../../utils/table-utils"
 import { SPRING_CONFIGS } from "../../utils/utils"
 import { FilterChip } from "../FilterChip"
+import { NoDataCard } from "../NoDataCard"
 import { TableFooter } from "../TableFooter"
 import { ConnectedTableHead } from "./ConnectedTableHead"
+import { TableSkeleton } from "./TableSkeleton"
 export type { ConnectedTableHead } from "./ConnectedTableHead"
 
 export type QueryFunction<T extends BaseType> = (
@@ -139,35 +139,9 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
       {transitions((styles, isLoading) => (
         <a.div style={styles}>
           {isLoading ? (
-            <Stack gap={1.5}>
-              <Stack direction="row" gap={1.5}>
-                <Skeleton variant="rounded" height={56} width={240}></Skeleton>
-                <Skeleton variant="rounded" height={56} width={240}></Skeleton>
-                <Skeleton variant="rounded" height={56} width={240}></Skeleton>
-              </Stack>
-              <Skeleton variant="rounded" height={37}></Skeleton>
-              <Skeleton variant="rounded" height={37}></Skeleton>
-              <Skeleton variant="rounded" height={37}></Skeleton>
-              <Skeleton variant="rounded" height={37}></Skeleton>
-            </Stack>
+            <TableSkeleton />
           ) : rows.length === 0 && Object.keys(activeFilters).length === 0 ? (
-            <Paper sx={{ padding: 4 }}>
-              <Typography color="text.secondary" variant="body2" component="div">
-                <Stack alignItems="center">
-                  <DataArrayRounded sx={{ height: 64, width: 64 }} />
-                  <span>Nothing to see here...</span>
-                  <MuiLink
-                    color="inherit"
-                    sx={{ marginTop: 4 }}
-                    component={Link}
-                    to="/import-data"
-                    underline="hover"
-                  >
-                    Visit <u>Import data</u> to get started
-                  </MuiLink>
-                </Stack>
-              </Typography>
-            </Paper>
+            <NoDataCard />
           ) : (
             <Stack gap={1}>
               {Object.keys(activeFilters).length > 0 && (

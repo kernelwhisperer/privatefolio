@@ -11,9 +11,12 @@ import React from "react"
 
 import { useConfirm } from "../../hooks/useConfirm"
 import { $devMode } from "../../stores/app-store"
-import { $filterOptionsMap } from "../../stores/metadata-store"
 import { enqueueTask, TaskPriority } from "../../stores/task-store"
-import { enqueueIndexDatabase } from "../../utils/common-tasks"
+import {
+  enqueueComputeBalances,
+  enqueueFetchPrices,
+  enqueueIndexDatabase,
+} from "../../utils/common-tasks"
 import { clancy } from "../../workers/remotes"
 
 export function ImportDataActions() {
@@ -61,16 +64,7 @@ export function ImportDataActions() {
         <MenuItem
           dense
           onClick={() => {
-            enqueueTask({
-              abortable: true,
-              description: "Recomputing balances for all assets.",
-              determinate: true,
-              function: async (progress, signal) => {
-                await clancy.computeBalances(progress, signal)
-              },
-              name: "Compute balances",
-              priority: TaskPriority.Low,
-            })
+            enqueueComputeBalances()
             handleClose()
           }}
         >
@@ -82,16 +76,7 @@ export function ImportDataActions() {
         <MenuItem
           dense
           onClick={() => {
-            enqueueTask({
-              abortable: true,
-              description: "Fetching price data for all assets.",
-              determinate: true,
-              function: async (progress, signal) => {
-                await clancy.fetchDailyPrices($filterOptionsMap.get().symbol, progress, signal)
-              },
-              name: "Fetch asset prices",
-              priority: TaskPriority.Low,
-            })
+            enqueueFetchPrices()
             handleClose()
           }}
         >

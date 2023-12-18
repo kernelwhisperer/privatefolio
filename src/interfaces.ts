@@ -116,6 +116,7 @@ export interface FileImport {
 }
 
 export interface Balance {
+  _id: string
   balance: number
   price?: ChartData
   symbol: string
