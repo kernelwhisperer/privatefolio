@@ -3,11 +3,13 @@ import { Paper, Skeleton, Stack, Tooltip, Typography, TypographyProps } from "@m
 import { grey } from "@mui/material/colors"
 import { useStore } from "@nanostores/react"
 import { proxy } from "comlink"
+import { debounce } from "lodash"
 import React, { useEffect, useState } from "react"
 
+import { DEFAULT_DEBOUNCE_DURATION } from "../../settings"
 import { $filterOptionsMap } from "../../stores/metadata-store"
 import { MonoFont } from "../../theme"
-import { formatDate, formatFileSize, formatNumber } from "../../utils/formatting-utils"
+import { formatFileSize, formatNumber } from "../../utils/formatting-utils"
 import { clancy } from "../../workers/remotes"
 
 function SectionTitle(props: TypographyProps) {
@@ -18,7 +20,7 @@ export function DatabaseInfo() {
   const [storageUsage, setStorageUsage] = useState<number | null>(null)
   const [auditLogs, setAuditLogs] = useState<number | null>(null)
   const [transactions, setTransactions] = useState<number | null>(null)
-  const [genesis, setGenesis] = useState<number | null>(null)
+  // const [genesis, setGenesis] = useState<number | null>(null)
 
   useEffect(() => {
     function fetchData() {
@@ -45,10 +47,12 @@ export function DatabaseInfo() {
     fetchData()
 
     const unsubscribePromise = clancy.subscribeToAuditLogs(
-      proxy(() => {
-        setAuditLogs(null)
-        fetchData()
-      })
+      proxy(
+        debounce(() => {
+          setAuditLogs(null)
+          fetchData()
+        }, DEFAULT_DEBOUNCE_DURATION)
+      )
     )
 
     return () => {
@@ -66,10 +70,12 @@ export function DatabaseInfo() {
     fetchData()
 
     const unsubscribePromise = clancy.subscribeToTransactions(
-      proxy(() => {
-        setTransactions(null)
-        fetchData()
-      })
+      proxy(
+        debounce(() => {
+          setTransactions(null)
+          fetchData()
+        }, DEFAULT_DEBOUNCE_DURATION)
+      )
     )
 
     return () => {
@@ -79,32 +85,39 @@ export function DatabaseInfo() {
     }
   }, [])
 
-  useEffect(() => {
-    function fetchData() {
-      clancy.findAuditLogs({ limit: 1, order: "asc" }).then((res) => {
-        if (res.length === 0) {
-          setGenesis(0)
-        } else {
-          setGenesis(res[0].timestamp)
-        }
-      })
-    }
+  // useEffect(() => {
+  //   function fetchData() {
+  //     clancy
+  //       .findAuditLogs({ limit: 1, order: "asc" })
+  //       .then((res) => {
+  //         if (res.length === 0) {
+  //           setGenesis(0)
+  //         } else {
+  //           setGenesis(res[0].timestamp)
+  //         }
+  //       })
+  //       .catch(() => {
+  //         setGenesis(0)
+  //       })
+  //   }
 
-    fetchData()
+  //   fetchData()
 
-    const unsubscribePromise = clancy.subscribeToAuditLogs(
-      proxy(() => {
-        setGenesis(null)
-        fetchData()
-      })
-    )
+  //   const unsubscribePromise = clancy.subscribeToAuditLogs(
+  //     proxy(
+  //       debounce(() => {
+  //         setGenesis(null)
+  //         fetchData()
+  //       }, DEFAULT_DEBOUNCE_DURATION)
+  //     )
+  //   )
 
-    return () => {
-      unsubscribePromise.then((unsubscribe) => {
-        unsubscribe()
-      })
-    }
-  }, [])
+  //   return () => {
+  //     unsubscribePromise.then((unsubscribe) => {
+  //       unsubscribe()
+  //     })
+  //   }
+  // }, [])
 
   const filterMap = useStore($filterOptionsMap)
 
@@ -165,7 +178,7 @@ export function DatabaseInfo() {
             </Typography>
           )}
         </Stack>
-        <Stack direction="row" justifyContent="space-between">
+        {/* <Stack direction="row" justifyContent="space-between">
           <SectionTitle>Portfolio genesis</SectionTitle>
           {genesis === null ? (
             <Skeleton height={20} width={80}></Skeleton>
@@ -180,7 +193,7 @@ export function DatabaseInfo() {
               )}
             </Typography>
           )}
-        </Stack>
+        </Stack> */}
       </Stack>
     </Paper>
   )
