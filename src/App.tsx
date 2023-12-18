@@ -11,6 +11,7 @@ import { BalancesPage } from "./pages/BalancesPage/BalancesPage"
 import { ImportDataPage } from "./pages/ImportDataPage/ImportDataPage"
 import { TransactionsPage } from "./pages/TransactionPage/TransactionsPage"
 import { computeMetadata, computeMetadataDebounced } from "./stores/metadata-store"
+import { $pendingTask } from "./stores/task-store"
 import { SPRING_CONFIGS } from "./utils/utils"
 import { clancy } from "./workers/remotes"
 
@@ -40,6 +41,23 @@ export default function App() {
         unsubscribe()
       })
     }
+  }, [])
+
+  useEffect(() => {
+    const beforeUnloadHandler = (event) => {
+      // Recommended
+      event.preventDefault()
+      // Included for legacy support, e.g. Chrome/Edge < 119
+      event.returnValue = true
+    }
+
+    $pendingTask.listen((pendingTask) => {
+      if (pendingTask) {
+        window.addEventListener("beforeunload", beforeUnloadHandler)
+      } else {
+        window.removeEventListener("beforeunload", beforeUnloadHandler)
+      }
+    })
   }, [])
 
   return (
