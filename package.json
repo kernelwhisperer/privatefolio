@@ -1,8 +1,8 @@
 {
   "name": "privatefolio",
   "version": "0.0.1",
-  "private": true,
-  "license": "UNLICENSED",
+  "private": false,
+  "license": "AGPL-3.0",
   "author": {
     "name": "Daniel Constantin",
     "email": "hello@danielconstantin.net"
