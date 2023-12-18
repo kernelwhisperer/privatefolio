@@ -2,7 +2,6 @@ import React from "react"
 
 import { StaggeredList } from "../../components/StaggeredList"
 import { Subheading } from "../../components/Subheading"
-import { AuditLogActions } from "./AuditLogActions"
 import { AuditLogTable } from "./AuditLogTable"
 
 export function AuditLogsPage({ show }: { show: boolean }) {
@@ -11,7 +10,7 @@ export function AuditLogsPage({ show }: { show: boolean }) {
       <div>
         <Subheading>
           <span>Audit logs</span>
-          <AuditLogActions />
+          {/* <AuditLogActions /> */}
         </Subheading>
         <AuditLogTable />
       </div>

@@ -6,9 +6,11 @@ import {
   Storage,
 } from "@mui/icons-material"
 import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem } from "@mui/material"
+import { useStore } from "@nanostores/react"
 import React from "react"
 
 import { useConfirm } from "../../hooks/useConfirm"
+import { $devMode } from "../../stores/app-store"
 import { $filterOptionsMap } from "../../stores/metadata-store"
 import { enqueueTask, TaskPriority } from "../../stores/task-store"
 import { enqueueIndexDatabase } from "../../utils/common-tasks"
@@ -25,6 +27,8 @@ export function ImportDataActions() {
   }
 
   const confirm = useConfirm()
+
+  const devMode = useStore($devMode)
 
   return (
     <>

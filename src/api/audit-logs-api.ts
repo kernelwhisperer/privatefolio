@@ -3,44 +3,43 @@ import { proxy } from "comlink"
 
 import { AuditLog } from "../interfaces"
 import { ProgressCallback } from "../stores/task-store"
-import { noop } from "../utils/utils"
 import { auditLogsDB } from "./database"
 
 const _filterOrder = ["integration", "wallet", "operation", "symbol"]
 const _filterOrderBySpecificity = ["symbol", "operation", "wallet", "integration"]
 
-export async function indexAuditLogs(progress: ProgressCallback = noop) {
+export async function indexAuditLogs(progress: ProgressCallback) {
   progress([0, "Audit logs: cleaning up stale indexes"])
   await auditLogsDB.viewCleanup()
-  progress([10, "Audit logs: creating index on 'timestamp'"])
+  progress([10, "Audit logs: updating index for 'timestamp'"])
   await auditLogsDB.createIndex({
     index: {
       fields: ["timestamp"],
       name: "timestamp",
     },
   })
-  progress([20, "Audit logs: creating index on 'integration'"])
+  progress([20, "Audit logs: updating index for 'integration'"])
   await auditLogsDB.createIndex({
     index: {
       fields: ["integration", "timestamp", "wallet", "operation", "symbol"], // MUST respect the order in _filterOrder
       name: "integration",
     },
   })
-  progress([30, "Audit logs: creating index on 'wallet'"])
+  progress([30, "Audit logs: updating index for 'wallet'"])
   await auditLogsDB.createIndex({
     index: {
       fields: ["wallet", "timestamp", "integration", "operation", "symbol"], // MUST respect the order in _filterOrder
       name: "wallet",
     },
   })
-  progress([40, "Audit logs: creating index on 'operation'"])
+  progress([40, "Audit logs: updating index for 'operation'"])
   await auditLogsDB.createIndex({
     index: {
       fields: ["operation", "timestamp", "integration", "wallet", "symbol"], // MUST respect the order in _filterOrder
       name: "operation",
     },
   })
-  progress([50, "Audit logs: creating index on 'symbol'"])
+  progress([50, "Audit logs: updating index for 'symbol'"])
   await auditLogsDB.createIndex({
     index: {
       fields: ["symbol", "timestamp", "integration", "wallet", "operation"], // MUST respect the order in _filterOrder
@@ -63,6 +62,11 @@ type FindAuditLogsRequest = {
 }
 
 export async function findAuditLogs(request: FindAuditLogsRequest = {}) {
+  const { indexes } = await auditLogsDB.getIndexes()
+  if (indexes.length === 1) {
+    await indexAuditLogs(console.log)
+  }
+
   const { filters = {}, limit, skip, order = "desc", fields } = request
 
   // Algorithm to help PouchDB find the best index to use

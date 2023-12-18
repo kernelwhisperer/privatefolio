@@ -41,14 +41,9 @@ export let dailyPricesDB = new PouchDB<SavedPrice>("daily-prices", defaultDbOpti
 //   console.log("Error replicating database")
 // }
 
-fileImportsDB.on("indexing", function (event) {
-  console.log("Indexing fileImportsDB:", event)
-  // called when indexes are updated
-})
-auditLogsDB.on("indexing", function (event) {
-  console.log("Indexing auditLogsDB:", event)
-  // called when indexes are updated
-})
+// transactionsDB.on("indexing", function (event) {
+//   console.log("Indexing transactionsDB:", event)
+// })
 
 export async function resetDatabase(removeDailyPrices = false) {
   await connectionsDB.destroy()

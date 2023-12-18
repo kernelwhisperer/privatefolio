@@ -8,6 +8,7 @@ import { AssetAvatar } from "../../components/AssetAvatar"
 import { TimestampCell } from "../../components/TimestampCell"
 import { Truncate } from "../../components/Truncate"
 import { Transaction, TransactionType } from "../../interfaces"
+import { INTEGRATIONS } from "../../settings"
 import { $assetMap, $integrationMap } from "../../stores/metadata-store"
 import { MonoFont } from "../../theme"
 import { formatNumber } from "../../utils/formatting-utils"
@@ -61,9 +62,9 @@ export function TransactionTableRow(props: TableRowComponentProps<Transaction>) 
                 height: 16,
                 width: 16,
               }}
-              alt={integration}
+              alt={INTEGRATIONS[integration]}
             />
-            <span>{integration}</span>
+            <span>{INTEGRATIONS[integration]}</span>
           </Stack>
         </TableCell>
         <TableCell sx={{ maxWidth: 140, minWidth: 140, width: 140 }}>{wallet}</TableCell>

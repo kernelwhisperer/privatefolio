@@ -45,13 +45,13 @@ export function FileImportTableRow(props: TableRowComponentProps<FileImport>) {
         try {
           await clancy.removeFileImport(row, progress)
         } finally {
-          enqueueIndexDatabase()
           // setLoading(false)
         }
       },
       name: `Remove file import`,
       priority: 8,
     })
+    enqueueIndexDatabase()
   }
 
   return (

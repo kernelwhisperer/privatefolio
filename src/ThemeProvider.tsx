@@ -1,5 +1,6 @@
 import {
   CssBaseline,
+  CssVarsThemeOptions,
   Experimental_CssVarsProvider as CssVarsProvider,
   experimental_extendTheme as extendTheme,
   useMediaQuery,
@@ -42,11 +43,16 @@ export function ThemeProvider({ children }: PropsWithChildren) {
           {},
           theme,
           skipAnimation
-            ? {
+            ? ({
                 components: {
                   MuiButtonBase: {
                     defaultProps: {
                       disableRipple: true, // No more ripple, on the whole application 💣!
+                    },
+                  },
+                  MuiSkeleton: {
+                    defaultProps: {
+                      animation: false,
                     },
                   },
                 },
@@ -54,7 +60,7 @@ export function ThemeProvider({ children }: PropsWithChildren) {
                   // So we have `transition: none;` everywhere
                   create: () => "none",
                 },
-              }
+              } as CssVarsThemeOptions)
             : {}
         )
       ),

@@ -59,15 +59,18 @@ export async function removeFileImport(fileImport: FileImport, progress: Progres
   } as PouchDB.Core.AllDocsWithinRangeOptions)
   progress([25, `Removing ${logs.rows.length} audit logs`])
 
-  await Promise.all(
-    logs.rows.map((row) =>
-      auditLogsDB.remove({
-        _id: row.id,
-        _rev: row.value.rev,
-      })
-    )
-  )
+  // await Promise.all(
+  //   logs.rows.map((row) =>
+  //     auditLogsDB.remove({
+  //       _id: row.id,
+  //       _rev: row.value.rev,
+  //     })
+  //   )
+  // )
 
+  await auditLogsDB.bulkDocs(
+    logs.rows.map((row) => ({ _deleted: true, _id: row.id, _rev: row.value.rev } as any))
+  )
   // Transactions
   const txns = await transactionsDB.allDocs({
     // Prefix search
@@ -77,13 +80,17 @@ export async function removeFileImport(fileImport: FileImport, progress: Progres
   } as PouchDB.Core.AllDocsWithinRangeOptions)
   progress([50, `Removing ${txns.rows.length} transactions`])
 
-  await Promise.all(
-    txns.rows.map((row) =>
-      transactionsDB.remove({
-        _id: row.id,
-        _rev: row.value.rev,
-      })
-    )
+  // await Promise.all(
+  //   txns.rows.map((row) =>
+  //     transactionsDB.remove({
+  //       _id: row.id,
+  //       _rev: row.value.rev,
+  //     })
+  //   )
+  // )
+
+  await transactionsDB.bulkDocs(
+    txns.rows.map((row) => ({ _deleted: true, _id: row.id, _rev: row.value.rev } as any))
   )
 
   const res = await fileImportsDB.remove(fileImport)
