@@ -181,14 +181,16 @@ export function TaskDropdown() {
           {pendingTask && (
             <ListItem
               secondaryAction={
-                <IconButton
-                  edge="end"
-                  aria-label="delete"
-                  size="small"
-                  onClick={() => cancelTask(pendingTask.id)}
-                >
-                  <CancelOutlined fontSize="inherit" />
-                </IconButton>
+                pendingTask.abortable ? (
+                  <IconButton
+                    edge="end"
+                    aria-label="delete"
+                    size="small"
+                    onClick={() => cancelTask(pendingTask.id)}
+                  >
+                    <CancelOutlined fontSize="inherit" />
+                  </IconButton>
+                ) : null
               }
             >
               <ListItemButton onClick={() => setSelectedTaskId(pendingTask.id)}>
