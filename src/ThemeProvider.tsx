@@ -14,7 +14,7 @@ import { theme } from "./theme"
 
 export function ThemeProvider({ children }: PropsWithChildren) {
   const reducedMotion = useStore($reducedMotion)
-  const userPreference = useReducedMotion()
+  const browserPreference = useReducedMotion()
 
   const isMobile = useMediaQuery("(max-width: 960px)")
   // const isMobile = useMediaQuery((theme: any) => theme.breakpoints.down("md"))
@@ -24,12 +24,12 @@ export function ThemeProvider({ children }: PropsWithChildren) {
       return false
     } else if (reducedMotion === "always") {
       return true
-    } else if (userPreference) {
-      return userPreference
+    } else if (browserPreference) {
+      return browserPreference
     } else {
       return isMobile
     }
-  }, [reducedMotion, userPreference, isMobile])
+  }, [reducedMotion, browserPreference, isMobile])
 
   useEffect(() => {
     Globals.assign({ skipAnimation })
