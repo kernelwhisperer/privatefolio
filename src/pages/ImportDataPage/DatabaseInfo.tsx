@@ -1,13 +1,11 @@
 import { StorageRounded } from "@mui/icons-material"
 import { Paper, Skeleton, Stack, Tooltip, Typography, TypographyProps } from "@mui/material"
 import { grey } from "@mui/material/colors"
-import { useStore } from "@nanostores/react"
 import { proxy } from "comlink"
 import { debounce } from "lodash"
 import React, { useEffect, useState } from "react"
 
 import { DEFAULT_DEBOUNCE_DURATION } from "../../settings"
-import { $filterOptionsMap } from "../../stores/metadata-store"
 import { MonoFont } from "../../theme"
 import { formatFileSize, formatNumber } from "../../utils/formatting-utils"
 import { clancy } from "../../workers/remotes"
@@ -85,42 +83,6 @@ export function DatabaseInfo() {
     }
   }, [])
 
-  // useEffect(() => {
-  //   function fetchData() {
-  //     clancy
-  //       .findAuditLogs({ limit: 1, order: "asc" })
-  //       .then((res) => {
-  //         if (res.length === 0) {
-  //           setGenesis(0)
-  //         } else {
-  //           setGenesis(res[0].timestamp)
-  //         }
-  //       })
-  //       .catch(() => {
-  //         setGenesis(0)
-  //       })
-  //   }
-
-  //   fetchData()
-
-  //   const unsubscribePromise = clancy.subscribeToAuditLogs(
-  //     proxy(
-  //       debounce(() => {
-  //         setGenesis(null)
-  //         fetchData()
-  //       }, DEFAULT_DEBOUNCE_DURATION)
-  //     )
-  //   )
-
-  //   return () => {
-  //     unsubscribePromise.then((unsubscribe) => {
-  //       unsubscribe()
-  //     })
-  //   }
-  // }, [])
-
-  const filterMap = useStore($filterOptionsMap)
-
   return (
     <Paper sx={{ width: 360 }}>
       <Stack sx={{ paddingX: 2, paddingY: 1 }} gap={1}>
@@ -168,32 +130,6 @@ export function DatabaseInfo() {
             </Typography>
           )}
         </Stack>
-        <Stack direction="row" justifyContent="space-between">
-          <SectionTitle>Unique assets</SectionTitle>
-          {filterMap.symbol === undefined ? (
-            <Skeleton height={20} width={80}></Skeleton>
-          ) : (
-            <Typography fontFamily={MonoFont} variant="body2">
-              <span>{formatNumber(filterMap.symbol.length)}</span>
-            </Typography>
-          )}
-        </Stack>
-        {/* <Stack direction="row" justifyContent="space-between">
-          <SectionTitle>Portfolio genesis</SectionTitle>
-          {genesis === null ? (
-            <Skeleton height={20} width={80}></Skeleton>
-          ) : (
-            <Typography fontFamily={MonoFont} variant="body2">
-              {genesis === 0 ? (
-                <Typography color="text.secondary" component="span" variant="inherit">
-                  Unknown
-                </Typography>
-              ) : (
-                <span>{formatDate(genesis)}</span>
-              )}
-            </Typography>
-          )}
-        </Stack> */}
       </Stack>
     </Paper>
   )

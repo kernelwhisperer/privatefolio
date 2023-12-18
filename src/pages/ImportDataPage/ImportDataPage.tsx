@@ -1,3 +1,4 @@
+import { Stack } from "@mui/material"
 import React from "react"
 
 import { StaggeredList } from "../../components/StaggeredList"
@@ -5,6 +6,7 @@ import { Subheading } from "../../components/Subheading"
 import { DatabaseInfo } from "./DatabaseInfo"
 import { FileImportTable } from "./FileImportTable"
 import { ImportDataActions } from "./ImportDataActions"
+import { PortfolioInfo } from "./PortfolioInfo"
 
 export function ImportDataPage({ show }: { show: boolean }) {
   return (
@@ -14,7 +16,10 @@ export function ImportDataPage({ show }: { show: boolean }) {
           <span>Database info</span>
           <ImportDataActions />
         </Subheading>
-        <DatabaseInfo />
+        <Stack direction="row" spacing={1}>
+          <DatabaseInfo />
+          <PortfolioInfo />
+        </Stack>
       </div>
       {/* <div>
         <Subheading>Connections</Subheading>

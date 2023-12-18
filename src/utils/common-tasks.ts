@@ -22,6 +22,8 @@ export function enqueueIndexDatabase() {
     function: async (progress) => {
       await clancy.indexAuditLogs(progress)
       await clancy.indexTransactions(progress)
+      await clancy.computeGenesis()
+      await clancy.computeLastTx()
     },
     name: "Index database",
     priority: TaskPriority.Low,

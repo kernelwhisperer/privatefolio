@@ -1,4 +1,4 @@
-import { Balance, BalanceMap } from "../interfaces"
+import { Balance, BalanceMap, Timestamp } from "../interfaces"
 import { ProgressCallback } from "../stores/task-store"
 import { countAuditLogs, findAuditLogs } from "./audit-logs-api"
 import { getPricesForAsset } from "./daily-prices-api"
@@ -6,7 +6,7 @@ import { auditLogsDB, balancesDB } from "./database"
 import { getValue, setValue } from "./kv-api"
 
 export async function getLatestBalances(): Promise<Balance[]> {
-  const balancesCursor = await getValue("balancesCursor")
+  const balancesCursor = await getValue<Timestamp>("balancesCursor")
 
   try {
     const balanceMap = await balancesDB.get(String(balancesCursor))

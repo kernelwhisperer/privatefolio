@@ -1,6 +1,8 @@
+import { proxy } from "comlink"
+
 import { keyValueDB } from "./database"
 
-export async function setValue(key: string, value: any) {
+export async function setValue(key: string, value: unknown) {
   try {
     const existing = await keyValueDB.get(key)
     existing.value = value
@@ -10,11 +12,29 @@ export async function setValue(key: string, value: any) {
   }
 }
 
-export async function getValue(key: string) {
+export async function getValue<T>(key: string, defaultValue: T | null = null): Promise<T | null> {
   try {
     const existing = await keyValueDB.get(key)
-    return existing.value
+    return existing.value as T
   } catch {
-    return undefined
+    return defaultValue
   }
+}
+
+export function subscribeToKV(key: string, callback: () => void) {
+  const changesSub = keyValueDB
+    .changes({
+      live: true,
+      selector: {
+        _id: key,
+      },
+      since: "now",
+    })
+    .on("change", callback)
+
+  return proxy(() => {
+    try {
+      changesSub.cancel()
+    } catch {}
+  })
 }

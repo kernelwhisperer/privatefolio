@@ -2,11 +2,15 @@ import "./comlink-setup"
 
 import { Remote, wrap } from "comlink"
 
-import type { Clancy } from "./clancy"
+import type { Clancy as BaseType } from "./clancy"
 
 const clancyWorker = new Worker(new URL("./clancy.ts", import.meta.url), {
   name: "Clancy",
   type: "module",
 })
 
-export const clancy: Remote<Clancy> = wrap(clancyWorker)
+type Clancy = Omit<Remote<BaseType>, "getValue"> & {
+  getValue<T>(key: string, defaultValue?: T | null): Promise<T | null>
+}
+
+export const clancy = wrap(clancyWorker) as Clancy

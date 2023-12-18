@@ -8,6 +8,8 @@ import * as connections from "../api/connections-api"
 import * as dailyPrices from "../api/daily-prices-api"
 import { resetDatabase } from "../api/database"
 import * as fileImports from "../api/file-import-api"
+import * as kv from "../api/kv-api"
+import * as portfolio from "../api/portfolio-api"
 import * as transactions from "../api/transactions-api"
 
 const worker = {
@@ -18,6 +20,8 @@ const worker = {
   ...fileImports,
   resetDatabase,
   ...transactions,
+  ...kv,
+  ...portfolio,
 }
 
 export type Clancy = typeof worker

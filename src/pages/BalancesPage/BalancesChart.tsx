@@ -28,7 +28,7 @@ export function BalancesChart() {
       })
     )
 
-    console.log("📜 LOG > query > records:", balances)
+    // console.log("📜 LOG > query > records:", balances)
     return balances
   }, [])
 
