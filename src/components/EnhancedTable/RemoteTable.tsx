@@ -127,7 +127,7 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
   }, [queryFn, activeFilters, rowsPerPage, page, order])
 
   const transitions = useTransition(loading, {
-    config: SPRING_CONFIGS.quick,
+    config: SPRING_CONFIGS.veryQuick,
     enter: { opacity: 2 },
     exitBeforeEnter: true,
     from: { opacity: 2 },
@@ -171,7 +171,7 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
           ) : (
             <Stack gap={1}>
               {Object.keys(activeFilters).length > 0 && (
-                <Stack direction="row" spacing={1} marginLeft={0}>
+                <Stack direction="row" spacing={1} marginLeft={1}>
                   {Object.keys(activeFilters).map((x) => (
                     <FilterChip
                       key={x}
@@ -213,9 +213,9 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {rows.map((row, index) => (
+                      {rows.map((row) => (
                         <TableRowComponent
-                          key={index}
+                          key={row._id}
                           headCells={headCells}
                           relativeTime={relativeTime}
                           row={row}
