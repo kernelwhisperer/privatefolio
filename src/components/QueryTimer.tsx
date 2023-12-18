@@ -27,7 +27,6 @@ export function QueryTimer({ queryTime }: { queryTime: number | null }) {
           variant="caption"
           color="text.secondary"
           component={Stack}
-          paddingX={1.5}
           sx={{ minWidth: 100 }}
           fontFamily={MonoFont}
           direction="row"

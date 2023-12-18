@@ -205,7 +205,7 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
                 </TableContainer>
                 <TableFooter
                   queryTime={queryTime}
-                  count={rowCount ?? 0}
+                  count={rowCount ?? -1}
                   rowsPerPage={rowsPerPage}
                   page={page}
                   onPageChange={handleChangePage}

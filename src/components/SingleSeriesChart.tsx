@@ -123,36 +123,36 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
           {isLoading ? (
             <Stack gap={1.5} sx={{ marginY: 1 }}>
               <Stack direction="row" gap={1.5} alignItems={"flex-end"}>
-                <Skeleton variant="rounded" width={37} height={320}></Skeleton>
-                <Skeleton variant="rounded" width={37} height={260}></Skeleton>
-                <Skeleton variant="rounded" width={37} height={340}></Skeleton>
-                <Skeleton variant="rounded" width={37} height={280}></Skeleton>
-                <Skeleton variant="rounded" width={37} height={320}></Skeleton>
-                <Skeleton variant="rounded" width={37} height={220}></Skeleton>
-                <Skeleton variant="rounded" width={37} height={340}></Skeleton>
-                <Skeleton variant="rounded" width={37} height={260}></Skeleton>
-                <Skeleton variant="rounded" width={37} height={290}></Skeleton>
-                <Skeleton variant="rounded" width={37} height={300}></Skeleton>
-                <Skeleton variant="rounded" width={37} height={320}></Skeleton>
-                <Skeleton variant="rounded" width={37} height={260}></Skeleton>
-                <Skeleton variant="rounded" width={37} height={340}></Skeleton>
-                <Skeleton variant="rounded" width={37} height={280}></Skeleton>
-                <Skeleton variant="rounded" width={37} height={320}></Skeleton>
-                <Skeleton variant="rounded" width={37} height={220}></Skeleton>
-                <Skeleton variant="rounded" width={37} height={340}></Skeleton>
-                <Skeleton variant="rounded" width={37} height={260}></Skeleton>
-                <Skeleton variant="rounded" width={37} height={290}></Skeleton>
-                <Skeleton variant="rounded" width={37} height={300}></Skeleton>
-                <Skeleton variant="rounded" width={37} height={320}></Skeleton>
-                <Skeleton variant="rounded" width={37} height={260}></Skeleton>
-                <Skeleton variant="rounded" width={37} height={340}></Skeleton>
-                <Skeleton variant="rounded" width={37} height={280}></Skeleton>
-                <Skeleton variant="rounded" width={37} height={320}></Skeleton>
-                <Skeleton variant="rounded" width={37} height={220}></Skeleton>
-                <Skeleton variant="rounded" width={37} height={340}></Skeleton>
-                <Skeleton variant="rounded" width={37} height={260}></Skeleton>
-                <Skeleton variant="rounded" width={37} height={290}></Skeleton>
-                <Skeleton variant="rounded" width={37} height={300}></Skeleton>
+                <Skeleton animation={false} variant="rounded" width={37} height={320}></Skeleton>
+                <Skeleton animation={false} variant="rounded" width={37} height={260}></Skeleton>
+                <Skeleton animation={false} variant="rounded" width={37} height={340}></Skeleton>
+                <Skeleton animation={false} variant="rounded" width={37} height={280}></Skeleton>
+                <Skeleton animation={false} variant="rounded" width={37} height={320}></Skeleton>
+                <Skeleton animation={false} variant="rounded" width={37} height={220}></Skeleton>
+                <Skeleton animation={false} variant="rounded" width={37} height={340}></Skeleton>
+                <Skeleton animation={false} variant="rounded" width={37} height={260}></Skeleton>
+                <Skeleton animation={false} variant="rounded" width={37} height={290}></Skeleton>
+                <Skeleton animation={false} variant="rounded" width={37} height={300}></Skeleton>
+                <Skeleton animation={false} variant="rounded" width={37} height={320}></Skeleton>
+                <Skeleton animation={false} variant="rounded" width={37} height={260}></Skeleton>
+                <Skeleton animation={false} variant="rounded" width={37} height={340}></Skeleton>
+                <Skeleton animation={false} variant="rounded" width={37} height={280}></Skeleton>
+                <Skeleton animation={false} variant="rounded" width={37} height={320}></Skeleton>
+                <Skeleton animation={false} variant="rounded" width={37} height={220}></Skeleton>
+                <Skeleton animation={false} variant="rounded" width={37} height={340}></Skeleton>
+                <Skeleton animation={false} variant="rounded" width={37} height={260}></Skeleton>
+                <Skeleton animation={false} variant="rounded" width={37} height={290}></Skeleton>
+                <Skeleton animation={false} variant="rounded" width={37} height={300}></Skeleton>
+                <Skeleton animation={false} variant="rounded" width={37} height={320}></Skeleton>
+                <Skeleton animation={false} variant="rounded" width={37} height={260}></Skeleton>
+                <Skeleton animation={false} variant="rounded" width={37} height={340}></Skeleton>
+                <Skeleton animation={false} variant="rounded" width={37} height={280}></Skeleton>
+                <Skeleton animation={false} variant="rounded" width={37} height={320}></Skeleton>
+                <Skeleton animation={false} variant="rounded" width={37} height={220}></Skeleton>
+                <Skeleton animation={false} variant="rounded" width={37} height={340}></Skeleton>
+                <Skeleton animation={false} variant="rounded" width={37} height={260}></Skeleton>
+                <Skeleton animation={false} variant="rounded" width={37} height={290}></Skeleton>
+                <Skeleton animation={false} variant="rounded" width={37} height={300}></Skeleton>
               </Stack>
             </Stack>
           ) : (
@@ -266,8 +266,8 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
                 sx={{ borderTop: "1px solid var(--mui-palette-TableCell-border)", minHeight: 43 }}
                 alignItems="center"
                 justifyContent="space-between"
-                paddingRight={1.5}
                 direction="row"
+                paddingX={1.5}
               >
                 <Stack direction="row" gap={1}>
                   {queryTime !== undefined && <QueryTimer queryTime={queryTime} />}
