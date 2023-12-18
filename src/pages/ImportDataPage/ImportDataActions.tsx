@@ -11,6 +11,7 @@ import React from "react"
 import { useConfirm } from "../../hooks/useConfirm"
 import { $filterOptionsMap } from "../../stores/metadata-store"
 import { enqueueTask, TaskPriority } from "../../stores/task-store"
+import { enqueueIndexDatabase } from "../../utils/common-tasks"
 import { clancy } from "../../workers/remotes"
 
 export function ImportDataActions() {
@@ -44,21 +45,14 @@ export function ImportDataActions() {
         <MenuItem
           dense
           onClick={() => {
-            enqueueTask({
-              description: "Recomputing indexes for all audit logs.",
-              function: async () => {
-                await clancy.indexAuditLogs()
-              },
-              name: "Recompute audit logs indexes",
-              priority: TaskPriority.Low,
-            })
+            enqueueIndexDatabase()
             handleClose()
           }}
         >
           <ListItemIcon>
             <MemoryRounded fontSize="small" />
           </ListItemIcon>
-          <ListItemText>Recompute indexes</ListItemText>
+          <ListItemText>Index database</ListItemText>
         </MenuItem>
         <MenuItem
           dense

@@ -6,24 +6,7 @@ import { parseCsv } from "../utils/csv-utils"
 import { hashString } from "../utils/utils"
 import { auditLogsDB, fileImportsDB, transactionsDB } from "./database"
 
-export async function processFileImport(_id: string, file: File) {
-  // parse file
-  const text = await file.text()
-  const { metadata, logs, transactions } = await parseCsv(text, _id)
-
-  // save logs
-  await auditLogsDB.bulkDocs(logs)
-
-  // save transactions
-  await transactionsDB.bulkDocs(transactions)
-
-  // save metadata
-  const fileImport = await fileImportsDB.get(_id)
-  fileImport.meta = metadata
-  await fileImportsDB.put<FileImport>(fileImport)
-}
-
-export async function addFileImport(file: File) {
+export async function addFileImport(file: File, progress: ProgressCallback) {
   const { name, type, lastModified, size } = file
 
   if (type !== "text/csv") {
@@ -41,7 +24,22 @@ export async function addFileImport(file: File) {
     timestamp,
   })
 
-  return _id
+  // parse file
+  const text = await file.text()
+  const { metadata, logs, transactions } = await parseCsv(text, _id, progress)
+
+  // save logs
+  progress([60, `Saving ${logs.length} audit logs to disk`])
+  await auditLogsDB.bulkDocs(logs)
+
+  // save transactions
+  progress([80, `Saving ${transactions.length} transactions to disk`])
+  await transactionsDB.bulkDocs(transactions)
+
+  // save metadata
+  const fileImport = await fileImportsDB.get(_id)
+  fileImport.meta = metadata
+  await fileImportsDB.put<FileImport>(fileImport)
 }
 
 export async function getFileImports() {
@@ -61,10 +59,14 @@ export async function removeFileImport(fileImport: FileImport, progress: Progres
   } as PouchDB.Core.AllDocsWithinRangeOptions)
   progress([25, `Removing ${logs.rows.length} audit logs`])
 
-  await auditLogsDB.bulkDocs(
-    logs.rows.map((row) => ({ _deleted: true, _id: row.id, _rev: row.value.rev } as any))
+  await Promise.all(
+    logs.rows.map((row) =>
+      auditLogsDB.remove({
+        _id: row.id,
+        _rev: row.value.rev,
+      })
+    )
   )
-  progress([50, `Removing ${logs.rows.length} audit logs complete`])
 
   // Transactions
   const txns = await transactionsDB.allDocs({
@@ -73,12 +75,16 @@ export async function removeFileImport(fileImport: FileImport, progress: Progres
     endkey: `${fileImport._id}\ufff0`,
     startkey: fileImport._id,
   } as PouchDB.Core.AllDocsWithinRangeOptions)
-  progress([25, `Removing ${txns.rows.length} transactions`])
+  progress([50, `Removing ${txns.rows.length} transactions`])
 
-  await transactionsDB.bulkDocs(
-    txns.rows.map((row) => ({ _deleted: true, _id: row.id, _rev: row.value.rev } as any))
+  await Promise.all(
+    txns.rows.map((row) =>
+      transactionsDB.remove({
+        _id: row.id,
+        _rev: row.value.rev,
+      })
+    )
   )
-  progress([75, `Removing ${txns.rows.length} transactions complete`])
 
   const res = await fileImportsDB.remove(fileImport)
   return res.ok

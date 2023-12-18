@@ -2,6 +2,8 @@
 import { proxy } from "comlink"
 
 import { Transaction } from "../interfaces"
+import { ProgressCallback } from "../stores/task-store"
+import { noop } from "../utils/utils"
 import { transactionsDB } from "./database"
 
 const _filterOrder = ["integration", "wallet", "type", "outgoingSymbol", "incomingSymbol"]
@@ -13,54 +15,51 @@ const _filterOrderBySpecificity = [
   "integration",
 ]
 
-export async function indexTransactions() {
-  await transactionsDB.createIndex({
-    index: {
-      // MUST respect the order in _filterOrder
-      fields: ["integration", "timestamp", "wallet", "type", "outgoingSymbol", "incomingSymbol"],
-      name: "integration",
-    },
-  })
-  // console.log("📜 LOG > indexTransactions > created", 1)
-  await transactionsDB.createIndex({
-    index: {
-      // MUST respect the order in _filterOrder
-      fields: ["wallet", "timestamp", "integration", "type", "outgoingSymbol", "incomingSymbol"],
-      name: "wallet",
-    },
-  })
-  // console.log("📜 LOG > indexTransactions > created", 2)
-  await transactionsDB.createIndex({
-    index: {
-      // MUST respect the order in _filterOrder
-      fields: ["type", "timestamp", "integration", "wallet", "outgoingSymbol", "incomingSymbol"],
-      name: "type",
-    },
-  })
-  // console.log("📜 LOG > indexTransactions > created", 3)
-  await transactionsDB.createIndex({
-    index: {
-      // MUST respect the order in _filterOrder
-      fields: ["outgoingSymbol", "timestamp", "integration", "wallet", "type", "incomingSymbol"],
-      name: "outgoingSymbol",
-    },
-  })
-  // console.log("📜 LOG > indexTransactions > created", 4)
-  await transactionsDB.createIndex({
-    index: {
-      // MUST respect the order in _filterOrder
-      fields: ["incomingSymbol", "timestamp", "integration", "wallet", "type", "outgoingSymbol"],
-      name: "incomingSymbol",
-    },
-  })
-  // console.log("📜 LOG > indexTransactions > created", 5)
+export async function indexTransactions(progress: ProgressCallback = noop) {
+  progress([60, "Transactions: cleaning up stale indexes"])
+  await transactionsDB.viewCleanup()
+  progress([70, "Transactions: creating index on 'timestamp'"])
   await transactionsDB.createIndex({
     index: {
       fields: ["timestamp"],
       name: "timestamp",
     },
   })
-  // console.log("📜 LOG > indexTransactions > created", 6)
+  progress([75, "Transactions: creating index on 'integration'"])
+  await transactionsDB.createIndex({
+    index: {
+      fields: ["integration", "timestamp", "wallet", "type", "outgoingSymbol", "incomingSymbol"], // MUST respect the order in _filterOrder
+      name: "integration",
+    },
+  })
+  progress([80, "Transactions: creating index on 'wallet'"])
+  await transactionsDB.createIndex({
+    index: {
+      fields: ["wallet", "timestamp", "integration", "type", "outgoingSymbol", "incomingSymbol"], // MUST respect the order in _filterOrder
+      name: "wallet",
+    },
+  })
+  progress([85, "Transactions: creating index on 'type'"])
+  await transactionsDB.createIndex({
+    index: {
+      fields: ["type", "timestamp", "integration", "wallet", "outgoingSymbol", "incomingSymbol"], // MUST respect the order in _filterOrder
+      name: "type",
+    },
+  })
+  progress([90, "Transactions: creating index on 'outgoingSymbol'"])
+  await transactionsDB.createIndex({
+    index: {
+      fields: ["outgoingSymbol", "timestamp", "integration", "wallet", "type", "incomingSymbol"], // MUST respect the order in _filterOrder
+      name: "outgoingSymbol",
+    },
+  })
+  progress([95, "Transactions: creating index on 'incomingSymbol'"])
+  await transactionsDB.createIndex({
+    index: {
+      fields: ["incomingSymbol", "timestamp", "integration", "wallet", "type", "outgoingSymbol"], // MUST respect the order in _filterOrder
+      name: "incomingSymbol",
+    },
+  })
 }
 
 type FindTransactionsRequest = {

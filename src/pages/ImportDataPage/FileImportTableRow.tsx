@@ -17,9 +17,11 @@ import { IntegrationAvatar } from "../../components/IntegrationAvatar"
 import { TimestampCell } from "../../components/TimestampCell"
 import { Truncate } from "../../components/Truncate"
 import { FileImport } from "../../interfaces"
+import { INTEGRATIONS } from "../../settings"
 import { $integrationMap } from "../../stores/metadata-store"
 import { enqueueTask } from "../../stores/task-store"
 import { MonoFont } from "../../theme"
+import { enqueueIndexDatabase } from "../../utils/common-tasks"
 import { formatFileSize, formatNumber } from "../../utils/formatting-utils"
 import { TableRowComponentProps } from "../../utils/table-utils"
 import { clancy } from "../../workers/remotes"
@@ -37,12 +39,15 @@ export function FileImportTableRow(props: TableRowComponentProps<FileImport>) {
     event.preventDefault()
     setLoading(true)
     enqueueTask({
-      description: `Remove ${row.name} together with all its audit logs and transactions.`,
+      description: `Remove "${row.name}", alongside its audit logs and transactions.`,
       determinate: true,
       function: async (progress) => {
-        clancy.removeFileImport(row, progress).finally(() => {
-          setLoading(false)
-        })
+        try {
+          await clancy.removeFileImport(row, progress)
+        } finally {
+          enqueueIndexDatabase()
+          // setLoading(false)
+        }
       },
       name: `Remove file import`,
       priority: 8,
@@ -95,9 +100,9 @@ export function FileImportTableRow(props: TableRowComponentProps<FileImport>) {
             <IntegrationAvatar
               size="small"
               src={integrationMap[integration]?.image}
-              alt={integration}
+              alt={INTEGRATIONS[integration]}
             />
-            <span>{integration}</span>
+            <span>{INTEGRATIONS[integration]}</span>
           </Stack>
         ) : (
           <Skeleton></Skeleton>
@@ -144,20 +149,22 @@ export function FileImportTableRow(props: TableRowComponentProps<FileImport>) {
         )}
       </TableCell>
       <TableCell sx={{ maxWidth: 40, minWidth: 40, width: 40 }}>
-        <Tooltip title="Remove file import (including its audit logs)">
-          <IconButton
-            size="small"
-            color="secondary"
-            sx={{ height: 28, marginLeft: -1 }}
-            onClick={handleRemove}
-            disabled={loading}
-          >
-            {loading ? (
-              <CircularProgress size={14} color="inherit" />
-            ) : (
-              <HighlightOffRounded fontSize="inherit" />
-            )}
-          </IconButton>
+        <Tooltip title={loading ? "Removing..." : "Remove file import (including its audit logs)"}>
+          <span>
+            <IconButton
+              size="small"
+              color="secondary"
+              sx={{ height: 28, marginLeft: -1 }}
+              onClick={handleRemove}
+              disabled={loading}
+            >
+              {loading ? (
+                <CircularProgress size={14} color="inherit" />
+              ) : (
+                <HighlightOffRounded fontSize="inherit" />
+              )}
+            </IconButton>
+          </span>
         </Tooltip>
       </TableCell>
     </TableRow>

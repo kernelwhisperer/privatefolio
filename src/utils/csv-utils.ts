@@ -2,11 +2,13 @@ import {
   AuditLog,
   AuditLogOperation,
   BinanceAuditLog,
+  FileImport,
   Integration,
   Transaction,
   TransactionRole,
   TransactionSide,
 } from "../interfaces"
+import { ProgressCallback } from "../stores/task-store"
 import { extractTransactions } from "./extract-utils"
 import { TZ_OFFSET } from "./formatting-utils"
 import { hashString } from "./utils"
@@ -37,7 +39,7 @@ export function mexcParser(csvRow: string, index: number, fileImportId: string):
   const totalN = parseFloat(total)
   const feeSymbol = quoteSymbol // ?
   //
-  const integration = "MEXC"
+  const integration = "mexc"
   const wallet = "Spot"
 
   const txns: Transaction[] = []
@@ -168,7 +170,7 @@ export function binanceParser(csvRow: string, index: number, fileImportId: strin
     change,
     changeN,
     coin,
-    integration: "Binance",
+    integration: "binance",
     operation,
     remark,
     symbol,
@@ -182,21 +184,20 @@ export function binanceParser(csvRow: string, index: number, fileImportId: strin
 }
 
 const INTEGRATIONS: Record<string, Integration> = {
-  '"User_ID","UTC_Time","Account","Operation","Coin","Change","Remark"': "Binance",
-  "Pairs,Time,Side,Filled Price,Executed Amount,Total,Fee,Role": "MEXC",
+  '"User_ID","UTC_Time","Account","Operation","Coin","Change","Remark"': "binance",
+  "Pairs,Time,Side,Filled Price,Executed Amount,Total,Fee,Role": "mexc",
 }
 
-const PARSERS: Record<Integration, Parser> = {
-  Binance: binanceParser,
-  MEXC: mexcParser,
+const PARSERS: Partial<Record<Integration, Parser>> = {
+  binance: binanceParser,
+  mexc: mexcParser,
 }
 
-export async function parseCsv(text: string, _fileImportId: string) {
+export async function parseCsv(text: string, _fileImportId: string, progress: ProgressCallback) {
   // Parse CSV
   const rows = text.trim().split("\n")
-  // const rows = rowsAsText.map((row) => row.split(","))
 
-  const header = rows[0].replace("ï»¿", "") // MEXC
+  const header = rows[0].replace("ï»¿", "") // mexc
   const integration = INTEGRATIONS[header]
   const parser = PARSERS[integration]
 
@@ -206,29 +207,36 @@ export async function parseCsv(text: string, _fileImportId: string) {
   const walletMap: Record<string, boolean> = {}
   const operationMap: Partial<Record<AuditLogOperation, boolean>> = {}
 
-  // Skip header
-  rows.slice(1).forEach((row, index) => {
-    try {
-      const { logs: newLogs, txns } = parser(row, index, _fileImportId)
+  progress([0, `Parsing ${rows.length - 1} rows`])
+  if (parser) {
+    // Skip header
+    rows.slice(1).forEach((row, index) => {
+      try {
+        if (index !== 0 && (index + 1) % 1000 === 0) {
+          progress([(index * 50) / rows.length, `Parsing row ${index + 1}`])
+        }
+        const { logs: newLogs, txns } = parser(row, index, _fileImportId)
 
-      for (const log of newLogs) {
-        logs.push(log)
-        symbolMap[log.symbol] = true
-        walletMap[log.wallet] = true
-        operationMap[log.operation] = true
-      }
+        for (const log of newLogs) {
+          logs.push(log)
+          symbolMap[log.symbol] = true
+          walletMap[log.wallet] = true
+          operationMap[log.operation] = true
+        }
 
-      if (txns) {
-        transactions = transactions.concat(txns)
-      }
-    } catch {}
-  })
+        if (txns) {
+          transactions = transactions.concat(txns)
+        }
+      } catch {}
+    })
+  }
 
+  progress([50, `Extracting transactions`])
   if (transactions.length === 0) {
     transactions = extractTransactions(logs, _fileImportId)
   }
 
-  const metadata = {
+  const metadata: FileImport["meta"] = {
     integration,
     logs: logs.length,
     operations: Object.keys(operationMap) as AuditLogOperation[],

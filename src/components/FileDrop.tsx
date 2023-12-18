@@ -2,6 +2,7 @@ import { Paper, PaperProps, Stack, Typography, useTheme } from "@mui/material"
 import React, { useRef, useState } from "react"
 
 import { enqueueTask } from "../stores/task-store"
+import { enqueueIndexDatabase } from "../utils/common-tasks"
 import { clancy } from "../workers/remotes"
 
 export function FileDrop(props: PaperProps & { defaultBg?: string }) {
@@ -24,15 +25,10 @@ export function FileDrop(props: PaperProps & { defaultBg?: string }) {
 
   const handleFileUpload = (file: File) => {
     enqueueTask({
-      description: `Importing file ${file.name}`,
-      function: async () => {
-        const _id = await clancy.addFileImport(file)
-        enqueueTask({
-          description: `Extracting audit logs from ${file.name}`,
-          function: () => clancy.processFileImport(_id, file),
-          name: `Extract audit logs`,
-          priority: 5,
-        })
+      description: `Importing "${file.name}".`,
+      determinate: true,
+      function: async (progress) => {
+        await clancy.addFileImport(file, progress)
       },
       name: `Import file`,
       priority: 8,
@@ -44,6 +40,7 @@ export function FileDrop(props: PaperProps & { defaultBg?: string }) {
     setDragOver(false)
     if (e.dataTransfer.files) {
       Array.from(e.dataTransfer.files).forEach(handleFileUpload)
+      enqueueIndexDatabase()
     }
   }
 
@@ -51,6 +48,7 @@ export function FileDrop(props: PaperProps & { defaultBg?: string }) {
     const files = e.target.files
     if (files) {
       Array.from(files).forEach(handleFileUpload)
+      enqueueIndexDatabase()
     }
   }
 
