@@ -2,6 +2,7 @@ import { proxy } from "comlink"
 import { atom, map } from "nanostores"
 
 import { logAtoms } from "../utils/browser-utils"
+import { timeQueue } from "../utils/utils"
 
 export enum TaskPriority {
   Low = 2,
@@ -44,14 +45,14 @@ export const $progressHistory = map<Record<string, Record<number, ProgressUpdate
 logAtoms({ $pendingTask, $taskHistory, $taskQueue })
 
 function createProgressCallback(taskId: string) {
-  return (update: ProgressUpdate) => {
+  return timeQueue((update: ProgressUpdate) => {
     const updates = {
       ...$progressHistory.get()[taskId],
       [Date.now()]: update,
     }
     // const updates = [..., update]
     $progressHistory.setKey(taskId, updates)
-  }
+  }, 10)
 }
 
 let isProcessing = false // Flag to check if processQueue is already running
@@ -104,7 +105,9 @@ async function processQueue() {
   isProcessing = false
 }
 
-export function enqueueTask(item: Omit<Task, "id"> & { priority?: TaskPriority }) {
+export function enqueueTask(
+  item: Omit<Task, "id" | "startedAt" | "abortController"> & { priority?: TaskPriority }
+) {
   const newTask = {
     ...item,
     id: Math.random().toString(36).slice(2, 9),
