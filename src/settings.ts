@@ -12,4 +12,6 @@ export const INTEGRATIONS = {
   mexc: "MEXC",
   op: "Optimism",
   polygon: "Polygon",
-}
+} as const
+
+export const DEFAULT_DEBOUNCE_DURATION = 1500

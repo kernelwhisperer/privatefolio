@@ -3,7 +3,8 @@ import { keepMount, map } from "nanostores"
 
 import { findAssets } from "../api/assets-api"
 import { findExchanges } from "../api/exchanges-api"
-import { Asset, AuditLogOperation, Exchange } from "../interfaces"
+import { Asset, AuditLogOperation, Exchange, Integration } from "../interfaces"
+import { DEFAULT_DEBOUNCE_DURATION } from "../settings"
 import { logAtoms } from "../utils/browser-utils"
 import { clancy } from "../workers/remotes"
 
@@ -71,7 +72,7 @@ async function computeFilterMap() {
 export type AssetMap = Record<string, Asset>
 export const $assetMap = map<AssetMap>({})
 
-export type IntegrationMap = Record<string, Exchange>
+export type IntegrationMap = Partial<Record<Integration, Exchange>>
 export const $integrationMap = map<IntegrationMap>({})
 
 keepMount($assetMap)
@@ -98,4 +99,4 @@ export async function computeMetadata() {
     findExchanges(integrationMap).then($integrationMap.set),
   ])
 }
-export const computeMetadataDebounced = debounce(computeMetadata, 500) // TESTME
+export const computeMetadataDebounced = debounce(computeMetadata, DEFAULT_DEBOUNCE_DURATION)

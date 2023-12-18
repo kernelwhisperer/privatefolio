@@ -30,3 +30,32 @@ export const SPRING_CONFIGS = {
 export async function wait(interval: number) {
   return new Promise((resolve) => setTimeout(resolve, interval))
 }
+
+export function timeQueue<T extends (...args: any[]) => void>(
+  this: unknown,
+  func: T,
+  delay: number
+): (...args: Parameters<T>) => void {
+  const queue: (() => void)[] = []
+  let timerId: ReturnType<typeof setInterval> | null = null
+
+  function processQueue() {
+    if (queue.length === 0) {
+      if (timerId !== null) {
+        clearInterval(timerId)
+        timerId = null
+      }
+    } else {
+      const call = queue.shift()
+      call?.()
+    }
+  }
+
+  return function (this: unknown, ...args: Parameters<T>) {
+    queue.push(() => func.apply(this, args))
+
+    if (timerId === null) {
+      timerId = setInterval(processQueue, delay)
+    }
+  }
+}

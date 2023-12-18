@@ -1,6 +1,8 @@
 export type Order = "asc" | "desc"
 
-export type BaseType = unknown
+export type BaseType = {
+  _id: string
+}
 
 export type ActiveFilterMap<T extends BaseType> = Partial<Record<keyof T, string | number>>
 

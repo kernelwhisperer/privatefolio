@@ -15,8 +15,8 @@ export async function findExchanges(nameMap: Record<string, boolean>) {
     const exchanges: Exchange[] = await response.json()
 
     for (const exchange of exchanges) {
-      if (nameMap[exchange.name]) {
-        map[exchange.name] = exchange
+      if (nameMap[exchange.name.toLowerCase()]) {
+        map[exchange.name.toLowerCase()] = exchange
       }
     }
     // TODO: stop if completed
