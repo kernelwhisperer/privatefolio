@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/member-ordering */
 import { Coordinate, IChartApi, Logical } from "lightweight-charts"
 
 import { Delegate, ISubscription } from "../../helpers/delegate"

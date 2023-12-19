@@ -40,7 +40,7 @@ export function QueryTimer({ queryTime }: { queryTime: number | null }) {
             </>
           ) : (
             <>
-              <TimerSharp fontSize="small" />
+              <TimerSharp fontSize="small" sx={{ padding: 0.25 }} />
               <span>
                 {formatNumber(queryTime / 1000, {
                   maximumFractionDigits: 2,

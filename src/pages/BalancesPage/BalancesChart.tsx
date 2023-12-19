@@ -50,11 +50,7 @@ export function BalancesChart() {
           showTime: false,
         },
       }}
-      chartOptions={{
-        rightPriceScale: {
-          minimumWidth: 92,
-        },
-      }}
+      chartOptions={{}}
     />
   )
 }

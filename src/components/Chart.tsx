@@ -9,7 +9,7 @@ import {
   IChartApi,
   PriceScaleOptions,
 } from "lightweight-charts"
-import React, { memo, MutableRefObject, useEffect, useMemo, useRef } from "react"
+import React, { CSSProperties, memo, MutableRefObject, useEffect, useMemo, useRef } from "react"
 
 import { MonoFont } from "../theme"
 import { noop } from "../utils/utils"
@@ -18,12 +18,19 @@ export type ChartProps = {
   allowCompactPriceScale?: boolean
   chartOptions?: DeepPartial<ChartOptions>
   chartRef: MutableRefObject<IChartApi | undefined>
+  cursor?: CSSProperties["cursor"]
   logScale?: boolean
   onChartReady?: () => void
 }
 
 function BaseChart(props: ChartProps) {
-  const { chartRef, logScale = false, onChartReady = noop, chartOptions = {} } = props
+  const {
+    chartRef,
+    logScale = false,
+    onChartReady = noop,
+    chartOptions = {},
+    cursor = "crosshair",
+  } = props
 
   const theme = useTheme()
   const containerRef = useRef<HTMLElement>()
@@ -41,10 +48,10 @@ function BaseChart(props: ChartProps) {
       },
       grid: {
         horzLines: {
-          color: theme.palette.divider,
+          color: (theme.palette as any).TableCell.border,
         },
         vertLines: {
-          color: theme.palette.divider,
+          color: (theme.palette as any).TableCell.border,
         },
       },
       layout: {
@@ -53,6 +60,9 @@ function BaseChart(props: ChartProps) {
         },
         fontFamily: MonoFont,
         textColor: theme.palette.text.primary,
+      },
+      rightPriceScale: {
+        minimumWidth: 88,
       },
       width: containerRef.current?.clientWidth,
       ...chartOptions,
@@ -127,7 +137,7 @@ function BaseChart(props: ChartProps) {
   return (
     <Box
       sx={{
-        "& tr:first-of-type td": { cursor: "crosshair" },
+        "& tr:first-of-type td": { cursor },
         height: "100%",
         position: "relative",
         width: "100%",

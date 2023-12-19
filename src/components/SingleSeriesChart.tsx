@@ -1,5 +1,21 @@
-import { BarChartOutlined, CandlestickChartSharp, ShowChart } from "@mui/icons-material"
-import { Box, Button, Divider, IconButton, Paper, Skeleton, Stack } from "@mui/material"
+import {
+  BarChartOutlined,
+  CandlestickChartSharp,
+  ControlCamera,
+  StraightenSharp,
+} from "@mui/icons-material"
+import {
+  Box,
+  Button,
+  Divider,
+  IconButton,
+  IconButtonProps,
+  Paper,
+  Skeleton,
+  Stack,
+  SvgIcon,
+  Tooltip,
+} from "@mui/material"
 import { useStore } from "@nanostores/react"
 import { a, useTransition } from "@react-spring/web"
 import {
@@ -13,6 +29,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 import { useBoolean } from "../hooks/useBoolean"
 import { ChartData } from "../interfaces"
+import { DeltaTooltipPrimitive } from "../lightweight-charts/plugins/delta-tooltip/delta-tooltip"
 import {
   TooltipPrimitive,
   TooltipPrimitiveOptions,
@@ -22,6 +39,17 @@ import { CHART_HEIGHT } from "../utils/chart-utils"
 import { SPRING_CONFIGS } from "../utils/utils"
 import { Chart, ChartProps } from "./Chart"
 import { QueryTimer } from "./QueryTimer"
+
+export function ChartIconButton({ active, ...rest }: IconButtonProps & { active: boolean }) {
+  return (
+    <IconButton
+      size="small"
+      sx={{ borderRadius: 0.5 }}
+      color={active ? "accent" : "secondary"}
+      {...rest}
+    />
+  )
+}
 
 export type QueryFunction = () => Promise<ChartData[]>
 
@@ -66,6 +94,11 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
     return preferredType
   }, [preferredType, data])
 
+  const shiftPressedRef = useRef(false)
+  const ctrlPressedRef = useRef(false)
+
+  const [cursorType, setCursorType] = useState<"move" | "inspect" | "measure">("move")
+
   const plotSeries = useCallback(
     (data: ChartData[]) => {
       if (!chartRef.current || data.length <= 0) {
@@ -90,7 +123,7 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
         })
       } else {
         seriesRef.current = chartRef.current.addAreaSeries({
-          lineType: 2,
+          // lineType: 2,
           lineWidth: 2,
           priceLineVisible: false,
           ...seriesOptions,
@@ -98,8 +131,60 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
       }
       seriesRef.current.setData(data)
       //
-      const tooltipPrimitive = new TooltipPrimitive(tooltipOptions)
-      seriesRef.current.attachPrimitive(tooltipPrimitive)
+      const regularTooltip = new TooltipPrimitive(tooltipOptions)
+      const deltaTooltip = new DeltaTooltipPrimitive({
+        lineColor: "rgba(0, 0, 0, 0.2)",
+      })
+      //
+      seriesRef.current.attachPrimitive(regularTooltip)
+
+      function handleKeydown(event: KeyboardEvent) {
+        if (event.key === "Shift" && !shiftPressedRef.current) {
+          shiftPressedRef.current = true
+          chartRef.current?.applyOptions({
+            handleScale: false,
+            handleScroll: false,
+          })
+          seriesRef.current?.detachPrimitive(regularTooltip)
+          seriesRef.current?.attachPrimitive(deltaTooltip)
+          setCursorType("measure")
+        } else if (event.key === "Control") {
+          ctrlPressedRef.current = false
+          chartRef.current?.applyOptions({
+            handleScale: false,
+            handleScroll: false,
+          })
+          setCursorType("inspect")
+        }
+      }
+
+      function handleKeyup(event: KeyboardEvent) {
+        if (event.key === "Shift") {
+          shiftPressedRef.current = false
+          chartRef.current?.applyOptions({
+            handleScale: true,
+            handleScroll: true,
+          })
+          seriesRef.current?.detachPrimitive(deltaTooltip)
+          seriesRef.current?.attachPrimitive(regularTooltip)
+          setCursorType("move")
+        } else if (event.key === "Control") {
+          ctrlPressedRef.current = false
+          chartRef.current?.applyOptions({
+            handleScale: true,
+            handleScroll: true,
+          })
+          setCursorType("move")
+        }
+      }
+
+      document.addEventListener("keydown", handleKeydown)
+      document.addEventListener("keyup", handleKeyup)
+
+      return () => {
+        document.removeEventListener("keydown", handleKeydown)
+        document.removeEventListener("keyup", handleKeyup)
+      }
     },
     [activeType, seriesOptions, tooltipOptions]
   )
@@ -208,6 +293,52 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
               >
                 <Stack direction="row" gap={1}>
                   <Stack direction="row">
+                    <Tooltip title="Move">
+                      <span>
+                        <ChartIconButton
+                          active={cursorType === "move"}
+                          onClick={() => setCursorType("move")}
+                        >
+                          <ControlCamera fontSize="inherit" />
+                        </ChartIconButton>
+                      </span>
+                    </Tooltip>
+                    <Tooltip title="Inspect">
+                      <span>
+                        <ChartIconButton
+                          active={cursorType === "inspect"}
+                          onClick={() => setCursorType("inspect")}
+                        >
+                          <SvgIcon fontSize="inherit">
+                            {/* cc https://icon-sets.iconify.design/fluent/cursor-16-filled/ */}
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 16 16"
+                            >
+                              <path
+                                fill="currentColor"
+                                d="M4.002 2.998a1 1 0 0 1 1.6-.8L13.6 8.2c.768.576.36 1.8-.6 1.8H9.053a1 1 0 0 0-.793.39l-2.466 3.215c-.581.758-1.793.347-1.793-.609z"
+                              />
+                            </svg>
+                          </SvgIcon>
+                        </ChartIconButton>
+                      </span>
+                    </Tooltip>
+                    <Tooltip title="Measure">
+                      <span>
+                        <ChartIconButton
+                          active={cursorType === "measure"}
+                          onClick={() => setCursorType("measure")}
+                        >
+                          <StraightenSharp fontSize="inherit" />
+                        </ChartIconButton>
+                      </span>
+                    </Tooltip>
+                  </Stack>
+                  <Divider orientation="vertical" flexItem />
+                  <Stack direction="row">
                     {favoriteIntervals.map((interval) => (
                       <Button
                         size="small"
@@ -227,39 +358,53 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
                       </Button>
                     ))}
                   </Stack>
-                  <Divider orientation="vertical" flexItem sx={{ marginY: 1 }} />
+                  <Divider orientation="vertical" flexItem />
                   <Stack direction="row">
-                    <IconButton
-                      size="small"
-                      sx={{ borderRadius: 0.5 }}
-                      disabled={data.length > 0 && !("open" in data[0])}
-                      color={activeType === "Candlestick" ? "accent" : "secondary"}
-                      onClick={() => {
-                        setPreferredType("Candlestick")
-                      }}
-                    >
-                      <CandlestickChartSharp fontSize="inherit" />
-                    </IconButton>
-                    <IconButton
-                      size="small"
-                      sx={{ borderRadius: 0.5 }}
-                      color={activeType === "Area" ? "accent" : "secondary"}
-                      onClick={() => {
-                        setPreferredType("Area")
-                      }}
-                    >
-                      <ShowChart fontSize="inherit" />
-                    </IconButton>
-                    <IconButton
-                      size="small"
-                      sx={{ borderRadius: 0.5 }}
-                      color={activeType === "Histogram" ? "accent" : "secondary"}
-                      onClick={() => {
-                        setPreferredType("Histogram")
-                      }}
-                    >
-                      <BarChartOutlined fontSize="inherit" />
-                    </IconButton>
+                    <Tooltip title="Candlestick">
+                      <span>
+                        <ChartIconButton
+                          disabled={data.length > 0 && !("open" in data[0])}
+                          active={activeType === "Candlestick"}
+                          onClick={() => setPreferredType("Candlestick")}
+                        >
+                          <CandlestickChartSharp fontSize="inherit" />
+                        </ChartIconButton>
+                      </span>
+                    </Tooltip>
+                    <Tooltip title="Area">
+                      <span>
+                        <ChartIconButton
+                          active={activeType === "Area"}
+                          onClick={() => setPreferredType("Area")}
+                        >
+                          {/* <ShowChart fontSize="inherit" /> */}
+                          {/* cc https://icon-sets.iconify.design/material-symbols/area-chart/ */}
+                          <SvgIcon fontSize="inherit">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="24"
+                              height="24"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                fill="currentColor"
+                                d="m21 16l-9.4-7.35l-3.975 5.475L3 10.5V7l4 3l5-7l5 4h4zM3 20v-7l5 4l4-5.5l9 7.025V20z"
+                              />
+                            </svg>
+                          </SvgIcon>
+                        </ChartIconButton>
+                      </span>
+                    </Tooltip>
+                    <Tooltip title="Histogram">
+                      <span>
+                        <ChartIconButton
+                          active={activeType == "Histogram"}
+                          onClick={() => setPreferredType("Histogram")}
+                        >
+                          <BarChartOutlined fontSize="inherit" />
+                        </ChartIconButton>
+                      </span>
+                    </Tooltip>
                   </Stack>
                 </Stack>
                 <Stack direction="row">
@@ -275,11 +420,18 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
                   </IconButton> */}
                 </Stack>
               </Stack>
-              <Box sx={{ height: "calc(100% - 43px)" }}>
+              <Box sx={{ height: "calc(100% - 43px - 4px)" }}>
                 <Chart
                   chartRef={chartRef}
                   onChartReady={handleChartReady}
                   logScale={logScale}
+                  cursor={
+                    cursorType === "move"
+                      ? "move"
+                      : cursorType === "inspect"
+                      ? "pointer"
+                      : "crosshair"
+                  }
                   {...rest}
                 />
               </Box>
@@ -292,7 +444,7 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
                     height: 28,
                     paddingX: 1.5,
                   },
-                  bottom: 0,
+                  bottom: 4,
                   position: "absolute",
                   width: "100%",
                   zIndex: 1,

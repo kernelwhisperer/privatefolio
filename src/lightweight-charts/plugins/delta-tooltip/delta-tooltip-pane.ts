@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/member-ordering */
 import { CanvasRenderingTarget2D, Size } from "fancy-canvas"
 import {
   ISeriesPrimitivePaneRenderer,

@@ -140,6 +140,7 @@ export class TooltipPrimitive implements ISeriesPrimitive<Time> {
     if (chart) {
       chart.unsubscribeCrosshairMove(this._moveHandler)
     }
+    this._tooltip?.destroy() // TODO: make a PR on lightweight charts
   }
 
   paneViews() {

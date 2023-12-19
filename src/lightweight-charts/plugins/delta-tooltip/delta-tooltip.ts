@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/member-ordering */
 import {
   AreaStyleOptions,
   CandlestickData,
@@ -165,9 +166,9 @@ export class DeltaTooltipPrimitive implements ISeriesPrimitive<Time> {
   }
 
   private _hideTooltip() {
-    this.setData([], {
-      tooltips: [],
-    })
+    // this.setData([], {
+    //   tooltips: [],
+    // })
   }
 
   private _hideCrosshair() {
