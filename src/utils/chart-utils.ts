@@ -12,8 +12,10 @@ export function createPriceFormatter(significantDigits: number, unitLabel: strin
     })} ${unitLabel}`
 }
 
-export const greenColor = "rgb(0, 150, 108)"
-export const redColor = "rgb(220, 60, 70)"
+export const greenColorDark = "rgb(0, 150, 108)"
+// export const redColorDark = "rgb(220, 60, 70)"
+export const greenColor = "rgb(51,215,120)"
+export const redColor = "rgb(239, 83, 80)"
 
 export const candleStickOptions: CandlestickSeriesPartialOptions = {
   // ----default
@@ -27,10 +29,10 @@ export const candleStickOptions: CandlestickSeriesPartialOptions = {
   // rgb(8, 153, 129)
   //
   borderDownColor: redColor, // #dc3c46
-  borderUpColor: greenColor, // #00966c
+  borderUpColor: greenColorDark, // #00966c
   downColor: redColor,
   // title: "hey",
-  upColor: greenColor,
+  upColor: greenColorDark,
   wickDownColor: redColor,
-  wickUpColor: greenColor,
+  wickUpColor: greenColorDark,
 }

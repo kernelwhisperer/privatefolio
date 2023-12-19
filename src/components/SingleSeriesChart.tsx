@@ -5,6 +5,7 @@ import {
   StraightenSharp,
 } from "@mui/icons-material"
 import {
+  alpha,
   Box,
   Button,
   Divider,
@@ -35,7 +36,7 @@ import {
   TooltipPrimitiveOptions,
 } from "../lightweight-charts/plugins/tooltip/tooltip"
 import { $favoriteIntervals, $preferredInterval } from "../stores/chart-store"
-import { CHART_HEIGHT } from "../utils/chart-utils"
+import { candleStickOptions, CHART_HEIGHT, greenColor, greenColorDark } from "../utils/chart-utils"
 import { SPRING_CONFIGS } from "../utils/utils"
 import { Chart, ChartProps } from "./Chart"
 import { QueryTimer } from "./QueryTimer"
@@ -113,16 +114,20 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
 
       if (activeType === "Candlestick") {
         seriesRef.current = chartRef.current.addCandlestickSeries({
+          ...candleStickOptions,
           priceLineVisible: false,
           ...seriesOptions,
         })
       } else if (activeType === "Histogram") {
         seriesRef.current = chartRef.current.addHistogramSeries({
+          color: greenColorDark,
           priceLineVisible: false,
           ...seriesOptions,
         })
       } else {
         seriesRef.current = chartRef.current.addAreaSeries({
+          bottomColor: alpha(greenColor, 0),
+          lineColor: greenColor,
           // lineType: 2,
           lineWidth: 2,
           priceLineVisible: false,
