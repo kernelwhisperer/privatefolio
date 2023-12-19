@@ -13,6 +13,7 @@ import {
   Time,
   WhitespaceData,
 } from "lightweight-charts"
+import { throttle } from "lodash"
 
 import { formatNumber } from "../../../utils/formatting-utils"
 import { positionsLine } from "../../helpers/dimensions/positions"
@@ -72,10 +73,10 @@ const defaultOptions: TooltipPrimitiveOptions = {
   lineColor: "rgba(127, 127, 127, 0.5)",
   priceExtractor: (data: LineData | CandlestickData | WhitespaceData) => {
     if ((data as LineData).value !== undefined) {
-      return formatNumber((data as LineData).value, { maximumFractionDigits: 18 })
+      return formatNumber((data as LineData).value, { maximumFractionDigits: 2 })
     }
     if ((data as CandlestickData).close !== undefined) {
-      return formatNumber((data as CandlestickData).close, { maximumFractionDigits: 18 })
+      return formatNumber((data as CandlestickData).close, { maximumFractionDigits: 2 })
     }
     return ""
   },
@@ -179,7 +180,7 @@ export class TooltipPrimitive implements ISeriesPrimitive<Time> {
     })
   }
 
-  private _moveHandler = (param: MouseEventParams) => this._onMouseMove(param)
+  private _moveHandler = throttle((param: MouseEventParams) => this._onMouseMove(param), 10)
 
   private _hideTooltip() {
     if (!this._tooltip) return
