@@ -29,5 +29,14 @@ export function BalanceChart(props: BalanceChartProps) {
     return records
   }, [symbol])
 
-  return <SingleSeriesChart queryFn={queryFn} initType="Histogram" />
+  return (
+    <SingleSeriesChart
+      queryFn={queryFn}
+      initType="Histogram"
+      tooltipOptions={{
+        currencySymbol: "COMP ",
+        significantDigits: 0, // TODO
+      }}
+    />
+  )
 }

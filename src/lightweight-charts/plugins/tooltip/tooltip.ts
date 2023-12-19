@@ -70,23 +70,41 @@ interface TooltipCrosshairLineData {
 }
 
 const defaultOptions: TooltipPrimitiveOptions = {
+  currencySymbol: "",
   lineColor: "rgba(127, 127, 127, 0.5)",
-  priceExtractor: (data: LineData | CandlestickData | WhitespaceData) => {
+  priceExtractor: (
+    data: LineData | CandlestickData | WhitespaceData,
+    significantDigits: number
+  ) => {
     if ((data as LineData).value !== undefined) {
-      return formatNumber((data as LineData).value, { maximumFractionDigits: 2 })
+      return formatNumber((data as LineData).value, {
+        maximumFractionDigits: significantDigits,
+        minimumFractionDigits: significantDigits,
+      })
     }
     if ((data as CandlestickData).close !== undefined) {
-      return formatNumber((data as CandlestickData).close, { maximumFractionDigits: 2 })
+      return formatNumber((data as CandlestickData).close, {
+        maximumFractionDigits: significantDigits,
+        minimumFractionDigits: significantDigits,
+      })
     }
     return ""
   },
+  significantDigits: 2,
 }
 
 export interface TooltipPrimitiveOptions {
   lineColor: string
   tooltip?: Partial<TooltipOptions>
-  priceExtractor: <T extends WhitespaceData>(dataPoint: T) => string
-  // significantDigits
+  priceExtractor: <T extends WhitespaceData>(dataPoint: T, significantDigits: number) => string
+  /**
+   * @default 2
+   */
+  significantDigits: number
+  /**
+   * @default ""
+   */
+  currencySymbol: string
 }
 
 export class TooltipPrimitive implements ISeriesPrimitive<Time> {
@@ -187,6 +205,7 @@ export class TooltipPrimitive implements ISeriesPrimitive<Time> {
     this._tooltip.updateTooltipContent({
       date: "",
       price: "",
+      symbol: "",
       time: "",
       title: "",
     })
@@ -220,7 +239,7 @@ export class TooltipPrimitive implements ISeriesPrimitive<Time> {
       this._hideCrosshair()
       return
     }
-    const price = this._options.priceExtractor(data)
+    const price = this._options.priceExtractor(data, this._options.significantDigits)
     const coordinate = chart.timeScale().logicalToCoordinate(logical)
     const [date, time] = formattedDateAndTime(param.time ? convertTime(param.time) : undefined)
     if (this._tooltip) {
@@ -235,6 +254,7 @@ export class TooltipPrimitive implements ISeriesPrimitive<Time> {
       this._tooltip.updateTooltipContent({
         date,
         price,
+        symbol: this._options.currencySymbol,
         time,
       })
       this._tooltip.updatePosition({

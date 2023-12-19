@@ -13,7 +13,10 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 import { useBoolean } from "../hooks/useBoolean"
 import { ChartData } from "../interfaces"
-import { TooltipPrimitive } from "../lightweight-charts/plugins/tooltip/tooltip"
+import {
+  TooltipPrimitive,
+  TooltipPrimitiveOptions,
+} from "../lightweight-charts/plugins/tooltip/tooltip"
 import { $favoriteIntervals, $preferredInterval } from "../stores/chart-store"
 import { CHART_HEIGHT } from "../utils/chart-utils"
 import { SPRING_CONFIGS } from "../utils/utils"
@@ -30,6 +33,7 @@ interface SingleSeriesChartProps extends Omit<Partial<ChartProps>, "chartRef"> {
   initType?: SeriesType
   queryFn: QueryFunction
   seriesOptions?: DeepPartial<SeriesOptionsCommon>
+  tooltipOptions?: Partial<TooltipPrimitiveOptions>
 }
 
 export function SingleSeriesChart(props: SingleSeriesChartProps) {
@@ -38,6 +42,7 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
     initType = "Candlestick",
     height = CHART_HEIGHT,
     seriesOptions = {},
+    tooltipOptions = {},
     ...rest
   } = props
 
@@ -93,10 +98,10 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
       }
       seriesRef.current.setData(data)
       //
-      const tooltipPrimitive = new TooltipPrimitive()
+      const tooltipPrimitive = new TooltipPrimitive(tooltipOptions)
       seriesRef.current.attachPrimitive(tooltipPrimitive)
     },
-    [activeType, seriesOptions]
+    [activeType, seriesOptions, tooltipOptions]
   )
 
   useEffect(() => {
@@ -284,7 +289,7 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
                     alignItems: "center",
                     background: "var(--mui-palette-background-paper)",
                     display: "flex",
-                    minHeight: 32,
+                    height: 28,
                     paddingX: 1.5,
                   },
                   bottom: 0,

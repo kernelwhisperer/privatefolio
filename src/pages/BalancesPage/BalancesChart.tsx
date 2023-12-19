@@ -34,11 +34,20 @@ export function BalancesChart() {
 
   return (
     <SingleSeriesChart
-      height={420}
+      height={460}
       queryFn={queryFn}
       seriesOptions={{
         priceFormat: {
+          minMove: 1,
           type: "volume",
+        },
+      }}
+      tooltipOptions={{
+        currencySymbol: "$",
+        significantDigits: 0,
+        tooltip: {
+          dateSecondary: true,
+          showTime: false,
         },
       }}
       chartOptions={{

@@ -12,11 +12,21 @@ export interface TooltipOptions {
   verticalSpacing: number
   /** topOffset is the vertical spacing when followMode is 'top' */
   topOffset: number
+  /**
+   * @default true
+   */
+  showTime: boolean
+  /**
+   * @default false
+   */
+  dateSecondary: boolean
 }
 
 const defaultOptions: TooltipOptions = {
+  dateSecondary: false,
   followMode: "top",
   horizontalDeadzoneWidth: 45,
+  showTime: true,
   title: "",
   topOffset: 20,
   verticalDeadzoneHeight: 60,
@@ -28,6 +38,7 @@ export interface TooltipContentData {
   price: string
   date: string
   time: string
+  symbol: string
 }
 
 export interface TooltipPosition {
@@ -58,7 +69,7 @@ export class TooltipElement {
 
     const element = document.createElement("div")
     applyStyle(element, {
-      // "align-items": "center",
+      "align-items": "center",
       "background-color": "var(--mui-palette-grey-900)",
       border: "1px solid rgba(0,0,0,1)",
       // "border-radius": "4px",
@@ -92,9 +103,9 @@ export class TooltipElement {
 
     const dateContainer = document.createElement("div")
     applyStyle(dateContainer, {
+      color: this._options.dateSecondary ? "var(--mui-palette-grey-400)" : "inherit",
       display: "flex",
       "flex-direction": "row",
-      gap: "5px",
       "margin-bottom": "8px",
     })
     element.appendChild(dateContainer)
@@ -106,6 +117,7 @@ export class TooltipElement {
     const timeElement = document.createElement("div")
     applyStyle(timeElement, {
       color: "var(--mui-palette-grey-400)",
+      "margin-left": "5px",
     })
     setElementText(timeElement, "")
     dateContainer.appendChild(timeElement)
@@ -113,7 +125,7 @@ export class TooltipElement {
     const priceElement = document.createElement("div")
     applyStyle(priceElement, {
       "font-family": MonoFont,
-      "font-size": "14px",
+      "font-size": "18px",
       "font-weight": "500",
       "line-height": "18px",
     })
@@ -155,16 +167,16 @@ export class TooltipElement {
     return this._options
   }
 
-  public updateTooltipContent(tooltipContentData: TooltipContentData) {
+  public updateTooltipContent(content: TooltipContentData) {
     if (!this._element) return
     const tooltipMeasurement = this._element.getBoundingClientRect()
     this._lastTooltipWidth = tooltipMeasurement.width
-    if (tooltipContentData.title !== undefined && this._titleElement) {
-      setElementText(this._titleElement, tooltipContentData.title)
+    if (content.title !== undefined && this._titleElement) {
+      setElementText(this._titleElement, content.title)
     }
-    setElementText(this._priceElement, tooltipContentData.price)
-    setElementText(this._dateElement, tooltipContentData.date)
-    setElementText(this._timeElement, `at ${tooltipContentData.time}`)
+    setElementText(this._priceElement, `${content.symbol}${content.price}`)
+    setElementText(this._dateElement, content.date)
+    setElementText(this._timeElement, this._options.showTime ? `at ${content.time}` : "")
   }
 
   public updatePosition(positionData: TooltipPosition) {
@@ -203,9 +215,13 @@ export class TooltipElement {
 }
 
 function setElementText(element: HTMLDivElement | null, text: string) {
-  if (!element || text === element.innerText) return
-  element.innerText = text
-  element.style.display = text ? "block" : "none"
+  if (!element) return
+  if (text !== element.innerText) {
+    element.innerText = text
+  }
+  if (element.style.display !== text ? "block" : "none") {
+    element.style.display = text ? "block" : "none"
+  }
 }
 
 function applyStyle(element: HTMLElement, styles: Record<string, string>) {

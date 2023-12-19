@@ -15,5 +15,12 @@ export function PriceChart(props: BalanceChartProps) {
     return prices
   }, [symbol])
 
-  return <SingleSeriesChart queryFn={queryFn} />
+  return (
+    <SingleSeriesChart
+      queryFn={queryFn}
+      tooltipOptions={{
+        currencySymbol: "$",
+      }}
+    />
+  )
 }
