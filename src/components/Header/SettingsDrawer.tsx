@@ -12,8 +12,18 @@ export function SettingsDrawer() {
 
   return (
     <>
-      <Tooltip title="Open Settings">
-        <IconButton color="secondary" onClick={toggleOpen} sx={{ marginRight: { lg: -1 } }}>
+      <Tooltip title="Open Settings drawer">
+        <IconButton
+          color="secondary"
+          onClick={toggleOpen}
+          sx={{
+            "&:hover": {
+              transform: "rotate(-30deg)",
+            },
+            marginRight: { lg: -1 },
+            transition: "transform 0.33s",
+          }}
+        >
           <SettingsIcon fontSize="small" />
         </IconButton>
       </Tooltip>

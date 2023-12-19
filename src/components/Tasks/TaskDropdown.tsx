@@ -15,6 +15,7 @@ import {
   ListItemText,
   Menu,
   Stack,
+  Tooltip,
   Typography,
 } from "@mui/material"
 import { useStore } from "@nanostores/react"
@@ -111,18 +112,20 @@ export function TaskDropdown() {
 
   return (
     <>
-      <Button
-        size="small"
-        variant="outlined"
-        color={pendingTask ? "info" : "secondary"}
-        sx={{ paddingY: 0.5 }}
-        onClick={handleClick}
-        startIcon={pendingTask ? <PendingTaskProgress /> : <DoneAllRounded />}
-      >
-        <Truncate sx={{ maxWidth: 260 }}>
-          {pendingTask ? `${pendingTask.name}` : "Up to date"}
-        </Truncate>
-      </Button>
+      <Tooltip title="Open Task dropdown">
+        <Button
+          size="small"
+          variant="outlined"
+          color={pendingTask ? "info" : "secondary"}
+          sx={{ paddingY: 0.5 }}
+          onClick={handleClick}
+          startIcon={pendingTask ? <PendingTaskProgress /> : <DoneAllRounded />}
+        >
+          <Truncate sx={{ maxWidth: 260 }}>
+            {pendingTask ? `${pendingTask.name}` : "Up to date"}
+          </Truncate>
+        </Button>
+      </Tooltip>
       <Menu
         open={open}
         anchorEl={anchorEl}

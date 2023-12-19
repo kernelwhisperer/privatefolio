@@ -5,7 +5,7 @@ import {
   MoreHoriz,
   Storage,
 } from "@mui/icons-material"
-import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem } from "@mui/material"
+import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Tooltip } from "@mui/material"
 import { useStore } from "@nanostores/react"
 import React from "react"
 
@@ -35,9 +35,11 @@ export function ImportDataActions() {
 
   return (
     <>
-      <IconButton color="secondary" onClick={handleClick} sx={{ marginRight: -2 }}>
-        <MoreHoriz fontSize="small" />
-      </IconButton>
+      <Tooltip title="Open Actions dropdown">
+        <IconButton color="secondary" onClick={handleClick} sx={{ marginRight: -2 }}>
+          <MoreHoriz fontSize="small" />
+        </IconButton>
+      </Tooltip>
       <Menu
         id="basic-menu"
         anchorEl={anchorEl}
