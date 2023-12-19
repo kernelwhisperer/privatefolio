@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 import { IChartApi } from "lightweight-charts"
 
-import { MonoFont } from "../../../theme"
+import { MainFont, MonoFont } from "../../../theme"
 
 export interface TooltipOptions {
   title: string
@@ -28,7 +28,7 @@ const defaultOptions: TooltipOptions = {
   horizontalDeadzoneWidth: 45,
   showTime: true,
   title: "",
-  topOffset: 20,
+  topOffset: 15,
   verticalDeadzoneHeight: 60,
   verticalSpacing: 20,
 }
@@ -77,8 +77,7 @@ export class TooltipElement {
       color: "var(--mui-palette-common-white)",
       display: "flex",
       "flex-direction": "column",
-      "font-family":
-        "-apple-system, BlinkMacSystemFont, 'Trebuchet MS', Roboto, Ubuntu, sans-serif",
+      "font-family": MainFont,
       "font-size": "14px",
       "font-weight": "300",
       left: "0%",

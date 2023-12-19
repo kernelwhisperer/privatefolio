@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/member-ordering */
+import { darken } from "@mui/material"
 import { CanvasRenderingTarget2D, Size } from "fancy-canvas"
 import {
   ISeriesPrimitivePaneRenderer,
@@ -6,38 +7,31 @@ import {
   SeriesPrimitivePaneViewZOrder,
 } from "lightweight-charts"
 
+import { MainFont, MonoFont } from "../../../theme"
+
 const styles = {
-  background: "#ffffff",
-  borderRadius: 5,
-  deltaFontSizes: [14, 12] as number[],
-  deltaFontWeights: [590, 400] as number[],
-  deltaLineHeights: [18, 16] as number[],
-  fontFamily: "-apple-system, BlinkMacSystemFont, 'Trebuchet MS', Roboto, Ubuntu, sans-serif",
-  itemBlockPadding: 5,
-
-  itemInlinePadding: 10,
-  shadowBlur: 4,
-
-  shadowColor: "rgba(0, 0, 0, 0.2)",
-  shadowOffsetX: 0,
-  shadowOffsetY: 2,
-  tooltipLineColors: ["#131722", "#787B86", "#787B86"],
-
-  tooltipLineFontSizes: [14, 12, 12] as number[],
-  tooltipLineFontWeights: [590, 400, 400] as number[],
-  tooltipLineLineHeights: [18, 16, 16] as number[],
+  background: "#212121", // "var(--mui-palette-grey-900)",
+  borderRadius: 0,
+  itemBlockPadding: 8,
+  itemInlinePadding: 12,
+  tooltipLineColors: ["#bdbdbd", "#fff", "#ff33"],
+  tooltipLineFontFamilies: [MainFont, MonoFont, MainFont] as string[],
+  tooltipLineFontSizes: [14, 18, 14] as number[],
+  tooltipLineFontWeights: [300, 500, 300] as number[],
+  tooltipLineLineHeights: [23, 20, 16] as number[],
 } as const
 
 function determineSectionWidth(
   ctx: CanvasRenderingContext2D,
   lines: string[],
   fontSizes: number[],
-  fontWeights: number[]
+  fontWeights: number[],
+  fontFamilies: string[]
 ) {
   let maxTextWidth = 0
   ctx.save()
   lines.forEach((line, index) => {
-    ctx.font = `${fontWeights[index]} ${fontSizes[index]}px ${styles.fontFamily}`
+    ctx.font = `${fontWeights[index]} ${fontSizes[index]}px ${fontFamilies[index]}`
     const measurement = ctx.measureText(line)
     if (measurement.width > maxTextWidth) maxTextWidth = measurement.width
   })
@@ -88,7 +82,7 @@ function calculateVerticalDrawingPositions(
       : determineSectionHeight(data.tooltips[1].lineContent, styles.tooltipLineLineHeights)
   const deltaHeight = determineSectionHeight(
     [data.deltaTopLine, data.deltaBottomLine].filter(Boolean),
-    styles.deltaLineHeights
+    styles.tooltipLineLineHeights
   )
 
   const mainHeight = Math.max(leftTooltipHeight, rightTooltipHeight, deltaHeight)
@@ -120,7 +114,8 @@ function calculateInitialTooltipPosition(
     ctx,
     lines,
     styles.tooltipLineFontSizes,
-    styles.tooltipLineFontWeights
+    styles.tooltipLineFontWeights,
+    styles.tooltipLineFontFamilies
   )
   const halfWidth = tooltipWidth / 2
   const idealX = Math.min(
@@ -160,8 +155,9 @@ function calculateDrawingHorizontalPositions(
       : determineSectionWidth(
           ctx,
           [data.deltaTopLine, data.deltaBottomLine].filter(Boolean),
-          styles.deltaFontSizes,
-          styles.deltaFontWeights
+          styles.tooltipLineFontSizes,
+          styles.tooltipLineFontWeights,
+          styles.tooltipLineFontFamilies // TODO
         )
 
   const overlapWidth = minDeltaWidth + leftPosition.x + leftPosition.width - rightPosition.x
@@ -230,19 +226,11 @@ class DeltaTooltipPaneRenderer implements ISeriesPrimitivePaneRenderer {
   _drawMainTooltip(ctx: CanvasRenderingContext2D, positions: CalculatedDrawingPositions) {
     ctx.save()
     ctx.fillStyle = styles.background
-    ctx.shadowBlur = styles.shadowBlur
-    ctx.shadowOffsetX = styles.shadowOffsetX
-    ctx.shadowOffsetY = styles.shadowOffsetY
-    ctx.shadowColor = styles.shadowColor
+    // ctx.strokeStyle = "#000"
+    // ctx.lineWidth = 1
     ctx.beginPath()
-    ctx.roundRect(
-      positions.mainX,
-      positions.mainY,
-      positions.mainWidth,
-      positions.mainHeight,
-      styles.borderRadius
-    )
-    ctx.fill()
+    ctx.fillRect(positions.mainX, positions.mainY, positions.mainWidth, positions.mainHeight)
+    // ctx.strokeRect(positions.mainX, positions.mainY, positions.mainWidth, positions.mainHeight)
     ctx.restore()
   }
 
@@ -269,7 +257,7 @@ class DeltaTooltipPaneRenderer implements ISeriesPrimitivePaneRenderer {
         (tooltipIndex === 0 ? positions.leftTooltipTextY : positions.rightTooltipTextY)
 
       tooltip.lineContent.forEach((line: string, lineIndex: number) => {
-        ctx.font = `${styles.tooltipLineFontWeights[lineIndex]} ${styles.tooltipLineFontSizes[lineIndex]}px ${styles.fontFamily}`
+        ctx.font = `${styles.tooltipLineFontWeights[lineIndex]} ${styles.tooltipLineFontSizes[lineIndex]}px ${styles.tooltipLineFontFamilies[lineIndex]}`
         ctx.fillStyle = styles.tooltipLineColors[lineIndex]
         ctx.textAlign = "center"
         ctx.textBaseline = "top"
@@ -288,12 +276,25 @@ class DeltaTooltipPaneRenderer implements ISeriesPrimitivePaneRenderer {
     const lines = [this._data.deltaTopLine, this._data.deltaBottomLine]
 
     lines.forEach((line: string, lineIndex: number) => {
-      ctx.font = `${styles.deltaFontWeights[lineIndex]} ${styles.deltaFontSizes[lineIndex]}px ${styles.fontFamily}`
+      ctx.font = `${styles.tooltipLineFontWeights[lineIndex]} ${styles.tooltipLineFontSizes[lineIndex]}px ${styles.tooltipLineFontFamilies[lineIndex]}`
       ctx.fillStyle = this._data.deltaTextColor
       ctx.textAlign = "center"
       ctx.textBaseline = "top"
       ctx.fillText(line, x, y)
-      y += styles.deltaLineHeights[lineIndex]
+
+      // Draw background for the percentage change
+      if (lineIndex === 1 && line) {
+        const valueSize = ctx.measureText(line.split(" ")[0] + " ").width
+        const percentSize = ctx.measureText(line.split(" ")[1])
+        const padding = 4
+        const backgroundWidth = percentSize.width + padding * 2 + 1
+        const fullSize = ctx.measureText(line).width + padding * 2
+        const backgroundHeight = styles.tooltipLineLineHeights[lineIndex] + padding
+        ctx.fillStyle = darken(this._data.deltaBackgroundColor, 0.15)
+        ctx.fillRect(x - fullSize / 2 + valueSize, y - padding, backgroundWidth, backgroundHeight)
+      }
+
+      y += styles.tooltipLineLineHeights[lineIndex]
     })
     ctx.restore()
   }

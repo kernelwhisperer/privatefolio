@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/member-ordering */
+import { alpha } from "@mui/material"
 import {
   AreaStyleOptions,
   CandlestickData,
@@ -13,6 +14,8 @@ import {
   WhitespaceData,
 } from "lightweight-charts"
 
+import { greenColor, redColor } from "../../../utils/chart-utils"
+import { formatNumber } from "../../../utils/formatting-utils"
 import { Delegate, ISubscription } from "../../helpers/delegate"
 import { convertTime, formattedDateAndTime } from "../../helpers/time"
 import { MultiTouchCrosshairPaneView, TooltipCrosshairLineData } from "./crosshair-line-pane"
@@ -24,25 +27,51 @@ import {
 import { MultiTouchChartEvents, MultiTouchInteraction } from "./multi-touch-chart-events"
 
 const defaultOptions: TooltipPrimitiveOptions = {
-  lineColor: "rgba(0, 0, 0, 0.2)",
-  priceExtractor: (data: LineData | CandlestickData | WhitespaceData) => {
+  currencySymbol: "",
+  priceExtractor: (
+    data: LineData | CandlestickData | WhitespaceData,
+    significantDigits: number
+  ) => {
     if ((data as LineData).value !== undefined) {
-      return [(data as LineData).value, (data as LineData).value.toFixed(2)]
+      return [
+        (data as LineData).value,
+        formatNumber((data as LineData).value, {
+          maximumFractionDigits: significantDigits,
+          minimumFractionDigits: significantDigits,
+        }),
+      ]
     }
     if ((data as CandlestickData).close !== undefined) {
-      return [(data as CandlestickData).close, (data as CandlestickData).close.toFixed(2)]
+      return [
+        (data as CandlestickData).close,
+        formatNumber((data as CandlestickData).close, {
+          maximumFractionDigits: significantDigits,
+          minimumFractionDigits: significantDigits,
+        }),
+      ]
     }
     return [0, ""]
   },
   showTime: false,
-  topOffset: 20,
+  significantDigits: 2,
+  topOffset: 15,
 }
 
 export interface TooltipPrimitiveOptions {
-  lineColor: string
-  priceExtractor: <T extends WhitespaceData>(dataPoint: T) => [number, string]
+  priceExtractor: <T extends WhitespaceData>(
+    dataPoint: T,
+    significantDigits: number
+  ) => [number, string]
   showTime: boolean
   topOffset: number
+  /**
+   * @default 2
+   */
+  significantDigits: number
+  /**
+   * @default ""
+   */
+  currencySymbol: string
 }
 
 export interface ActiveRange {
@@ -117,7 +146,7 @@ export class DeltaTooltipPrimitive implements ISeriesPrimitive<Time> {
   }
 
   currentColor() {
-    return this._options.lineColor
+    return "rgba(127, 127, 127, 0.5)"
   }
 
   chart() {
@@ -217,12 +246,15 @@ export class DeltaTooltipPrimitive implements ISeriesPrimitive<Time> {
       const point = interactions.points[i]
       const data = series.dataByIndex(point.index)
       if (data) {
-        const [priceValue, priceString] = this._options.priceExtractor(data)
+        const [priceValue, priceString] = this._options.priceExtractor(
+          data,
+          this._options.significantDigits
+        )
         priceValues.push([priceValue, point.index])
         const priceY = series.priceToCoordinate(priceValue) ?? -1000
         const [date, time] = formattedDateAndTime(data.time ? convertTime(data.time) : undefined)
         const state: DeltaSingleTooltipData = {
-          lineContent: [priceString, date],
+          lineContent: [date, `${this._options.currencySymbol}${priceString}`],
           x: point.x,
         }
         if (this._options.showTime) {
@@ -249,16 +281,20 @@ export class DeltaTooltipPrimitive implements ISeriesPrimitive<Time> {
       tooltips,
     }
     if (priceValues.length > 1) {
+      const barLength = Math.abs(priceValues[1][1] - priceValues[0][1])
       const correctOrder = priceValues[1][1] > priceValues[0][1]
       const firstPrice = correctOrder ? priceValues[0][0] : priceValues[1][0]
       const secondPrice = correctOrder ? priceValues[1][0] : priceValues[0][0]
       const priceChange = secondPrice - firstPrice
       const pctChange = (100 * priceChange) / firstPrice
       const positive = priceChange >= 0
-      deltaContent.deltaTopLine = (positive ? "+" : "") + priceChange.toFixed(2)
-      deltaContent.deltaBottomLine = (positive ? "+" : "") + pctChange.toFixed(2) + "%"
-      deltaContent.deltaBackgroundColor = positive ? "rgb(4,153,129, 0.2)" : "rgb(239,83,80, 0.2)"
-      deltaContent.deltaTextColor = positive ? "rgb(4,153,129)" : "rgb(239,83,80)"
+      deltaContent.deltaTopLine = `${barLength} days` // TODO
+      deltaContent.deltaBottomLine = `${positive ? "+" : ""}${formatNumber(priceChange, {
+        maximumFractionDigits: this._options.significantDigits,
+        minimumFractionDigits: this._options.significantDigits,
+      })} ${positive ? "+" : ""}${pctChange.toFixed(2)}%`
+      deltaContent.deltaBackgroundColor = positive ? alpha(greenColor, 0.2) : alpha(redColor, 0.2)
+      deltaContent.deltaTextColor = positive ? greenColor : redColor
       this._activeRange.fire({
         from: priceValues[correctOrder ? 0 : 1][1] + 1,
         positive,

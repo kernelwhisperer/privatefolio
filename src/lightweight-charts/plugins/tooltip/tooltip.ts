@@ -71,7 +71,6 @@ interface TooltipCrosshairLineData {
 
 const defaultOptions: TooltipPrimitiveOptions = {
   currencySymbol: "",
-  lineColor: "rgba(127, 127, 127, 0.5)",
   priceExtractor: (
     data: LineData | CandlestickData | WhitespaceData,
     significantDigits: number
@@ -94,7 +93,6 @@ const defaultOptions: TooltipPrimitiveOptions = {
 }
 
 export interface TooltipPrimitiveOptions {
-  lineColor: string
   tooltip?: Partial<TooltipOptions>
   priceExtractor: <T extends WhitespaceData>(dataPoint: T, significantDigits: number) => string
   /**
@@ -158,7 +156,7 @@ export class TooltipPrimitive implements ISeriesPrimitive<Time> {
   }
 
   currentColor() {
-    return this._options.lineColor
+    return "rgba(127, 127, 127, 0.5)"
   }
 
   chart() {

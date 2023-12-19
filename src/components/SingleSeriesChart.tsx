@@ -133,7 +133,8 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
       //
       const regularTooltip = new TooltipPrimitive(tooltipOptions)
       const deltaTooltip = new DeltaTooltipPrimitive({
-        lineColor: "rgba(0, 0, 0, 0.2)",
+        currencySymbol: tooltipOptions.currencySymbol,
+        significantDigits: tooltipOptions.significantDigits,
       })
       //
       seriesRef.current.attachPrimitive(regularTooltip)
