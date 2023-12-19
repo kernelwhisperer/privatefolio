@@ -2,7 +2,13 @@ import { BarChartOutlined, CandlestickChartSharp, ShowChart } from "@mui/icons-m
 import { Box, Button, Divider, IconButton, Paper, Skeleton, Stack } from "@mui/material"
 import { useStore } from "@nanostores/react"
 import { a, useTransition } from "@react-spring/web"
-import { IChartApi, ISeriesApi, SeriesType } from "lightweight-charts"
+import {
+  DeepPartial,
+  IChartApi,
+  ISeriesApi,
+  SeriesOptionsCommon,
+  SeriesType,
+} from "lightweight-charts"
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 import { useBoolean } from "../hooks/useBoolean"
@@ -23,10 +29,17 @@ interface SingleSeriesChartProps extends Omit<Partial<ChartProps>, "chartRef"> {
    */
   initType?: SeriesType
   queryFn: QueryFunction
+  seriesOptions?: DeepPartial<SeriesOptionsCommon>
 }
 
 export function SingleSeriesChart(props: SingleSeriesChartProps) {
-  const { queryFn, initType = "Candlestick", height = CHART_HEIGHT, ...rest } = props
+  const {
+    queryFn,
+    initType = "Candlestick",
+    height = CHART_HEIGHT,
+    seriesOptions = {},
+    ...rest
+  } = props
 
   const chartRef = useRef<IChartApi | undefined>(undefined)
   const seriesRef = useRef<ISeriesApi<SeriesType> | undefined>(undefined)
@@ -63,16 +76,19 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
       if (activeType === "Candlestick") {
         seriesRef.current = chartRef.current.addCandlestickSeries({
           priceLineVisible: false,
+          ...seriesOptions,
         })
       } else if (activeType === "Histogram") {
         seriesRef.current = chartRef.current.addHistogramSeries({
           priceLineVisible: false,
+          ...seriesOptions,
         })
       } else {
         seriesRef.current = chartRef.current.addAreaSeries({
           lineType: 2,
           lineWidth: 2,
           priceLineVisible: false,
+          ...seriesOptions,
         })
       }
       seriesRef.current.setData(data)
@@ -80,7 +96,7 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
       const tooltipPrimitive = new TooltipPrimitive()
       seriesRef.current.attachPrimitive(tooltipPrimitive)
     },
-    [activeType]
+    [activeType, seriesOptions]
   )
 
   useEffect(() => {
@@ -121,7 +137,7 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
       {transitions((styles, isLoading) => (
         <a.div style={styles}>
           {isLoading ? (
-            <Stack gap={1.5} sx={{ marginY: 1 }}>
+            <Stack gap={1.5} sx={{ height, paddingY: 1 }} justifyContent="center">
               <Stack direction="row" gap={1.5} alignItems={"flex-end"}>
                 <Skeleton animation={false} variant="rounded" width={37} height={320}></Skeleton>
                 <Skeleton animation={false} variant="rounded" width={37} height={260}></Skeleton>
@@ -147,12 +163,12 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
                 <Skeleton animation={false} variant="rounded" width={37} height={260}></Skeleton>
                 <Skeleton animation={false} variant="rounded" width={37} height={340}></Skeleton>
                 <Skeleton animation={false} variant="rounded" width={37} height={280}></Skeleton>
-                <Skeleton animation={false} variant="rounded" width={37} height={320}></Skeleton>
+                {/* <Skeleton animation={false} variant="rounded" width={37} height={320}></Skeleton>
                 <Skeleton animation={false} variant="rounded" width={37} height={220}></Skeleton>
                 <Skeleton animation={false} variant="rounded" width={37} height={340}></Skeleton>
                 <Skeleton animation={false} variant="rounded" width={37} height={260}></Skeleton>
                 <Skeleton animation={false} variant="rounded" width={37} height={290}></Skeleton>
-                <Skeleton animation={false} variant="rounded" width={37} height={300}></Skeleton>
+                <Skeleton animation={false} variant="rounded" width={37} height={300}></Skeleton> */}
               </Stack>
             </Stack>
           ) : (
@@ -254,7 +270,7 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
                   </IconButton> */}
                 </Stack>
               </Stack>
-              <Box sx={{ height: "calc(100% - 86px)" }}>
+              <Box sx={{ height: "calc(100% - 43px)" }}>
                 <Chart
                   chartRef={chartRef}
                   onChartReady={handleChartReady}
@@ -263,28 +279,34 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
                 />
               </Box>
               <Stack
-                sx={{ borderTop: "1px solid var(--mui-palette-TableCell-border)", minHeight: 43 }}
-                alignItems="center"
+                sx={{
+                  "& > *": {
+                    alignItems: "center",
+                    background: "var(--mui-palette-background-paper)",
+                    display: "flex",
+                    minHeight: 32,
+                    paddingX: 1.5,
+                  },
+                  bottom: 0,
+                  position: "absolute",
+                  width: "100%",
+                  zIndex: 1,
+                }}
                 justifyContent="space-between"
                 direction="row"
-                paddingX={1.5}
               >
-                <Stack direction="row" gap={1}>
-                  {queryTime !== undefined && <QueryTimer queryTime={queryTime} />}
-                  {/* <Divider orientation="vertical" flexItem sx={{ marginY: 1 }} />
-                  <Button sx={{ borderRadius: 0.5, paddingX: 1 }} size="small" color="secondary">
-                    Source: Binance.com
-                  </Button> */}
-                </Stack>
-                <Button
-                  color={logScale ? "accent" : "secondary"}
-                  size="small"
-                  variant="text"
-                  onClick={toggleLogScale}
-                  sx={{ borderRadius: 0.5, paddingX: 1 }}
-                >
-                  Log scale
-                </Button>
+                <div>{queryTime !== undefined && <QueryTimer queryTime={queryTime} />}</div>
+                <div>
+                  <Button
+                    color={logScale ? "accent" : "secondary"}
+                    size="small"
+                    variant="text"
+                    onClick={toggleLogScale}
+                    sx={{ borderRadius: 0.5, paddingX: 1 }}
+                  >
+                    Log scale
+                  </Button>
+                </div>
               </Stack>
             </Paper>
           )}
@@ -293,3 +315,8 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
     </>
   )
 }
+
+/* <Divider orientation="vertical" flexItem sx={{ marginY: 1 }} />
+                  <Button sx={{ borderRadius: 0.5, paddingX: 1 }} size="small" color="secondary">
+                    Source: Binance.com
+                  </Button> */

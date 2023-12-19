@@ -66,11 +66,8 @@ export function Header() {
                   [`& .${tabsClasses.indicator}`]: {
                     background: grey[600],
                     borderRadius: 2,
-                    // borderTopLeftRadius: 8,
-                    // borderTopRightRadius: 8,
                     bottom: 8,
                     height: 4,
-                    marginLeft: "0.5px",
                   },
                   [`& .${tabsClasses.flexContainer}`]: {
                     gap: 2,

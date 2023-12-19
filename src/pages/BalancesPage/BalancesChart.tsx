@@ -32,5 +32,20 @@ export function BalancesChart() {
     return balances
   }, [])
 
-  return <SingleSeriesChart height={360} queryFn={queryFn} />
+  return (
+    <SingleSeriesChart
+      height={420}
+      queryFn={queryFn}
+      seriesOptions={{
+        priceFormat: {
+          type: "volume",
+        },
+      }}
+      chartOptions={{
+        rightPriceScale: {
+          minimumWidth: 92,
+        },
+      }}
+    />
+  )
 }

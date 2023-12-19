@@ -66,7 +66,6 @@ export default function AssetPage({ show }: { show: boolean }) {
               borderTopRightRadius: 32,
               // bottom: 6,
               height: 4,
-              marginLeft: "0.5px",
             },
             [`& .${tabsClasses.flexContainer}`]: {
               gap: 2,
