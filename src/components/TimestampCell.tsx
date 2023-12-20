@@ -1,5 +1,4 @@
 import { Stack, Tooltip, Typography } from "@mui/material"
-import { grey } from "@mui/material/colors"
 import { useStore } from "@nanostores/react"
 import React from "react"
 
@@ -31,9 +30,7 @@ export function TimestampCell(props: TimestampCellProps) {
               second: "numeric",
               timeZoneName: "short",
             })}{" "}
-            <Typography color={grey[400]} component="i" variant="inherit">
-              local
-            </Typography>
+            <span className="secondary">local</span>
           </span>
           <span>
             {formatDateWithHour(timestamp, {
@@ -44,10 +41,7 @@ export function TimestampCell(props: TimestampCellProps) {
           </span>
           {devMode && (
             <span>
-              {timestamp}{" "}
-              <Typography color={grey[400]} component="i" variant="inherit">
-                unix timestamp
-              </Typography>
+              {timestamp} <span className="secondary">unix timestamp</span>
             </span>
           )}
         </Stack>

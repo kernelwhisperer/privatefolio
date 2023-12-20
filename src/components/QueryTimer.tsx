@@ -15,10 +15,10 @@ export function QueryTimer({ queryTime }: { queryTime: number | null }) {
         //     <Stack>
         //       <span>Fetch query time: 0.1s</span>
         //       <span>Count query time: 0.1s</span>
-        //       <Typography color={grey[400]} component="i" variant="inherit">
+        //       <span className="secondary">
         //         these operations can take a long time because they are read from the
         //         disk
-        //       </Typography>
+        //       </span>
         //     </Stack>
         //   ) : null
         // }

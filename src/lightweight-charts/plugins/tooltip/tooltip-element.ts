@@ -2,8 +2,9 @@
 import { IChartApi } from "lightweight-charts"
 
 import { MainFont, MonoFont } from "../../../theme"
+import { CommonTooltipOptions } from "../../../utils/chart-utils"
 
-export interface TooltipOptions {
+export interface TooltipOptions extends CommonTooltipOptions {
   title: string
   followMode: "top" | "tracking"
   /** fallback horizontal deadzone width */
@@ -12,20 +13,16 @@ export interface TooltipOptions {
   verticalSpacing: number
   /** topOffset is the vertical spacing when followMode is 'top' */
   topOffset: number
-  /**
-   * @default true
-   */
-  showTime: boolean
-  /**
-   * @default false
-   */
-  dateSecondary: boolean
 }
 
 const defaultOptions: TooltipOptions = {
+  backgroundColor: "yellow",
+  borderColor: "blue",
+  color: "green",
   dateSecondary: false,
   followMode: "top",
   horizontalDeadzoneWidth: 45,
+  secondaryColor: "brown",
   showTime: true,
   title: "",
   topOffset: 15,
@@ -70,11 +67,9 @@ export class TooltipElement {
     const element = document.createElement("div")
     applyStyle(element, {
       "align-items": "center",
-      "background-color": "var(--mui-palette-grey-900)",
-      border: "1px solid rgba(0,0,0,1)",
-      // "border-radius": "4px",
-      // "box-shadow": "0px 2px 4px rgba(0, 0, 0, 0.2)",
-      color: "var(--mui-palette-common-white)",
+      "background-color": this._options.backgroundColor,
+      "box-shadow": `0px 0px 1px ${this._options.borderColor}}`,
+      color: this._options.color,
       display: "flex",
       "flex-direction": "column",
       "font-family": MainFont,
@@ -83,7 +78,7 @@ export class TooltipElement {
       left: "0%",
       "line-height": "16px",
       opacity: "0",
-      padding: "5px 10px",
+      padding: "8px 12px",
       "pointer-events": "none",
       position: "absolute",
       top: "0",
@@ -102,9 +97,10 @@ export class TooltipElement {
 
     const dateContainer = document.createElement("div")
     applyStyle(dateContainer, {
-      color: this._options.dateSecondary ? "var(--mui-palette-grey-400)" : "inherit",
+      color: this._options.dateSecondary ? this._options.secondaryColor : "inherit",
       display: "flex",
       "flex-direction": "row",
+      "font-weight": "400",
       "margin-bottom": "8px",
     })
     element.appendChild(dateContainer)
@@ -115,7 +111,7 @@ export class TooltipElement {
 
     const timeElement = document.createElement("div")
     applyStyle(timeElement, {
-      color: "var(--mui-palette-grey-400)",
+      color: this._options.secondaryColor,
       "margin-left": "5px",
     })
     setElementText(timeElement, "")

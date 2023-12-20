@@ -1,6 +1,5 @@
 import { StorageRounded } from "@mui/icons-material"
 import { Paper, Skeleton, Stack, Tooltip, Typography, TypographyProps } from "@mui/material"
-import { grey } from "@mui/material/colors"
 import { proxy } from "comlink"
 import { debounce } from "lodash"
 import React, { useEffect, useState } from "react"
@@ -97,9 +96,9 @@ export function DatabaseInfo() {
                 title={
                   <Stack>
                     <span>{formatFileSize(storageUsage, true)}</span>
-                    <Typography color={grey[400]} component="i" variant="inherit">
+                    <i className="secondary">
                       <span>{formatNumber(storageUsage)} Bytes</span>
-                    </Typography>
+                    </i>
                   </Stack>
                 }
               >

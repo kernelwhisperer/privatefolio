@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/member-ordering */
+import { alpha } from "@mui/material"
 import { CanvasRenderingTarget2D } from "fancy-canvas"
 import {
   CandlestickData,
@@ -31,7 +32,7 @@ class TooltipCrosshairLinePaneRenderer implements ISeriesPrimitivePaneRenderer {
     if (!this._data.visible) return
     target.useBitmapCoordinateSpace((scope) => {
       const ctx = scope.context
-      const crosshairPos = positionsLine(this._data.x, scope.horizontalPixelRatio, 1)
+      const crosshairPos = positionsLine(this._data.x, scope.horizontalPixelRatio, 2)
       ctx.fillStyle = this._data.color
       ctx.fillRect(
         crosshairPos.position,
@@ -158,7 +159,7 @@ export class TooltipPrimitive implements ISeriesPrimitive<Time> {
   }
 
   currentColor() {
-    return "rgba(127, 127, 127, 0.5)"
+    return alpha(this._options.tooltip?.backgroundColor ?? "rgb(255, 255, 255)", 0.33)
   }
 
   chart() {

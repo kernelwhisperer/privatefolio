@@ -20,7 +20,7 @@ class TooltipCrosshairLinePaneRenderer implements ISeriesPrimitivePaneRenderer {
     target.useBitmapCoordinateSpace((scope) => {
       const ctx = scope.context
       this._data.forEach((data) => {
-        const crosshairPos = positionsLine(data.x, scope.horizontalPixelRatio, 1)
+        const crosshairPos = positionsLine(data.x, scope.horizontalPixelRatio, 2)
         ctx.fillStyle = data.color
         ctx.fillRect(
           crosshairPos.position,
@@ -33,8 +33,8 @@ class TooltipCrosshairLinePaneRenderer implements ISeriesPrimitivePaneRenderer {
           ctx.ellipse(
             data.x * scope.horizontalPixelRatio,
             data.priceY * scope.verticalPixelRatio,
-            6 * scope.horizontalPixelRatio,
-            6 * scope.verticalPixelRatio,
+            4 * scope.horizontalPixelRatio,
+            4 * scope.verticalPixelRatio,
             0,
             0,
             Math.PI * 2
@@ -45,8 +45,8 @@ class TooltipCrosshairLinePaneRenderer implements ISeriesPrimitivePaneRenderer {
           ctx.ellipse(
             data.x * scope.horizontalPixelRatio,
             data.priceY * scope.verticalPixelRatio,
-            4 * scope.horizontalPixelRatio,
-            4 * scope.verticalPixelRatio,
+            2 * scope.horizontalPixelRatio,
+            2 * scope.verticalPixelRatio,
             0,
             0,
             Math.PI * 2

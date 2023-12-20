@@ -14,7 +14,7 @@ import {
   WhitespaceData,
 } from "lightweight-charts"
 
-import { greenColor, redColor } from "../../../utils/chart-utils"
+import { CommonTooltipOptions, greenColorDark, redColor } from "../../../utils/chart-utils"
 import { formatNumber } from "../../../utils/formatting-utils"
 import { Delegate, ISubscription } from "../../helpers/delegate"
 import { convertTime, formattedDateAndTime } from "../../helpers/time"
@@ -26,7 +26,7 @@ import {
 } from "./delta-tooltip-pane"
 import { MultiTouchChartEvents, MultiTouchInteraction } from "./multi-touch-chart-events"
 
-const defaultOptions: TooltipPrimitiveOptions = {
+const defaultOptions: DeltaTooltipPrimitiveOptions = {
   currencySymbol: "",
   priceExtractor: (
     data: LineData | CandlestickData | WhitespaceData,
@@ -57,7 +57,7 @@ const defaultOptions: TooltipPrimitiveOptions = {
   topOffset: 15,
 }
 
-export interface TooltipPrimitiveOptions {
+export interface DeltaTooltipPrimitiveOptions {
   priceExtractor: <T extends WhitespaceData>(
     dataPoint: T,
     significantDigits: number
@@ -72,6 +72,7 @@ export interface TooltipPrimitiveOptions {
    * @default ""
    */
   currencySymbol: string
+  tooltip?: Partial<CommonTooltipOptions>
 }
 
 export interface ActiveRange {
@@ -81,7 +82,7 @@ export interface ActiveRange {
 }
 
 export class DeltaTooltipPrimitive implements ISeriesPrimitive<Time> {
-  private _options: TooltipPrimitiveOptions
+  private _options: DeltaTooltipPrimitiveOptions
   _crosshairPaneView: MultiTouchCrosshairPaneView
   _deltaTooltipPaneView: DeltaTooltipPaneView
   _paneViews: ISeriesPrimitivePaneView[]
@@ -92,7 +93,7 @@ export class DeltaTooltipPrimitive implements ISeriesPrimitive<Time> {
 
   private _activeRange: Delegate<ActiveRange | null> = new Delegate()
 
-  constructor(options: Partial<TooltipPrimitiveOptions>) {
+  constructor(options: Partial<DeltaTooltipPrimitiveOptions>) {
     this._options = {
       ...defaultOptions,
       ...options,
@@ -101,7 +102,10 @@ export class DeltaTooltipPrimitive implements ISeriesPrimitive<Time> {
       topSpacing: this._options.topOffset,
     }
     this._crosshairPaneView = new MultiTouchCrosshairPaneView(this._crosshairData)
-    this._deltaTooltipPaneView = new DeltaTooltipPaneView(this._tooltipData)
+    this._deltaTooltipPaneView = new DeltaTooltipPaneView(
+      this._tooltipData,
+      this._options.tooltip ?? {}
+    )
     this._paneViews = [this._crosshairPaneView, this._deltaTooltipPaneView]
   }
 
@@ -146,7 +150,7 @@ export class DeltaTooltipPrimitive implements ISeriesPrimitive<Time> {
   }
 
   currentColor() {
-    return "rgba(127, 127, 127, 0.5)"
+    return alpha(this._options.tooltip?.backgroundColor ?? "rgb(255, 255, 255)", 0.33)
   }
 
   chart() {
@@ -157,7 +161,7 @@ export class DeltaTooltipPrimitive implements ISeriesPrimitive<Time> {
     return this._attachedParams?.series
   }
 
-  applyOptions(options: Partial<TooltipPrimitiveOptions>) {
+  applyOptions(options: Partial<DeltaTooltipPrimitiveOptions>) {
     this._options = {
       ...this._options,
       ...options,
@@ -236,8 +240,8 @@ export class DeltaTooltipPrimitive implements ISeriesPrimitive<Time> {
       return
     }
     const topMargin = this._tooltipData.topSpacing ?? 20
-    const markerBorderColor = this._chartBackgroundColor()
-    const markerColor = this._seriesLineColor()
+    const markerBorderColor = this._options.tooltip?.backgroundColor ?? "rgb(255, 255, 255)"
+    const markerColor = this.currentColor()
     const tooltips: DeltaSingleTooltipData[] = []
     const crosshairData: TooltipCrosshairLineData[] = []
     const priceValues: [number, number][] = []
@@ -293,8 +297,10 @@ export class DeltaTooltipPrimitive implements ISeriesPrimitive<Time> {
         maximumFractionDigits: this._options.significantDigits,
         minimumFractionDigits: this._options.significantDigits,
       })} ${positive ? "+" : ""}${pctChange.toFixed(2)}%`
-      deltaContent.deltaBackgroundColor = positive ? alpha(greenColor, 0.2) : alpha(redColor, 0.2)
-      deltaContent.deltaTextColor = positive ? greenColor : redColor
+      deltaContent.deltaBackgroundColor = positive
+        ? alpha(greenColorDark, 0.2)
+        : alpha(redColor, 0.2)
+      deltaContent.deltaTextColor = positive ? greenColorDark : redColor
       this._activeRange.fire({
         from: priceValues[correctOrder ? 0 : 1][1] + 1,
         positive,

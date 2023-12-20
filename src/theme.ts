@@ -68,9 +68,6 @@ export const theme: CssVarsThemeOptions = {
           light: blue[400],
           main: blue[600],
         },
-        // Tooltip: {
-        //   bg: "rgb(240, 240, 240)",
-        // },
         background: {
           default: "rgb(40, 40, 40)",
           paper: "rgb(45, 45, 45)",
@@ -475,14 +472,27 @@ export const theme: CssVarsThemeOptions = {
       },
       styleOverrides: {
         arrow: {
-          color: "rgba(0,0,0,1)",
+          color: "var(--mui-palette-grey-900)",
+          "html[data-mui-color-scheme='dark'] &": {
+            color: "var(--mui-palette-grey-200)",
+          },
         },
         tooltip: {
+          "& .secondary": {
+            color: "var(--mui-palette-grey-400)",
+          },
           background: "var(--mui-palette-grey-900)",
-          border: "1px solid rgba(0,0,0,1)",
+          border: "1px solid var(--mui-palette-background-default)",
           borderRadius: 0,
           fontSize: "0.8rem",
           fontWeight: 300,
+          "html[data-mui-color-scheme='dark'] &": {
+            background: "var(--mui-palette-grey-200)",
+            color: "var(--mui-palette-common-black)",
+          },
+          "html[data-mui-color-scheme='dark'] & .secondary": {
+            color: "var(--mui-palette-grey-600)",
+          },
           maxWidth: 320,
           paddingBottom: 8,
           paddingLeft: 16,

@@ -7,9 +7,7 @@ import {
   TableCell,
   TableRow,
   Tooltip,
-  Typography,
 } from "@mui/material"
-import { grey } from "@mui/material/colors"
 import { useStore } from "@nanostores/react"
 import React, { MouseEvent, useState } from "react"
 
@@ -82,9 +80,9 @@ export function FileImportTableRow(props: TableRowComponentProps<FileImport>) {
           title={
             <Stack>
               <span>{formatFileSize(size, true)}</span>
-              <Typography color={grey[400]} component="i" variant="inherit">
+              <i className="secondary">
                 <span>{formatNumber(size)} Bytes</span>
-              </Typography>
+              </i>
             </Stack>
           }
         >

@@ -16,6 +16,7 @@ import {
   Stack,
   SvgIcon,
   Tooltip,
+  useTheme,
 } from "@mui/material"
 import { useStore } from "@nanostores/react"
 import { a, useTransition } from "@react-spring/web"
@@ -26,6 +27,7 @@ import {
   SeriesOptionsCommon,
   SeriesType,
 } from "lightweight-charts"
+import { merge } from "lodash"
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 import { useBoolean } from "../hooks/useBoolean"
@@ -36,7 +38,13 @@ import {
   TooltipPrimitiveOptions,
 } from "../lightweight-charts/plugins/tooltip/tooltip"
 import { $favoriteIntervals, $preferredInterval } from "../stores/chart-store"
-import { candleStickOptions, CHART_HEIGHT, greenColor, greenColorDark } from "../utils/chart-utils"
+import {
+  candleStickOptions,
+  CHART_HEIGHT,
+  extractTooltipColors,
+  greenColor,
+  greenColorDark,
+} from "../utils/chart-utils"
 import { SPRING_CONFIGS } from "../utils/utils"
 import { Chart, ChartProps } from "./Chart"
 import { QueryTimer } from "./QueryTimer"
@@ -54,6 +62,8 @@ export function ChartIconButton({ active, ...rest }: IconButtonProps & { active:
 
 export type QueryFunction = () => Promise<ChartData[]>
 
+export type TooltipOpts = Partial<Omit<TooltipPrimitiveOptions, "priceExtractor">>
+
 interface SingleSeriesChartProps extends Omit<Partial<ChartProps>, "chartRef"> {
   height?: number
   /**
@@ -62,7 +72,7 @@ interface SingleSeriesChartProps extends Omit<Partial<ChartProps>, "chartRef"> {
   initType?: SeriesType
   queryFn: QueryFunction
   seriesOptions?: DeepPartial<SeriesOptionsCommon>
-  tooltipOptions?: Partial<TooltipPrimitiveOptions>
+  tooltipOptions?: TooltipOpts
 }
 
 const DEFAULT_OPTS = {}
@@ -73,7 +83,7 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
     initType = "Candlestick",
     height = CHART_HEIGHT,
     seriesOptions = DEFAULT_OPTS as DeepPartial<SeriesOptionsCommon>,
-    tooltipOptions = DEFAULT_OPTS as Partial<TooltipPrimitiveOptions>,
+    tooltipOptions = DEFAULT_OPTS as TooltipOpts,
     ...rest
   } = props
 
@@ -102,6 +112,8 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
 
   const [seriesReady, setSeriesReady] = useState<boolean>(false)
   const [cursorMode, setCursorMode] = useState<"move" | "inspect" | "measure">("move")
+
+  const theme = useTheme()
 
   const plotSeries = useCallback(
     (data: ChartData[]) => {
@@ -149,11 +161,22 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
   useEffect(() => {
     if (!seriesRef.current || !seriesReady) return
     //
-    const regularTooltip = new TooltipPrimitive(tooltipOptions)
-    const deltaTooltip = new DeltaTooltipPrimitive({
-      currencySymbol: tooltipOptions.currencySymbol,
-      significantDigits: tooltipOptions.significantDigits,
-    })
+    const regularTooltip = new TooltipPrimitive(
+      merge(
+        {
+          tooltip: extractTooltipColors(theme),
+        },
+        tooltipOptions
+      )
+    )
+    const deltaTooltip = new DeltaTooltipPrimitive(
+      merge(
+        {
+          tooltip: extractTooltipColors(theme),
+        },
+        tooltipOptions
+      )
+    )
     //
     if (cursorMode === "measure") {
       seriesRef.current.attachPrimitive(deltaTooltip)
@@ -222,7 +245,7 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
       document.removeEventListener("keydown", handleKeydown)
       document.removeEventListener("keyup", handleKeyup)
     }
-  }, [cursorMode, seriesReady, tooltipOptions])
+  }, [cursorMode, seriesReady, tooltipOptions, theme])
 
   useEffect(() => {
     plotSeries(data)
@@ -399,27 +422,30 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
                   <Divider orientation="vertical" flexItem />
                   <Stack direction="row">
                     {favoriteIntervals.map((interval) => (
-                      <Button
-                        size="small"
-                        sx={{ borderRadius: 0.5, paddingX: 1 }}
-                        key={interval}
-                        disabled={!["1d", "1w"].includes(interval)}
-                        // disabled={timeframes ? !timeframes.includes(interval as Timeframe) : false}
-                        // className={timeframe === interval ? "active" : undefined}
-                        title={interval}
-                        aria-label={interval}
-                        color={interval === activeInterval ? "accent" : "secondary"}
-                        onClick={() => {
-                          $preferredInterval.set(interval)
-                        }}
-                      >
-                        {interval.replace("1d", "D").replace("1w", "W")}
-                      </Button>
+                      <Tooltip key={interval} title="Switch interval">
+                        <span>
+                          <Button
+                            size="small"
+                            sx={{ borderRadius: 0.5, paddingX: 1 }}
+                            disabled={!["1d", "1w"].includes(interval)}
+                            // disabled={timeframes ? !timeframes.includes(interval as Timeframe) : false}
+                            // className={timeframe === interval ? "active" : undefined}
+                            title={interval}
+                            aria-label={interval}
+                            color={interval === activeInterval ? "accent" : "secondary"}
+                            onClick={() => {
+                              $preferredInterval.set(interval)
+                            }}
+                          >
+                            {interval.replace("1d", "D").replace("1w", "W")}
+                          </Button>
+                        </span>
+                      </Tooltip>
                     ))}
                   </Stack>
                   <Divider orientation="vertical" flexItem />
                   <Stack direction="row">
-                    <Tooltip title="Candlestick">
+                    <Tooltip title="Switch to Candlestick">
                       <span>
                         <ChartIconButton
                           disabled={data.length > 0 && !("open" in data[0])}
@@ -430,7 +456,7 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
                         </ChartIconButton>
                       </span>
                     </Tooltip>
-                    <Tooltip title="Area">
+                    <Tooltip title="Switch to Area">
                       <span>
                         <ChartIconButton
                           active={activeType === "Area"}
@@ -454,7 +480,7 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
                         </ChartIconButton>
                       </span>
                     </Tooltip>
-                    <Tooltip title="Histogram">
+                    <Tooltip title="Switch to Histogram">
                       <span>
                         <ChartIconButton
                           active={activeType == "Histogram"}

@@ -8,17 +8,15 @@ import {
 } from "lightweight-charts"
 
 import { MainFont, MonoFont } from "../../../theme"
+import { CommonTooltipOptions } from "../../../utils/chart-utils"
 
 const styles = {
-  background: "#212121", // "var(--mui-palette-grey-900)",
-  borderRadius: 0,
-  itemBlockPadding: 8,
+  itemBlockPadding: 10,
   itemInlinePadding: 12,
-  tooltipLineColors: ["#bdbdbd", "#fff", "#ff33"],
-  tooltipLineFontFamilies: [MainFont, MonoFont, MainFont] as string[],
-  tooltipLineFontSizes: [14, 18, 14] as number[],
-  tooltipLineFontWeights: [300, 500, 300] as number[],
-  tooltipLineLineHeights: [23, 20, 16] as number[],
+  tooltipLineFontFamilies: [MainFont, MonoFont] as string[],
+  tooltipLineFontSizes: [14, 18] as number[],
+  tooltipLineFontWeights: [400, 500] as number[],
+  tooltipLineLineHeights: [23, 20] as number[],
 } as const
 
 function determineSectionWidth(
@@ -206,9 +204,11 @@ function calculateDrawingPositions(
 
 class DeltaTooltipPaneRenderer implements ISeriesPrimitivePaneRenderer {
   _data: DeltaTooltipData
+  _options: CommonTooltipOptions
 
-  constructor(data: DeltaTooltipData) {
+  constructor(data: DeltaTooltipData, options: CommonTooltipOptions) {
     this._data = data
+    this._options = options
   }
 
   draw(target: CanvasRenderingTarget2D) {
@@ -225,7 +225,7 @@ class DeltaTooltipPaneRenderer implements ISeriesPrimitivePaneRenderer {
 
   _drawMainTooltip(ctx: CanvasRenderingContext2D, positions: CalculatedDrawingPositions) {
     ctx.save()
-    ctx.fillStyle = styles.background
+    ctx.fillStyle = this._options.backgroundColor
     // ctx.strokeStyle = "#000"
     // ctx.lineWidth = 1
     ctx.beginPath()
@@ -258,7 +258,7 @@ class DeltaTooltipPaneRenderer implements ISeriesPrimitivePaneRenderer {
 
       tooltip.lineContent.forEach((line: string, lineIndex: number) => {
         ctx.font = `${styles.tooltipLineFontWeights[lineIndex]} ${styles.tooltipLineFontSizes[lineIndex]}px ${styles.tooltipLineFontFamilies[lineIndex]}`
-        ctx.fillStyle = styles.tooltipLineColors[lineIndex]
+        ctx.fillStyle = lineIndex === 0 ? this._options.secondaryColor : this._options.color
         ctx.textAlign = "center"
         ctx.textBaseline = "top"
         ctx.fillText(line, x, y)
@@ -302,10 +302,15 @@ class DeltaTooltipPaneRenderer implements ISeriesPrimitivePaneRenderer {
 
 export class DeltaTooltipPaneView implements ISeriesPrimitivePaneView {
   _data: DeltaTooltipData
-  constructor(data: Partial<DeltaTooltipData>) {
+  _options: CommonTooltipOptions
+  constructor(data: Partial<DeltaTooltipData>, options: Partial<CommonTooltipOptions>) {
     this._data = {
-      ...defaultOptions,
+      ...defaultData,
       ...data,
+    }
+    this._options = {
+      ...defaultOptions,
+      ...options,
     }
   }
 
@@ -317,7 +322,7 @@ export class DeltaTooltipPaneView implements ISeriesPrimitivePaneView {
   }
 
   renderer(): ISeriesPrimitivePaneRenderer | null {
-    return new DeltaTooltipPaneRenderer(this._data)
+    return new DeltaTooltipPaneRenderer(this._data, this._options)
   }
 
   zOrder(): SeriesPrimitivePaneViewZOrder {
@@ -341,11 +346,20 @@ export interface DeltaTooltipData {
   tooltips: DeltaSingleTooltipData[]
 }
 
-const defaultOptions: DeltaTooltipData = {
+const defaultData: DeltaTooltipData = {
   deltaBackgroundColor: "#ffffff",
   deltaBottomLine: "",
   deltaTextColor: "#",
   deltaTopLine: "",
   tooltips: [],
   topSpacing: 20,
+}
+
+const defaultOptions: CommonTooltipOptions = {
+  backgroundColor: "yellow",
+  borderColor: "blue",
+  color: "green",
+  dateSecondary: false,
+  secondaryColor: "brown",
+  showTime: true,
 }

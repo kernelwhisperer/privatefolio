@@ -1,5 +1,7 @@
+import { Theme } from "@mui/material"
 import { CandlestickSeriesPartialOptions } from "lightweight-charts"
 
+import { TooltipPrimitiveOptions } from "../lightweight-charts/plugins/tooltip/tooltip"
 import { formatNumber } from "./formatting-utils"
 
 export const CHART_HEIGHT = 550
@@ -35,4 +37,37 @@ export const candleStickOptions: CandlestickSeriesPartialOptions = {
   upColor: greenColorDark,
   wickDownColor: redColor,
   wickUpColor: greenColorDark,
+}
+
+export type CommonTooltipOptions = {
+  backgroundColor: string
+  borderColor: string
+  color: string
+  /**
+   * @default false
+   */
+  dateSecondary: boolean
+  secondaryColor: string
+  /**
+   * @default true
+   */
+  showTime: boolean
+}
+
+export function extractTooltipColors(theme: Theme): Partial<TooltipPrimitiveOptions>["tooltip"] {
+  if (theme.palette.mode === "dark") {
+    return {
+      backgroundColor: theme.palette.grey[200],
+      borderColor: theme.palette.background.default,
+      color: theme.palette.common.black,
+      secondaryColor: theme.palette.grey[600],
+    }
+  }
+
+  return {
+    backgroundColor: theme.palette.grey[900],
+    borderColor: theme.palette.background.default,
+    color: theme.palette.common.white,
+    secondaryColor: theme.palette.grey[400],
+  }
 }
