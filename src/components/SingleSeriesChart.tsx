@@ -136,13 +136,16 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
         })
       }
       seriesRef.current.setData(data)
-      setSeriesReady(true)
+      setSeriesReady(false)
+      setTimeout(() => {
+        setSeriesReady(true)
+      }, 0)
     },
     [activeType, seriesOptions]
   )
 
   useEffect(() => {
-    if (!seriesRef.current) return
+    if (!seriesRef.current || !seriesReady) return
     //
     const regularTooltip = new TooltipPrimitive(tooltipOptions)
     const deltaTooltip = new DeltaTooltipPrimitive({
