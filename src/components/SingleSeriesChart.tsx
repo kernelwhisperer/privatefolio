@@ -65,13 +65,15 @@ interface SingleSeriesChartProps extends Omit<Partial<ChartProps>, "chartRef"> {
   tooltipOptions?: Partial<TooltipPrimitiveOptions>
 }
 
+const DEFAULT_OPTS = {}
+
 export function SingleSeriesChart(props: SingleSeriesChartProps) {
   const {
     queryFn,
     initType = "Candlestick",
     height = CHART_HEIGHT,
-    seriesOptions = {},
-    tooltipOptions = {},
+    seriesOptions = DEFAULT_OPTS as DeepPartial<SeriesOptionsCommon>,
+    tooltipOptions = DEFAULT_OPTS as Partial<TooltipPrimitiveOptions>,
     ...rest
   } = props
 
@@ -121,7 +123,7 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
         })
       } else if (activeType === "Histogram") {
         seriesRef.current = chartRef.current.addHistogramSeries({
-          color: greenColorDark,
+          color: alpha(greenColorDark, 0.5),
           priceLineVisible: false,
           ...seriesOptions,
         })

@@ -23,12 +23,14 @@ export type ChartProps = {
   onChartReady?: () => void
 }
 
+const DEFAULT_OPTS = {}
+
 function BaseChart(props: ChartProps) {
   const {
     chartRef,
     logScale = false,
     onChartReady = noop,
-    chartOptions = {},
+    chartOptions = DEFAULT_OPTS,
     cursor = "crosshair",
   } = props
 
