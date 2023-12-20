@@ -98,7 +98,8 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
   const shiftPressedRef = useRef(false)
   const ctrlPressedRef = useRef(false)
 
-  const [cursorType, setCursorType] = useState<"move" | "inspect" | "measure">("move")
+  const [seriesReady, setSeriesReady] = useState<boolean>(false)
+  const [cursorMode, setCursorMode] = useState<"move" | "inspect" | "measure">("move")
 
   const plotSeries = useCallback(
     (data: ChartData[]) => {
@@ -135,65 +136,88 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
         })
       }
       seriesRef.current.setData(data)
-      //
-      const regularTooltip = new TooltipPrimitive(tooltipOptions)
-      const deltaTooltip = new DeltaTooltipPrimitive({
-        currencySymbol: tooltipOptions.currencySymbol,
-        significantDigits: tooltipOptions.significantDigits,
-      })
-      //
-      seriesRef.current.attachPrimitive(regularTooltip)
-
-      function handleKeydown(event: KeyboardEvent) {
-        if (event.key === "Shift" && !shiftPressedRef.current) {
-          shiftPressedRef.current = true
-          chartRef.current?.applyOptions({
-            handleScale: false,
-            handleScroll: false,
-          })
-          seriesRef.current?.detachPrimitive(regularTooltip)
-          seriesRef.current?.attachPrimitive(deltaTooltip)
-          setCursorType("measure")
-        } else if (event.key === "Control") {
-          ctrlPressedRef.current = false
-          chartRef.current?.applyOptions({
-            handleScale: false,
-            handleScroll: false,
-          })
-          setCursorType("inspect")
-        }
-      }
-
-      function handleKeyup(event: KeyboardEvent) {
-        if (event.key === "Shift") {
-          shiftPressedRef.current = false
-          chartRef.current?.applyOptions({
-            handleScale: true,
-            handleScroll: true,
-          })
-          seriesRef.current?.detachPrimitive(deltaTooltip)
-          seriesRef.current?.attachPrimitive(regularTooltip)
-          setCursorType("move")
-        } else if (event.key === "Control") {
-          ctrlPressedRef.current = false
-          chartRef.current?.applyOptions({
-            handleScale: true,
-            handleScroll: true,
-          })
-          setCursorType("move")
-        }
-      }
-
-      document.addEventListener("keydown", handleKeydown)
-      document.addEventListener("keyup", handleKeyup)
-
-      return () => {
-        document.removeEventListener("keydown", handleKeydown)
-        document.removeEventListener("keyup", handleKeyup)
-      }
+      setSeriesReady(true)
     },
-    [activeType, seriesOptions, tooltipOptions]
+    [activeType, seriesOptions]
   )
+
+  useEffect(() => {
+    if (!seriesRef.current) return
+    //
+    const regularTooltip = new TooltipPrimitive(tooltipOptions)
+    const deltaTooltip = new DeltaTooltipPrimitive({
+      currencySymbol: tooltipOptions.currencySymbol,
+      significantDigits: tooltipOptions.significantDigits,
+    })
+    //
+    if (cursorMode === "measure") {
+      seriesRef.current.attachPrimitive(deltaTooltip)
+    } else {
+      seriesRef.current.attachPrimitive(regularTooltip)
+    }
+
+    if (cursorMode === "move") {
+      chartRef.current?.applyOptions({
+        handleScale: true,
+        handleScroll: true,
+      })
+    } else {
+      chartRef.current?.applyOptions({
+        handleScale: false,
+        handleScroll: false,
+      })
+    }
+
+    function handleKeydown(event: KeyboardEvent) {
+      if (event.key === "Shift" && !shiftPressedRef.current) {
+        shiftPressedRef.current = true
+        chartRef.current?.applyOptions({
+          handleScale: false,
+          handleScroll: false,
+        })
+        seriesRef.current?.detachPrimitive(regularTooltip)
+        seriesRef.current?.attachPrimitive(deltaTooltip)
+        setCursorMode("measure")
+      } else if (event.key === "Control") {
+        ctrlPressedRef.current = false
+        chartRef.current?.applyOptions({
+          handleScale: false,
+          handleScroll: false,
+        })
+        setCursorMode("inspect")
+      }
+    }
+
+    function handleKeyup(event: KeyboardEvent) {
+      if (event.key === "Shift") {
+        shiftPressedRef.current = false
+        chartRef.current?.applyOptions({
+          handleScale: true,
+          handleScroll: true,
+        })
+        seriesRef.current?.detachPrimitive(deltaTooltip)
+        seriesRef.current?.attachPrimitive(regularTooltip)
+        setCursorMode("move")
+      } else if (event.key === "Control") {
+        ctrlPressedRef.current = false
+        chartRef.current?.applyOptions({
+          handleScale: true,
+          handleScroll: true,
+        })
+        setCursorMode("move")
+      }
+    }
+
+    document.addEventListener("keydown", handleKeydown)
+    document.addEventListener("keyup", handleKeyup)
+
+    return () => {
+      seriesRef.current?.detachPrimitive(deltaTooltip)
+      seriesRef.current?.detachPrimitive(regularTooltip)
+      document.removeEventListener("keydown", handleKeydown)
+      document.removeEventListener("keyup", handleKeyup)
+    }
+  }, [cursorMode, seriesReady, tooltipOptions])
 
   useEffect(() => {
     plotSeries(data)
@@ -299,21 +323,35 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
               >
                 <Stack direction="row" gap={1}>
                   <Stack direction="row">
-                    <Tooltip title="Move">
+                    <Tooltip
+                      title={
+                        <>
+                          Switch to <b>Move</b> cursor
+                        </>
+                      }
+                    >
                       <span>
                         <ChartIconButton
-                          active={cursorType === "move"}
-                          onClick={() => setCursorType("move")}
+                          active={cursorMode === "move"}
+                          onClick={() => setCursorMode("move")}
                         >
                           <ControlCamera fontSize="inherit" />
                         </ChartIconButton>
                       </span>
                     </Tooltip>
-                    <Tooltip title="Inspect">
+                    <Tooltip
+                      title={
+                        <>
+                          Switch to <b>Inspect</b> cursor
+                          <br />
+                          (or hold <i>Ctrl</i> for quick toggle)
+                        </>
+                      }
+                    >
                       <span>
                         <ChartIconButton
-                          active={cursorType === "inspect"}
-                          onClick={() => setCursorType("inspect")}
+                          active={cursorMode === "inspect"}
+                          onClick={() => setCursorMode("inspect")}
                         >
                           <SvgIcon fontSize="inherit">
                             {/* cc https://icon-sets.iconify.design/fluent/cursor-16-filled/ */}
@@ -332,11 +370,21 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
                         </ChartIconButton>
                       </span>
                     </Tooltip>
-                    <Tooltip title="Measure">
+                    <Tooltip
+                      title={
+                        <>
+                          <>
+                            Switch to <b>Measure</b> cursor
+                            <br />
+                            (or hold <i>Shift</i> for quick toggle)
+                          </>
+                        </>
+                      }
+                    >
                       <span>
                         <ChartIconButton
-                          active={cursorType === "measure"}
-                          onClick={() => setCursorType("measure")}
+                          active={cursorMode === "measure"}
+                          onClick={() => setCursorMode("measure")}
                         >
                           <StraightenSharp fontSize="inherit" />
                         </ChartIconButton>
@@ -350,7 +398,7 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
                         size="small"
                         sx={{ borderRadius: 0.5, paddingX: 1 }}
                         key={interval}
-                        disabled={interval !== "1d"}
+                        disabled={!["1d", "1w"].includes(interval)}
                         // disabled={timeframes ? !timeframes.includes(interval as Timeframe) : false}
                         // className={timeframe === interval ? "active" : undefined}
                         title={interval}
@@ -432,9 +480,9 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
                   onChartReady={handleChartReady}
                   logScale={logScale}
                   cursor={
-                    cursorType === "move"
+                    cursorMode === "move"
                       ? "move"
-                      : cursorType === "inspect"
+                      : cursorMode === "inspect"
                       ? "pointer"
                       : "crosshair"
                   }
