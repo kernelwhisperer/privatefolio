@@ -58,9 +58,7 @@ export function BalanceTableRow(props: TableRowComponentProps<Balance>) {
               </Typography>
             ) : (
               <>
-                <Typography color="text.secondary" component="span" variant="inherit">
-                  $
-                </Typography>
+                $
                 {formatNumber(price.value, {
                   maximumFractionDigits: 2, // TODO make this configurable
                   minimumFractionDigits: 2,
@@ -102,9 +100,7 @@ export function BalanceTableRow(props: TableRowComponentProps<Balance>) {
               </Typography>
             ) : (
               <>
-                <Typography color="text.secondary" component="span" variant="inherit">
-                  $
-                </Typography>
+                $
                 {formatNumber(value, {
                   maximumFractionDigits: 2, // TODO make this configurable
                   minimumFractionDigits: 2,
