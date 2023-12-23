@@ -41,4 +41,6 @@ pnpm-debug.log*
 *.tsbuildinfo
 next-env.d.ts
 
-data/
+# database for tests
+core
+main

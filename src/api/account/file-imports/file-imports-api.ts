@@ -1,12 +1,16 @@
 import { proxy } from "comlink"
+import { FileImport } from "src/interfaces"
+import { ProgressCallback } from "src/stores/task-store"
+import { hashString, noop } from "src/utils/utils"
 
-import { FileImport } from "../interfaces"
-import { ProgressCallback } from "../stores/task-store"
-import { parseCsv } from "../utils/csv-utils"
-import { hashString } from "../utils/utils"
-import { auditLogsDB, fileImportsDB, transactionsDB } from "./database"
+import { AccountDatabase, main } from "../../database"
+import { parseCsv } from "./csv-utils"
 
-export async function addFileImport(file: File, progress: ProgressCallback) {
+export async function addFileImport(
+  file: File,
+  progress: ProgressCallback = noop,
+  account: AccountDatabase = main
+) {
   const { name, type, lastModified, size } = file
 
   if (type !== "text/csv") {
@@ -16,13 +20,13 @@ export async function addFileImport(file: File, progress: ProgressCallback) {
   const timestamp = new Date().getTime()
   const _id = hashString(`${name}_${size}_${lastModified}`)
 
-  await fileImportsDB.put({
+  await account.fileImportsDB.put({
     _id,
     lastModified,
     name,
     size,
     timestamp,
-  })
+  } as unknown as FileImport)
 
   // parse file
   const text = await file.text()
@@ -30,28 +34,34 @@ export async function addFileImport(file: File, progress: ProgressCallback) {
 
   // save logs
   progress([60, `Saving ${logs.length} audit logs to disk`])
-  await auditLogsDB.bulkDocs(logs)
+  await account.auditLogsDB.bulkDocs(logs)
 
   // save transactions
   progress([80, `Saving ${transactions.length} transactions to disk`])
-  await transactionsDB.bulkDocs(transactions)
+  await account.transactionsDB.bulkDocs(transactions)
 
   // save metadata
-  const fileImport = await fileImportsDB.get(_id)
+  const fileImport = await account.fileImportsDB.get(_id)
   fileImport.meta = metadata
-  await fileImportsDB.put<FileImport>(fileImport)
+  await account.fileImportsDB.put<FileImport>(fileImport)
+
+  return { _id, metadata }
 }
 
-export async function getFileImports() {
-  const res = await fileImportsDB.allDocs<FileImport>({
+export async function getFileImports(account: AccountDatabase = main) {
+  const res = await account.fileImportsDB.allDocs<FileImport>({
     include_docs: true,
   })
   return res.rows.map((row) => row.doc) as FileImport[]
 }
 
-export async function removeFileImport(fileImport: FileImport, progress: ProgressCallback) {
+export async function removeFileImport(
+  fileImport: FileImport,
+  progress: ProgressCallback,
+  account: AccountDatabase = main
+) {
   // TODO consider pagination
-  const logs = await auditLogsDB.allDocs({
+  const logs = await account.auditLogsDB.allDocs({
     // Prefix search
     // https://pouchdb.com/api.html#batch_fetch
     endkey: `${fileImport._id}\ufff0`,
@@ -68,11 +78,11 @@ export async function removeFileImport(fileImport: FileImport, progress: Progres
   //   )
   // )
 
-  await auditLogsDB.bulkDocs(
-    logs.rows.map((row) => ({ _deleted: true, _id: row.id, _rev: row.value.rev } as any))
+  await account.auditLogsDB.bulkDocs(
+    logs.rows.map((row) => ({ _deleted: true, _id: row.id, _rev: row.value.rev } as never))
   )
   // Transactions
-  const txns = await transactionsDB.allDocs({
+  const txns = await account.transactionsDB.allDocs({
     // Prefix search
     // https://pouchdb.com/api.html#batch_fetch
     endkey: `${fileImport._id}\ufff0`,
@@ -89,16 +99,16 @@ export async function removeFileImport(fileImport: FileImport, progress: Progres
   //   )
   // )
 
-  await transactionsDB.bulkDocs(
-    txns.rows.map((row) => ({ _deleted: true, _id: row.id, _rev: row.value.rev } as any))
+  await account.transactionsDB.bulkDocs(
+    txns.rows.map((row) => ({ _deleted: true, _id: row.id, _rev: row.value.rev } as never))
   )
 
-  const res = await fileImportsDB.remove(fileImport)
+  const res = await account.fileImportsDB.remove(fileImport)
   return res.ok
 }
 
-export function subscribeToFileImports(callback: () => void) {
-  const changesSub = fileImportsDB
+export function subscribeToFileImports(callback: () => void, account: AccountDatabase = main) {
+  const changesSub = account.fileImportsDB
     .changes({
       live: true,
       since: "now",

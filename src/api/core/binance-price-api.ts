@@ -1,6 +1,6 @@
 import { UTCTimestamp } from "lightweight-charts"
 
-import { BinanceKline, ChartData, QueryRequest, ResolutionString } from "../interfaces"
+import { BinanceKline, ChartData, QueryRequest, ResolutionString } from "../../interfaces"
 
 // https://binance-docs.github.io/apidocs/spot/en/#general-api-information
 // The following intervalLetter values for headers:

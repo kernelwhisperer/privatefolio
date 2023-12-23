@@ -1,46 +1,46 @@
 /* eslint-disable sort-keys-fix/sort-keys-fix */
 import { proxy } from "comlink"
 
-import { AuditLog } from "../interfaces"
-import { ProgressCallback } from "../stores/task-store"
-import { auditLogsDB } from "./database"
+import { AuditLog } from "../../interfaces"
+import { ProgressCallback } from "../../stores/task-store"
+import { AccountDatabase, main } from "../database"
 
 const _filterOrder = ["integration", "wallet", "operation", "symbol"]
 const _filterOrderBySpecificity = ["symbol", "operation", "wallet", "integration"]
 
-export async function indexAuditLogs(progress: ProgressCallback) {
+export async function indexAuditLogs(progress: ProgressCallback, account: AccountDatabase = main) {
   progress([0, "Audit logs: cleaning up stale indexes"])
-  await auditLogsDB.viewCleanup()
+  await account.auditLogsDB.viewCleanup()
   progress([10, "Audit logs: updating index for 'timestamp'"])
-  await auditLogsDB.createIndex({
+  await account.auditLogsDB.createIndex({
     index: {
       fields: ["timestamp"],
       name: "timestamp",
     },
   })
   progress([20, "Audit logs: updating index for 'integration'"])
-  await auditLogsDB.createIndex({
+  await account.auditLogsDB.createIndex({
     index: {
       fields: ["integration", "timestamp", "wallet", "operation", "symbol"], // MUST respect the order in _filterOrder
       name: "integration",
     },
   })
   progress([30, "Audit logs: updating index for 'wallet'"])
-  await auditLogsDB.createIndex({
+  await account.auditLogsDB.createIndex({
     index: {
       fields: ["wallet", "timestamp", "integration", "operation", "symbol"], // MUST respect the order in _filterOrder
       name: "wallet",
     },
   })
   progress([40, "Audit logs: updating index for 'operation'"])
-  await auditLogsDB.createIndex({
+  await account.auditLogsDB.createIndex({
     index: {
       fields: ["operation", "timestamp", "integration", "wallet", "symbol"], // MUST respect the order in _filterOrder
       name: "operation",
     },
   })
   progress([50, "Audit logs: updating index for 'symbol'"])
-  await auditLogsDB.createIndex({
+  await account.auditLogsDB.createIndex({
     index: {
       fields: ["symbol", "timestamp", "integration", "wallet", "operation"], // MUST respect the order in _filterOrder
       name: "symbol",
@@ -61,8 +61,11 @@ type FindAuditLogsRequest = {
   skip?: number
 }
 
-export async function findAuditLogs(request: FindAuditLogsRequest = {}) {
-  const { indexes } = await auditLogsDB.getIndexes()
+export async function findAuditLogs(
+  request: FindAuditLogsRequest = {},
+  account: AccountDatabase = main
+) {
+  const { indexes } = await account.auditLogsDB.getIndexes()
   if (indexes.length === 1) {
     await indexAuditLogs(console.log)
   }
@@ -102,25 +105,25 @@ export async function findAuditLogs(request: FindAuditLogsRequest = {}) {
   // console.log("📜 LOG > findAuditLogs > explain:", explain.index)
 
   //
-  const { docs, warning } = await auditLogsDB.find(_req)
+  const { docs, warning } = await account.auditLogsDB.find(_req)
   if (warning) console.warn("findAuditLogs", warning)
   return docs as AuditLog[]
 }
 
-export async function countAuditLogs() {
-  const indexes = await auditLogsDB.allDocs({
+export async function countAuditLogs(account: AccountDatabase = main) {
+  const indexes = await account.auditLogsDB.allDocs({
     include_docs: false,
     // Prefix search
     // https://pouchdb.com/api.html#batch_fetch
     endkey: `_design\ufff0`,
     startkey: "_design",
   })
-  const result = await auditLogsDB.allDocs({ include_docs: false, limit: 1 })
+  const result = await account.auditLogsDB.allDocs({ include_docs: false, limit: 1 })
   return result.total_rows - indexes.rows.length
 }
 
-export function subscribeToAuditLogs(callback: () => void) {
-  const changesSub = auditLogsDB
+export function subscribeToAuditLogs(callback: () => void, account: AccountDatabase = main) {
+  const changesSub = account.auditLogsDB
     .changes({
       live: true,
       since: "now",

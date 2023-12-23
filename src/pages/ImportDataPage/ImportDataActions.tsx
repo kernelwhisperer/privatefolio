@@ -106,7 +106,10 @@ export function ImportDataActions() {
               enqueueTask({
                 description: "Removing all data saved on disk.",
                 function: async () => {
-                  await clancy.resetDatabase(extraAnswers[0])
+                  if (extraAnswers[0]) {
+                    await clancy.resetCoreDatabase()
+                  }
+                  await clancy.resetAccount("main")
                 },
                 name: "Wipe database",
                 priority: TaskPriority.High,

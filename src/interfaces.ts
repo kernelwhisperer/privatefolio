@@ -49,6 +49,7 @@ export interface Transaction {
 export type AuditLogOperation =
   | "Deposit"
   | "Buy"
+  | "Buy with Credit Card"
   | "Sell"
   | "Fee"
   | "Distribution"
@@ -116,7 +117,7 @@ export interface FileImport {
 }
 
 export interface Balance {
-  _id: string
+  _id: string // `${timestamp}_${x.symbol}`
   balance: number
   price?: ChartData
   symbol: string
@@ -124,8 +125,17 @@ export interface Balance {
 }
 
 export interface BalanceMap {
+  // _id: Timestamp
   [symbol: string]: number
   timestamp: Timestamp
+}
+
+export interface Networth {
+  _id: string // Timestamp as string
+  change: number
+  changePercentage: number
+  time: Time
+  value: number
 }
 
 export type ChartData = SingleValueData &
@@ -266,3 +276,6 @@ export interface Connection {
   label?: string
   syncedAt?: number
 }
+
+export type ParserResult = { logs: AuditLog[]; txns?: Transaction[] }
+export type Parser = (csvRow: string, index: number, fileImportId: string) => ParserResult

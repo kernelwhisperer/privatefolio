@@ -1,6 +1,6 @@
-import { Exchange } from "../interfaces"
-import { EXCHANGE_FILES_LOCATION, EXCHANGE_PAGES } from "../settings"
-import { IntegrationMap } from "../stores/metadata-store"
+import { Exchange } from "../../interfaces"
+import { EXCHANGE_FILES_LOCATION, EXCHANGE_PAGES } from "../../settings"
+import { IntegrationMap } from "../../stores/metadata-store"
 
 export async function findExchanges(nameMap: Record<string, boolean>) {
   const map: IntegrationMap = {}

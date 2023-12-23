@@ -1,9 +1,9 @@
 // /* eslint-disable sort-keys-fix/sort-keys-fix */
 import { proxy } from "comlink"
 
-import { Transaction } from "../interfaces"
-import { ProgressCallback } from "../stores/task-store"
-import { transactionsDB } from "./database"
+import { Transaction } from "../../interfaces"
+import { ProgressCallback } from "../../stores/task-store"
+import { AccountDatabase, main } from "../database"
 
 const _filterOrder = ["integration", "wallet", "type", "outgoingSymbol", "incomingSymbol"]
 const _filterOrderBySpecificity = [
@@ -14,46 +14,49 @@ const _filterOrderBySpecificity = [
   "integration",
 ]
 
-export async function indexTransactions(progress: ProgressCallback) {
+export async function indexTransactions(
+  progress: ProgressCallback,
+  account: AccountDatabase = main
+) {
   progress([60, "Transactions: cleaning up stale indexes"])
-  await transactionsDB.viewCleanup()
+  await account.transactionsDB.viewCleanup()
   progress([70, "Transactions: updating index for 'timestamp'"])
-  await transactionsDB.createIndex({
+  await account.transactionsDB.createIndex({
     index: {
       fields: ["timestamp"],
       name: "timestamp",
     },
   })
   progress([75, "Transactions: updating index for 'integration'"])
-  await transactionsDB.createIndex({
+  await account.transactionsDB.createIndex({
     index: {
       fields: ["integration", "timestamp", "wallet", "type", "outgoingSymbol", "incomingSymbol"], // MUST respect the order in _filterOrder
       name: "integration",
     },
   })
   progress([80, "Transactions: updating index for 'wallet'"])
-  await transactionsDB.createIndex({
+  await account.transactionsDB.createIndex({
     index: {
       fields: ["wallet", "timestamp", "integration", "type", "outgoingSymbol", "incomingSymbol"], // MUST respect the order in _filterOrder
       name: "wallet",
     },
   })
   progress([85, "Transactions: updating index for 'type'"])
-  await transactionsDB.createIndex({
+  await account.transactionsDB.createIndex({
     index: {
       fields: ["type", "timestamp", "integration", "wallet", "outgoingSymbol", "incomingSymbol"], // MUST respect the order in _filterOrder
       name: "type",
     },
   })
   progress([90, "Transactions: updating index for 'outgoingSymbol'"])
-  await transactionsDB.createIndex({
+  await account.transactionsDB.createIndex({
     index: {
       fields: ["outgoingSymbol", "timestamp", "integration", "wallet", "type", "incomingSymbol"], // MUST respect the order in _filterOrder
       name: "outgoingSymbol",
     },
   })
   progress([95, "Transactions: updating index for 'incomingSymbol'"])
-  await transactionsDB.createIndex({
+  await account.transactionsDB.createIndex({
     index: {
       fields: ["incomingSymbol", "timestamp", "integration", "wallet", "type", "outgoingSymbol"], // MUST respect the order in _filterOrder
       name: "incomingSymbol",
@@ -75,8 +78,11 @@ type FindTransactionsRequest = {
   skip?: number
 }
 
-export async function findTransactions(request: FindTransactionsRequest = {}) {
-  const { indexes } = await transactionsDB.getIndexes()
+export async function findTransactions(
+  request: FindTransactionsRequest = {},
+  account: AccountDatabase = main
+) {
+  const { indexes } = await account.transactionsDB.getIndexes()
   if (indexes.length === 1) {
     await indexTransactions(console.log)
   }
@@ -119,13 +125,13 @@ export async function findTransactions(request: FindTransactionsRequest = {}) {
   // console.log("📜 LOG > findTransactions > explain:", explain.index)
 
   //
-  const { docs, warning } = await transactionsDB.find(_req)
+  const { docs, warning } = await account.transactionsDB.find(_req)
   if (warning) console.warn("findTransactions", warning)
   return docs as Transaction[]
 }
 
-export async function countTransactions() {
-  const indexes = await transactionsDB.allDocs({
+export async function countTransactions(account: AccountDatabase = main) {
+  const indexes = await account.transactionsDB.allDocs({
     // Prefix search
     // https://pouchdb.com/api.html#batch_fetch
     endkey: `_design\ufff0`,
@@ -133,12 +139,12 @@ export async function countTransactions() {
     include_docs: false,
     startkey: "_design",
   })
-  const result = await transactionsDB.allDocs({ include_docs: false, limit: 1 })
+  const result = await account.transactionsDB.allDocs({ include_docs: false, limit: 1 })
   return result.total_rows - indexes.rows.length
 }
 
-export function subscribeToTransactions(callback: () => void) {
-  const changesSub = transactionsDB
+export function subscribeToTransactions(callback: () => void, account: AccountDatabase = main) {
+  const changesSub = account.transactionsDB
     .changes({
       live: true,
       since: "now",

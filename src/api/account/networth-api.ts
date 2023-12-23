@@ -1,45 +1,22 @@
-import { Balance, BalanceMap, Timestamp } from "../interfaces"
-import { ProgressCallback } from "../stores/task-store"
+import { BalanceMap } from "../../interfaces"
+import { DB_OPERATION_PAGE_SIZE } from "../../settings"
+import { ProgressCallback } from "../../stores/task-store"
+import { AccountDatabase, main } from "../database"
 import { countAuditLogs, findAuditLogs } from "./audit-logs-api"
-import { getPricesForAsset } from "./daily-prices-api"
-import { auditLogsDB, balancesDB } from "./database"
-import { getValue, setValue } from "./kv-api"
+import { setValue } from "./kv-api"
 
-export async function getLatestBalances(): Promise<Balance[]> {
-  const balancesCursor = await getValue<Timestamp>("balancesCursor")
-
-  try {
-    const balanceMap = await balancesDB.get(String(balancesCursor))
-    const { _id, _rev, timestamp, ...map } = balanceMap
-    const balanceDocs = Object.keys(map).map((x) => ({ balance: map[x], symbol: x }))
-
-    const balances = await Promise.all(
-      balanceDocs.map(async (x) => {
-        const prices = await getPricesForAsset(x.symbol, timestamp)
-        const price = prices.length > 0 ? prices[0] : undefined
-
-        return {
-          _id: `${timestamp}_${x.symbol}`,
-          ...x,
-          price,
-          value: price ? price.value * x.balance : undefined,
-        }
-      })
-    )
-    return balances
-  } catch {
-    return []
-  }
-}
-
-export async function getHistoricalBalances(symbol?: string, limit?: number) {
-  await balancesDB.createIndex({
+export async function getHistoricalBalances(
+  symbol?: string,
+  limit?: number,
+  account: AccountDatabase = main
+) {
+  await account.balancesDB.createIndex({
     index: {
       fields: ["timestamp"],
       name: "timestamp",
     },
   })
-  const balances = await balancesDB.find({
+  const balances = await account.balancesDB.find({
     fields: symbol ? [symbol, "timestamp"] : undefined,
     limit,
     selector: symbol
@@ -53,7 +30,7 @@ export async function getHistoricalBalances(symbol?: string, limit?: number) {
     sort: [
       symbol
         ? {
-            // symbol: "desc",
+            // symbol: "desc", TODO TESTME
             timestamp: "desc",
           }
         : { timestamp: "desc" },
@@ -63,9 +40,12 @@ export async function getHistoricalBalances(symbol?: string, limit?: number) {
   return balances.docs.reverse()
 }
 
-const PAGE_SIZE = 1000
-
-export async function computeBalances(progress: ProgressCallback, signal: AbortSignal) {
+export async function computeNetworth(
+  progress: ProgressCallback,
+  signal: AbortSignal,
+  pageSize = DB_OPERATION_PAGE_SIZE,
+  account: AccountDatabase = main
+) {
   // TODO cursor
   const count = await countAuditLogs()
   progress([0, `Computing balances from ${count} audit logs`])
@@ -76,17 +56,17 @@ export async function computeBalances(progress: ProgressCallback, signal: AbortS
   }
   let historicalBalances: Record<number, BalanceMap> = {}
 
-  for (let i = 0; i < count; i += PAGE_SIZE) {
+  for (let i = 0; i < count; i += pageSize) {
     if (signal.aborted) {
       throw new Error(signal.reason)
     }
 
     const firstIndex = i + 1
-    const lastIndex = Math.min(i + PAGE_SIZE, count)
+    const lastIndex = Math.min(i + pageSize, count)
 
     progress([(i * 100) / count, `Processing logs ${firstIndex} to ${lastIndex}`])
     const logs = await findAuditLogs({
-      limit: PAGE_SIZE,
+      limit: pageSize,
       order: "asc",
       skip: i,
     })
@@ -132,7 +112,7 @@ export async function computeBalances(progress: ProgressCallback, signal: AbortS
     //   (i * 100) / count,
     //   `Processing logs ${firstIndex} to ${lastIndex} - compute complete`,
     // ])
-    await auditLogsDB.bulkDocs(logs)
+    await account.auditLogsDB.bulkDocs(logs)
 
     //
     // progress([
@@ -141,7 +121,7 @@ export async function computeBalances(progress: ProgressCallback, signal: AbortS
     // ])
 
     const balancesIds = Object.keys(historicalBalances).map((x) => ({ id: x }))
-    const { results: balancesDocs } = await balancesDB.bulkGet({ docs: balancesIds })
+    const { results: balancesDocs } = await account.balancesDB.bulkGet({ docs: balancesIds })
 
     // eslint-disable-next-line no-loop-func
     const balances: BalanceMap[] = balancesDocs.map((doc) => ({
@@ -151,10 +131,10 @@ export async function computeBalances(progress: ProgressCallback, signal: AbortS
       timestamp: Number(doc.id),
     }))
     // console.log("ComputeBalances db results", balances)
-    await balancesDB.bulkDocs(balances)
+    await account.balancesDB.bulkDocs(balances)
     await setValue("balancesCursor", latestDay)
     progress([
-      ((i + PAGE_SIZE) * 100) / count,
+      ((i + pageSize) * 100) / count,
       `Processing logs ${firstIndex} to ${lastIndex} complete`,
     ])
 

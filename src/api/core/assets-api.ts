@@ -1,6 +1,6 @@
-import { Asset } from "../interfaces"
-import { ASSET_FILES_LOCATION, ASSET_PAGES } from "../settings"
-import { AssetMap } from "../stores/metadata-store"
+import { Asset } from "../../interfaces"
+import { ASSET_FILES_LOCATION, ASSET_PAGES } from "../../settings"
+import { AssetMap } from "../../stores/metadata-store"
 
 export async function findAssets(symbolMap: Record<string, boolean>) {
   const map: AssetMap = {

@@ -6,13 +6,23 @@ import {
   BalanceMap,
   Connection,
   FileImport,
+  Networth,
   SavedPrice,
   Transaction,
 } from "../interfaces"
 
 if (typeof window !== "undefined") {
-  throw new Error("Database should not be initialized in the browser, only in the web worker")
+  throw new Error(
+    "Database should not be initialized in the browser, only in the web worker or node environment"
+  )
 }
+
+// try {
+//   PouchDB.replicate("file-imports", "http://localhost:5984/file-imports", { live: true })
+//   PouchDB.replicate("audit-logs", "http://localhost:5984/audit-logs", { live: true })
+// } catch {
+//   console.log("Error replicating database")
+// }
 
 // declare module "pouchdb-core" {
 //   interface Database<Content extends {} = {}> {
@@ -26,41 +36,82 @@ const defaultDbOptions = {
   revs_limit: 1,
 }
 
-export let connectionsDB = new PouchDB<Connection>("connections", defaultDbOptions)
-export let fileImportsDB = new PouchDB<Omit<FileImport, "_rev">>("file-imports", defaultDbOptions)
-export let auditLogsDB = new PouchDB<AuditLog>("audit-logs", defaultDbOptions)
-export let transactionsDB = new PouchDB<Transaction>("transactions", defaultDbOptions)
-export let balancesDB = new PouchDB<BalanceMap>("balances", defaultDbOptions)
-export let keyValueDB = new PouchDB<{ value: unknown }>("key-value", defaultDbOptions)
-export let dailyPricesDB = new PouchDB<SavedPrice>("daily-prices", defaultDbOptions)
+// Account database
+export function createAccount(account: string) {
+  const connectionsDB = new PouchDB<Connection>(`${account}/connections`, defaultDbOptions)
+  const fileImportsDB = new PouchDB<FileImport>(`${account}/file-imports`, defaultDbOptions)
+  const auditLogsDB = new PouchDB<AuditLog>(`${account}/audit-logs`, defaultDbOptions)
+  const transactionsDB = new PouchDB<Transaction>(`${account}/transactions`, defaultDbOptions)
+  const balancesDB = new PouchDB<BalanceMap>(`${account}/balances`, defaultDbOptions)
+  const networthDB = new PouchDB<Networth>(`${account}/networth`, defaultDbOptions)
+  const keyValueDB = new PouchDB<{ value: unknown }>(`${account}/key-value`, defaultDbOptions)
+  // transactionsDB.on("indexing", function (event) {
+  //   console.log("Indexing", event)
+  // })
+  // auditLogsDB.on("indexing", function (event) {
+  //   console.log("Indexing", event)
+  // })
 
-// try {
-//   PouchDB.replicate("file-imports", "http://localhost:5984/file-imports", { live: true })
-//   PouchDB.replicate("audit-logs", "http://localhost:5984/audit-logs", { live: true })
-// } catch {
-//   console.log("Error replicating database")
-// }
+  return {
+    auditLogsDB,
+    balancesDB,
+    connectionsDB,
+    fileImportsDB,
+    keyValueDB,
+    networthDB,
+    transactionsDB,
+  }
+}
 
-transactionsDB.on("indexing", function (event) {
-  console.log("Indexing", event)
-})
-auditLogsDB.on("indexing", function (event) {
-  console.log("Indexing", event)
-})
-
-export async function resetDatabase(removeDailyPrices = false) {
+export async function deleteAccount(account: string) {
+  const {
+    auditLogsDB,
+    balancesDB,
+    connectionsDB,
+    fileImportsDB,
+    keyValueDB,
+    networthDB,
+    transactionsDB,
+  } = createAccount(account)
   await connectionsDB.destroy()
   await fileImportsDB.destroy()
   await auditLogsDB.destroy()
   await transactionsDB.destroy()
   await balancesDB.destroy()
+  await networthDB.destroy()
   await keyValueDB.destroy()
-  if (removeDailyPrices) await dailyPricesDB.destroy()
-  connectionsDB = new PouchDB<Connection>("connections", defaultDbOptions)
-  fileImportsDB = new PouchDB<FileImport>("file-imports", defaultDbOptions)
-  auditLogsDB = new PouchDB<AuditLog>("audit-logs", defaultDbOptions)
-  transactionsDB = new PouchDB<Transaction>("transactions", defaultDbOptions)
-  balancesDB = new PouchDB<BalanceMap>("balances", defaultDbOptions)
-  keyValueDB = new PouchDB<{ value: unknown }>("key-value", defaultDbOptions)
-  if (removeDailyPrices) dailyPricesDB = new PouchDB<SavedPrice>("daily-prices", defaultDbOptions)
 }
+
+export type AccountDatabase = ReturnType<typeof createAccount>
+
+export let main = createAccount("main")
+
+export async function resetAccount(account: string) {
+  await deleteAccount(account)
+  const accountDb = createAccount(account)
+
+  if (account === "main") {
+    main = accountDb
+  }
+
+  return accountDb
+}
+
+// Core database
+export const core = {
+  dailyPricesDB: new PouchDB<SavedPrice>("core/daily-prices", defaultDbOptions),
+  sharedKeyValueDB: new PouchDB<{ value: unknown }>("core/key-value", defaultDbOptions),
+}
+
+export function initCoreDatabase() {
+  core.dailyPricesDB = new PouchDB<SavedPrice>("core/daily-prices", defaultDbOptions)
+  core.sharedKeyValueDB = new PouchDB<{ value: unknown }>("core/key-value", defaultDbOptions)
+}
+
+export async function resetCoreDatabase() {
+  await core.dailyPricesDB.destroy()
+  await core.sharedKeyValueDB.destroy()
+  initCoreDatabase()
+}
+
+export type CoreDatabase = ReturnType<typeof initCoreDatabase>

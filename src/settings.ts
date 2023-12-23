@@ -7,6 +7,7 @@ export const EXCHANGE_FILES_LOCATION = "/exchanges"
 export const INTEGRATIONS = {
   arbitrum: "Arbitrum",
   binance: "Binance",
+  coinmama: "Coinmama",
   ethereum: "Ethereum",
   evm: "EVM network",
   mexc: "MEXC",
@@ -15,3 +16,5 @@ export const INTEGRATIONS = {
 } as const
 
 export const DEFAULT_DEBOUNCE_DURATION = 1500
+
+export const DB_OPERATION_PAGE_SIZE = 1000

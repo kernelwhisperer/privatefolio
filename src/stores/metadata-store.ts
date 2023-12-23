@@ -1,8 +1,8 @@
 import { debounce } from "lodash"
 import { keepMount, map } from "nanostores"
 
-import { findAssets } from "../api/assets-api"
-import { findExchanges } from "../api/exchanges-api"
+import { findAssets } from "../api/core/assets-api"
+import { findExchanges } from "../api/core/exchanges-api"
 import { Asset, AuditLogOperation, Exchange, Integration } from "../interfaces"
 import { DEFAULT_DEBOUNCE_DURATION } from "../settings"
 import { logAtoms } from "../utils/browser-utils"

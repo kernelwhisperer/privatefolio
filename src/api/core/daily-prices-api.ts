@@ -1,17 +1,17 @@
-import { ChartData, ResolutionString, SavedPrice, Time, Timestamp } from "../interfaces"
-import { ProgressCallback } from "../stores/task-store"
-import { formatDate } from "../utils/formatting-utils"
+import { ChartData, ResolutionString, SavedPrice, Time, Timestamp } from "../../interfaces"
+import { ProgressCallback } from "../../stores/task-store"
+import { formatDate } from "../../utils/formatting-utils"
+import { core } from "../database"
 import { mapToChartData, queryPrices } from "./binance-price-api"
-import { dailyPricesDB } from "./database"
 
 export async function indexDailyPrices() {
-  await dailyPricesDB.createIndex({
+  await core.dailyPricesDB.createIndex({
     index: {
       fields: ["timestamp"],
       name: "timestamp",
     },
   })
-  await dailyPricesDB.createIndex({
+  await core.dailyPricesDB.createIndex({
     index: {
       fields: ["symbol", "timestamp"],
       name: "symbol",
@@ -32,10 +32,10 @@ export async function getPricesForAsset(symbol: string, timestamp?: Timestamp) {
   }
 
   // console.log("📜 LOG > findTransactions > _req:", _req)
-  // const explain = await (dailyPricesDB as any).explain(_req)
+  // const explain = await (core.dailyPricesDB as any).explain(_req)
   // console.log("📜 LOG > findTransactions > explain:", explain.index)
 
-  const prices = await dailyPricesDB.find(_req)
+  const prices = await core.dailyPricesDB.find(_req)
 
   return prices.docs.map((x) => x.price)
 }
@@ -49,10 +49,10 @@ export async function getAssetPriceMap(timestamp: Timestamp) {
   }
 
   // console.log("📜 LOG > findTransactions > _req:", _req)
-  // const explain = await (dailyPricesDB as any).explain(_req)
+  // const explain = await (core.dailyPricesDB as any).explain(_req)
   // console.log("📜 LOG > findTransactions > explain:", explain.index)
 
-  const prices = await dailyPricesDB.find(_req)
+  const prices = await core.dailyPricesDB.find(_req)
 
   return prices.docs.reduce(
     (map, x) => {
@@ -66,7 +66,7 @@ export async function getAssetPriceMap(timestamp: Timestamp) {
 }
 
 export async function getPriceCursor(symbol: string): Promise<Timestamp> {
-  const prices = await dailyPricesDB.find({
+  const prices = await core.dailyPricesDB.find({
     limit: 1,
     selector: { symbol, timestamp: { $exists: true } },
     sort: [{ symbol: "desc", timestamp: "desc" }],
@@ -88,6 +88,8 @@ export async function fetchDailyPrices(
     throw new Error("No symbols provided") // TODO prevent this
   }
   progress([0, `Fetching asset prices for ${symbols.length} symbols`])
+  await indexDailyPrices()
+
   const now = Date.now()
   const today: Timestamp = now - (now % 86400000)
 
@@ -128,7 +130,7 @@ export async function fetchDailyPrices(
           timestamp: result[0],
         }))
 
-        dailyPricesDB.bulkDocs(docs)
+        core.dailyPricesDB.bulkDocs(docs)
 
         if (results.length > 1) {
           since = results[results.length - 1][0]

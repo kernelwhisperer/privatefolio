@@ -2,15 +2,15 @@ import "./comlink-setup"
 
 import { expose } from "comlink"
 
-import * as auditLogs from "../api/audit-logs-api"
-import * as balances from "../api/balances-api"
-import * as connections from "../api/connections-api"
-import * as dailyPrices from "../api/daily-prices-api"
-import { resetDatabase } from "../api/database"
-import * as fileImports from "../api/file-import-api"
-import * as kv from "../api/kv-api"
-import * as portfolio from "../api/portfolio-api"
-import * as transactions from "../api/transactions-api"
+import * as auditLogs from "../api/account/audit-logs-api"
+import * as balances from "../api/account/balances-api"
+import * as connections from "../api/account/connections-api"
+import * as fileImports from "../api/account/file-imports/file-imports-api"
+import * as kv from "../api/account/kv-api"
+import * as portfolio from "../api/account/portfolio-api"
+import * as transactions from "../api/account/transactions-api"
+import * as dailyPrices from "../api/core/daily-prices-api"
+import * as database from "../api/database"
 
 const worker = {
   ...connections,
@@ -18,7 +18,7 @@ const worker = {
   ...balances,
   ...dailyPrices,
   ...fileImports,
-  resetDatabase,
+  ...database,
   ...transactions,
   ...kv,
   ...portfolio,
