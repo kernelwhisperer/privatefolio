@@ -1,8 +1,14 @@
 import fs from "fs"
 import { join } from "path"
-import { computeBalances, getHistoricalBalances } from "src/api/account/balances-api"
+import {
+  computeBalances,
+  getHistoricalBalances,
+  getLatestBalances,
+} from "src/api/account/balances-api"
 import { addFileImport } from "src/api/account/file-imports/file-imports-api"
+import { getValue } from "src/api/account/kv-api"
 import { resetAccount } from "src/api/database"
+import { Timestamp } from "src/interfaces"
 import { ProgressUpdate } from "src/stores/task-store"
 import { beforeAll, expect, it } from "vitest"
 
@@ -26,7 +32,7 @@ beforeAll(async () => {
 
 it.sequential("should compute historical balances", async () => {
   // arrange
-  const until = new Date(2017, 6, 28).getTime() // 28 July 2017
+  const until = Date.UTC(2017, 6, 28, 0, 0, 0, 0) // 28 July 2017
   // act
   const updates: ProgressUpdate[] = []
   await computeBalances({
@@ -35,6 +41,8 @@ it.sequential("should compute historical balances", async () => {
     until,
   })
   // assert
+  const balancesCursor = await getValue<Timestamp>("balancesCursor", undefined, accountName)
+  expect(balancesCursor).toBe(until)
   expect(updates.join("\n")).toMatchInlineSnapshot(`
     "0,Computing balances from 2 audit logs
     0,Processing logs 1 to 2
@@ -44,10 +52,19 @@ it.sequential("should compute historical balances", async () => {
   `)
 })
 
-it.skip("should fetch historical balances", async () => {
+it.sequential("should fetch historical balances", async () => {
   // arrange
   // act
   const balances = await getHistoricalBalances({ accountName })
+  // assert
+  expect(balances.length).toMatchInlineSnapshot(`29`)
+  expect(balances).toMatchSnapshot()
+})
+
+it.sequential("should fetch latest balances", async () => {
+  // arrange
+  // act
+  const balances = await getLatestBalances(accountName)
   // assert
   expect(balances).toMatchSnapshot()
 })

@@ -10,7 +10,7 @@ import { getValue, setValue } from "./kv-api"
 
 export async function getLatestBalances(accountName = "main"): Promise<Balance[]> {
   const account = getAccount(accountName)
-  const balancesCursor = await getValue<Timestamp>("balancesCursor")
+  const balancesCursor = await getValue<Timestamp>("balancesCursor", undefined, accountName)
 
   try {
     const balanceMap = await account.balancesDB.get(String(balancesCursor))
@@ -31,7 +31,8 @@ export async function getLatestBalances(accountName = "main"): Promise<Balance[]
       })
     )
     return balances
-  } catch {
+  } catch (error) {
+    console.log("📜 LOG > getLatestBalances > error:", error)
     return []
   }
 }
@@ -198,8 +199,9 @@ export async function computeBalances(request: ComputeBalancesRequest) {
 
   progress([95, `Filling the balances to reach today`])
   // The balances remain the same until today
-  for (let i = latestDay + 86400000; i < until; i += 86400000) {
+  for (let i = latestDay + 86400000; i <= until; i += 86400000) {
     historicalBalances[i] = latestBalances
+    latestDay = i
   }
   const balancesIds = Object.keys(historicalBalances).map((x) => ({ id: x }))
   const { results: balancesDocs } = await account.balancesDB.bulkGet({ docs: balancesIds })

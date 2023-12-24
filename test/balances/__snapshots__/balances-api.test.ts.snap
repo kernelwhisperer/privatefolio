@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`should fetch historical balances 1`] = `
+exports[`should fetch historical balances 2`] = `
 [
   {
     "BTC": 0.036979259,
@@ -10,8 +10,74 @@ exports[`should fetch historical balances 1`] = `
   },
   {
     "BTC": 0.072958518,
+    "_id": "1498867200000",
+    "_rev": "2-5c56ef07b949ec5abdc17edc69fa4aa2",
+    "timestamp": 1498867200000,
+  },
+  {
+    "BTC": 0.072958518,
+    "_id": "1498953600000",
+    "_rev": "1-1a1c5577d2f8df03bd6adaab4be64ca3",
+    "timestamp": 1498953600000,
+  },
+  {
+    "BTC": 0.072958518,
+    "_id": "1499040000000",
+    "_rev": "1-d3ed20ba5bf844a35379ec6d100d64c0",
+    "timestamp": 1499040000000,
+  },
+  {
+    "BTC": 0.072958518,
+    "_id": "1499126400000",
+    "_rev": "1-0f80af2f66c5c396c904bf0d9c3c744b",
+    "timestamp": 1499126400000,
+  },
+  {
+    "BTC": 0.072958518,
+    "_id": "1499212800000",
+    "_rev": "1-11105c2f21b056fda427cafbf1b02743",
+    "timestamp": 1499212800000,
+  },
+  {
+    "BTC": 0.072958518,
+    "_id": "1499299200000",
+    "_rev": "1-aa762d4115d4b5206c48729d45987eac",
+    "timestamp": 1499299200000,
+  },
+  {
+    "BTC": 0.072958518,
+    "_id": "1499385600000",
+    "_rev": "1-a3d044caab94ca5f94f3b04b5741055d",
+    "timestamp": 1499385600000,
+  },
+  {
+    "BTC": 0.072958518,
+    "_id": "1499472000000",
+    "_rev": "1-80a0bf987ef43e4b9783b6fbc99d294a",
+    "timestamp": 1499472000000,
+  },
+  {
+    "BTC": 0.072958518,
+    "_id": "1499558400000",
+    "_rev": "1-75a20de6252314c2908e75661bc72b34",
+    "timestamp": 1499558400000,
+  },
+  {
+    "BTC": 0.072958518,
+    "_id": "1499644800000",
+    "_rev": "1-d1690d8220f67168df907e3d79a4ecfc",
+    "timestamp": 1499644800000,
+  },
+  {
+    "BTC": 0.072958518,
+    "_id": "1499731200000",
+    "_rev": "1-a1a858bf861a17be3cfddaa9ed80179c",
+    "timestamp": 1499731200000,
+  },
+  {
+    "BTC": 0.072958518,
     "_id": "1499817600000",
-    "_rev": "2-5e0600e1d2a4e17657e9dfc46bf3814b",
+    "_rev": "1-a8dd38c7db98ef6143d236868670d58a",
     "timestamp": 1499817600000,
   },
   {
@@ -103,6 +169,24 @@ exports[`should fetch historical balances 1`] = `
     "_id": "1501113600000",
     "_rev": "1-de0f44dceb49df121923a903dd6c884d",
     "timestamp": 1501113600000,
+  },
+  {
+    "BTC": 0.072958518,
+    "_id": "1501200000000",
+    "_rev": "1-499d6ecf0013b4517ac6a1e5e6f8936e",
+    "timestamp": 1501200000000,
+  },
+]
+`;
+
+exports[`should fetch latest balances 1`] = `
+[
+  {
+    "_id": "1501200000000_BTC",
+    "balance": 0.072958518,
+    "price": undefined,
+    "symbol": "BTC",
+    "value": undefined,
   },
 ]
 `;
