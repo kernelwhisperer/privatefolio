@@ -1,5 +1,6 @@
 import PouchDB from "pouchdb"
-import PouchDBFind from "pouchdb-find"
+import PouchDBMemory from "pouchdb-adapter-memory"
+import PouchDBFind from "pouchdb-find" // TODO conditional import somehow
 
 import {
   AuditLog,
@@ -17,7 +18,11 @@ if (typeof window !== "undefined") {
   )
 }
 
-const namespace = process.env.NODE_ENV === "test" ? "test-db" : ""
+const testEnvironment = process.env.NODE_ENV === "test"
+
+if (testEnvironment) {
+  PouchDB.plugin(PouchDBMemory)
+}
 
 // try {
 //   PouchDB.replicate("file-imports", "http://localhost:5984/file-imports", { live: true })
@@ -33,38 +38,21 @@ const namespace = process.env.NODE_ENV === "test" ? "test-db" : ""
 // }
 PouchDB.plugin(PouchDBFind)
 
-const defaultDbOptions = {
+const defaultDbOptions: PouchDB.Configuration.LocalDatabaseConfiguration = {
+  adapter: testEnvironment ? "memory" : undefined,
   auto_compaction: true,
   revs_limit: 1,
 }
 
 // Account database
 function createAccount(accountName: string) {
-  const connectionsDB = new PouchDB<Connection>(
-    `${namespace}/${accountName}/connections`,
-    defaultDbOptions
-  )
-  const fileImportsDB = new PouchDB<FileImport>(
-    `${namespace}/${accountName}/file-imports`,
-    defaultDbOptions
-  )
-  const auditLogsDB = new PouchDB<AuditLog>(
-    `${namespace}/${accountName}/audit-logs`,
-    defaultDbOptions
-  )
-  const transactionsDB = new PouchDB<Transaction>(
-    `${namespace}/${accountName}/transactions`,
-    defaultDbOptions
-  )
-  const balancesDB = new PouchDB<BalanceMap>(
-    `${namespace}/${accountName}/balances`,
-    defaultDbOptions
-  )
-  const networthDB = new PouchDB<Networth>(`${namespace}/${accountName}/networth`, defaultDbOptions)
-  const keyValueDB = new PouchDB<{ value: unknown }>(
-    `${namespace}/${accountName}/key-value`,
-    defaultDbOptions
-  )
+  const connectionsDB = new PouchDB<Connection>(`${accountName}/connections`, defaultDbOptions)
+  const fileImportsDB = new PouchDB<FileImport>(`${accountName}/file-imports`, defaultDbOptions)
+  const auditLogsDB = new PouchDB<AuditLog>(`${accountName}/audit-logs`, defaultDbOptions)
+  const transactionsDB = new PouchDB<Transaction>(`${accountName}/transactions`, defaultDbOptions)
+  const balancesDB = new PouchDB<BalanceMap>(`${accountName}/balances`, defaultDbOptions)
+  const networthDB = new PouchDB<Networth>(`${accountName}/networth`, defaultDbOptions)
+  const keyValueDB = new PouchDB<{ value: unknown }>(`${accountName}/key-value`, defaultDbOptions)
   // transactionsDB.on("indexing", function (event) {
   //   console.log("Indexing", event)
   // })
@@ -130,19 +118,13 @@ export async function resetAccount(accountName: string) {
 
 // Core database
 export const core = {
-  dailyPricesDB: new PouchDB<SavedPrice>(`${namespace}/core/daily-prices`, defaultDbOptions),
-  sharedKeyValueDB: new PouchDB<{ value: unknown }>(
-    `${namespace}/core/key-value`,
-    defaultDbOptions
-  ),
+  dailyPricesDB: new PouchDB<SavedPrice>(`core/daily-prices`, defaultDbOptions),
+  sharedKeyValueDB: new PouchDB<{ value: unknown }>(`core/key-value`, defaultDbOptions),
 }
 
 export function initCoreDatabase() {
-  core.dailyPricesDB = new PouchDB<SavedPrice>(`${namespace}/core/daily-prices`, defaultDbOptions)
-  core.sharedKeyValueDB = new PouchDB<{ value: unknown }>(
-    `${namespace}/core/key-value`,
-    defaultDbOptions
-  )
+  core.dailyPricesDB = new PouchDB<SavedPrice>(`core/daily-prices`, defaultDbOptions)
+  core.sharedKeyValueDB = new PouchDB<{ value: unknown }>(`core/key-value`, defaultDbOptions)
 }
 
 export async function resetCoreDatabase() {

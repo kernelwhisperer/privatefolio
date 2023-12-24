@@ -40,6 +40,3 @@ pnpm-debug.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-
-# database for tests
-test-db

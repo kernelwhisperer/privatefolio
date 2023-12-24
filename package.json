@@ -67,6 +67,7 @@
     "eslint-plugin-simple-import-sort": "^10.0.0",
     "eslint-plugin-sort-keys-fix": "^1.1.2",
     "eslint-plugin-unused-imports": "^2.0.0",
+    "pouchdb-adapter-memory": "^8.0.1",
     "pouchdb-server": "^4.2.0",
     "prettier": "^2.5.1",
     "ts-node": "^10.9.1",

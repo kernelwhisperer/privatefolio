@@ -1,6 +1,5 @@
+import * as api from "src/api/core/assets-api"
 import { expect, it } from "vitest"
-
-import * as api from "./assets-api"
 
 it("should have named exports", () => {
   expect(Object.keys(api)).toMatchInlineSnapshot(`
