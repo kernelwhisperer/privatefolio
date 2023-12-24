@@ -14,7 +14,7 @@ import React, {
   useState,
 } from "react"
 
-import { FILTER_LABEL_MAP } from "../../stores/metadata-store"
+import { FILTER_LABEL_MAP, getFilterValueLabel } from "../../stores/metadata-store"
 import { stringToColor } from "../../utils/color-utils"
 import {
   ActiveFilterMap,
@@ -149,7 +149,7 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
                   {Object.keys(activeFilters).map((x) => (
                     <FilterChip
                       key={x}
-                      label={`${FILTER_LABEL_MAP[x]} = ${activeFilters[x]}`}
+                      label={`${FILTER_LABEL_MAP[x]} = ${getFilterValueLabel(activeFilters[x])}`}
                       color={stringToColor(x)}
                       onDelete={() => {
                         setFilterKey(x as keyof T, undefined)

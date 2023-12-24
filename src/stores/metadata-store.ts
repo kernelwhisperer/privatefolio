@@ -4,7 +4,7 @@ import { keepMount, map } from "nanostores"
 import { findAssets } from "../api/core/assets-api"
 import { findExchanges } from "../api/core/exchanges-api"
 import { Asset, AuditLogOperation, Exchange, Integration } from "../interfaces"
-import { DEFAULT_DEBOUNCE_DURATION } from "../settings"
+import { DEFAULT_DEBOUNCE_DURATION, INTEGRATIONS } from "../settings"
 import { logAtoms } from "../utils/browser-utils"
 import { clancy } from "../workers/remotes"
 
@@ -30,6 +30,14 @@ export const FILTER_LABEL_MAP: Record<FilterKey, string> = {
   symbol: "Asset",
   type: "Type",
   wallet: "Wallet",
+}
+
+export function getFilterValueLabel(value: string) {
+  if (value in INTEGRATIONS) {
+    return INTEGRATIONS[value as Integration]
+  }
+
+  return value
 }
 
 async function computeFilterMap() {

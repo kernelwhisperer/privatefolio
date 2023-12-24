@@ -17,7 +17,7 @@ import { useStore } from "@nanostores/react"
 import React from "react"
 
 import { useBoolean } from "../../hooks/useBoolean"
-import { $filterOptionsMap, FilterKey } from "../../stores/metadata-store"
+import { $filterOptionsMap, FilterKey, getFilterValueLabel } from "../../stores/metadata-store"
 import { ActiveFilterMap, BaseType, HeadCell, Order } from "../../utils/table-utils"
 
 export interface ConnectedTableHeadProps<T extends BaseType> {
@@ -106,7 +106,7 @@ export function ConnectedTableHead<T extends BaseType>(props: ConnectedTableHead
               {filterMap[key as string] &&
                 filterMap[key as string].map((x: string) => (
                   <MenuItem key={x} value={x} dense>
-                    <ListItemText primary={x} />
+                    <ListItemText primary={getFilterValueLabel(x)} />
                   </MenuItem>
                 ))}
             </Select>

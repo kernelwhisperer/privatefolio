@@ -15,7 +15,7 @@ import React, {
 } from "react"
 
 import { TableFooter } from "../../components/TableFooter"
-import { FILTER_LABEL_MAP } from "../../stores/metadata-store"
+import { FILTER_LABEL_MAP, getFilterValueLabel } from "../../stores/metadata-store"
 import { stringToColor } from "../../utils/color-utils"
 import {
   ActiveFilterMap,
@@ -185,7 +185,7 @@ export function MemoryTable<T extends BaseType>(props: MemoryTableProps<T>) {
                   {Object.keys(activeFilters).map((x) => (
                     <FilterChip
                       key={x}
-                      label={`${FILTER_LABEL_MAP[x]} = ${activeFilters[x]}`}
+                      label={`${FILTER_LABEL_MAP[x]} = ${getFilterValueLabel(activeFilters[x])}`}
                       color={stringToColor(x)}
                       onDelete={() => {
                         setFilterKey(x as keyof T, undefined)
