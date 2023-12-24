@@ -1,4 +1,5 @@
 import { formatDistance } from "date-fns"
+import { Timestamp } from "src/interfaces"
 
 const locale = typeof window !== "undefined" ? window.navigator.language : "en-US"
 
@@ -10,7 +11,21 @@ export function formatNumber(number: number, opts: Intl.NumberFormatOptions = {}
   }).format(number)
 }
 
+/**
+ * @deprecated  this is broken, use `asUTC` instead
+ */
 export const TZ_OFFSET = new Date().getTimezoneOffset() * 60 * 1000
+
+export function asUTC(date: Date): Timestamp {
+  return Date.UTC(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate(),
+    date.getHours(),
+    date.getMinutes(),
+    date.getSeconds()
+  )
+}
 
 export function formatDateRelative(date: Date | number) {
   return formatDistance(date, new Date(), {

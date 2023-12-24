@@ -27,7 +27,7 @@ it("should add a file import", async () => {
   // assert
   expect(id).toMatchInlineSnapshot(`
     {
-      "_id": "1217279099",
+      "_id": "1217276216",
       "metadata": {
         "integration": "coinmama",
         "logs": 2,

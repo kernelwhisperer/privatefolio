@@ -3,51 +3,45 @@
 exports[`should fetch historical balances 2`] = `
 [
   {
-    "BTC": 0.036979259,
-    "_id": "0",
-    "_rev": "1-3d49258baa37919e85982417437db271",
-    "timestamp": 0,
-  },
-  {
-    "BTC": 0.072958518,
+    "BTC": 0.035979259,
     "_id": "1498867200000",
-    "_rev": "2-5c56ef07b949ec5abdc17edc69fa4aa2",
+    "_rev": "1-15c81300c0d8e274ef580953f32762ce",
     "timestamp": 1498867200000,
   },
   {
-    "BTC": 0.072958518,
+    "BTC": 0.035979259,
     "_id": "1498953600000",
-    "_rev": "1-1a1c5577d2f8df03bd6adaab4be64ca3",
+    "_rev": "1-34e71d07484303266cc51afd68db3a8d",
     "timestamp": 1498953600000,
   },
   {
-    "BTC": 0.072958518,
+    "BTC": 0.035979259,
     "_id": "1499040000000",
-    "_rev": "1-d3ed20ba5bf844a35379ec6d100d64c0",
+    "_rev": "1-4f244f5474c20fd237fab3d898a8ba3d",
     "timestamp": 1499040000000,
   },
   {
-    "BTC": 0.072958518,
+    "BTC": 0.035979259,
     "_id": "1499126400000",
-    "_rev": "1-0f80af2f66c5c396c904bf0d9c3c744b",
+    "_rev": "1-d0ad91addd89dfd2ea85084886ef31a4",
     "timestamp": 1499126400000,
   },
   {
-    "BTC": 0.072958518,
+    "BTC": 0.035979259,
     "_id": "1499212800000",
-    "_rev": "1-11105c2f21b056fda427cafbf1b02743",
+    "_rev": "1-a3c853bac5dfbf203d2f554decf9e925",
     "timestamp": 1499212800000,
   },
   {
-    "BTC": 0.072958518,
+    "BTC": 0.035979259,
     "_id": "1499299200000",
-    "_rev": "1-aa762d4115d4b5206c48729d45987eac",
+    "_rev": "1-65c4bd62bc2d54df21aabebe517ce56b",
     "timestamp": 1499299200000,
   },
   {
     "BTC": 0.072958518,
     "_id": "1499385600000",
-    "_rev": "1-a3d044caab94ca5f94f3b04b5741055d",
+    "_rev": "2-e6c86db56d5b9f4c14315090a485ba9d",
     "timestamp": 1499385600000,
   },
   {
@@ -92,101 +86,44 @@ exports[`should fetch historical balances 2`] = `
     "_rev": "1-0a1ff762b5e924bc9bf945f9ae815a6f",
     "timestamp": 1499990400000,
   },
-  {
-    "BTC": 0.072958518,
-    "_id": "1500076800000",
-    "_rev": "1-d698c3f764cf267710e2e7469e8bb532",
-    "timestamp": 1500076800000,
-  },
-  {
-    "BTC": 0.072958518,
-    "_id": "1500163200000",
-    "_rev": "1-e03e968fc8bea859c5f79c67ef6bc3f0",
-    "timestamp": 1500163200000,
-  },
-  {
-    "BTC": 0.072958518,
-    "_id": "1500249600000",
-    "_rev": "1-7a7771a6b6c83eeea50f24507be6ae7d",
-    "timestamp": 1500249600000,
-  },
-  {
-    "BTC": 0.072958518,
-    "_id": "1500336000000",
-    "_rev": "1-14bc4ac6dee500ed5e63d47b68c9a941",
-    "timestamp": 1500336000000,
-  },
-  {
-    "BTC": 0.072958518,
-    "_id": "1500422400000",
-    "_rev": "1-14ecccfa01dbf88fc13f8355fae7f207",
-    "timestamp": 1500422400000,
-  },
-  {
-    "BTC": 0.072958518,
-    "_id": "1500508800000",
-    "_rev": "1-d6738595c6582d508a9a203458904631",
-    "timestamp": 1500508800000,
-  },
-  {
-    "BTC": 0.072958518,
-    "_id": "1500595200000",
-    "_rev": "1-45ebf9f5037096a5a330cdb9a3212741",
-    "timestamp": 1500595200000,
-  },
-  {
-    "BTC": 0.072958518,
-    "_id": "1500681600000",
-    "_rev": "1-6a2c5be8530a73d56779b7755c175255",
-    "timestamp": 1500681600000,
-  },
-  {
-    "BTC": 0.072958518,
-    "_id": "1500768000000",
-    "_rev": "1-3bf2ad13f0efee4297dfefe18a757274",
-    "timestamp": 1500768000000,
-  },
-  {
-    "BTC": 0.072958518,
-    "_id": "1500854400000",
-    "_rev": "1-0ee3076776a4f55777cb7dd7a165fa43",
-    "timestamp": 1500854400000,
-  },
-  {
-    "BTC": 0.072958518,
-    "_id": "1500940800000",
-    "_rev": "1-141e65739e4469976a1f51a76dc541a2",
-    "timestamp": 1500940800000,
-  },
-  {
-    "BTC": 0.072958518,
-    "_id": "1501027200000",
-    "_rev": "1-1fb7129b9581a4acb8b2735a0af8ad7d",
-    "timestamp": 1501027200000,
-  },
-  {
-    "BTC": 0.072958518,
-    "_id": "1501113600000",
-    "_rev": "1-de0f44dceb49df121923a903dd6c884d",
-    "timestamp": 1501113600000,
-  },
-  {
-    "BTC": 0.072958518,
-    "_id": "1501200000000",
-    "_rev": "1-499d6ecf0013b4517ac6a1e5e6f8936e",
-    "timestamp": 1501200000000,
-  },
 ]
 `;
 
 exports[`should fetch latest balances 1`] = `
 [
   {
-    "_id": "1501200000000_BTC",
+    "_id": "1499990400000_BTC",
     "balance": 0.072958518,
     "price": undefined,
     "symbol": "BTC",
     "value": undefined,
+  },
+]
+`;
+
+exports[`should not have balances computed 1`] = `
+[
+  {
+    "_id": "1217276216_2903060452_0",
+    "_rev": "1-9563eb7da39f8735f46ea11fbcf9fd55",
+    "change": "0.036979259",
+    "changeN": 0.036979259,
+    "integration": "coinmama",
+    "operation": "Buy with Credit Card",
+    "symbol": "BTC",
+    "timestamp": 1499433076000,
+    "wallet": "Spot",
+  },
+  {
+    "_id": "1217276216_1332563442_0",
+    "_rev": "1-b5576d4e5c403eced534343ae7af054b",
+    "change": "0.035979259",
+    "changeN": 0.035979259,
+    "integration": "coinmama",
+    "operation": "Buy with Credit Card",
+    "symbol": "BTC",
+    "timestamp": 1498911076000,
+    "wallet": "Spot",
   },
 ]
 `;

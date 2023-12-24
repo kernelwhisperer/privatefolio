@@ -146,6 +146,7 @@ export async function computeBalances(request: ComputeBalancesRequest) {
         latestBalances[symbol] = 0
       }
       latestBalances[symbol] += changeN
+      latestBalances.timestamp = nextDay
 
       // update audit log
       log.balance = latestBalances[symbol]

@@ -1,5 +1,5 @@
 import { AuditLog, AuditLogOperation, Integration, ParserResult, Transaction } from "src/interfaces"
-import { TZ_OFFSET } from "src/utils/formatting-utils"
+import { asUTC } from "src/utils/formatting-utils"
 import { hashString } from "src/utils/utils"
 
 export const Identifier: Integration = "coinmama"
@@ -25,7 +25,10 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
   //
   const hash = hashString(`${index}_${csvRow}`)
   const txId = `${fileImportId}_${hash}`
-  const timestamp = new Date(dateCreated).getTime() - TZ_OFFSET
+  const timestamp = asUTC(new Date(dateCreated))
+  if (isNaN(timestamp)) {
+    throw new Error(`Invalid timestamp: ${dateCreated}`)
+  }
   const incoming = type.split(" ")[0]
   const incomingN = parseFloat(incoming)
   const incomingSymbol = type.split(" ")[1]

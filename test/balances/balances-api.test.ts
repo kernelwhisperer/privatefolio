@@ -1,5 +1,6 @@
 import fs from "fs"
 import { join } from "path"
+import { findAuditLogs } from "src/api/account/audit-logs-api"
 import {
   computeBalances,
   getHistoricalBalances,
@@ -30,9 +31,16 @@ beforeAll(async () => {
   await addFileImport(file, undefined, accountName)
 })
 
+it.sequential("should not have balances computed", async () => {
+  // act
+  const auditLogs = await findAuditLogs({}, accountName)
+  // assert
+  expect(auditLogs).toMatchSnapshot()
+})
+
 it.sequential("should compute historical balances", async () => {
   // arrange
-  const until = Date.UTC(2017, 6, 28, 0, 0, 0, 0) // 28 July 2017
+  const until = Date.UTC(2017, 6, 14, 0, 0, 0, 0) // 14 July 2017
   // act
   const updates: ProgressUpdate[] = []
   await computeBalances({
@@ -57,7 +65,7 @@ it.sequential("should fetch historical balances", async () => {
   // act
   const balances = await getHistoricalBalances({ accountName })
   // assert
-  expect(balances.length).toMatchInlineSnapshot(`29`)
+  expect(balances.length).toMatchInlineSnapshot(`14`)
   expect(balances).toMatchSnapshot()
 })
 
