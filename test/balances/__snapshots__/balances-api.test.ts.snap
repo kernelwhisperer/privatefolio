@@ -101,6 +101,35 @@ exports[`should fetch latest balances 1`] = `
 ]
 `;
 
+exports[`should have balances computed 1`] = `
+[
+  {
+    "_id": "1217276216_2903060452_0",
+    "_rev": "2-e28c827ed8b761cd3eb1df272d743824",
+    "balance": 0.072958518,
+    "change": "0.036979259",
+    "changeN": 0.036979259,
+    "integration": "coinmama",
+    "operation": "Buy with Credit Card",
+    "symbol": "BTC",
+    "timestamp": 1499433076000,
+    "wallet": "Spot",
+  },
+  {
+    "_id": "1217276216_1332563442_0",
+    "_rev": "2-beca51f759a25a6966108bdb8097c8dd",
+    "balance": 0.035979259,
+    "change": "0.035979259",
+    "changeN": 0.035979259,
+    "integration": "coinmama",
+    "operation": "Buy with Credit Card",
+    "symbol": "BTC",
+    "timestamp": 1498911076000,
+    "wallet": "Spot",
+  },
+]
+`;
+
 exports[`should not have balances computed 1`] = `
 [
   {

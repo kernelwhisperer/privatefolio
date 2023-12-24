@@ -76,3 +76,10 @@ it.sequential("should fetch latest balances", async () => {
   // assert
   expect(balances).toMatchSnapshot()
 })
+
+it.sequential("should have balances computed", async () => {
+  // act
+  const auditLogs = await findAuditLogs({}, accountName)
+  // assert
+  expect(auditLogs).toMatchSnapshot()
+})
