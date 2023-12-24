@@ -1,5 +1,4 @@
 import PouchDB from "pouchdb"
-import PouchDBMemory from "pouchdb-adapter-memory" // TODO conditional import somehow
 import PouchDBFind from "pouchdb-find"
 
 import {
@@ -21,6 +20,7 @@ if (typeof window !== "undefined") {
 const testEnvironment = process.env.NODE_ENV === "test"
 
 if (testEnvironment) {
+  const { default: PouchDBMemory } = await import("pouchdb-adapter-memory")
   PouchDB.plugin(PouchDBMemory)
 }
 

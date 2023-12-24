@@ -38,7 +38,7 @@ export async function getLatestBalances(accountName = "main"): Promise<Balance[]
 }
 
 export type GetHistoricalBalancesRequest = {
-  accountName: string
+  accountName?: string
   limit?: number
   symbol?: string
 }

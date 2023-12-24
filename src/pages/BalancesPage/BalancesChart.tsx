@@ -6,7 +6,9 @@ import { clancy } from "../../workers/remotes"
 
 export function BalancesChart() {
   const queryFn = useCallback(async () => {
-    const docs = await clancy.getHistoricalBalances(undefined, 200)
+    const docs = await clancy.getHistoricalBalances({
+      limit: 200,
+    })
 
     const balances = await Promise.all(
       docs.map(async ({ _id, _rev, timestamp, ...balanceMap }) => {

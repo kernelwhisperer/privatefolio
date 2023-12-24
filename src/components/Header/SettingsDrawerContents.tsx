@@ -108,6 +108,7 @@ export const SettingsDrawerContents = ({
             display: "flex",
             justifyContent: "space-between",
             marginLeft: 0,
+            marginRight: 0,
             paddingY: 1,
           }}
           slotProps={{
