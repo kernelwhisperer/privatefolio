@@ -79,19 +79,15 @@ export async function getHistoricalBalances(request: GetHistoricalBalancesReques
 export type ComputeBalancesRequest = {
   accountName?: string
   pageSize?: number
-  progress?: ProgressCallback
-  signal?: AbortSignal
   until?: Timestamp
 }
 
-export async function computeBalances(request: ComputeBalancesRequest) {
-  const {
-    progress = noop,
-    signal,
-    pageSize = DB_OPERATION_PAGE_SIZE,
-    until = Date.now(),
-    accountName = "main",
-  } = request
+export async function computeBalances(
+  progress: ProgressCallback = noop,
+  signal?: AbortSignal,
+  request: ComputeBalancesRequest = {}
+) {
+  const { pageSize = DB_OPERATION_PAGE_SIZE, until = Date.now(), accountName = "main" } = request
 
   const account = getAccount(accountName)
   // TODO cursor

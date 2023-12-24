@@ -7,6 +7,7 @@ import * as balances from "../api/account/balances-api"
 import * as connections from "../api/account/connections-api"
 import * as fileImports from "../api/account/file-imports/file-imports-api"
 import * as kv from "../api/account/kv-api"
+import * as networth from "../api/account/networth-api"
 import * as portfolio from "../api/account/portfolio-api"
 import * as transactions from "../api/account/transactions-api"
 import * as dailyPrices from "../api/core/daily-prices-api"
@@ -16,6 +17,7 @@ const worker = {
   ...connections,
   ...auditLogs,
   ...balances,
+  ...networth,
   ...dailyPrices,
   ...fileImports,
   ...database,

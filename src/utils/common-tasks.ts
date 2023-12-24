@@ -6,6 +6,7 @@ export function handleAuditLogChange() {
   enqueueIndexDatabase()
   enqueueComputeBalances()
   enqueueFetchPrices()
+  enqueueComputeNetworth()
 }
 
 export function enqueueIndexDatabase() {
@@ -26,7 +27,7 @@ export function enqueueIndexDatabase() {
       await clancy.computeLastTx()
     },
     name: "Index database",
-    priority: TaskPriority.Low,
+    priority: TaskPriority.Medium,
   })
 }
 
@@ -45,7 +46,7 @@ export function enqueueComputeBalances() {
       await clancy.computeBalances(progress, signal)
     },
     name: "Compute balances",
-    priority: TaskPriority.Low,
+    priority: TaskPriority.Medium,
   })
 }
 
@@ -71,18 +72,17 @@ export function enqueueFetchPrices() {
 export function enqueueComputeNetworth() {
   const taskQueue = $taskQueue.get()
 
-  const existing = taskQueue.find((task) => task.name === "Compute balances")
+  const existing = taskQueue.find((task) => task.name === "Compute networth")
 
   if (existing) return
 
   enqueueTask({
-    abortable: true,
-    description: "Computing balances of owned assets.",
+    description: "Computing historical networth.",
     determinate: true,
-    function: async (progress, signal) => {
-      await clancy.computeBalances(progress, signal)
+    function: async (progress) => {
+      await clancy.computeNetworth(progress)
     },
-    name: "Compute balances",
+    name: "Compute networth",
     priority: TaskPriority.Low,
   })
 }

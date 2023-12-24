@@ -14,6 +14,7 @@ import { $devMode } from "../../stores/app-store"
 import { enqueueTask, TaskPriority } from "../../stores/task-store"
 import {
   enqueueComputeBalances,
+  enqueueComputeNetworth,
   enqueueFetchPrices,
   enqueueIndexDatabase,
 } from "../../utils/common-tasks"
@@ -74,6 +75,18 @@ export function ImportDataActions() {
             <CalculateOutlined fontSize="small" />
           </ListItemIcon>
           <ListItemText>Compute balances</ListItemText>
+        </MenuItem>
+        <MenuItem
+          dense
+          onClick={() => {
+            enqueueComputeNetworth()
+            handleClose()
+          }}
+        >
+          <ListItemIcon>
+            <CalculateOutlined fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Compute networth</ListItemText>
         </MenuItem>
         <MenuItem
           dense

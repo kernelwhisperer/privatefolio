@@ -125,7 +125,7 @@ export interface Balance {
 }
 
 export interface BalanceMap {
-  // _id: Timestamp
+  // _id: string // Timestamp as string
   [symbol: string]: number
   timestamp: Timestamp
 }

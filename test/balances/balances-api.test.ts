@@ -44,9 +44,8 @@ it.sequential("should compute historical balances", async () => {
   const until = Date.UTC(2017, 8, 14, 0, 0, 0, 0) // 14 Sep 2017
   // act
   const updates: ProgressUpdate[] = []
-  await computeBalances({
+  await computeBalances((state) => updates.push(state), undefined, {
     accountName,
-    progress: (state) => updates.push(state),
     until,
   })
   // assert
