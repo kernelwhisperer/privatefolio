@@ -42,5 +42,4 @@ pnpm-debug.log*
 next-env.d.ts
 
 # database for tests
-core
-main
+test-db

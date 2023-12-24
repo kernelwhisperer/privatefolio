@@ -17,6 +17,8 @@ if (typeof window !== "undefined") {
   )
 }
 
+const namespace = process.env.NODE_ENV === "test" ? "test-db" : ""
+
 // try {
 //   PouchDB.replicate("file-imports", "http://localhost:5984/file-imports", { live: true })
 //   PouchDB.replicate("audit-logs", "http://localhost:5984/audit-logs", { live: true })
@@ -38,13 +40,25 @@ const defaultDbOptions = {
 
 // Account database
 export function createAccount(account: string) {
-  const connectionsDB = new PouchDB<Connection>(`${account}/connections`, defaultDbOptions)
-  const fileImportsDB = new PouchDB<FileImport>(`${account}/file-imports`, defaultDbOptions)
-  const auditLogsDB = new PouchDB<AuditLog>(`${account}/audit-logs`, defaultDbOptions)
-  const transactionsDB = new PouchDB<Transaction>(`${account}/transactions`, defaultDbOptions)
-  const balancesDB = new PouchDB<BalanceMap>(`${account}/balances`, defaultDbOptions)
-  const networthDB = new PouchDB<Networth>(`${account}/networth`, defaultDbOptions)
-  const keyValueDB = new PouchDB<{ value: unknown }>(`${account}/key-value`, defaultDbOptions)
+  const connectionsDB = new PouchDB<Connection>(
+    `${namespace}/${account}/connections`,
+    defaultDbOptions
+  )
+  const fileImportsDB = new PouchDB<FileImport>(
+    `${namespace}/${account}/file-imports`,
+    defaultDbOptions
+  )
+  const auditLogsDB = new PouchDB<AuditLog>(`${namespace}/${account}/audit-logs`, defaultDbOptions)
+  const transactionsDB = new PouchDB<Transaction>(
+    `${namespace}/${account}/transactions`,
+    defaultDbOptions
+  )
+  const balancesDB = new PouchDB<BalanceMap>(`${namespace}/${account}/balances`, defaultDbOptions)
+  const networthDB = new PouchDB<Networth>(`${namespace}/${account}/networth`, defaultDbOptions)
+  const keyValueDB = new PouchDB<{ value: unknown }>(
+    `${namespace}/${account}/key-value`,
+    defaultDbOptions
+  )
   // transactionsDB.on("indexing", function (event) {
   //   console.log("Indexing", event)
   // })
@@ -99,13 +113,19 @@ export async function resetAccount(account: string) {
 
 // Core database
 export const core = {
-  dailyPricesDB: new PouchDB<SavedPrice>("core/daily-prices", defaultDbOptions),
-  sharedKeyValueDB: new PouchDB<{ value: unknown }>("core/key-value", defaultDbOptions),
+  dailyPricesDB: new PouchDB<SavedPrice>(`${namespace}/core/daily-prices`, defaultDbOptions),
+  sharedKeyValueDB: new PouchDB<{ value: unknown }>(
+    `${namespace}/core/key-value`,
+    defaultDbOptions
+  ),
 }
 
 export function initCoreDatabase() {
-  core.dailyPricesDB = new PouchDB<SavedPrice>("core/daily-prices", defaultDbOptions)
-  core.sharedKeyValueDB = new PouchDB<{ value: unknown }>("core/key-value", defaultDbOptions)
+  core.dailyPricesDB = new PouchDB<SavedPrice>(`${namespace}/core/daily-prices`, defaultDbOptions)
+  core.sharedKeyValueDB = new PouchDB<{ value: unknown }>(
+    `${namespace}/core/key-value`,
+    defaultDbOptions
+  )
 }
 
 export async function resetCoreDatabase() {
