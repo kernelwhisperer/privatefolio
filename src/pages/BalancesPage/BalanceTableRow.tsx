@@ -58,11 +58,11 @@ export function BalanceTableRow(props: TableRowComponentProps<Balance>) {
               </Typography>
             ) : (
               <>
-                $
                 {formatNumber(price.value, {
                   maximumFractionDigits: 2, // TODO make this configurable
                   minimumFractionDigits: 2,
-                })}
+                })}{" "}
+                USD
               </>
             )}
           </span>
@@ -100,11 +100,11 @@ export function BalanceTableRow(props: TableRowComponentProps<Balance>) {
               </Typography>
             ) : (
               <>
-                $
                 {formatNumber(value, {
                   maximumFractionDigits: 2, // TODO make this configurable
                   minimumFractionDigits: 2,
-                })}
+                })}{" "}
+                USD
               </>
             )}
           </span>

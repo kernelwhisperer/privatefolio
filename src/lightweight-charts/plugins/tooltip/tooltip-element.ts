@@ -169,7 +169,7 @@ export class TooltipElement {
     if (content.title !== undefined && this._titleElement) {
       setElementText(this._titleElement, content.title)
     }
-    setElementText(this._priceElement, `${content.symbol}${content.price}`)
+    setElementText(this._priceElement, `${content.price} ${content.symbol}`)
     setElementText(this._dateElement, content.date)
     setElementText(this._timeElement, this._options.showTime ? `at ${content.time}` : "")
   }

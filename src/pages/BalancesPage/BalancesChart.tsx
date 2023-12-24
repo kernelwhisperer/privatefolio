@@ -43,7 +43,7 @@ export function BalancesChart() {
       //   },
       // }}
       tooltipOptions={{
-        currencySymbol: "$",
+        currencySymbol: "USD",
         significantDigits: 0,
         tooltip: {
           dateSecondary: true,
@@ -52,7 +52,7 @@ export function BalancesChart() {
       }}
       chartOptions={{
         localization: {
-          priceFormatter: createPriceFormatter(0, "USD"),
+          priceFormatter: createPriceFormatter(0, "USD "),
         },
       }}
     />
