@@ -3,7 +3,7 @@ import { proxy } from "comlink"
 
 import { Transaction } from "../../interfaces"
 import { ProgressCallback } from "../../stores/task-store"
-import { AccountDatabase, main } from "../database"
+import { getAccount } from "../database"
 
 const _filterOrder = ["integration", "wallet", "type", "outgoingSymbol", "incomingSymbol"]
 const _filterOrderBySpecificity = [
@@ -14,10 +14,8 @@ const _filterOrderBySpecificity = [
   "integration",
 ]
 
-export async function indexTransactions(
-  progress: ProgressCallback,
-  account: AccountDatabase = main
-) {
+export async function indexTransactions(progress: ProgressCallback, accountName = "main") {
+  const account = getAccount(accountName)
   progress([60, "Transactions: cleaning up stale indexes"])
   await account.transactionsDB.viewCleanup()
   progress([70, "Transactions: updating index for 'timestamp'"])
@@ -80,8 +78,9 @@ type FindTransactionsRequest = {
 
 export async function findTransactions(
   request: FindTransactionsRequest = {},
-  account: AccountDatabase = main
+  accountName = "main"
 ) {
+  const account = getAccount(accountName)
   const { indexes } = await account.transactionsDB.getIndexes()
   if (indexes.length === 1) {
     await indexTransactions(console.log)
@@ -130,7 +129,8 @@ export async function findTransactions(
   return docs as Transaction[]
 }
 
-export async function countTransactions(account: AccountDatabase = main) {
+export async function countTransactions(accountName = "main") {
+  const account = getAccount(accountName)
   const indexes = await account.transactionsDB.allDocs({
     // Prefix search
     // https://pouchdb.com/api.html#batch_fetch
@@ -143,7 +143,8 @@ export async function countTransactions(account: AccountDatabase = main) {
   return result.total_rows - indexes.rows.length
 }
 
-export function subscribeToTransactions(callback: () => void, account: AccountDatabase = main) {
+export function subscribeToTransactions(callback: () => void, accountName = "main") {
+  const account = getAccount(accountName)
   const changesSub = account.transactionsDB
     .changes({
       live: true,

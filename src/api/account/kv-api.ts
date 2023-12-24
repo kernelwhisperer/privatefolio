@@ -1,8 +1,9 @@
 import { proxy } from "comlink"
 
-import { AccountDatabase, main } from "../database"
+import { getAccount } from "../database"
 
-export async function setValue(key: string, value: unknown, account: AccountDatabase = main) {
+export async function setValue(key: string, value: unknown, accountName = "main") {
+  const account = getAccount(accountName)
   try {
     const existing = await account.keyValueDB.get(key)
     existing.value = value
@@ -15,8 +16,9 @@ export async function setValue(key: string, value: unknown, account: AccountData
 export async function getValue<T>(
   key: string,
   defaultValue: T | null = null,
-  account: AccountDatabase = main
+  accountName = "main"
 ): Promise<T | null> {
+  const account = getAccount(accountName)
   try {
     const existing = await account.keyValueDB.get(key)
     return existing.value as T
@@ -25,7 +27,8 @@ export async function getValue<T>(
   }
 }
 
-export function subscribeToKV(key: string, callback: () => void, account: AccountDatabase = main) {
+export function subscribeToKV(key: string, callback: () => void, accountName = "main") {
+  const account = getAccount(accountName)
   const changesSub = account.keyValueDB
     .changes({
       live: true,

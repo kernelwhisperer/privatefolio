@@ -3,14 +3,15 @@ import { FileImport } from "src/interfaces"
 import { ProgressCallback } from "src/stores/task-store"
 import { hashString, noop } from "src/utils/utils"
 
-import { AccountDatabase, main } from "../../database"
+import { getAccount } from "../../database"
 import { parseCsv } from "./csv-utils"
 
 export async function addFileImport(
   file: File,
   progress: ProgressCallback = noop,
-  account: AccountDatabase = main
+  accountName = "main"
 ) {
+  const account = getAccount(accountName)
   const { name, type, lastModified, size } = file
 
   if (type !== "text/csv") {
@@ -48,7 +49,8 @@ export async function addFileImport(
   return { _id, metadata }
 }
 
-export async function getFileImports(account: AccountDatabase = main) {
+export async function getFileImports(accountName = "main") {
+  const account = getAccount(accountName)
   const res = await account.fileImportsDB.allDocs<FileImport>({
     include_docs: true,
   })
@@ -58,8 +60,9 @@ export async function getFileImports(account: AccountDatabase = main) {
 export async function removeFileImport(
   fileImport: FileImport,
   progress: ProgressCallback,
-  account: AccountDatabase = main
+  accountName = "main"
 ) {
+  const account = getAccount(accountName)
   // TODO consider pagination
   const logs = await account.auditLogsDB.allDocs({
     // Prefix search
@@ -107,7 +110,8 @@ export async function removeFileImport(
   return res.ok
 }
 
-export function subscribeToFileImports(callback: () => void, account: AccountDatabase = main) {
+export function subscribeToFileImports(callback: () => void, accountName = "main") {
+  const account = getAccount(accountName)
   const changesSub = account.fileImportsDB
     .changes({
       live: true,

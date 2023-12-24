@@ -39,24 +39,30 @@ const defaultDbOptions = {
 }
 
 // Account database
-export function createAccount(account: string) {
+function createAccount(accountName: string) {
   const connectionsDB = new PouchDB<Connection>(
-    `${namespace}/${account}/connections`,
+    `${namespace}/${accountName}/connections`,
     defaultDbOptions
   )
   const fileImportsDB = new PouchDB<FileImport>(
-    `${namespace}/${account}/file-imports`,
+    `${namespace}/${accountName}/file-imports`,
     defaultDbOptions
   )
-  const auditLogsDB = new PouchDB<AuditLog>(`${namespace}/${account}/audit-logs`, defaultDbOptions)
+  const auditLogsDB = new PouchDB<AuditLog>(
+    `${namespace}/${accountName}/audit-logs`,
+    defaultDbOptions
+  )
   const transactionsDB = new PouchDB<Transaction>(
-    `${namespace}/${account}/transactions`,
+    `${namespace}/${accountName}/transactions`,
     defaultDbOptions
   )
-  const balancesDB = new PouchDB<BalanceMap>(`${namespace}/${account}/balances`, defaultDbOptions)
-  const networthDB = new PouchDB<Networth>(`${namespace}/${account}/networth`, defaultDbOptions)
+  const balancesDB = new PouchDB<BalanceMap>(
+    `${namespace}/${accountName}/balances`,
+    defaultDbOptions
+  )
+  const networthDB = new PouchDB<Networth>(`${namespace}/${accountName}/networth`, defaultDbOptions)
   const keyValueDB = new PouchDB<{ value: unknown }>(
-    `${namespace}/${account}/key-value`,
+    `${namespace}/${accountName}/key-value`,
     defaultDbOptions
   )
   // transactionsDB.on("indexing", function (event) {
@@ -72,12 +78,31 @@ export function createAccount(account: string) {
     connectionsDB,
     fileImportsDB,
     keyValueDB,
+    name: accountName,
     networthDB,
     transactionsDB,
   }
 }
 
-export async function deleteAccount(account: string) {
+export type AccountDatabase = ReturnType<typeof createAccount>
+
+const accounts: AccountDatabase[] = []
+
+export function getAccount(accountName: string) {
+  const existing = accounts.find((x) => x.name === accountName)
+
+  if (!existing) {
+    const account = createAccount(accountName)
+    accounts.push(account)
+    return account
+  }
+
+  return existing
+}
+
+export async function deleteAccount(accountName: string) {
+  const account = getAccount(accountName)
+  //
   const {
     auditLogsDB,
     balancesDB,
@@ -86,7 +111,7 @@ export async function deleteAccount(account: string) {
     keyValueDB,
     networthDB,
     transactionsDB,
-  } = createAccount(account)
+  } = account
   await connectionsDB.destroy()
   await fileImportsDB.destroy()
   await auditLogsDB.destroy()
@@ -94,21 +119,13 @@ export async function deleteAccount(account: string) {
   await balancesDB.destroy()
   await networthDB.destroy()
   await keyValueDB.destroy()
+  //
+  accounts.splice(accounts.indexOf(account), 1)
 }
 
-export type AccountDatabase = ReturnType<typeof createAccount>
-
-export let main = createAccount("main")
-
-export async function resetAccount(account: string) {
-  await deleteAccount(account)
-  const accountDb = createAccount(account)
-
-  if (account === "main") {
-    main = accountDb
-  }
-
-  return accountDb
+export async function resetAccount(accountName: string) {
+  await deleteAccount(accountName)
+  getAccount(accountName)
 }
 
 // Core database

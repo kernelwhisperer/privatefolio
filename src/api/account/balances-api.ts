@@ -1,12 +1,15 @@
+import { noop } from "src/utils/utils"
+
 import { Balance, BalanceMap, Timestamp } from "../../interfaces"
 import { DB_OPERATION_PAGE_SIZE } from "../../settings"
 import { ProgressCallback } from "../../stores/task-store"
 import { getPricesForAsset } from "../core/daily-prices-api"
-import { AccountDatabase, main } from "../database"
+import { getAccount } from "../database"
 import { countAuditLogs, findAuditLogs } from "./audit-logs-api"
 import { getValue, setValue } from "./kv-api"
 
-export async function getLatestBalances(account: AccountDatabase = main): Promise<Balance[]> {
+export async function getLatestBalances(accountName = "main"): Promise<Balance[]> {
+  const account = getAccount(accountName)
   const balancesCursor = await getValue<Timestamp>("balancesCursor")
 
   try {
@@ -33,11 +36,15 @@ export async function getLatestBalances(account: AccountDatabase = main): Promis
   }
 }
 
-export async function getHistoricalBalances(
-  symbol?: string,
-  limit?: number,
-  account: AccountDatabase = main
-) {
+export type GetHistoricalBalancesRequest = {
+  accountName: string
+  limit?: number
+  symbol?: string
+}
+
+export async function getHistoricalBalances(request: GetHistoricalBalancesRequest) {
+  const { symbol, limit, accountName = "main" } = request
+  const account = getAccount(accountName)
   await account.balancesDB.createIndex({
     index: {
       fields: ["timestamp"],
@@ -68,14 +75,26 @@ export async function getHistoricalBalances(
   return balances.docs.reverse()
 }
 
-export async function computeBalances(
-  progress: ProgressCallback,
-  signal: AbortSignal,
-  pageSize = DB_OPERATION_PAGE_SIZE,
-  account: AccountDatabase = main
-) {
+export type ComputeBalancesRequest = {
+  accountName?: string
+  pageSize?: number
+  progress?: ProgressCallback
+  signal?: AbortSignal
+  until?: Timestamp
+}
+
+export async function computeBalances(request: ComputeBalancesRequest) {
+  const {
+    progress = noop,
+    signal,
+    pageSize = DB_OPERATION_PAGE_SIZE,
+    until = Date.now(),
+    accountName = "main",
+  } = request
+
+  const account = getAccount(accountName)
   // TODO cursor
-  const count = await countAuditLogs()
+  const count = await countAuditLogs(accountName)
   progress([0, `Computing balances from ${count} audit logs`])
 
   const latestBalances: BalanceMap = {
@@ -87,7 +106,7 @@ export async function computeBalances(
   let latestDay = 0
 
   for (let i = 0; i < count; i += pageSize) {
-    if (signal.aborted) {
+    if (signal?.aborted) {
       throw new Error(signal.reason)
     }
 
@@ -95,11 +114,14 @@ export async function computeBalances(
     const lastIndex = Math.min(i + pageSize, count)
 
     progress([(i * 90) / count, `Processing logs ${firstIndex} to ${lastIndex}`])
-    const logs = await findAuditLogs({
-      limit: pageSize,
-      order: "asc",
-      skip: i,
-    })
+    const logs = await findAuditLogs(
+      {
+        limit: pageSize,
+        order: "asc",
+        skip: i,
+      },
+      accountName
+    )
 
     // progress([(i * 100) / count, `Processing logs ${firstIndex} to ${lastIndex} - fetch complete`])
     for (const log of logs) {
@@ -160,9 +182,9 @@ export async function computeBalances(
     }))
     // console.log("ComputeBalances db results", balances)
     await account.balancesDB.bulkDocs(balances)
-    await setValue("balancesCursor", latestDay)
+    await setValue("balancesCursor", latestDay, accountName)
     progress([
-      ((i + pageSize) * 90) / count,
+      ((i + pageSize) * 90) / Math.max(count, pageSize),
       `Processing logs ${firstIndex} to ${lastIndex} complete`,
     ])
 
@@ -176,7 +198,7 @@ export async function computeBalances(
 
   progress([95, `Filling the balances to reach today`])
   // The balances remain the same until today
-  for (let i = latestDay + 86400000; i < Date.now(); i += 86400000) {
+  for (let i = latestDay + 86400000; i < until; i += 86400000) {
     historicalBalances[i] = latestBalances
   }
   const balancesIds = Object.keys(historicalBalances).map((x) => ({ id: x }))
@@ -189,6 +211,6 @@ export async function computeBalances(
     timestamp: Number(doc.id),
   }))
   await account.balancesDB.bulkDocs(balances)
-  await setValue("balancesCursor", latestDay)
+  await setValue("balancesCursor", latestDay, accountName)
   progress([100, `Computed all balances!`])
 }

@@ -1,12 +1,13 @@
 import { Connection } from "../../interfaces"
 import { hashString } from "../../utils/utils"
-import { AccountDatabase, main } from "../database"
+import { getAccount } from "../database"
 
 export async function addConnection(
   connection: Omit<Connection, "_id" | "createdAt" | "syncedAt">,
-  account: AccountDatabase = main
+  accountName = "main"
 ) {
   const { address, integration, label } = connection
+  const account = getAccount(accountName)
 
   const createdAt = new Date().getTime()
   const _id = hashString(`${integration}_${address}_${label}`)

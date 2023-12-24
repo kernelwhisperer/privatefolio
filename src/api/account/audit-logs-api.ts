@@ -1,14 +1,16 @@
 /* eslint-disable sort-keys-fix/sort-keys-fix */
 import { proxy } from "comlink"
+import { noop } from "src/utils/utils"
 
 import { AuditLog } from "../../interfaces"
 import { ProgressCallback } from "../../stores/task-store"
-import { AccountDatabase, main } from "../database"
+import { getAccount } from "../database"
 
 const _filterOrder = ["integration", "wallet", "operation", "symbol"]
 const _filterOrderBySpecificity = ["symbol", "operation", "wallet", "integration"]
 
-export async function indexAuditLogs(progress: ProgressCallback, account: AccountDatabase = main) {
+export async function indexAuditLogs(progress: ProgressCallback = noop, accountName = "main") {
+  const account = getAccount(accountName)
   progress([0, "Audit logs: cleaning up stale indexes"])
   await account.auditLogsDB.viewCleanup()
   progress([10, "Audit logs: updating index for 'timestamp'"])
@@ -61,13 +63,11 @@ type FindAuditLogsRequest = {
   skip?: number
 }
 
-export async function findAuditLogs(
-  request: FindAuditLogsRequest = {},
-  account: AccountDatabase = main
-) {
+export async function findAuditLogs(request: FindAuditLogsRequest = {}, accountName = "main") {
+  const account = getAccount(accountName)
   const { indexes } = await account.auditLogsDB.getIndexes()
   if (indexes.length === 1) {
-    await indexAuditLogs(console.log)
+    await indexAuditLogs(undefined, accountName)
   }
 
   const { filters = {}, limit, skip, order = "desc", fields } = request
@@ -110,7 +110,8 @@ export async function findAuditLogs(
   return docs as AuditLog[]
 }
 
-export async function countAuditLogs(account: AccountDatabase = main) {
+export async function countAuditLogs(accountName = "main") {
+  const account = getAccount(accountName)
   const indexes = await account.auditLogsDB.allDocs({
     include_docs: false,
     // Prefix search
@@ -122,7 +123,8 @@ export async function countAuditLogs(account: AccountDatabase = main) {
   return result.total_rows - indexes.rows.length
 }
 
-export function subscribeToAuditLogs(callback: () => void, account: AccountDatabase = main) {
+export function subscribeToAuditLogs(callback: () => void, accountName = "main") {
+  const account = getAccount(accountName)
   const changesSub = account.auditLogsDB
     .changes({
       live: true,
