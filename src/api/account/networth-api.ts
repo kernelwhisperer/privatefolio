@@ -55,7 +55,7 @@ export async function computeNetworth(
   let historicalBalances: Record<number, BalanceMap> = {}
 
   for (let i = 0; i < count; i += pageSize) {
-    if (signal.aborted) {
+    if (signal?.aborted) {
       throw new Error(signal.reason)
     }
 

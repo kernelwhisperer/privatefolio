@@ -78,7 +78,7 @@ export function TaskDropdown() {
   //         const numbers = Array.from({ length: 10 }, (_, i) => i + 1)
   //         numbers.forEach((number) => {
   //           setTimeout(() => {
-  //             if (signal.aborted) {
+  //             if (signal?.aborted) {
   //               reject(new Error(signal.reason))
   //               return
   //             }

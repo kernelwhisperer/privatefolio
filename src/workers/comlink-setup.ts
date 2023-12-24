@@ -32,7 +32,7 @@ Comlink.transferHandlers.set("abortsignal", {
     return ctrl.signal
   },
   serialize(signal) {
-    if (signal.aborted) return [{ aborted: true }]
+    if (signal?.aborted) return [{ aborted: true }]
 
     const { port1, port2 } = new MessageChannel()
     signal.addEventListener("abort", () => port1.postMessage({ reason: signal.reason }), {

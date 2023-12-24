@@ -1,3 +1,5 @@
+import { noop } from "src/utils/utils"
+
 import { ChartData, ResolutionString, SavedPrice, Time, Timestamp } from "../../interfaces"
 import { ProgressCallback } from "../../stores/task-store"
 import { formatDate } from "../../utils/formatting-utils"
@@ -80,9 +82,9 @@ export async function getPriceCursor(symbol: string): Promise<Timestamp> {
 }
 
 export async function fetchDailyPrices(
-  symbols: string[] | undefined,
-  progress: ProgressCallback,
-  signal: AbortSignal
+  symbols?: string[],
+  progress: ProgressCallback = noop,
+  signal?: AbortSignal
 ) {
   if (!symbols) {
     throw new Error("No symbols provided") // TODO prevent this
@@ -96,7 +98,7 @@ export async function fetchDailyPrices(
   for (let i = 1; i <= symbols.length; i++) {
     const symbol = symbols[i - 1]
 
-    if (signal.aborted) {
+    if (signal?.aborted) {
       throw new Error(signal.reason)
     }
 

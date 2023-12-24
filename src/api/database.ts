@@ -1,6 +1,6 @@
 import PouchDB from "pouchdb"
-import PouchDBMemory from "pouchdb-adapter-memory"
-import PouchDBFind from "pouchdb-find" // TODO conditional import somehow
+import PouchDBMemory from "pouchdb-adapter-memory" // TODO conditional import somehow
+import PouchDBFind from "pouchdb-find"
 
 import {
   AuditLog,

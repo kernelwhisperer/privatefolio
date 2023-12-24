@@ -8,6 +8,7 @@ import {
 } from "src/api/account/balances-api"
 import { addFileImport } from "src/api/account/file-imports/file-imports-api"
 import { getValue } from "src/api/account/kv-api"
+import { fetchDailyPrices } from "src/api/core/daily-prices-api"
 import { resetAccount } from "src/api/database"
 import { Timestamp } from "src/interfaces"
 import { ProgressUpdate } from "src/stores/task-store"
@@ -40,7 +41,7 @@ it.sequential("should not have balances computed", async () => {
 
 it.sequential("should compute historical balances", async () => {
   // arrange
-  const until = Date.UTC(2017, 6, 14, 0, 0, 0, 0) // 14 July 2017
+  const until = Date.UTC(2017, 8, 14, 0, 0, 0, 0) // 14 Sep 2017
   // act
   const updates: ProgressUpdate[] = []
   await computeBalances({
@@ -69,7 +70,14 @@ it.sequential("should fetch historical balances", async () => {
   expect(balances).toMatchSnapshot()
 })
 
-it.sequential("should fetch latest balances", async () => {
+it.sequential("should have balances computed", async () => {
+  // act
+  const auditLogs = await findAuditLogs({}, accountName)
+  // assert
+  expect(auditLogs).toMatchSnapshot()
+})
+
+it.sequential("should fetch latest balances without price data", async () => {
   // arrange
   // act
   const balances = await getLatestBalances(accountName)
@@ -77,9 +85,11 @@ it.sequential("should fetch latest balances", async () => {
   expect(balances).toMatchSnapshot()
 })
 
-it.sequential("should have balances computed", async () => {
+it.sequential("should fetch latest balances with price data", async () => {
+  // arrange
+  await fetchDailyPrices(["BTC"])
   // act
-  const auditLogs = await findAuditLogs({}, accountName)
+  const balances = await getLatestBalances(accountName)
   // assert
-  expect(auditLogs).toMatchSnapshot()
+  expect(balances).toMatchSnapshot()
 })
