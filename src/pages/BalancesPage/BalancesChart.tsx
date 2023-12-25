@@ -8,27 +8,7 @@ export function BalancesChart() {
   const queryFn = useCallback(async () => {
     const balances = await clancy.getHistoricalNetworth()
 
-    // const balances = await Promise.all(
-    //   docs.map(async ({ _id, _rev, timestamp, ...balanceMap }) => {
-    //     const priceMap = await clancy.getAssetPriceMap(timestamp)
-
-    //     const totalValue = Object.keys(priceMap).reduce((acc, symbol) => {
-    //       const price = priceMap[symbol]
-    //       const balance = balanceMap[symbol]
-
-    //       if (!price || !balance) return acc
-
-    //       return acc + Math.round(price.value * balance * 100) / 100
-    //     }, 0)
-
-    //     return {
-    //       time: (timestamp / 1000) as Time,
-    //       value: totalValue,
-    //     }
-    //   })
-    // )
-
-    // console.log("📜 LOG > query > records:", balances)
+    console.log("📜 LOG > query > records:", balances)
     return balances
   }, [])
 

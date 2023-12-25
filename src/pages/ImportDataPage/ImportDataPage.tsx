@@ -3,8 +3,9 @@ import React from "react"
 
 import { StaggeredList } from "../../components/StaggeredList"
 import { Subheading } from "../../components/Subheading"
+import { ConnectionsTable } from "./connections/ConnectionsTable"
 import { DatabaseInfo } from "./DatabaseInfo"
-import { FileImportTable } from "./FileImportTable"
+import { FileImportsTable } from "./file-imports/FileImportsTable"
 import { ImportDataActions } from "./ImportDataActions"
 import { PortfolioInfo } from "./PortfolioInfo"
 
@@ -21,13 +22,13 @@ export function ImportDataPage({ show }: { show: boolean }) {
           <PortfolioInfo />
         </Stack>
       </div>
-      {/* <div>
+      <div>
         <Subheading>Connections</Subheading>
         <ConnectionsTable />
-      </div> */}
+      </div>
       <div>
         <Subheading>File imports</Subheading>
-        <FileImportTable />
+        <FileImportsTable />
       </div>
     </StaggeredList>
   )

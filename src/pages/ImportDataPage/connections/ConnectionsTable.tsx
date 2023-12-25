@@ -1,31 +1,33 @@
-import { CloudOutlined } from "@mui/icons-material"
-import { Paper, Stack, Typography } from "@mui/material"
+import { Add, CloudOutlined } from "@mui/icons-material"
+import { IconButton, Paper, Stack, Tooltip, Typography } from "@mui/material"
 import { proxy } from "comlink"
 import React, { useEffect, useMemo, useState } from "react"
+import { MemoryTable } from "src/components/EnhancedTable/MemoryTable"
+import { useBoolean } from "src/hooks/useBoolean"
+import { Connection } from "src/interfaces"
+import { HeadCell } from "src/utils/table-utils"
+import { clancy } from "src/workers/remotes"
 
-import { MemoryTable } from "../../components/EnhancedTable/MemoryTable"
-import { useBoolean } from "../../hooks/useBoolean"
-import { FileImport } from "../../interfaces"
-import { HeadCell } from "../../utils/table-utils"
-import { clancy } from "../../workers/remotes"
 import { ConnectionDrawer } from "./ConnectionDrawer"
-import { FileImportTableRow } from "./FileImportTableRow"
+import { ConnectionTableRow } from "./ConnectionTableRow"
 
 export function ConnectionsTable() {
+  const { value: open, toggle: toggleOpen } = useBoolean(false)
   const [queryTime, setQueryTime] = useState<number | null>(null)
-  const [rows, setRows] = useState<FileImport[]>([])
+  const [rows, setRows] = useState<Connection[]>([])
 
   useEffect(() => {
     async function fetchData() {
       const start = Date.now()
-      // const rows = await clancy.getFileImports()
+      const rows = await clancy.getConnections()
       setQueryTime(Date.now() - start)
-      setRows([])
+      console.log("📜 LOG > fetchData > rows:", rows)
+      setRows(rows)
     }
 
     fetchData().then()
 
-    const unsubscribePromise = clancy.subscribeToFileImports(
+    const unsubscribePromise = clancy.subscribeToConnections(
       proxy(async () => {
         await fetchData()
       })
@@ -38,58 +40,70 @@ export function ConnectionsTable() {
     }
   }, [])
 
-  const headCells: HeadCell<FileImport>[] = useMemo(
+  const headCells: HeadCell<Connection>[] = useMemo(
     () => [
       {
         key: "timestamp",
-        label: "Last sync",
-        sortable: true,
-      },
-      {
-        key: "name",
-        label: "Name",
-        sortable: true,
-      },
-      {
-        key: "size",
-        label: "File size",
-        numeric: true,
-        sortable: true,
-      },
-      {
-        key: "lastModified",
-        label: "Last modified",
+        label: "Created",
         sortable: true,
       },
       {
         filterable: true,
-        key: "integration" as keyof FileImport,
+        key: "integration",
         label: "Integration",
         sortable: true,
-        valueSelector: (row) => row.meta?.integration,
       },
       {
-        key: "logs" as keyof FileImport,
+        key: "label",
+        label: "Label",
+        sortable: true,
+      },
+      {
+        key: "address",
+        label: "Address",
+        sortable: true,
+      },
+      {
+        key: "logs" as keyof Connection,
         label: "Audit logs",
         numeric: true,
         sortable: true,
-        valueSelector: (row) => row.meta?.logs,
+        // valueSelector: (row) => row.meta?.logs,
       },
       {
-        key: "transactions" as keyof FileImport,
+        key: "transactions" as keyof Connection,
         label: "Transactions",
         numeric: true,
         sortable: true,
-        valueSelector: (row) => row.meta?.transactions,
+        // valueSelector: (row) => row.meta?.transactions,
       },
+      // {
+      //   key: "as",
+      //   label: "Last synced",
+      //   sortable: true,
+      // },
       {
-        label: "",
+        label: (
+          <>
+            <Tooltip title="Add a new connection">
+              <span>
+                <IconButton
+                  size="small"
+                  color="secondary"
+                  sx={{ height: 28, marginLeft: -1 }}
+                  onClick={toggleOpen}
+                >
+                  <Add fontSize="inherit" />
+                </IconButton>
+              </span>
+            </Tooltip>
+          </>
+        ),
       },
     ],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   )
-
-  const { value: open, toggle: toggleOpen } = useBoolean(false)
 
   return (
     <>
@@ -118,15 +132,17 @@ export function ConnectionsTable() {
                 <CloudOutlined sx={{ height: 64, width: 64 }} />
                 <span>Nothing to see here...</span>
               </Stack>
-              <span>Click this card get started with adding a new connection.</span>
+              <span>
+                Click this card to <u>add a new connection</u>.
+              </span>
             </Stack>
           </Typography>
         </Paper>
       ) : (
-        <MemoryTable<FileImport>
+        <MemoryTable<Connection>
           initOrderBy="timestamp"
           headCells={headCells}
-          TableRowComponent={FileImportTableRow}
+          TableRowComponent={ConnectionTableRow}
           rows={rows}
           queryTime={queryTime}
           //

@@ -6,11 +6,9 @@ import {
   Storage,
 } from "@mui/icons-material"
 import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Tooltip } from "@mui/material"
-import { useStore } from "@nanostores/react"
 import React from "react"
 
 import { useConfirm } from "../../hooks/useConfirm"
-import { $devMode } from "../../stores/app-store"
 import { enqueueTask, TaskPriority } from "../../stores/task-store"
 import {
   enqueueComputeBalances,
@@ -32,7 +30,7 @@ export function ImportDataActions() {
 
   const confirm = useConfirm()
 
-  const devMode = useStore($devMode)
+  // const devMode = useStore($devMode)
 
   return (
     <>

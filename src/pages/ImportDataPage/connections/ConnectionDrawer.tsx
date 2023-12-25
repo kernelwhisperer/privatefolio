@@ -1,6 +1,6 @@
 import { CloseRounded } from "@mui/icons-material"
+import { LoadingButton } from "@mui/lab"
 import {
-  Button,
   Drawer,
   DrawerProps,
   IconButton,
@@ -11,23 +11,50 @@ import {
   TextField,
   Typography,
 } from "@mui/material"
-import React, { useState } from "react"
+import { isAddress } from "ethers"
+import React, { useCallback, useEffect, useState } from "react"
+import { clancy } from "src/workers/remotes"
 
-import { AddressInput } from "../../components/AddressInput"
-import { SectionTitle } from "../../components/SectionTitle"
-import { StaggeredList } from "../../components/StaggeredList"
-import { Integration } from "../../interfaces"
-import { INTEGRATIONS } from "../../settings"
-import { PopoverToggleProps } from "../../stores/app-store"
+import { AddressInput } from "../../../components/AddressInput"
+import { SectionTitle } from "../../../components/SectionTitle"
+import { StaggeredList } from "../../../components/StaggeredList"
+import { Integration } from "../../../interfaces"
+import { CONNECTIONS, INTEGRATIONS } from "../../../settings"
+import { PopoverToggleProps } from "../../../stores/app-store"
 
 export function ConnectionDrawer({ open, toggleOpen, ...rest }: DrawerProps & PopoverToggleProps) {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    toggleOpen()
-  }
+  const [loading, setLoading] = useState(false)
 
+  const [label, setLabel] = useState("")
   const [address, setAddress] = useState("")
   const [integration, setIntegration] = useState<Integration>("ethereum")
+
+  useEffect(() => {
+    setLoading(false)
+    setAddress("")
+    setIntegration("ethereum")
+  }, [open])
+
+  const handleSubmit = useCallback(
+    (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault()
+
+      const isValidAddress = address && isAddress(address)
+      if (!isValidAddress) return
+
+      setLoading(true)
+
+      clancy
+        .addConnection({ address, integration, label })
+        .then(() => {
+          toggleOpen()
+        })
+        .catch(() => {
+          setLoading(false)
+        })
+    },
+    [address, integration, label, toggleOpen]
+  )
 
   return (
     <Drawer open={open} onClose={toggleOpen} {...rest}>
@@ -56,7 +83,7 @@ export function ConnectionDrawer({ open, toggleOpen, ...rest }: DrawerProps & Po
               value={integration}
               onChange={(event) => setIntegration(event.target.value as Integration)}
             >
-              {Object.keys(INTEGRATIONS).map((x) => (
+              {Object.keys(CONNECTIONS).map((x) => (
                 <MenuItem key={x} value={x}>
                   <ListItemText primary={INTEGRATIONS[x]} />
                 </MenuItem>
@@ -76,12 +103,17 @@ export function ConnectionDrawer({ open, toggleOpen, ...rest }: DrawerProps & Po
           </div>
           <div>
             <SectionTitle>Label</SectionTitle>
-            <TextField variant="outlined" fullWidth size="small" />
+            <TextField
+              variant="outlined"
+              fullWidth
+              size="small"
+              value={label}
+              onChange={(event) => setLabel(event.target.value)}
+            />
           </div>
-
-          <Button variant="contained" type="submit">
+          <LoadingButton variant="contained" type="submit" loading={loading}>
             Submit
-          </Button>
+          </LoadingButton>
         </StaggeredList>
       </form>
     </Drawer>

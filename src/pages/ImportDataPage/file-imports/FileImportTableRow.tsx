@@ -10,19 +10,18 @@ import {
 } from "@mui/material"
 import { useStore } from "@nanostores/react"
 import React, { MouseEvent, useState } from "react"
-
-import { IntegrationAvatar } from "../../components/IntegrationAvatar"
-import { TimestampCell } from "../../components/TimestampCell"
-import { Truncate } from "../../components/Truncate"
-import { FileImport } from "../../interfaces"
-import { INTEGRATIONS } from "../../settings"
-import { $integrationMap } from "../../stores/metadata-store"
-import { enqueueTask } from "../../stores/task-store"
-import { MonoFont } from "../../theme"
-import { handleAuditLogChange } from "../../utils/common-tasks"
-import { formatFileSize, formatNumber } from "../../utils/formatting-utils"
-import { TableRowComponentProps } from "../../utils/table-utils"
-import { clancy } from "../../workers/remotes"
+import { IntegrationAvatar } from "src/components/IntegrationAvatar"
+import { TimestampCell } from "src/components/TimestampCell"
+import { Truncate } from "src/components/Truncate"
+import { FileImport } from "src/interfaces"
+import { INTEGRATIONS } from "src/settings"
+import { $integrationMap } from "src/stores/metadata-store"
+import { enqueueTask } from "src/stores/task-store"
+import { MonoFont } from "src/theme"
+import { handleAuditLogChange } from "src/utils/common-tasks"
+import { formatFileSize, formatNumber } from "src/utils/formatting-utils"
+import { TableRowComponentProps } from "src/utils/table-utils"
+import { clancy } from "src/workers/remotes"
 
 export function FileImportTableRow(props: TableRowComponentProps<FileImport>) {
   const { row, relativeTime, headCells: _headCells, ...rest } = props
@@ -67,6 +66,20 @@ export function FileImportTableRow(props: TableRowComponentProps<FileImport>) {
       <TableCell sx={{ maxWidth: 180, minWidth: 180, width: 180 }}>
         <TimestampCell timestamp={timestamp} relative={relativeTime} />
       </TableCell>
+      <TableCell sx={{ maxWidth: 160, minWidth: 160, width: 140 }}>
+        {integration ? (
+          <Stack direction="row" gap={0.5} alignItems="center" component="div">
+            <IntegrationAvatar
+              size="small"
+              src={integrationMap[integration]?.image}
+              alt={INTEGRATIONS[integration]}
+            />
+            <span>{INTEGRATIONS[integration]}</span>
+          </Stack>
+        ) : (
+          <Skeleton></Skeleton>
+        )}
+      </TableCell>
       <TableCell sx={{ maxWidth: 200, minWidth: 200, width: 200 }}>
         <Tooltip title={name}>
           <Truncate>{name}</Truncate>
@@ -92,22 +105,8 @@ export function FileImportTableRow(props: TableRowComponentProps<FileImport>) {
       <TableCell sx={{ maxWidth: 180, minWidth: 180, width: 180 }}>
         <TimestampCell timestamp={lastModified} relative={relativeTime} />
       </TableCell>
-      <TableCell sx={{ maxWidth: 160, minWidth: 160, width: 140 }}>
-        {integration ? (
-          <Stack direction="row" gap={0.5} alignItems="center" component="div">
-            <IntegrationAvatar
-              size="small"
-              src={integrationMap[integration]?.image}
-              alt={INTEGRATIONS[integration]}
-            />
-            <span>{INTEGRATIONS[integration]}</span>
-          </Stack>
-        ) : (
-          <Skeleton></Skeleton>
-        )}
-      </TableCell>
       <TableCell
-        sx={{ fontFamily: MonoFont, maxWidth: 120, minWidth: 120, width: 120 }}
+        sx={{ fontFamily: MonoFont, maxWidth: 128, minWidth: 128, width: 128 }}
         align="right"
       >
         {!meta ? (

@@ -2,16 +2,16 @@ import { FolderOutlined } from "@mui/icons-material"
 import { Stack } from "@mui/material"
 import { proxy } from "comlink"
 import React, { useEffect, useMemo, useState } from "react"
+import { MemoryTable } from "src/components/EnhancedTable/MemoryTable"
+import { FileDrop } from "src/components/FileDrop"
+import { StaggeredList } from "src/components/StaggeredList"
+import { FileImport } from "src/interfaces"
+import { HeadCell } from "src/utils/table-utils"
+import { clancy } from "src/workers/remotes"
 
-import { MemoryTable } from "../../components/EnhancedTable/MemoryTable"
-import { FileDrop } from "../../components/FileDrop"
-import { StaggeredList } from "../../components/StaggeredList"
-import { FileImport } from "../../interfaces"
-import { HeadCell } from "../../utils/table-utils"
-import { clancy } from "../../workers/remotes"
 import { FileImportTableRow } from "./FileImportTableRow"
 
-export function FileImportTable() {
+export function FileImportsTable() {
   const [showDrop, setShowDrop] = useState<boolean>(false)
   const [queryTime, setQueryTime] = useState<number | null>(null)
   const [rows, setRows] = useState<FileImport[]>([])
@@ -50,6 +50,13 @@ export function FileImportTable() {
         sortable: true,
       },
       {
+        filterable: true,
+        key: "integration" as keyof FileImport,
+        label: "Integration",
+        sortable: true,
+        valueSelector: (row) => row.meta?.integration,
+      },
+      {
         key: "name",
         label: "Name",
         sortable: true,
@@ -64,13 +71,6 @@ export function FileImportTable() {
         key: "lastModified",
         label: "Last modified",
         sortable: true,
-      },
-      {
-        filterable: true,
-        key: "integration" as keyof FileImport,
-        label: "Integration",
-        sortable: true,
-        valueSelector: (row) => row.meta?.integration,
       },
       {
         key: "logs" as keyof FileImport,

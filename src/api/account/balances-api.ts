@@ -67,13 +67,13 @@ export async function getHistoricalBalances(request: GetHistoricalBalancesReques
       symbol
         ? {
             // symbol: "desc", TODO TESTME
-            timestamp: "desc",
+            timestamp: "asc",
           }
-        : { timestamp: "desc" },
+        : { timestamp: "asc" },
     ],
   })
 
-  return balances.docs.reverse()
+  return balances.docs
 }
 
 export type ComputeBalancesRequest = {

@@ -1,3 +1,5 @@
+import { ReactNode } from "react"
+
 export type Order = "asc" | "desc"
 
 export type BaseType = {
@@ -11,7 +13,7 @@ export type ValueSelector<T> = (row: T) => string | number | undefined
 export interface HeadCell<T extends BaseType> {
   filterable?: boolean
   key?: keyof T
-  label: string
+  label: ReactNode
   numeric?: boolean
   sortable?: boolean
   valueSelector?: ValueSelector<T>

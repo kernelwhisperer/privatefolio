@@ -18,9 +18,7 @@ export async function getHistoricalNetworth(accountName = "main") {
 export async function computeNetworth(progress: ProgressCallback = noop, accountName = "main") {
   const account = getAccount(accountName)
 
-  const balances = await getHistoricalBalances({
-    accountName,
-  })
+  const balances = await getHistoricalBalances({ accountName })
   const count = balances.length
   progress([0, `Computing historical networth for ${count} total balances`])
 
@@ -47,6 +45,7 @@ export async function computeNetworth(progress: ProgressCallback = noop, account
     })
   )
 
+  // TODO this throws
   await account.networthDB.bulkDocs(networthArray)
   progress([100, `Computed all networth records!`])
 }

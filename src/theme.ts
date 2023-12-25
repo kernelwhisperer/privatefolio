@@ -493,7 +493,7 @@ export const theme: CssVarsThemeOptions = {
           "html[data-mui-color-scheme='dark'] & .secondary": {
             color: "var(--mui-palette-grey-600)",
           },
-          maxWidth: 320,
+          maxWidth: 328,
           paddingBottom: 8,
           paddingLeft: 16,
           paddingRight: 16,

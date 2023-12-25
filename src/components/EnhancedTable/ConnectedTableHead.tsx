@@ -62,7 +62,7 @@ export function ConnectedTableHead<T extends BaseType>(props: ConnectedTableHead
     <>
       <Stack
         direction="row"
-        marginX={-0.5}
+        // marginX={-0.5}
         justifyContent={numeric ? "flex-end" : "flex-start"}
         alignItems="center"
       >
@@ -70,7 +70,7 @@ export function ConnectedTableHead<T extends BaseType>(props: ConnectedTableHead
           <Tooltip title={`Switch to ${relativeTime ? "absolute" : "relative"} time`}>
             <IconButton
               size="small"
-              sx={{ marginRight: 0.5 }}
+              sx={{ marginLeft: -1, marginRight: 0.5 }}
               edge="start"
               onClick={onRelativeTime}
             >
@@ -111,7 +111,12 @@ export function ConnectedTableHead<T extends BaseType>(props: ConnectedTableHead
                 ))}
             </Select>
             <Tooltip title={`Filter by ${label}`}>
-              <IconButton size="small" edge="start" sx={{ marginRight: 0.5 }} onClick={toggleOpen}>
+              <IconButton
+                size="small"
+                edge="start"
+                sx={{ marginLeft: -1, marginRight: 0.5 }}
+                onClick={toggleOpen}
+              >
                 <Badge badgeContent={filterValue || 0} color="accent" variant="dot">
                   <FilterListRounded fontSize="inherit" />
                 </Badge>
