@@ -19,13 +19,15 @@
     "coverage": "vitest run --coverage",
     "db-server": "pouchdb-server -p 5984 -m",
     "gen:assets": "ts-node -O '{\"module\": \"commonjs\"}' scripts/generate-assets.ts",
+    "gen:blockchains": "ts-node -O '{\"module\": \"commonjs\"}' scripts/generate-blockchains.ts",
     "gen:exchanges": "ts-node -O '{\"module\": \"commonjs\"}' scripts/generate-exchanges.ts"
   },
   "dependencies": {
     "@emotion/react": "^11.11.0",
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.11.16",
-    "@mui/material": "^5.14.18",
+    "@mui/lab": "^5.0.0-alpha.157",
+    "@mui/material": "^5.15.1",
     "@nanostores/logger": "^0.2.4",
     "@nanostores/react": "^0.7.1",
     "@react-spring/web": "^9.7.3",

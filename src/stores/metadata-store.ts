@@ -2,8 +2,8 @@ import { debounce } from "lodash"
 import { keepMount, map } from "nanostores"
 
 import { findAssets } from "../api/core/assets-api"
-import { findExchanges } from "../api/core/exchanges-api"
-import { Asset, AuditLogOperation, Exchange, Integration } from "../interfaces"
+import { findIntegrations } from "../api/core/integrations-api"
+import { Asset, AuditLogOperation, Integration, IntegrationMetadata } from "../interfaces"
 import { DEFAULT_DEBOUNCE_DURATION, INTEGRATIONS } from "../settings"
 import { logAtoms } from "../utils/browser-utils"
 import { clancy } from "../workers/remotes"
@@ -41,13 +41,12 @@ export function getFilterValueLabel(value: string) {
 }
 
 async function computeFilterMap() {
-  const fileImports = await clancy.getFileImports()
-
   const integrations = new Set<string>()
   const symbols = new Set<string>()
   const wallets = new Set<string>()
   const operations = new Set<AuditLogOperation>()
 
+  const fileImports = await clancy.getFileImports()
   for (const fileImport of fileImports) {
     const { meta } = fileImport
 
@@ -59,6 +58,13 @@ async function computeFilterMap() {
     meta.symbols.forEach((x) => symbols.add(x))
     meta.wallets.forEach((x) => wallets.add(x))
     meta.operations.forEach((x) => operations.add(x))
+  }
+
+  const connections = await clancy.getConnections()
+  for (const connection of connections) {
+    const { integration } = connection
+
+    integrations.add(integration)
   }
 
   const symbolOptions = [...symbols].sort()
@@ -80,7 +86,7 @@ async function computeFilterMap() {
 export type AssetMap = Record<string, Asset>
 export const $assetMap = map<AssetMap>({})
 
-export type IntegrationMap = Partial<Record<Integration, Exchange>>
+export type IntegrationMap = Partial<Record<Integration, IntegrationMetadata>>
 export const $integrationMap = map<IntegrationMap>({})
 
 keepMount($assetMap)
@@ -104,7 +110,7 @@ export async function computeMetadata() {
 
   await Promise.all([
     findAssets(symbolMap).then($assetMap.set),
-    findExchanges(integrationMap).then($integrationMap.set),
+    findIntegrations(integrationMap).then($integrationMap.set),
   ])
 }
 export const computeMetadataDebounced = debounce(computeMetadata, DEFAULT_DEBOUNCE_DURATION)

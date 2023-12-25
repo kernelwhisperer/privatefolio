@@ -73,10 +73,26 @@ export interface Exchange {
   country: string
   image: string
   name: string
-  symbol: string
   url: string
   year: number
 }
+
+export interface Blockchain {
+  /**
+   * EVM chainId
+   */
+  chainId: number
+  coingeckoId: string
+  image: string
+  name: string
+  /**
+   * coingeckoId of the native coin
+   */
+  nativeCoinId: string
+  shortName: string
+}
+
+export type IntegrationMetadata = Exchange | Blockchain
 
 export interface AuditLog {
   _id: string
@@ -270,11 +286,15 @@ export const DEFAULT_POLLING_INTERVAL = 2_000
 
 export interface Connection {
   _id: string
+  _rev: string
   address: string
-  createdAt: number
   integration: Integration
-  label?: string
+  label: string
   syncedAt?: number
+  /**
+   * createdAt
+   */
+  timestamp: Timestamp
 }
 
 export type ParserResult = { logs: AuditLog[]; txns?: Transaction[] }

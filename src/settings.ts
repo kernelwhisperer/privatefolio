@@ -4,6 +4,9 @@ export const ASSET_FILES_LOCATION = "/assets"
 export const EXCHANGE_PAGES = 2
 export const EXCHANGE_FILES_LOCATION = "/exchanges"
 
+export const BLOCKCHAIN_PAGES = 1
+export const BLOCKCHAIN_FILES_LOCATION = "/blockchains"
+
 export const INTEGRATIONS = {
   arbitrum: "Arbitrum",
   binance: "Binance",
@@ -13,6 +16,10 @@ export const INTEGRATIONS = {
   mexc: "MEXC",
   op: "Optimism",
   polygon: "Polygon",
+} as const
+
+export const CONNECTIONS = {
+  ethereum: "Ethereum",
 } as const
 
 export const DEFAULT_DEBOUNCE_DURATION = 1500

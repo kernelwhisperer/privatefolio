@@ -1,0 +1,498 @@
+[
+  {
+    "chainId": 1,
+    "coingeckoId": "ethereum",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_ethereum.jpg",
+    "name": "Ethereum",
+    "nativeCoinId": "ethereum",
+    "shortName": ""
+  },
+  {
+    "chainId": 10,
+    "coingeckoId": "optimistic-ethereum",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_optimism.jpg",
+    "name": "Optimism",
+    "nativeCoinId": "ethereum",
+    "shortName": "Optimism"
+  },
+  {
+    "chainId": 14,
+    "coingeckoId": "flare-network",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_flare.jpg",
+    "name": "Flare Network",
+    "nativeCoinId": "flare-networks",
+    "shortName": ""
+  },
+  {
+    "chainId": 19,
+    "coingeckoId": "songbird",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_songbird.jpg",
+    "name": "Songbird",
+    "nativeCoinId": "songbird",
+    "shortName": ""
+  },
+  {
+    "chainId": 25,
+    "coingeckoId": "cronos",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_cro.jpg",
+    "name": "Cronos",
+    "nativeCoinId": "crypto-com-chain",
+    "shortName": "CRO"
+  },
+  {
+    "chainId": 30,
+    "coingeckoId": "rootstock",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_rootstock.jpg",
+    "name": "Rootstock RSK",
+    "nativeCoinId": "rootstock",
+    "shortName": ""
+  },
+  {
+    "chainId": 50,
+    "coingeckoId": "xdc-network",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_xdc xinfin.jpg",
+    "name": "XDC Network",
+    "nativeCoinId": "xdce-crowd-sale",
+    "shortName": "xdc xinfin"
+  },
+  {
+    "chainId": 52,
+    "coingeckoId": "coinex-smart-chain",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_csc.jpg",
+    "name": "CoinEx Smart Chain",
+    "nativeCoinId": "coinex-token",
+    "shortName": "CSC"
+  },
+  {
+    "chainId": 56,
+    "coingeckoId": "binance-smart-chain",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_bsc.jpg",
+    "name": "BNB Smart Chain",
+    "nativeCoinId": "binancecoin",
+    "shortName": "BSC"
+  },
+  {
+    "chainId": 57,
+    "coingeckoId": "syscoin",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_syscoin.jpg",
+    "name": "Syscoin NEVM",
+    "nativeCoinId": "syscoin",
+    "shortName": "syscoin"
+  },
+  {
+    "chainId": 66,
+    "coingeckoId": "okex-chain",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_okex.jpg",
+    "name": "OKExChain",
+    "nativeCoinId": "oec-token",
+    "shortName": "OKEx"
+  },
+  {
+    "chainId": 70,
+    "coingeckoId": "hoo-smart-chain",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_hoo.jpg",
+    "name": "Hoo Smart Chain",
+    "nativeCoinId": "hoo-token",
+    "shortName": ""
+  },
+  {
+    "chainId": 82,
+    "coingeckoId": "meter",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_meter.jpg",
+    "name": "Meter",
+    "nativeCoinId": "meter",
+    "shortName": ""
+  },
+  {
+    "chainId": 88,
+    "coingeckoId": "tomochain",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_tomochain.jpg",
+    "name": "TomoChain",
+    "nativeCoinId": "tomochain",
+    "shortName": ""
+  },
+  {
+    "chainId": 96,
+    "coingeckoId": "bitkub-chain",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_bitkub.jpg",
+    "name": "Bitkub Chain",
+    "nativeCoinId": "bitkub-coin",
+    "shortName": ""
+  },
+  {
+    "chainId": 100,
+    "coingeckoId": "xdai",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_gnosis.jpg",
+    "name": "Gnosis Chain",
+    "nativeCoinId": "xdai",
+    "shortName": ""
+  },
+  {
+    "chainId": 106,
+    "coingeckoId": "velas",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_velas.jpg",
+    "name": "Velas",
+    "nativeCoinId": "velas",
+    "shortName": "velas"
+  },
+  {
+    "chainId": 108,
+    "coingeckoId": "thundercore",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_thundercore.jpg",
+    "name": "ThunderCore",
+    "nativeCoinId": "thunder-token",
+    "shortName": ""
+  },
+  {
+    "chainId": 122,
+    "coingeckoId": "fuse",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_fuse.jpg",
+    "name": "Fuse",
+    "nativeCoinId": "fuse-network-token",
+    "shortName": ""
+  },
+  {
+    "chainId": 128,
+    "coingeckoId": "huobi-token",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_heco.jpg",
+    "name": "Huobi ECO Chain Mainnet",
+    "nativeCoinId": "huobi-token",
+    "shortName": "HECO"
+  },
+  {
+    "chainId": 137,
+    "coingeckoId": "polygon-pos",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_matic.jpg",
+    "name": "Polygon POS",
+    "nativeCoinId": "matic-network",
+    "shortName": "MATIC"
+  },
+  {
+    "chainId": 148,
+    "coingeckoId": "shimmer_evm",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_shimmerevm.jpg",
+    "name": "ShimmerEVM",
+    "nativeCoinId": "shimmer",
+    "shortName": ""
+  },
+  {
+    "chainId": 169,
+    "coingeckoId": "manta-pacific",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_manta.jpg",
+    "name": "Manta Pacific",
+    "nativeCoinId": "weth",
+    "shortName": ""
+  },
+  {
+    "chainId": 196,
+    "coingeckoId": "x1",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_x1.jpg",
+    "name": "X1",
+    "nativeCoinId": "okb",
+    "shortName": ""
+  },
+  {
+    "chainId": 199,
+    "coingeckoId": "bittorrent",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_bittorrent.jpg",
+    "name": "BitTorrent",
+    "nativeCoinId": "bittorrent",
+    "shortName": ""
+  },
+  {
+    "chainId": 204,
+    "coingeckoId": "opbnb",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_opbnb.jpg",
+    "name": "opBNB",
+    "nativeCoinId": "binancecoin",
+    "shortName": ""
+  },
+  {
+    "chainId": 250,
+    "coingeckoId": "fantom",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_fantom.jpg",
+    "name": "Fantom",
+    "nativeCoinId": "fantom",
+    "shortName": ""
+  },
+  {
+    "chainId": 288,
+    "coingeckoId": "boba",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_boba.jpg",
+    "name": "Boba Network",
+    "nativeCoinId": "ethereum",
+    "shortName": ""
+  },
+  {
+    "chainId": 295,
+    "coingeckoId": "hedera-hashgraph",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_hashgraph.jpg",
+    "name": "Hedera Hashgraph",
+    "nativeCoinId": "hedera-hashgraph",
+    "shortName": "hashgraph"
+  },
+  {
+    "chainId": 321,
+    "coingeckoId": "kucoin-community-chain",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_kcc.jpg",
+    "name": "Kucoin Community Chain",
+    "nativeCoinId": "kucoin-shares",
+    "shortName": "KCC"
+  },
+  {
+    "chainId": 324,
+    "coingeckoId": "zksync",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_zksync.jpg",
+    "name": "zkSync",
+    "nativeCoinId": "ethereum",
+    "shortName": ""
+  },
+  {
+    "chainId": 361,
+    "coingeckoId": "theta",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_theta.jpg",
+    "name": "Theta",
+    "nativeCoinId": "theta-token",
+    "shortName": ""
+  },
+  {
+    "chainId": 530,
+    "coingeckoId": "function-x",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_function.jpg",
+    "name": "Function X",
+    "nativeCoinId": "fx-coin",
+    "shortName": ""
+  },
+  {
+    "chainId": 1088,
+    "coingeckoId": "metis-andromeda",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_metis.jpg",
+    "name": "Metis Andromeda",
+    "nativeCoinId": "metis-token",
+    "shortName": ""
+  },
+  {
+    "chainId": 1101,
+    "coingeckoId": "polygon-zkevm",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_polygon.jpg",
+    "name": "Polygon zkEVM",
+    "nativeCoinId": "ethereum",
+    "shortName": ""
+  },
+  {
+    "chainId": 1231,
+    "coingeckoId": "ultron",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_ultron.jpg",
+    "name": "Ultron",
+    "nativeCoinId": "ultron",
+    "shortName": ""
+  },
+  {
+    "chainId": 1284,
+    "coingeckoId": "moonbeam",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_moonbeam.jpg",
+    "name": "Moonbeam",
+    "nativeCoinId": "moonbeam",
+    "shortName": ""
+  },
+  {
+    "chainId": 1285,
+    "coingeckoId": "moonriver",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_moonriver.jpg",
+    "name": "Moonriver",
+    "nativeCoinId": "moonriver",
+    "shortName": "moonriver"
+  },
+  {
+    "chainId": 1559,
+    "coingeckoId": "tenet",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_tenet.jpg",
+    "name": "Tenet",
+    "nativeCoinId": "tenet-1b000f7b-59cb-4e06-89ce-d62b32d362b9",
+    "shortName": ""
+  },
+  {
+    "chainId": 1890,
+    "coingeckoId": "lightlink",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_lightlink.jpg",
+    "name": "LightLink",
+    "nativeCoinId": "ethereum",
+    "shortName": ""
+  },
+  {
+    "chainId": 2001,
+    "coingeckoId": "milkomeda-cardano",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_milkomeda.jpg",
+    "name": "Milkomeda (Cardano)",
+    "nativeCoinId": "cardano",
+    "shortName": ""
+  },
+  {
+    "chainId": 2415,
+    "coingeckoId": "xodex",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_xodex.jpg",
+    "name": "XODEX",
+    "nativeCoinId": "xodex",
+    "shortName": ""
+  },
+  {
+    "chainId": 2611,
+    "coingeckoId": "redlight-chain",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_redlight.jpg",
+    "name": "Redlight Chain",
+    "nativeCoinId": "redlight-chain",
+    "shortName": ""
+  },
+  {
+    "chainId": 3693,
+    "coingeckoId": "empire",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_empire.jpg",
+    "name": "Empire",
+    "nativeCoinId": "empire-capital-token",
+    "shortName": ""
+  },
+  {
+    "chainId": 4337,
+    "coingeckoId": "beam",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_beam.jpg",
+    "name": "Beam",
+    "nativeCoinId": "beam",
+    "shortName": ""
+  },
+  {
+    "chainId": 5000,
+    "coingeckoId": "mantle",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_mantle.jpg",
+    "name": "Mantle",
+    "nativeCoinId": "mantle",
+    "shortName": ""
+  },
+  {
+    "chainId": 7700,
+    "coingeckoId": "canto",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_canto.jpg",
+    "name": "Canto",
+    "nativeCoinId": "canto",
+    "shortName": ""
+  },
+  {
+    "chainId": 8453,
+    "coingeckoId": "base",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_base.jpg",
+    "name": "Base",
+    "nativeCoinId": "ethereum",
+    "shortName": ""
+  },
+  {
+    "chainId": 8545,
+    "coingeckoId": "shiden network",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_shiden.jpg",
+    "name": "Shiden Network",
+    "nativeCoinId": "shiden",
+    "shortName": ""
+  },
+  {
+    "chainId": 9001,
+    "coingeckoId": "evmos",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_evmos.jpg",
+    "name": "Evmos",
+    "nativeCoinId": "evmos",
+    "shortName": "evmos"
+  },
+  {
+    "chainId": 10000,
+    "coingeckoId": "smartbch",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_smartbch.jpg",
+    "name": "SmartBCH",
+    "nativeCoinId": "bitcoin-cash",
+    "shortName": ""
+  },
+  {
+    "chainId": 17777,
+    "coingeckoId": "eos-evm",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_eos.jpg",
+    "name": "EOS EVM",
+    "nativeCoinId": "eos",
+    "shortName": ""
+  },
+  {
+    "chainId": 42161,
+    "coingeckoId": "arbitrum-one",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_arbitrum.jpg",
+    "name": "Arbitrum One",
+    "nativeCoinId": "ethereum",
+    "shortName": "Arbitrum"
+  },
+  {
+    "chainId": 42170,
+    "coingeckoId": "arbitrum-nova",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_arbitrum.jpg",
+    "name": "Arbitrum Nova",
+    "nativeCoinId": "ethereum",
+    "shortName": ""
+  },
+  {
+    "chainId": 42220,
+    "coingeckoId": "celo",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_celo.jpg",
+    "name": "Celo",
+    "nativeCoinId": "celo",
+    "shortName": "celo"
+  },
+  {
+    "chainId": 42262,
+    "coingeckoId": "oasis",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_oasis.jpg",
+    "name": "Oasis",
+    "nativeCoinId": "oasis-network",
+    "shortName": "oasis"
+  },
+  {
+    "chainId": 43114,
+    "coingeckoId": "avalanche",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_avax.jpg",
+    "name": "Avalanche",
+    "nativeCoinId": "avalanche-2",
+    "shortName": "AVAX"
+  },
+  {
+    "chainId": 59144,
+    "coingeckoId": "linea",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_linea.jpg",
+    "name": "Linea",
+    "nativeCoinId": "ethereum",
+    "shortName": ""
+  },
+  {
+    "chainId": 333999,
+    "coingeckoId": "polis-chain",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_polis.jpg",
+    "name": "Polis Chain",
+    "nativeCoinId": "polis",
+    "shortName": ""
+  },
+  {
+    "chainId": 245022934,
+    "coingeckoId": "neon-evm",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_neon.jpg",
+    "name": "Neon EVM",
+    "nativeCoinId": "neon",
+    "shortName": ""
+  },
+  {
+    "chainId": 1313161554,
+    "coingeckoId": "aurora",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_aurora.jpg",
+    "name": "Aurora",
+    "nativeCoinId": "aurora-near",
+    "shortName": "aurora"
+  },
+  {
+    "chainId": 1666600000,
+    "coingeckoId": "harmony-shard-0",
+    "image": "https://icons.llamao.fi/icons/chains/rsz_harmony shard 0.jpg",
+    "name": "Harmony Shard 0",
+    "nativeCoinId": "harmony",
+    "shortName": "Harmony Shard 0"
+  }
+]

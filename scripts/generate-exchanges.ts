@@ -42,7 +42,6 @@ async function main() {
         country: x.country,
         image: x.image,
         name: x.name,
-        symbol: x.symbol,
         url: x.url,
         year: x.year_established,
       }))
