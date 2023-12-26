@@ -158,7 +158,7 @@ export function MemoryTable<T extends BaseType>(props: MemoryTableProps<T>) {
     [rows, order, orderBy, page, rowsPerPage, valueSelectors, activeFilters]
   )
 
-  const [relativeTime, setRelativeTime] = useState(false)
+  const [relativeTime, setRelativeTime] = useState(true)
 
   const handleRelativeTime = useCallback((_event: MouseEvent<unknown>) => {
     setRelativeTime((prev) => !prev)
@@ -169,7 +169,7 @@ export function MemoryTable<T extends BaseType>(props: MemoryTableProps<T>) {
     enter: { opacity: 2 },
     exitBeforeEnter: true,
     from: { opacity: 2 },
-    leave: { opacity: 1 },
+    leave: { delay: 50, opacity: 1 },
   })
 
   return (
@@ -181,7 +181,7 @@ export function MemoryTable<T extends BaseType>(props: MemoryTableProps<T>) {
           ) : (
             <Stack gap={1}>
               {Object.keys(activeFilters).length > 0 && (
-                <Stack direction="row" spacing={1} marginLeft={1}>
+                <Stack direction="row" spacing={1} marginLeft={1} marginTop={0.5}>
                   {Object.keys(activeFilters).map((x) => (
                     <FilterChip
                       key={x}

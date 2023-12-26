@@ -24,13 +24,15 @@ interface ConfirmDialogProps {
   variant?: "danger" | "warning" | "info" | "success"
 }
 
+const DEFAULT_VAL = []
+
 const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   open,
   onClose,
   title,
   content,
   variant,
-  extraQuestions = [],
+  extraQuestions = DEFAULT_VAL,
 }) => {
   const [answers, setAnswers] = useState<boolean[]>([])
   const handleCancel = () => onClose(false, answers)

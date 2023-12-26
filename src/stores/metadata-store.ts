@@ -62,9 +62,16 @@ async function computeFilterMap() {
 
   const connections = await clancy.getConnections()
   for (const connection of connections) {
-    const { integration } = connection
+    const { integration, meta } = connection
+
+    if (!meta) {
+      continue
+    }
 
     integrations.add(integration)
+    meta.symbols.forEach((x) => symbols.add(x))
+    meta.wallets.forEach((x) => wallets.add(x))
+    meta.operations.forEach((x) => operations.add(x))
   }
 
   const symbolOptions = [...symbols].sort()

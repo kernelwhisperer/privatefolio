@@ -1,30 +1,15 @@
 "use client"
 
-import {
-  AppBar,
-  Box,
-  Container,
-  Grid,
-  Stack,
-  Tab,
-  TabProps,
-  Tabs,
-  tabsClasses,
-  Toolbar,
-} from "@mui/material"
+import { AppBar, Box, Container, Grid, Stack, tabsClasses, Toolbar } from "@mui/material"
 import { grey } from "@mui/material/colors"
 import React from "react"
-import { NavLink, useLocation } from "react-router-dom"
+import { useLocation } from "react-router-dom"
 
+import { NavTab } from "../NavTab"
+import { Tabs } from "../Tabs"
 import { TaskDropdown } from "../Tasks/TaskDropdown"
 import { Logo } from "./Logo"
 import { SettingsDrawer } from "./SettingsDrawer"
-
-export function NavButton(props: TabProps<typeof NavLink>) {
-  return (
-    <Tab component={NavLink} LinkComponent={NavLink} sx={{ textTransform: "none" }} {...props} />
-  )
-}
 
 export function Header() {
   const location = useLocation()
@@ -69,23 +54,17 @@ export function Header() {
                     bottom: 8,
                     height: 4,
                   },
-                  [`& .${tabsClasses.flexContainer}`]: {
-                    gap: 2,
-                  },
                   [`& .${tabsClasses.flexContainer} > a`]: {
                     minWidth: 0,
                     paddingX: 0,
                     transition: theme.transitions.create("color"),
                   },
-                  [`& .${tabsClasses.flexContainer} > a:hover`]: {
-                    color: theme.palette.text.primary,
-                  },
                 })}
               >
-                <NavButton value="/" to="/" label="Home" />
-                <NavButton value="/transactions" to="/transactions" label="Transactions" />
-                <NavButton value="/audit-logs" to="/audit-logs" label="Audit logs" />
-                <NavButton value="/import-data" to="/import-data" label="Import data" />
+                <NavTab value="/" to="/" label="Home" />
+                <NavTab value="/transactions" to="/transactions" label="Transactions" />
+                <NavTab value="/audit-logs" to="/audit-logs" label="Audit logs" />
+                <NavTab value="/import-data" to="/import-data" label="Import data" />
               </Tabs>
             </Grid>
             <Grid

@@ -42,7 +42,7 @@ export function ConnectedTableHead<T extends BaseType>(props: ConnectedTableHead
     activeFilters,
     setFilterKey,
   } = props
-  const { key, numeric, label, filterable, sortable } = headCell
+  const { key, numeric, label, hideLabel, filterable, sortable } = headCell
 
   const { value: open, toggle: toggleOpen } = useBoolean(false)
 
@@ -75,9 +75,9 @@ export function ConnectedTableHead<T extends BaseType>(props: ConnectedTableHead
               onClick={onRelativeTime}
             >
               {relativeTime ? (
-                <AccessTimeFilledRounded fontSize="inherit" />
-              ) : (
                 <AccessTimeRounded fontSize="inherit" />
+              ) : (
+                <AccessTimeFilledRounded fontSize="inherit" />
               )}
             </IconButton>
           </Tooltip>
@@ -138,7 +138,7 @@ export function ConnectedTableHead<T extends BaseType>(props: ConnectedTableHead
             ) : null}
           </TableSortLabel>
         ) : (
-          <>{label}</>
+          <>{hideLabel ? "" : label}</>
         )}
       </Stack>
     </>

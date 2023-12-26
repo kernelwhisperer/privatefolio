@@ -1,4 +1,11 @@
-import React, { createContext, PropsWithChildren, ReactNode, useContext, useState } from "react"
+import React, {
+  createContext,
+  PropsWithChildren,
+  ReactNode,
+  useCallback,
+  useContext,
+  useState,
+} from "react"
 
 import ConfirmDialog from "../components/ConfirmDialog/ConfirmDialog"
 
@@ -29,18 +36,21 @@ export function ConfirmDialogProvider({ children }: PropsWithChildren) {
     resolve: (result: ConfirmationResult) => void
   } | null>(null)
 
-  const confirm = (request: ConfirmationRequest) => {
+  const confirm = useCallback((request: ConfirmationRequest) => {
     return new Promise<ConfirmationResult>((resolve) => {
       setState({ request, resolve })
     })
-  }
+  }, [])
 
-  const handleClose = (confirmed: boolean, extraAnswers: boolean[]) => {
-    if (state) {
-      state.resolve({ confirmed, extraAnswers })
-      setState(null)
-    }
-  }
+  const handleClose = useCallback(
+    (confirmed: boolean, extraAnswers: boolean[]) => {
+      if (state) {
+        state.resolve({ confirmed, extraAnswers })
+        setState(null)
+      }
+    },
+    [state]
+  )
 
   return (
     <ConfirmDialogContext.Provider value={{ confirm }}>

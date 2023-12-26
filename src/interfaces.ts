@@ -1,6 +1,7 @@
 import type Decimal from "decimal.js"
 import { OhlcData, SingleValueData, UTCTimestamp } from "lightweight-charts"
 
+import { BlockchainTransaction } from "./api/account/connections/etherscan-rpc"
 import { INTEGRATIONS } from "./settings"
 
 export type TransactionRole = "Maker" | "Taker"
@@ -290,6 +291,14 @@ export interface Connection {
   address: string
   integration: Integration
   label: string
+  meta?: {
+    logs: number
+    operations: AuditLogOperation[]
+    rows: number
+    symbols: string[]
+    transactions: number
+    wallets: string[]
+  }
   syncedAt?: number
   /**
    * createdAt
@@ -298,4 +307,9 @@ export interface Connection {
 }
 
 export type ParserResult = { logs: AuditLog[]; txns?: Transaction[] }
-export type Parser = (csvRow: string, index: number, fileImportId: string) => ParserResult
+export type CsvParser = (csvRow: string, index: number, fileImportId: string) => ParserResult
+export type EvmParser = (
+  row: BlockchainTransaction,
+  index: number,
+  connectionId: string
+) => ParserResult

@@ -1,4 +1,4 @@
-import { Integration, Parser } from "src/interfaces"
+import { CsvParser, Integration } from "src/interfaces"
 
 import * as binance from "./binance"
 import * as coinmama from "./coinmama"
@@ -10,7 +10,7 @@ export const HEADER_MATCHER: Record<string, Integration> = {
   [coinmama.HEADER]: coinmama.Identifier,
 }
 
-export const PARSERS: Partial<Record<Integration, Parser>> = {
+export const PARSERS: Partial<Record<Integration, CsvParser>> = {
   [binance.Identifier]: binance.parser,
   [mexc.Identifier]: mexc.parser,
   [coinmama.Identifier]: coinmama.parser,

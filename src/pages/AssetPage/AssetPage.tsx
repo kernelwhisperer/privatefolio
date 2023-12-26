@@ -1,8 +1,9 @@
-import { Stack, Tab, TabProps, Tabs, tabsClasses, Typography } from "@mui/material"
-import { grey } from "@mui/material/colors"
+import { Stack, Typography } from "@mui/material"
 import { useStore } from "@nanostores/react"
 import React from "react"
-import { Navigate, NavLink, useParams, useSearchParams } from "react-router-dom"
+import { Navigate, useParams, useSearchParams } from "react-router-dom"
+import { NavTab } from "src/components/NavTab"
+import { Tabs } from "src/components/Tabs"
 
 import { AssetAvatar } from "../../components/AssetAvatar"
 import { BackButton } from "../../components/BackButton"
@@ -13,12 +14,6 @@ import { AuditLogTable } from "../AuditLogsPage/AuditLogTable"
 import { TransactionTable } from "../TransactionPage/TransactionTable"
 import { BalanceChart } from "./BalanceChart"
 import { PriceChart } from "./PriceChart"
-
-export function NavButton(props: TabProps<typeof NavLink>) {
-  return (
-    <Tab component={NavLink} LinkComponent={NavLink} sx={{ textTransform: "none" }} {...props} />
-  )
-}
 
 export default function AssetPage({ show }: { show: boolean }) {
   const params = useParams()
@@ -55,50 +50,34 @@ export default function AssetPage({ show }: { show: boolean }) {
         </Stack>
       </Stack>
       <Stack>
-        <Tabs
-          value={tab}
-          sx={(theme) => ({
-            marginX: 2,
-            [`& .${tabsClasses.indicator}`]: {
-              background: grey[600],
-              // borderRadius: 2,
-              borderTopLeftRadius: 32,
-              borderTopRightRadius: 32,
-              // bottom: 6,
-              height: 4,
-            },
-            [`& .${tabsClasses.flexContainer}`]: {
-              gap: 2,
-            },
-            [`& .${tabsClasses.flexContainer} > a`]: {
-              ...theme.typography.body1,
-              fontFamily: SerifFont,
-              fontWeight: 500,
-              letterSpacing: 0.5,
-              minWidth: 0,
-              paddingX: 0,
-              transition: theme.transitions.create("color"),
-            },
-            [`& .${tabsClasses.flexContainer} > a:hover`]: {
-              color: theme.palette.text.primary,
-            },
-          })}
-        >
-          <NavButton value="" to={`/asset/${symbol}`} label="Price history" replace />
-          <NavButton
+        <Tabs value={tab}>
+          <NavTab
+            value=""
+            to={`/asset/${symbol}`}
+            label="Price history"
+            replace
+            //
+          />
+          <NavTab
             value="balance"
             to={`/asset/${symbol}?tab=balance`}
             label="Balance history"
             replace
           />
-          {/* <NavButton value="pnl" to={`/asset/${symbol}?tab=pnl`} label="Profit & Loss" replace /> */}
-          <NavButton
+          {/* <NavTab
+            value="pnl"
+            to={`/asset/${symbol}?tab=pnl`}
+            label="Profit & Loss"
+            replace
+            //
+          /> */}
+          <NavTab
             value="transactions"
             to={`/asset/${symbol}?tab=transactions`}
             label="Transactions"
             replace
           />
-          <NavButton
+          <NavTab
             value="audit-logs"
             to={`/asset/${symbol}?tab=audit-logs`}
             label="Audit logs"

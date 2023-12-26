@@ -157,7 +157,7 @@ export function AuditLogTableRow(props: TableRowComponentProps<AuditLog>) {
           <Tooltip
             title={
               typeof balance === "number" ? (
-                <Box sx={{ fontFamily: MonoFont }}>balance</Box>
+                <Box sx={{ fontFamily: MonoFont }}>{balance}</Box>
               ) : (
                 "Use the 'Compute balances' action to compute these values."
               )

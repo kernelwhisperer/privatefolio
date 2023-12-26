@@ -1,3 +1,5 @@
+import { Connection } from "src/interfaces"
+
 import { $filterOptionsMap } from "../stores/metadata-store"
 import { $taskQueue, enqueueTask, TaskPriority } from "../stores/task-store"
 import { clancy } from "../workers/remotes"
@@ -84,5 +86,17 @@ export function enqueueComputeNetworth() {
     },
     name: "Compute networth",
     priority: TaskPriority.Low,
+  })
+}
+
+export function enqueueSyncConnection(connection: Connection) {
+  enqueueTask({
+    description: `Sync "${connection.address}"`,
+    determinate: true,
+    function: async (progress) => {
+      await clancy.syncConnection(progress, connection)
+    },
+    name: "Sync connection",
+    priority: TaskPriority.High,
   })
 }

@@ -34,8 +34,8 @@ export function BalanceChart(props: BalanceChartProps) {
       queryFn={queryFn}
       initType="Histogram"
       tooltipOptions={{
-        currencySymbol: "COMP ",
-        significantDigits: 0, // TODO
+        currencySymbol: symbol,
+        significantDigits: 18, // TODO
       }}
     />
   )

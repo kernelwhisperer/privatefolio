@@ -62,7 +62,7 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
   const [rowsPerPage, setRowsPerPage] = useState(defaultRowsPerPage)
 
   // TODO turn into setting
-  const [relativeTime, setRelativeTime] = useState(false)
+  const [relativeTime, setRelativeTime] = useState(true)
 
   const handleRelativeTime = useCallback((_event: MouseEvent<unknown>) => {
     setRelativeTime((prev) => !prev)
@@ -145,7 +145,7 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
           ) : (
             <Stack gap={1}>
               {Object.keys(activeFilters).length > 0 && (
-                <Stack direction="row" spacing={1} marginLeft={1}>
+                <Stack direction="row" spacing={1} marginLeft={1} marginTop={0.5}>
                   {Object.keys(activeFilters).map((x) => (
                     <FilterChip
                       key={x}

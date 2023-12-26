@@ -48,15 +48,15 @@ export function ConnectionsTable() {
         sortable: true,
       },
       {
-        filterable: true,
-        key: "integration",
-        label: "Integration",
+        key: "syncedAt",
+        label: "Synced at",
         sortable: true,
       },
       {
-        key: "label",
-        label: "Label",
-        sortable: true,
+        filterable: true,
+        hideLabel: true,
+        key: "integration",
+        label: "Integration",
       },
       {
         key: "address",
@@ -77,11 +77,6 @@ export function ConnectionsTable() {
         sortable: true,
         // valueSelector: (row) => row.meta?.transactions,
       },
-      // {
-      //   key: "as",
-      //   label: "Last synced",
-      //   sortable: true,
-      // },
       {
         label: (
           <>
@@ -99,6 +94,7 @@ export function ConnectionsTable() {
             </Tooltip>
           </>
         ),
+        numeric: true,
       },
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps

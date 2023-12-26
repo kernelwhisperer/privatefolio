@@ -62,7 +62,9 @@ export function BalanceTableRow(props: TableRowComponentProps<Balance>) {
                   maximumFractionDigits: 2, // TODO make this configurable
                   minimumFractionDigits: 2,
                 })}{" "}
-                USD
+                <Typography color="text.secondary" component="span" variant="inherit">
+                  USD
+                </Typography>
               </>
             )}
           </span>
@@ -104,7 +106,9 @@ export function BalanceTableRow(props: TableRowComponentProps<Balance>) {
                   maximumFractionDigits: 2, // TODO make this configurable
                   minimumFractionDigits: 2,
                 })}{" "}
-                USD
+                <Typography color="text.secondary" component="span" variant="inherit">
+                  USD
+                </Typography>
               </>
             )}
           </span>

@@ -106,7 +106,10 @@ export async function removeFileImport(
     txns.rows.map((row) => ({ _deleted: true, _id: row.id, _rev: row.value.rev } as never))
   )
 
+  //
+  progress([95, `Removing file import`])
   const res = await account.fileImportsDB.remove(fileImport)
+  progress([100, `Removal complete`])
   return res.ok
 }
 

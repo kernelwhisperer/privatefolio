@@ -177,6 +177,13 @@ export const theme: CssVarsThemeOptions = {
       defaultProps: {
         disableRipple: true, // No more ripple, on the whole application 💣!
       },
+      styleOverrides: {
+        root: {
+          "&:active": {
+            transform: "translateY(1px)",
+          },
+        },
+      },
     },
     MuiCheckbox: {
       styleOverrides: {
@@ -493,7 +500,7 @@ export const theme: CssVarsThemeOptions = {
           "html[data-mui-color-scheme='dark'] & .secondary": {
             color: "var(--mui-palette-grey-600)",
           },
-          maxWidth: 328,
+          maxWidth: 340,
           paddingBottom: 8,
           paddingLeft: 16,
           paddingRight: 16,

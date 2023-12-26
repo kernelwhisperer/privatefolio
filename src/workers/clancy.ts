@@ -4,7 +4,7 @@ import { expose } from "comlink"
 
 import * as auditLogs from "../api/account/audit-logs-api"
 import * as balances from "../api/account/balances-api"
-import * as connections from "../api/account/connections-api"
+import * as connections from "../api/account/connections/connections-api"
 import * as fileImports from "../api/account/file-imports/file-imports-api"
 import * as kv from "../api/account/kv-api"
 import * as networth from "../api/account/networth-api"

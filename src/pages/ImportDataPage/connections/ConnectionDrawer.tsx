@@ -13,6 +13,7 @@ import {
 } from "@mui/material"
 import { isAddress } from "ethers"
 import React, { useCallback, useEffect, useState } from "react"
+import { enqueueSyncConnection } from "src/utils/common-tasks"
 import { clancy } from "src/workers/remotes"
 
 import { AddressInput } from "../../../components/AddressInput"
@@ -46,8 +47,9 @@ export function ConnectionDrawer({ open, toggleOpen, ...rest }: DrawerProps & Po
 
       clancy
         .addConnection({ address, integration, label })
-        .then(() => {
+        .then((connection) => {
           toggleOpen()
+          enqueueSyncConnection(connection)
         })
         .catch(() => {
           setLoading(false)
@@ -112,7 +114,7 @@ export function ConnectionDrawer({ open, toggleOpen, ...rest }: DrawerProps & Po
             />
           </div>
           <LoadingButton variant="contained" type="submit" loading={loading}>
-            Submit
+            Add connection
           </LoadingButton>
         </StaggeredList>
       </form>
