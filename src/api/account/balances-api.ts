@@ -40,11 +40,12 @@ export async function getLatestBalances(accountName = "main"): Promise<Balance[]
 export type GetHistoricalBalancesRequest = {
   accountName?: string
   limit?: number
+  skip?: number
   symbol?: string
 }
 
 export async function getHistoricalBalances(request: GetHistoricalBalancesRequest) {
-  const { symbol, limit, accountName = "main" } = request
+  const { symbol, limit, skip, accountName = "main" } = request
   const account = getAccount(accountName)
   await account.balancesDB.createIndex({
     index: {
@@ -63,6 +64,7 @@ export async function getHistoricalBalances(request: GetHistoricalBalancesReques
       : {
           timestamp: { $exists: true },
         },
+    skip,
     sort: [
       symbol
         ? {

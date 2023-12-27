@@ -8,7 +8,39 @@ export type BlockchainTransaction = Transaction & {
 }
 
 export class FullEtherscanProvider extends EtherscanProvider {
-  async getHistory(
+  async getErc20Transactions(
+    address: string,
+    startBlock?: BlockTag,
+    endBlock?: BlockTag
+  ): Promise<Array<BlockchainTransaction>> {
+    const params = {
+      action: "tokentx",
+      address,
+      endblock: endBlock == null ? 99_999_999_999 : endBlock,
+      sort: "asc",
+      startblock: startBlock == null ? 0 : startBlock,
+    }
+
+    return this.fetch("account", params)
+  }
+
+  async getInternalTransactions(
+    address: string,
+    startBlock?: BlockTag,
+    endBlock?: BlockTag
+  ): Promise<Array<BlockchainTransaction>> {
+    const params = {
+      action: "txlistinternal",
+      address,
+      endblock: endBlock == null ? 99_999_999_999 : endBlock,
+      sort: "asc",
+      startblock: startBlock == null ? 0 : startBlock,
+    }
+
+    return this.fetch("account", params)
+  }
+
+  async getTransactions(
     address: string,
     startBlock?: BlockTag,
     endBlock?: BlockTag

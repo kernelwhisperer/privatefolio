@@ -183,7 +183,7 @@ export function ConnectionTableRow(props: TableRowComponentProps<Connection>) {
         )}
       </TableCell>
       <TableCell sx={{ maxWidth: 80, minWidth: 80, width: 80 }}>
-        <Stack direction="row" gap={1}>
+        <Stack direction="row" gap={1} justifyContent="flex-end">
           <Tooltip title={isRemoving ? "Syncing..." : "Sync connection"}>
             <span>
               <IconButton

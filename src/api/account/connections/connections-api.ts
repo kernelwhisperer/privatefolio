@@ -102,7 +102,7 @@ export async function syncConnection(
   accountName = "main"
 ) {
   const rpcProvider = new FullEtherscanProvider()
-  const rows = await rpcProvider.getHistory(connection.address)
+  const rows = await rpcProvider.getTransactions(connection.address)
   console.log("📜 LOG > syncConnection > rows:", rows)
 
   const logs: AuditLog[] = []
