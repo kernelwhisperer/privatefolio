@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`should fetch historical networth 2`] = `
+exports[`should compute historical networth 3`] = `
 [
   {
     "_id": "1504224000000",

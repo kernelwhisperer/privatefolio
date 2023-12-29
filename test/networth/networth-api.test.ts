@@ -39,7 +39,7 @@ it("should compute historical networth", async () => {
   expect(updates.join("\n")).toMatchInlineSnapshot(
     `
     "0,Computing historical networth for 14 total balances
-    100,Computed all networth records!"
+    100,Computed all networth records"
   `
   )
   expect(networthArray.length).toMatchInlineSnapshot(`14`)
