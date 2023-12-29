@@ -78,7 +78,7 @@ export async function queryPrices(request: QueryRequest) {
     throw new Error(`Coinbase: ${data.message}`)
   }
 
-  const buckets = data as CoinbaseBucket[]
+  const buckets = data.reverse() as CoinbaseBucket[]
 
   if (buckets.length > limit) {
     const end = buckets.length

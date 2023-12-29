@@ -51,7 +51,7 @@ it.sequential("should compute historical balances", async () => {
     0,Processing logs 1 to 2
     90,Processing logs 1 to 2 complete
     95,Filling the balances to reach today
-    100,Computed all balances!"
+    100,Saved 14 records to disk"
   `)
 })
 

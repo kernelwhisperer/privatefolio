@@ -227,7 +227,7 @@ export async function fetchDailyPrices(
         since = start - 86400000 * PRICE_API_PAGINATION
       }
     } catch (error) {
-      progress([(i * 100) / symbols.length, `Skipping ${symbol}: ${error}`])
+      progress([(i * 100) / symbols.length, `Skipped ${symbol}: ${error}`])
     }
   }
 }

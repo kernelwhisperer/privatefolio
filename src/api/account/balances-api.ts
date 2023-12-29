@@ -96,6 +96,7 @@ export async function computeBalances(
   const count = await countAuditLogs(accountName)
   progress([0, `Computing balances from ${count} audit logs`])
 
+  let recordsLength = 0
   const latestBalances: BalanceMap = {
     _id: 0,
     timestamp: 0,
@@ -181,6 +182,7 @@ export async function computeBalances(
       timestamp: Number(doc.id),
     }))
     // console.log("ComputeBalances db results", balances)
+    recordsLength += balances.length
     await account.balancesDB.bulkDocs(balances)
     await setValue("balancesCursor", latestDay, accountName)
     progress([
@@ -196,8 +198,8 @@ export async function computeBalances(
 
   if (latestDay === 0) return
 
-  progress([95, `Filling the balances to reach today`])
   // The balances remain the same until today
+  progress([95, `Filling the balances to reach today`])
   for (let i = latestDay + 86400000; i <= until; i += 86400000) {
     historicalBalances[i] = latestBalances
     latestDay = i
@@ -213,5 +215,6 @@ export async function computeBalances(
   }))
   await account.balancesDB.bulkDocs(balances)
   await setValue("balancesCursor", latestDay, accountName)
-  progress([100, `Computed all balances!`])
+  recordsLength += balances.length
+  progress([100, `Saved ${recordsLength - 1} records to disk`])
 }
