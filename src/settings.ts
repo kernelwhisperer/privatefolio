@@ -1,11 +1,11 @@
 export const ASSET_PAGES = 10
-export const ASSET_FILES_LOCATION = "/assets"
+export const ASSET_FILES_LOCATION = "app-images/assets"
 
 export const EXCHANGE_PAGES = 2
-export const EXCHANGE_FILES_LOCATION = "/exchanges"
+export const EXCHANGE_FILES_LOCATION = "app-images/exchanges"
 
 export const BLOCKCHAIN_PAGES = 1
-export const BLOCKCHAIN_FILES_LOCATION = "/blockchains"
+export const BLOCKCHAIN_FILES_LOCATION = "app-images/blockchains"
 
 export const INTEGRATIONS = {
   arbitrum: "Arbitrum",
