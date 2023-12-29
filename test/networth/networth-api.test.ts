@@ -12,11 +12,6 @@ const accountName = "green"
 
 beforeAll(async () => {
   //
-  const folderPath = `test-db/${accountName}`
-  if (!fs.existsSync(folderPath)) {
-    fs.mkdirSync(folderPath, { recursive: true })
-  }
-  //
   await resetAccount(accountName)
   //
   const fileName = "coinmama.csv"
@@ -29,7 +24,7 @@ beforeAll(async () => {
     accountName,
     until,
   })
-  await fetchDailyPrices(["BTC"])
+  await fetchDailyPrices({ symbols: ["BTC"] })
 })
 
 it.sequential("should compute historical networth", async () => {

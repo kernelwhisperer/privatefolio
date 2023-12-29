@@ -59,6 +59,8 @@ export type AuditLogOperation =
 
 export type Integration = keyof typeof INTEGRATIONS
 
+export type PriceApiId = "coinbase" | "binance"
+
 export interface Asset {
   coingeckoId?: string
   image: string
@@ -161,9 +163,10 @@ export type ChartData = SingleValueData &
   }
 
 export interface SavedPrice {
+  _id: string
   pair: string
   price: ChartData
-  source: string
+  source: PriceApiId
   symbol: string
   timestamp: number
 }
@@ -273,15 +276,19 @@ export type CoinbaseBucket = [
 
 export type QueryRequest = {
   /**
-   * @default 300
+   * @default 900 (PRICE_API_PAGINATION)
    */
   limit?: number
   pair?: string
-  priceUnit?: PriceUnit
+  /**
+   * @warning If `until` is undefined, this is ignored too
+   */
   since?: Timestamp
   timeInterval: ResolutionString
+  /**
+   * @warning If `since` is undefined, this is ignored too
+   */
   until?: Timestamp
-  variant?: number
 }
 export const DEFAULT_POLLING_INTERVAL = 2_000
 

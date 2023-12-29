@@ -18,11 +18,6 @@ const accountName = "blue"
 
 beforeAll(async () => {
   //
-  const folderPath = `test-db/${accountName}`
-  if (!fs.existsSync(folderPath)) {
-    fs.mkdirSync(folderPath, { recursive: true })
-  }
-  //
   await resetAccount(accountName)
   //
   const fileName = "coinmama.csv"
@@ -86,7 +81,7 @@ it.sequential("should fetch latest balances without price data", async () => {
 
 it.sequential("should fetch latest balances with price data", async () => {
   // arrange
-  await fetchDailyPrices(["BTC"])
+  await fetchDailyPrices({ symbols: ["BTC"] })
   // act
   const balances = await getLatestBalances(accountName)
   // assert

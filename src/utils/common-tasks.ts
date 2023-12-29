@@ -64,7 +64,13 @@ export function enqueueFetchPrices() {
     description: "Fetching price data for all assets.",
     determinate: true,
     function: async (progress, signal) => {
-      await clancy.fetchDailyPrices($filterOptionsMap.get().symbol, progress, signal)
+      await clancy.fetchDailyPrices(
+        {
+          symbols: $filterOptionsMap.get().symbol,
+        },
+        progress,
+        signal
+      )
     },
     name: "Fetch asset prices",
     priority: TaskPriority.Low,

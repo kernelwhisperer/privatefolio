@@ -1,19 +1,15 @@
 import fs from "fs"
 import { join } from "path"
 import { addFileImport } from "src/api/account/file-imports/file-imports-api"
-import { fetchDailyPrices } from "src/api/core/daily-prices-api"
+import { fetchDailyPrices, getPricesForAsset } from "src/api/core/daily-prices-api"
 import { resetAccount } from "src/api/database"
 import { ProgressUpdate } from "src/stores/task-store"
+import { formatDate } from "src/utils/formatting-utils"
 import { beforeAll, expect, it } from "vitest"
 
 const accountName = "red"
 
 beforeAll(async () => {
-  //
-  const folderPath = `test-db/${accountName}`
-  if (!fs.existsSync(folderPath)) {
-    fs.mkdirSync(folderPath, { recursive: true })
-  }
   //
   await resetAccount(accountName)
   //
@@ -27,23 +23,114 @@ beforeAll(async () => {
 it("should fetch no prices", async () => {
   // act
   const updates: ProgressUpdate[] = []
-  await fetchDailyPrices([], (state) => updates.push(state))
+  await fetchDailyPrices({ symbols: [] }, (state) => updates.push(state))
   // assert
   expect(updates.join("\n")).toMatchInlineSnapshot(`"0,Fetching asset prices for 0 symbols"`)
 })
 
-it.skip("should fetch BTC & ETH prices", async () => {
-  // act
+it("should fetch BTC prices using Binance", async () => {
+  // arrange
   const updates: ProgressUpdate[] = []
-  await fetchDailyPrices(["BTC", "ETH"], (state) => updates.push(state))
+  // act
+  await fetchDailyPrices({ apiPreference: "binance", symbols: ["BTC"] }, (state) =>
+    updates.push(state)
+  )
+  const records = await getPricesForAsset("BTC", "binance")
+  await fetchDailyPrices({ apiPreference: "binance", symbols: ["BTC"] }, (state) =>
+    updates.push(state)
+  )
   // assert
-  expect(updates.join("\n")).toMatchInlineSnapshot(`
-    "0,Fetching asset prices for 2 symbols
-    50,Fetching BTC from genesis
-    50,Fetching BTC from May 12, 2020
-    50,Fetching BTC from Feb 05, 2023
-    100,Fetching ETH from genesis
-    100,Fetching ETH from May 12, 2020
-    100,Fetching ETH from Feb 05, 2023"
-  `) // TODO fix progress
+  // console.log(updates.join("\n"))
+  let prevRecord
+  for (const record of records) {
+    if (prevRecord && Number(record.time) !== Number(prevRecord.time) + 86400) {
+      console.log(prevRecord, record)
+      throw new Error("Inconsistency error")
+    }
+
+    prevRecord = record
+  }
+  expect(records.slice(0, 3)).toMatchInlineSnapshot(`
+    [
+      {
+        "close": 4285.08,
+        "high": 4485.39,
+        "low": 4200.74,
+        "open": 4261.48,
+        "time": 1502928000,
+        "value": 4285.08,
+        "volume": 795.150377,
+      },
+      {
+        "close": 4108.37,
+        "high": 4371.52,
+        "low": 3938.77,
+        "open": 4285.08,
+        "time": 1503014400,
+        "value": 4108.37,
+        "volume": 1199.888264,
+      },
+      {
+        "close": 4139.98,
+        "high": 4184.69,
+        "low": 3850,
+        "open": 4108.37,
+        "time": 1503100800,
+        "value": 4139.98,
+        "volume": 381.309763,
+      },
+    ]
+  `)
+})
+
+it("should fetch BTC prices using Coinbase", async () => {
+  // arrange
+  const updates: ProgressUpdate[] = []
+  // act
+  await fetchDailyPrices({ symbols: ["BTC"] }, (state) => updates.push(state))
+  const records = await getPricesForAsset("BTC")
+  await fetchDailyPrices({ symbols: ["BTC"] }, (state) => updates.push(state))
+  // assert
+  // console.log(updates.join("\n"))
+  let prevRecord
+  for (const record of records) {
+    if (prevRecord && Number(record.time) !== Number(prevRecord.time) + 86400) {
+      console.log(prevRecord, record)
+      throw new Error("Inconsistency error")
+    }
+
+    prevRecord = record
+  }
+  expect(formatDate((records[0].time as number) * 1000)).toMatchInlineSnapshot(`"Jul 20, 2015"`)
+  expect(records.slice(0, 3)).toMatchInlineSnapshot(`
+    [
+      {
+        "close": 280,
+        "high": 280,
+        "low": 277.37,
+        "open": 277.98,
+        "time": 1437350400,
+        "value": 280,
+        "volume": 782.88341959,
+      },
+      {
+        "close": 277.32,
+        "high": 281.27,
+        "low": 276.85,
+        "open": 279.96,
+        "time": 1437436800,
+        "value": 277.32,
+        "volume": 4943.55943437,
+      },
+      {
+        "close": 277.89,
+        "high": 278.54,
+        "low": 275.01,
+        "open": 277.33,
+        "time": 1437523200,
+        "value": 277.89,
+        "volume": 4687.90938331,
+      },
+    ]
+  `)
 })
