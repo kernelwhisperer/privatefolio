@@ -71,7 +71,7 @@ export async function getAssetPriceMap(timestamp: Timestamp) {
   await indexDailyPrices()
 
   const _req: PouchDB.Find.FindRequest<SavedPrice> = {
-    fields: ["symbol", "price"],
+    fields: ["symbol", "price", "source"],
     selector: { timestamp },
   }
 
@@ -83,6 +83,7 @@ export async function getAssetPriceMap(timestamp: Timestamp) {
 
   return prices.docs.reduce(
     (map, x) => {
+      console.log("📜 LOG > getAssetPriceMap > x:", x)
       map[x.symbol] = x.price
       return map
     },
