@@ -18,11 +18,6 @@ const accountName = "blue"
 
 beforeAll(async () => {
   //
-  const folderPath = `test-db/${accountName}`
-  if (!fs.existsSync(folderPath)) {
-    fs.mkdirSync(folderPath, { recursive: true })
-  }
-  //
   await resetAccount(accountName)
   //
   const fileName = "coinmama.csv"
@@ -56,7 +51,7 @@ it.sequential("should compute historical balances", async () => {
     0,Processing logs 1 to 2
     90,Processing logs 1 to 2 complete
     95,Filling the balances to reach today
-    100,Computed all balances!"
+    100,Saved 14 records to disk"
   `)
 })
 
@@ -86,7 +81,7 @@ it.sequential("should fetch latest balances without price data", async () => {
 
 it.sequential("should fetch latest balances with price data", async () => {
   // arrange
-  await fetchDailyPrices(["BTC"])
+  await fetchDailyPrices({ symbols: ["BTC"] })
   // act
   const balances = await getLatestBalances(accountName)
   // assert

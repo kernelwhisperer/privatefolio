@@ -8,11 +8,6 @@ const accountName = "yellow"
 
 beforeAll(async () => {
   //
-  const folderPath = `test-db/${accountName}`
-  if (!fs.existsSync(folderPath)) {
-    fs.mkdirSync(folderPath, { recursive: true })
-  }
-  //
   await resetAccount(accountName)
 })
 

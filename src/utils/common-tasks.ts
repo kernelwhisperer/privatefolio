@@ -1,6 +1,6 @@
 import { Connection } from "src/interfaces"
 
-import { $filterOptionsMap } from "../stores/metadata-store"
+import { $filterOptionsMap, computeMetadata } from "../stores/metadata-store"
 import { $taskQueue, enqueueTask, TaskPriority } from "../stores/task-store"
 import { clancy } from "../workers/remotes"
 
@@ -64,7 +64,14 @@ export function enqueueFetchPrices() {
     description: "Fetching price data for all assets.",
     determinate: true,
     function: async (progress, signal) => {
-      await clancy.fetchDailyPrices($filterOptionsMap.get().symbol, progress, signal)
+      await computeMetadata()
+      await clancy.fetchDailyPrices(
+        {
+          symbols: $filterOptionsMap.get().symbol,
+        },
+        progress,
+        signal
+      )
     },
     name: "Fetch asset prices",
     priority: TaskPriority.Low,

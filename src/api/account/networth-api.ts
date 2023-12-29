@@ -1,3 +1,4 @@
+import { formatDate } from "src/utils/formatting-utils"
 import { noop } from "src/utils/utils"
 
 import { Networth, Time } from "../../interfaces"
@@ -22,8 +23,11 @@ export async function computeNetworth(progress: ProgressCallback = noop, account
   const count = balances.length
   progress([0, `Computing historical networth for ${count} total balances`])
 
-  const networthArray: Networth[] = await Promise.all(
-    balances.map(async ({ _id, _rev, timestamp, ...balanceMap }) => {
+  const docIds: Array<{ id: string }> = []
+  const documentMap: Record<string, Networth> = {}
+
+  await Promise.all(
+    balances.map(async ({ _id, _rev, timestamp, ...balanceMap }, index) => {
       const priceMap = await getAssetPriceMap(timestamp)
 
       const totalValue = Object.keys(priceMap).reduce((acc, symbol) => {
@@ -35,17 +39,29 @@ export async function computeNetworth(progress: ProgressCallback = noop, account
         return acc + Math.round(price.value * balance * 100) / 100
       }, 0)
 
-      return {
+      docIds.push({ id: _id })
+
+      documentMap[_id] = {
         _id,
         change: 0,
         changePercentage: 0,
         time: (timestamp / 1000) as Time,
         value: totalValue,
       }
+      if (index !== 0 && (index + 1) % 250 === 0) {
+        progress([(index * 100) / balances.length, `Computed ${formatDate(timestamp)}`])
+      }
     })
   )
 
+  const { results: docsWithRevision } = await account.networthDB.bulkGet({ docs: docIds })
+
   // TODO this throws
-  await account.networthDB.bulkDocs(networthArray)
-  progress([100, `Computed all networth records!`])
+  const docs: Networth[] = docsWithRevision.map((x) => ({
+    ...documentMap[x.id],
+    _rev: "ok" in x.docs[0] ? x.docs[0].ok._rev : undefined,
+  }))
+
+  await account.networthDB.bulkDocs(docs)
+  progress([100, `Computed all networth records`])
 }

@@ -16,12 +16,27 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+
+    - name: Cache node modules
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/yarn
+        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-yarn-
+
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
+
     - run: yarn install
+    
+    - name: Test
+      run: DISALLOW_BINANCE_PRICE_API=true yarn vitest run --coverage --watch false --reporter verbose
+
+    - name: Build
+      run: yarn build
+
     - name: Lint
       run: yarn lint
-    - name: Test
-      run: yarn test

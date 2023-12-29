@@ -1,6 +1,19 @@
 import { UTCTimestamp } from "lightweight-charts"
+import { DISALLOW_BINANCE_PRICE_API } from "src/settings"
 
-import { BinanceKline, ChartData, QueryRequest, ResolutionString } from "../../interfaces"
+import {
+  BinanceKline,
+  ChartData,
+  PriceApiId,
+  QueryRequest,
+  ResolutionString,
+} from "../../../interfaces"
+
+export const Identifier: PriceApiId = "binance"
+
+export function getPair(symbol: string) {
+  return `${symbol}USDT`
+}
 
 // https://binance-docs.github.io/apidocs/spot/en/#general-api-information
 // The following intervalLetter values for headers:
@@ -19,22 +32,28 @@ function getInterval(timeInterval: ResolutionString) {
 }
 
 export async function queryPrices(request: QueryRequest) {
-  const { timeInterval, since, until, limit = 1000, pair } = request
+  if (DISALLOW_BINANCE_PRICE_API) {
+    throw new Error("Binance price API is disabled")
+  }
+
+  const { timeInterval, since, until, limit = 900, pair } = request
   const binanceInterval = getInterval(timeInterval)
 
   let apiUrl = `https://api.binance.com/api/v3/klines?symbol=${pair}&interval=${binanceInterval}&limit=${limit}`
-  if (typeof since === "number") {
-    const timestamp = since
-    apiUrl = `${apiUrl}&startTime=${timestamp}`
-  }
-  if (typeof until === "number") {
-    const timestamp = until
-    apiUrl = `${apiUrl}&endTime=${timestamp}`
+
+  if (since && until) {
+    apiUrl = `${apiUrl}&startTime=${since}`
+    apiUrl = `${apiUrl}&endTime=${until}`
   }
 
   const res = await fetch(apiUrl)
-  const data = (await res.json()) as BinanceKline[]
-  return data
+  const data = await res.json()
+
+  if (data.code) {
+    throw new Error(`Binance: ${data.msg} (${data.code})`)
+  }
+
+  return data as BinanceKline[]
 }
 
 export function mapToChartData(kline: BinanceKline): ChartData {
