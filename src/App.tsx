@@ -69,10 +69,10 @@ export default function App() {
             style={
               {
                 ...styles,
-                maxWidth: 1200 - 48, // TODO
+                maxWidth: 1200 - 32,
                 paddingBottom: 24,
                 position: "absolute",
-                width: "calc(100% - 48px)",
+                width: "calc(100% - 32px)",
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
               } as any
             }

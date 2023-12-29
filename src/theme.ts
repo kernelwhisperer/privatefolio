@@ -179,7 +179,7 @@ export const theme: CssVarsThemeOptions = {
       },
       styleOverrides: {
         root: {
-          "&:active": {
+          "&:active:not(.MuiMenuItem-root):not(.MuiListItemButton-root)": {
             transform: "translateY(1px)",
           },
         },
@@ -200,6 +200,17 @@ export const theme: CssVarsThemeOptions = {
       styleOverrides: {
         root: {
           borderRadius: 2,
+        },
+      },
+    },
+    MuiContainer: {
+      defaultProps: {
+        disableGutters: true,
+      },
+      styleOverrides: {
+        root: {
+          paddingLeft: "16px !important",
+          paddingRight: "16px !important",
         },
       },
     },
