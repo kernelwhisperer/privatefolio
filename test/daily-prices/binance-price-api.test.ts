@@ -1,8 +1,12 @@
 import { mapToChartData, queryPrices } from "src/api/core/prices/binance-price-api"
 import { ResolutionString } from "src/interfaces"
+import { DISALLOW_BINANCE_PRICE_API } from "src/settings"
 import { expect, it } from "vitest"
 
-it("should fetch BTC prices within a range", async () => {
+it("should fetch BTC prices within a range", async (test) => {
+  if (DISALLOW_BINANCE_PRICE_API) {
+    test.skip()
+  }
   // act
   const result = await queryPrices({
     limit: 3,
@@ -45,7 +49,10 @@ it("should fetch BTC prices within a range", async () => {
   `)
 })
 
-it("should throw an error", async () => {
+it("should throw an error", async (test) => {
+  if (DISALLOW_BINANCE_PRICE_API) {
+    test.skip()
+  }
   // act
   const promise = queryPrices({
     pair: "EFJAUSDT",

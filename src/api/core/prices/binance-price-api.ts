@@ -1,4 +1,5 @@
 import { UTCTimestamp } from "lightweight-charts"
+import { DISALLOW_BINANCE_PRICE_API } from "src/settings"
 
 import {
   BinanceKline,
@@ -31,6 +32,10 @@ function getInterval(timeInterval: ResolutionString) {
 }
 
 export async function queryPrices(request: QueryRequest) {
+  if (DISALLOW_BINANCE_PRICE_API) {
+    throw new Error("Binance price API is disabled")
+  }
+
   const { timeInterval, since, until, limit = 900, pair } = request
   const binanceInterval = getInterval(timeInterval)
 

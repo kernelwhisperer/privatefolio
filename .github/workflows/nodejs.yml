@@ -34,4 +34,4 @@ jobs:
     - name: Lint
       run: yarn lint
     - name: Test
-      run: yarn test
+      run: DISALLOW_BINANCE_PRICE_API=true yarn test
