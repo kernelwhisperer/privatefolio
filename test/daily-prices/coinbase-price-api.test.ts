@@ -54,5 +54,5 @@ it("should throw an error", async () => {
     // until: 0,
   })
   // assert
-  await expect(promise).rejects.toMatchInlineSnapshot(`[Error: Coinbase API error: NotFound]`)
+  await expect(promise).rejects.toMatchInlineSnapshot(`[Error: Coinbase: NotFound]`)
 })

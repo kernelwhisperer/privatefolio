@@ -19,7 +19,7 @@ export async function getLatestBalances(accountName = "main"): Promise<Balance[]
 
     const balances = await Promise.all(
       balanceDocs.map(async (x) => {
-        const prices = await getPricesForAsset(x.symbol, timestamp)
+        const prices = await getPricesForAsset(x.symbol, undefined, timestamp)
         const price = prices.length > 0 ? prices[0] : undefined
 
         return {

@@ -54,7 +54,5 @@ it("should throw an error", async () => {
     // until: 0,
   })
   // assert
-  await expect(promise).rejects.toMatchInlineSnapshot(
-    `[Error: Binance API error: Invalid symbol. (-1121)]`
-  )
+  await expect(promise).rejects.toMatchInlineSnapshot(`[Error: Binance: Invalid symbol. (-1121)]`)
 })

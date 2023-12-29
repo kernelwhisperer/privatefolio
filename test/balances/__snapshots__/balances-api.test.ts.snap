@@ -94,9 +94,17 @@ exports[`should fetch latest balances with price data 1`] = `
   {
     "_id": "1505347200000_BTC",
     "balance": 0.072958518,
-    "price": undefined,
+    "price": {
+      "close": 3250.4,
+      "high": 3923,
+      "low": 3230.05,
+      "open": 3855.61,
+      "time": 1505347200,
+      "value": 3250.4,
+      "volume": 36363.92501211,
+    },
     "symbol": "BTC",
-    "value": undefined,
+    "value": 237.1443669072,
   },
 ]
 `;
