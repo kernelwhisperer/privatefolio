@@ -10,10 +10,9 @@ export function Tabs({ sx, ...rest }: TabsProps) {
         marginX: 2,
         [`& .${tabsClasses.indicator}`]: {
           background: grey[600],
-          // borderRadius: 2,
+          //
           borderTopLeftRadius: 32,
           borderTopRightRadius: 32,
-          // bottom: 6,
           height: 4,
         },
         [`& .${tabsClasses.flexContainer}`]: {
@@ -24,6 +23,7 @@ export function Tabs({ sx, ...rest }: TabsProps) {
           fontFamily: SerifFont,
           fontWeight: 500,
           letterSpacing: 0.5,
+          //
           minWidth: 0,
           paddingX: 0,
           transition: theme.transitions.create("color"),

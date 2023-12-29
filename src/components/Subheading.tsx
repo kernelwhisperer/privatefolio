@@ -8,7 +8,7 @@ export function Subheading({ sx = {}, ...rest }: TypographyProps) {
     <Typography
       variant="h6"
       fontFamily={SerifFont}
-      sx={{ marginX: 2, minHeight: 36, ...sx }}
+      sx={{ minHeight: 36, paddingX: 2, ...sx }}
       component={Stack}
       direction="row"
       alignItems="center"

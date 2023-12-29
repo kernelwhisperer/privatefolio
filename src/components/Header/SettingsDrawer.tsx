@@ -1,5 +1,3 @@
-"use client"
-
 import { Settings as SettingsIcon } from "@mui/icons-material"
 import { Drawer, IconButton, Tooltip } from "@mui/material"
 import React from "react"
@@ -20,7 +18,7 @@ export function SettingsDrawer() {
             "&:hover": {
               transform: "rotate(-30deg)",
             },
-            marginRight: { lg: -1 },
+            marginRight: -1,
             transition: "transform 0.33s",
           }}
         >

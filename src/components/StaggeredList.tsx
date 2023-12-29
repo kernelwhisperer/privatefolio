@@ -1,4 +1,3 @@
-"use client"
 import { Stack, StackProps } from "@mui/material"
 import { animated, AnimationConfig, useTrail } from "@react-spring/web"
 import React, { Children } from "react"

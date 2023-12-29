@@ -1,14 +1,12 @@
 "use client"
 
-import { AppBar, Box, Container, Grid, Stack, tabsClasses, Toolbar } from "@mui/material"
-import { grey } from "@mui/material/colors"
+import { AppBar, Container, Grid, Stack, Toolbar } from "@mui/material"
 import React from "react"
 import { useLocation } from "react-router-dom"
 
-import { NavTab } from "../NavTab"
-import { Tabs } from "../Tabs"
 import { TaskDropdown } from "../Tasks/TaskDropdown"
 import { Logo } from "./Logo"
+import { NavigationMenu } from "./NavigationMenu"
 import { SettingsDrawer } from "./SettingsDrawer"
 
 export function Header() {
@@ -32,46 +30,28 @@ export function Header() {
     >
       <Toolbar disableGutters>
         <Container maxWidth="lg" sx={{ paddingX: { xs: 2 }, paddingY: 0, position: "relative" }}>
-          <Grid container spacing={0.5} paddingX={2} marginY={1}>
-            <Grid item md={3}>
-              <Box
-                sx={{
-                  marginLeft: -1,
-                  paddingX: 2,
-                  paddingY: 1,
-                }}
-              >
+          <Grid container spacing={{ sm: 2, xs: 0 }} paddingX={2} marginY={1}>
+            <Grid item md={3} sx={{ display: { md: "block", xs: "none" } }}>
+              <Stack justifyContent="center" sx={{ height: "100%" }}>
                 <Logo />
-              </Box>
-            </Grid>
-            <Grid item md={6} component={Stack} justifyContent="center">
-              <Tabs
-                value={overriddenPathname}
-                sx={(theme) => ({
-                  [`& .${tabsClasses.indicator}`]: {
-                    background: grey[600],
-                    borderRadius: 2,
-                    bottom: 8,
-                    height: 4,
-                  },
-                  [`& .${tabsClasses.flexContainer} > a`]: {
-                    minWidth: 0,
-                    paddingX: 0,
-                    transition: theme.transitions.create("color"),
-                  },
-                })}
-              >
-                <NavTab value="/" to="/" label="Home" />
-                <NavTab value="/transactions" to="/transactions" label="Transactions" />
-                <NavTab value="/audit-logs" to="/audit-logs" label="Audit logs" />
-                <NavTab value="/import-data" to="/import-data" label="Import data" />
-              </Tabs>
+              </Stack>
             </Grid>
             <Grid
               item
-              md={3}
+              xs={9}
+              md={6}
+              component={Stack}
               alignItems="center"
+              justifyContent={{ md: "center" }}
+            >
+              <NavigationMenu activePath={overriddenPathname} />
+            </Grid>
+            <Grid
+              item
+              xs={3}
+              md={3}
               gap={0.5}
+              alignItems="center"
               component={Stack}
               justifyContent="flex-end"
             >

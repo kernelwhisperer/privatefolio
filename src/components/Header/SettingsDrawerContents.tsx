@@ -80,7 +80,7 @@ export const SettingsDrawerContents = ({
           <Twitter fontSize="small" />
           <span>Twitter</span>
         </CustomLink>
-        <CustomLink target="_blank" href="https://github.com/kernelwhisperer/" role="listitem">
+        <CustomLink target="_blank" href="https://github.com/kernelwhisperer" role="listitem">
           <GitHub fontSize="small" />
           <span>GitHub</span>
         </CustomLink>
