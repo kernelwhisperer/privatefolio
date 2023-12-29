@@ -4,6 +4,7 @@ import { proxy } from "comlink"
 import React, { useEffect } from "react"
 import { Navigate, Route, Routes, useLocation } from "react-router-dom"
 
+import { ErrorBoundary } from "./components/ErrorBoundary"
 import { Header } from "./components/Header/Header"
 import AssetPage from "./pages/AssetPage/AssetPage"
 import { AuditLogsPage } from "./pages/AuditLogsPage/AuditLogsPage"
@@ -77,26 +78,28 @@ export default function App() {
               } as any
             }
           >
-            <Routes location={item}>
-              <Route path="/" element={<BalancesPage show={pathname === "/"} />} />
-              <Route
-                path="/asset/:symbol"
-                element={<AssetPage show={pathname.includes("/asset")} />}
-              />
-              <Route
-                path="/import-data"
-                element={<ImportDataPage show={pathname === "/import-data"} />}
-              />
-              <Route
-                path="/transactions"
-                element={<TransactionsPage show={pathname === "/transactions"} />}
-              />
-              <Route
-                path="/audit-logs"
-                element={<AuditLogsPage show={pathname === "/audit-logs"} />}
-              />
-              <Route path="*" element={<Navigate to="/" />} />
-            </Routes>
+            <ErrorBoundary>
+              <Routes location={item}>
+                <Route path="/" element={<BalancesPage show={pathname === "/"} />} />
+                <Route
+                  path="/asset/:symbol"
+                  element={<AssetPage show={pathname.includes("/asset")} />}
+                />
+                <Route
+                  path="/import-data"
+                  element={<ImportDataPage show={pathname === "/import-data"} />}
+                />
+                <Route
+                  path="/transactions"
+                  element={<TransactionsPage show={pathname === "/transactions"} />}
+                />
+                <Route
+                  path="/audit-logs"
+                  element={<AuditLogsPage show={pathname === "/audit-logs"} />}
+                />
+                <Route path="*" element={<Navigate to="/" />} />
+              </Routes>
+            </ErrorBoundary>
           </a.div>
         ))}
       </Container>
