@@ -31,7 +31,12 @@ jobs:
         node-version: ${{ matrix.node-version }}
 
     - run: yarn install
-    - name: Lint
-      run: yarn lint
+    
     - name: Test
       run: DISALLOW_BINANCE_PRICE_API=true yarn vitest run --coverage --watch false --reporter verbose
+
+    - name: Build
+      run: yarn build
+
+    - name: Lint
+      run: yarn lint
