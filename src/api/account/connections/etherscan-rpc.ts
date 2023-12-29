@@ -1,4 +1,5 @@
-import { BlockTag, EtherscanProvider, Transaction } from "ethers"
+import type { BlockTag, Transaction } from "ethers"
+import { EtherscanProvider } from "ethers"
 
 export type BlockchainTransaction = Transaction & {
   /**

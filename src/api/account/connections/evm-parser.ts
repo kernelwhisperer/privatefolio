@@ -11,7 +11,7 @@ export function parser(
   const { integration } = connection
   //
   const operation: AuditLogOperation =
-    row.to.toLowerCase() === connection.address.toLowerCase() ? "Deposit" : "Withdraw"
+    row.to?.toLowerCase() === connection.address.toLowerCase() ? "Deposit" : "Withdraw"
 
   const changeN = (Number(row.value) / 1e18) * (operation === "Deposit" ? 1 : -1)
   const change = String(changeN)

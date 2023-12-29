@@ -2,13 +2,9 @@
   "compilerOptions": {
     "baseUrl": ".",
     "target": "ESNext",
-    "composite": true,
     "module": "ESNext",
     "moduleResolution": "Node",
     "allowSyntheticDefaultImports": true
   },
-  "include": [
-    "scripts",
-    "src/**/*.ts",
-    "test", "vite.config.ts"]
+  "include": ["scripts", "**/*.ts", "test", "vite.config.ts"]
 }

@@ -17,7 +17,7 @@ export function AuditLogActions() {
 
   return (
     <>
-      <IconButton color="secondary" onClick={handleClick} sx={{ marginRight: -2 }}>
+      <IconButton color="secondary" onClick={handleClick} sx={{ marginRight: -1 }}>
         <MoreHoriz fontSize="small" />
       </IconButton>
       <Menu

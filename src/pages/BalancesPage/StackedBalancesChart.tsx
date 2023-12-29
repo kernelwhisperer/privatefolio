@@ -11,7 +11,7 @@ export function BalancesChart() {
 
   const query = useCallback(async () => {
     setLoading(true)
-    const docs = await clancy.getHistoricalBalances(undefined, 200)
+    const docs = await clancy.getHistoricalBalances({ limit: 200 })
     console.log("📜 LOG > query > docs:", docs)
 
     const balances = await Promise.all(

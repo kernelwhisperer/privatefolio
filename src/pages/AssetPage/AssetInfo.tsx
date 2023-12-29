@@ -4,7 +4,6 @@ import { Box, Stack, Typography } from "@mui/material"
 // import icons from "base64-cryptocurrency-icons";
 import React from "react"
 
-import { HeadCell } from "../../components/EnhancedTable"
 import { Transaction } from "../../interfaces"
 import { formatNumber } from "../../utils/formatting-utils"
 
@@ -19,7 +18,7 @@ interface AssetInfoProps {
   tradeHistory: Transaction[]
 }
 
-const headCells: readonly HeadCell<Transaction>[] = [
+const headCells = [
   {
     disablePadding: true,
     id: "id",

@@ -12,7 +12,7 @@ export function BalanceChart(props: BalanceChartProps) {
   const { symbol } = props
 
   const queryFn: QueryFunction = useCallback(async () => {
-    const docs = await clancy.getHistoricalBalances(symbol)
+    const docs = await clancy.getHistoricalBalances({ symbol })
 
     const records = docs.map((item) => ({
       time: (item.timestamp / 1000) as UTCTimestamp,

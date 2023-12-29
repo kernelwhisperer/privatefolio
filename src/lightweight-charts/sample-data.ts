@@ -25,7 +25,7 @@ const samplePoint = (i: number) =>
 
 export function generateLineData(numberOfPoints = 500): LineData[] {
   randomFactor = 25 + Math.random() * 25
-  const res = []
+  const res: any[] = []
   const date = new Date(Date.UTC(2018, 0, 1, 12, 0, 0, 0))
   for (let i = 0; i < numberOfPoints; ++i) {
     const time = (date.getTime() / 1000) as Time
@@ -105,7 +105,7 @@ export function shuffleValuesWithLimit<T extends WhitespaceData[]>(arr: T, limit
 }
 
 function splitArrayIntoParts<T>(arr: T[], size: number): T[][] {
-  const result = []
+  const result: any[] = []
   const length = arr.length
   let start = 0
   while (start < length) {

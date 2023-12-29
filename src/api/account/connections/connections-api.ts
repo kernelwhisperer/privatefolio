@@ -20,10 +20,10 @@ export async function addConnection(
   const timestamp = new Date().getTime()
   const _id = hashString(`${integration}_${address}_${label}`)
 
-  await account.connectionsDB.put({
+  await account.connectionsDB.put<Connection>({
     ...connection,
     _id,
-    _rev: undefined,
+    _rev: undefined as any,
     address,
     timestamp,
   })

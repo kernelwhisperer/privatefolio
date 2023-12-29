@@ -23,7 +23,7 @@ export function ImportDataPage({ show }: { show: boolean }) {
           <span>Database info</span>
           <ImportDataActions />
         </Subheading>
-        <Stack direction={{ sm: "row" }} gap={1}>
+        <Stack direction={{ md: "row" }} gap={1}>
           <DatabaseInfo />
           <PortfolioInfo />
         </Stack>
