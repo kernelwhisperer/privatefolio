@@ -4,7 +4,7 @@ import { StaggeredList } from "../../components/StaggeredList"
 import { Subheading } from "../../components/Subheading"
 import { TransactionTable } from "./TransactionTable"
 
-export function TransactionsPage({ show }: { show: boolean }) {
+export default function TransactionsPage({ show }: { show: boolean }) {
   return (
     <StaggeredList component="main" gap={2} show={show}>
       <div>

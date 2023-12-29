@@ -12,7 +12,7 @@ import { FileImportsTable } from "./file-imports/FileImportsTable"
 import { ImportDataActions } from "./ImportDataActions"
 import { PortfolioInfo } from "./PortfolioInfo"
 
-export function ImportDataPage({ show }: { show: boolean }) {
+export default function ImportDataPage({ show }: { show: boolean }) {
   const [searchParams] = useSearchParams()
   const tab = searchParams.get("tab") || ""
 

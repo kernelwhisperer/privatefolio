@@ -1,4 +1,4 @@
-import PouchDB from "pouchdb"
+import PouchDB from "pouchdb-browser"
 import PouchDBFind from "pouchdb-find"
 
 import {

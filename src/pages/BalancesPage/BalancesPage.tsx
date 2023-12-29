@@ -10,7 +10,7 @@ import { clancy } from "../../workers/remotes"
 import { BalancesChart } from "./BalancesChart"
 import { BalanceTableRow } from "./BalanceTableRow"
 
-export function BalancesPage({ show }: { show: boolean }) {
+export default function BalancesPage({ show }: { show: boolean }) {
   const [queryTime, setQueryTime] = useState<number | null>(null)
   const [rows, setRows] = useState<Balance[]>([])
 

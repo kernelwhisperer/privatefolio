@@ -11,7 +11,7 @@ import { StaggeredList } from "../../components/StaggeredList"
 import { $assetMap, $filterOptionsMap } from "../../stores/metadata-store"
 import { SerifFont } from "../../theme"
 import { AuditLogTable } from "../AuditLogsPage/AuditLogTable"
-import { TransactionTable } from "../TransactionPage/TransactionTable"
+import { TransactionTable } from "../TransactionsPage/TransactionTable"
 import { BalanceChart } from "./BalanceChart"
 import { PriceChart } from "./PriceChart"
 

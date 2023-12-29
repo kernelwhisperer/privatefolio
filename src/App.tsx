@@ -1,20 +1,21 @@
 import Container from "@mui/material/Container"
 import { a, useTransition } from "@react-spring/web"
 import { proxy } from "comlink"
-import React, { useEffect } from "react"
+import React, { lazy, useEffect } from "react"
 import { Navigate, Route, Routes, useLocation } from "react-router-dom"
 
 import { ErrorBoundary } from "./components/ErrorBoundary"
 import { Header } from "./components/Header/Header"
-import AssetPage from "./pages/AssetPage/AssetPage"
-import { AuditLogsPage } from "./pages/AuditLogsPage/AuditLogsPage"
-import { BalancesPage } from "./pages/BalancesPage/BalancesPage"
-import { ImportDataPage } from "./pages/ImportDataPage/ImportDataPage"
-import { TransactionsPage } from "./pages/TransactionPage/TransactionsPage"
 import { computeMetadata, computeMetadataDebounced } from "./stores/metadata-store"
 import { $pendingTask } from "./stores/task-store"
 import { SPRING_CONFIGS } from "./utils/utils"
 import { clancy } from "./workers/remotes"
+
+const AuditLogsPage = lazy(() => import("./pages/AuditLogsPage/AuditLogsPage"))
+const ImportDataPage = lazy(() => import("./pages/ImportDataPage/ImportDataPage"))
+const TransactionsPage = lazy(() => import("./pages/TransactionsPage/TransactionsPage"))
+const BalancesPage = lazy(() => import("./pages/BalancesPage/BalancesPage"))
+const AssetPage = lazy(() => import("./pages/AssetPage/AssetPage"))
 
 export default function App() {
   const location = useLocation()
