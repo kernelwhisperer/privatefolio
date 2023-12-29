@@ -1,7 +1,7 @@
 import { StorageRounded } from "@mui/icons-material"
 import { Paper, Skeleton, Stack, Tooltip, Typography, TypographyProps } from "@mui/material"
 import { proxy } from "comlink"
-import { debounce } from "lodash"
+import { debounce } from "lodash-es"
 import React, { useEffect, useState } from "react"
 
 import { DEFAULT_DEBOUNCE_DURATION } from "../../settings"

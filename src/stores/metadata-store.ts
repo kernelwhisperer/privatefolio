@@ -1,4 +1,4 @@
-import { debounce } from "lodash"
+import { debounce } from "lodash-es"
 import { keepMount, map } from "nanostores"
 
 import { findAssets } from "../api/core/assets-api"

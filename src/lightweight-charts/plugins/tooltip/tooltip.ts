@@ -14,7 +14,7 @@ import {
   Time,
   WhitespaceData,
 } from "lightweight-charts"
-import { throttle } from "lodash"
+import { throttle } from "lodash-es"
 
 import { formatNumber } from "../../../utils/formatting-utils"
 import { positionsLine } from "../../helpers/dimensions/positions"

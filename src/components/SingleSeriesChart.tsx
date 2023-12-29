@@ -27,7 +27,7 @@ import {
   SeriesOptionsCommon,
   SeriesType,
 } from "lightweight-charts"
-import { merge } from "lodash"
+import { merge } from "lodash-es"
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 import { useBoolean } from "../hooks/useBoolean"

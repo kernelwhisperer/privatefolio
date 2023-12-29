@@ -7,7 +7,7 @@ import {
 } from "@mui/material"
 import { useStore } from "@nanostores/react"
 import { Globals, useReducedMotion } from "@react-spring/web"
-import { merge } from "lodash"
+import { merge } from "lodash-es"
 import React, { PropsWithChildren, useEffect, useMemo } from "react"
 
 import { $reducedMotion } from "./stores/app-store"
