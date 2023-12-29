@@ -52,7 +52,7 @@ export function PortfolioInfo() {
   const filterMap = useStore($filterOptionsMap)
 
   return (
-    <Paper sx={{ width: 360 }}>
+    <Paper sx={{ minWidth: 340 }}>
       <Stack sx={{ paddingX: 2, paddingY: 1 }} gap={1}>
         <Stack direction="row" justifyContent="space-between">
           <SectionTitle>Unique assets</SectionTitle>

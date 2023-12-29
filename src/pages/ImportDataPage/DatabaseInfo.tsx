@@ -22,6 +22,11 @@ export function DatabaseInfo() {
   useEffect(() => {
     function fetchData() {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if (!window.navigator.storage) {
+        setStorageUsage(0)
+        return
+      }
+
       window.navigator.storage.estimate().then((estimate: any) => {
         setStorageUsage(estimate.usageDetails?.indexedDB ?? null)
       })
@@ -83,7 +88,7 @@ export function DatabaseInfo() {
   }, [])
 
   return (
-    <Paper sx={{ width: 360 }}>
+    <Paper sx={{ minWidth: 340 }}>
       <Stack sx={{ paddingX: 2, paddingY: 1 }} gap={1}>
         <Stack direction="row" justifyContent="space-between">
           <SectionTitle>Disk Usage</SectionTitle>
@@ -91,6 +96,10 @@ export function DatabaseInfo() {
             <StorageRounded fontSize="small" />
             {storageUsage === null ? (
               <Skeleton height={20} width={80}></Skeleton>
+            ) : storageUsage === 0 ? (
+              <Typography color="text.secondary" component="span" variant="inherit">
+                Unknown
+              </Typography>
             ) : (
               <Tooltip
                 title={

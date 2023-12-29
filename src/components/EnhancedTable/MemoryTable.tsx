@@ -169,7 +169,7 @@ export function MemoryTable<T extends BaseType>(props: MemoryTableProps<T>) {
     enter: { opacity: 2 },
     exitBeforeEnter: true,
     from: { opacity: 2 },
-    leave: { delay: 50, opacity: 1 },
+    leave: { opacity: 1 }, // TODO delay: 50,
   })
 
   return (

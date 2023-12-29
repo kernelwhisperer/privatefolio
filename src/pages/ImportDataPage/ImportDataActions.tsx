@@ -35,7 +35,7 @@ export function ImportDataActions() {
   return (
     <>
       <Tooltip title="Open Actions dropdown">
-        <IconButton color="secondary" onClick={handleClick} sx={{ marginRight: -2 }}>
+        <IconButton color="secondary" onClick={handleClick} sx={{ marginRight: -1 }}>
           <MoreHoriz fontSize="small" />
         </IconButton>
       </Tooltip>
