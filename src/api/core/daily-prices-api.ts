@@ -83,7 +83,6 @@ export async function getAssetPriceMap(timestamp: Timestamp) {
 
   return prices.docs.reduce(
     (map, x) => {
-      console.log("📜 LOG > getAssetPriceMap > x:", x)
       map[x.symbol] = x.price
       return map
     },
