@@ -1,4 +1,4 @@
-import { Paper, Stack, TableHead } from "@mui/material"
+import { Paper, Stack, TableHead, useMediaQuery } from "@mui/material"
 import Table from "@mui/material/Table"
 import TableBody from "@mui/material/TableBody"
 import TableCell from "@mui/material/TableCell"
@@ -172,6 +172,8 @@ export function MemoryTable<T extends BaseType>(props: MemoryTableProps<T>) {
     leave: { opacity: 1 }, // TODO delay: 50,
   })
 
+  const isTablet = useMediaQuery("(max-width: 899px)")
+
   return (
     <>
       {transitions((styles, isLoading) => (
@@ -199,29 +201,31 @@ export function MemoryTable<T extends BaseType>(props: MemoryTableProps<T>) {
                 sx={{ overflowX: { lg: "unset", xs: "auto" }, paddingY: 0.5 }}
               >
                 <TableContainer sx={{ overflowX: "unset" }}>
-                  <Table sx={{ minWidth: 750 }} size="small">
-                    <TableHead>
-                      <TableRow>
-                        {headCells.map((headCell, index) => (
-                          <TableCell
-                            key={index}
-                            padding="normal"
-                            sortDirection={orderBy === headCell.key ? order : false}
-                          >
-                            <ConnectedTableHead<T>
-                              activeFilters={activeFilters}
-                              setFilterKey={setFilterKey}
-                              headCell={headCell}
-                              order={order}
-                              orderBy={orderBy}
-                              onSort={handleSort}
-                              onRelativeTime={handleRelativeTime}
-                              relativeTime={relativeTime}
-                            />
-                          </TableCell>
-                        ))}
-                      </TableRow>
-                    </TableHead>
+                  <Table size="small">
+                    {isTablet ? null : (
+                      <TableHead>
+                        <TableRow>
+                          {headCells.map((headCell, index) => (
+                            <TableCell
+                              key={index}
+                              padding="normal"
+                              sortDirection={orderBy === headCell.key ? order : false}
+                            >
+                              <ConnectedTableHead<T>
+                                activeFilters={activeFilters}
+                                setFilterKey={setFilterKey}
+                                headCell={headCell}
+                                order={order}
+                                orderBy={orderBy}
+                                onSort={handleSort}
+                                onRelativeTime={handleRelativeTime}
+                                relativeTime={relativeTime}
+                              />
+                            </TableCell>
+                          ))}
+                        </TableRow>
+                      </TableHead>
+                    )}
                     <TableBody>
                       {visibleRows.map((row) => (
                         <TableRowComponent

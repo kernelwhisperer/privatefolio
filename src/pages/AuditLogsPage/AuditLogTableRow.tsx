@@ -60,6 +60,14 @@ export function AuditLogTableRow(props: TableRowComponentProps<AuditLog>) {
         // hover={!open}
         // onClick={toggleOpen}
         // className={open ? "TableRow-open-top" : undefined}
+        // sx={(theme) => ({
+        // ...(open
+        //   ? {
+        //       "--mui-palette-TableCell-border": "rgba(0,0,0,0)",
+        //       background: "var(--mui-palette-background-default)",
+        //     }
+        //   : {}),
+        // })}
         {...rest}
       >
         <TableCell sx={{ maxWidth: 200, minWidth: 200, width: 200 }}>

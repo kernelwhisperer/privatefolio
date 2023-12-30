@@ -430,6 +430,9 @@ export const theme: CssVarsThemeOptions = {
         displayedRows: {
           margin: 0,
         },
+        root: {
+          overflow: "unset",
+        },
         toolbar: {
           minHeight: "38px !important",
           paddingTop: "4px",

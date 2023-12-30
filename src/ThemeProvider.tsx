@@ -17,7 +17,7 @@ export function ThemeProvider({ children }: PropsWithChildren) {
   const reducedMotion = useStore($reducedMotion)
   const browserPreference = useReducedMotion()
 
-  const isMobile = useMediaQuery("(max-width: 960px)")
+  const isMobile = useMediaQuery("(max-width: 599px)")
   // const isMobile = useMediaQuery((theme: any) => theme.breakpoints.down("md"))
 
   const skipAnimation = useMemo(() => {

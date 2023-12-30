@@ -14,7 +14,7 @@ export function BalancesChart() {
 
   return (
     <SingleSeriesChart
-      height={460}
+      size="medium"
       queryFn={queryFn}
       // seriesOptions={{
       //   priceFormat: {
@@ -32,7 +32,7 @@ export function BalancesChart() {
       }}
       chartOptions={{
         localization: {
-          priceFormatter: createPriceFormatter(0, "USD "),
+          priceFormatter: createPriceFormatter(0, "USD"),
         },
       }}
     />

@@ -163,7 +163,7 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
                 sx={{ overflowX: { lg: "unset", xs: "auto" }, paddingY: 0.5 }}
               >
                 <TableContainer sx={{ overflowX: "unset" }}>
-                  <Table sx={{ minWidth: 750 }} size="small" stickyHeader>
+                  <Table size="small" stickyHeader>
                     <TableHead>
                       <TableRow>
                         {headCells.map((headCell, index) => (

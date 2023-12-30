@@ -1,4 +1,4 @@
-import { Skeleton, Stack, Typography } from "@mui/material"
+import { Skeleton, Stack, Typography, useMediaQuery } from "@mui/material"
 import MuiTablePagination, {
   tablePaginationClasses,
   TablePaginationProps,
@@ -14,6 +14,8 @@ type TableFooterProps = TablePaginationProps & {
 
 export function TableFooter(props: TableFooterProps) {
   const { queryTime, count, ...rest } = props
+
+  const isTablet = useMediaQuery("(max-width: 899px)")
 
   return (
     <Stack
@@ -40,7 +42,7 @@ export function TableFooter(props: TableFooterProps) {
           sx={{
             border: 0,
             marginRight: -1,
-            width: "100%",
+            width: isTablet ? undefined : "100%",
             [`& .${tablePaginationClasses.spacer}`]: {
               flexBasis: 0,
               flexGrow: 0,
@@ -62,17 +64,20 @@ export function TableFooter(props: TableFooterProps) {
             },
           }}
           labelRowsPerPage=""
-          labelDisplayedRows={({ from, to, count }) => (
-            <>
-              {from}-{to}{" "}
-              <Typography variant="body2" component="span" color="text.secondary">
-                of {count}
-              </Typography>
-            </>
-          )}
+          labelDisplayedRows={({ from, to, count }) =>
+            isTablet ? null : (
+              <>
+                {from}-{to}{" "}
+                <Typography variant="body2" component="span" color="text.secondary">
+                  of {count}
+                </Typography>
+              </>
+            )
+          }
           slotProps={{
             select: {
               renderValue: (value) => `${value} rows per page`,
+              sx: { display: { sm: "inline-flex", xs: "none" } },
             },
           }}
           ActionsComponent={TablePaginationActions}

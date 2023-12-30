@@ -32,6 +32,7 @@ export function AmountBlock(props: AmountBlockProps) {
             {currencySymbol}
           </Box>
         ) : (
+          // TODO
           "Use the 'Compute balances' action to compute these values."
         )
       }

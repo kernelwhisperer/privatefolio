@@ -4,8 +4,6 @@ import { CandlestickSeriesPartialOptions } from "lightweight-charts"
 import { TooltipPrimitiveOptions } from "../lightweight-charts/plugins/tooltip/tooltip"
 import { formatNumber } from "./formatting-utils"
 
-export const CHART_HEIGHT = 550
-
 export function createPriceFormatter(significantDigits: number, unitLabel: string) {
   return (x: number) =>
     `${formatNumber(x, {

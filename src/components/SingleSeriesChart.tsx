@@ -16,6 +16,7 @@ import {
   Stack,
   SvgIcon,
   Tooltip,
+  useMediaQuery,
   useTheme,
 } from "@mui/material"
 import { useStore } from "@nanostores/react"
@@ -40,7 +41,6 @@ import {
 import { $favoriteIntervals, $preferredInterval } from "../stores/chart-store"
 import {
   candleStickOptions,
-  CHART_HEIGHT,
   extractTooltipColors,
   greenColor,
   greenColorDark,
@@ -65,13 +65,13 @@ export type QueryFunction = () => Promise<ChartData[]>
 export type TooltipOpts = Partial<Omit<TooltipPrimitiveOptions, "priceExtractor">>
 
 interface SingleSeriesChartProps extends Omit<Partial<ChartProps>, "chartRef"> {
-  height?: number
   /**
    * @default "Candlestick"
    */
   initType?: SeriesType
   queryFn: QueryFunction
   seriesOptions?: DeepPartial<SeriesOptionsCommon>
+  size?: "small" | "medium" | "large"
   tooltipOptions?: TooltipOpts
 }
 
@@ -81,11 +81,23 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
   const {
     queryFn,
     initType = "Candlestick",
-    height = CHART_HEIGHT,
+    size = "large",
     seriesOptions = DEFAULT_OPTS as DeepPartial<SeriesOptionsCommon>,
     tooltipOptions = DEFAULT_OPTS as TooltipOpts,
     ...rest
   } = props
+
+  const isMobile = useMediaQuery("(max-width: 599px)")
+
+  const height = useMemo(() => {
+    if (size === "small") {
+      return 200
+    } else if (size === "medium") {
+      return isMobile ? 320 : 460
+    } else {
+      return isMobile ? 400 : 540
+    }
+  }, [size, isMobile])
 
   const chartRef = useRef<IChartApi | undefined>(undefined)
   const seriesRef = useRef<ISeriesApi<SeriesType> | undefined>(undefined)
@@ -285,35 +297,40 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
       {transitions((styles, isLoading) => (
         <a.div style={styles}>
           {isLoading ? (
-            <Stack gap={1.5} sx={{ height, paddingY: 1 }} justifyContent="center">
-              <Stack direction="row" gap={1.5} alignItems={"flex-end"}>
-                <Skeleton animation={false} variant="rounded" width={37} height={320}></Skeleton>
+            <Stack gap={1.5} sx={{ height, overflow: "hidden" }} justifyContent="center">
+              <Stack
+                direction="row"
+                gap={1.5}
+                alignItems={"flex-end"}
+                sx={{ paddingY: 1, width: 1168 }}
+              >
+                <Skeleton animation={false} variant="rounded" width={37} height={"80%"}></Skeleton>
                 <Skeleton animation={false} variant="rounded" width={37} height={260}></Skeleton>
-                <Skeleton animation={false} variant="rounded" width={37} height={340}></Skeleton>
+                <Skeleton animation={false} variant="rounded" width={37} height={"100%"}></Skeleton>
                 <Skeleton animation={false} variant="rounded" width={37} height={280}></Skeleton>
-                <Skeleton animation={false} variant="rounded" width={37} height={320}></Skeleton>
+                <Skeleton animation={false} variant="rounded" width={37} height={"80%"}></Skeleton>
                 <Skeleton animation={false} variant="rounded" width={37} height={220}></Skeleton>
-                <Skeleton animation={false} variant="rounded" width={37} height={340}></Skeleton>
+                <Skeleton animation={false} variant="rounded" width={37} height={"100%"}></Skeleton>
                 <Skeleton animation={false} variant="rounded" width={37} height={260}></Skeleton>
                 <Skeleton animation={false} variant="rounded" width={37} height={290}></Skeleton>
                 <Skeleton animation={false} variant="rounded" width={37} height={300}></Skeleton>
-                <Skeleton animation={false} variant="rounded" width={37} height={320}></Skeleton>
+                <Skeleton animation={false} variant="rounded" width={37} height={"80%"}></Skeleton>
                 <Skeleton animation={false} variant="rounded" width={37} height={260}></Skeleton>
-                <Skeleton animation={false} variant="rounded" width={37} height={340}></Skeleton>
+                <Skeleton animation={false} variant="rounded" width={37} height={"100%"}></Skeleton>
                 <Skeleton animation={false} variant="rounded" width={37} height={280}></Skeleton>
-                <Skeleton animation={false} variant="rounded" width={37} height={320}></Skeleton>
+                <Skeleton animation={false} variant="rounded" width={37} height={"80%"}></Skeleton>
                 <Skeleton animation={false} variant="rounded" width={37} height={220}></Skeleton>
-                <Skeleton animation={false} variant="rounded" width={37} height={340}></Skeleton>
+                <Skeleton animation={false} variant="rounded" width={37} height={"100%"}></Skeleton>
                 <Skeleton animation={false} variant="rounded" width={37} height={260}></Skeleton>
                 <Skeleton animation={false} variant="rounded" width={37} height={290}></Skeleton>
                 <Skeleton animation={false} variant="rounded" width={37} height={300}></Skeleton>
-                <Skeleton animation={false} variant="rounded" width={37} height={320}></Skeleton>
+                <Skeleton animation={false} variant="rounded" width={37} height={"80%"}></Skeleton>
                 <Skeleton animation={false} variant="rounded" width={37} height={260}></Skeleton>
-                <Skeleton animation={false} variant="rounded" width={37} height={340}></Skeleton>
+                <Skeleton animation={false} variant="rounded" width={37} height={"100%"}></Skeleton>
                 <Skeleton animation={false} variant="rounded" width={37} height={280}></Skeleton>
-                {/* <Skeleton animation={false} variant="rounded" width={37} height={320}></Skeleton>
+                {/* <Skeleton animation={false} variant="rounded" width={37} height={"80%"}></Skeleton>
                 <Skeleton animation={false} variant="rounded" width={37} height={220}></Skeleton>
-                <Skeleton animation={false} variant="rounded" width={37} height={340}></Skeleton>
+                <Skeleton animation={false} variant="rounded" width={37} height={"100%"}></Skeleton>
                 <Skeleton animation={false} variant="rounded" width={37} height={260}></Skeleton>
                 <Skeleton animation={false} variant="rounded" width={37} height={290}></Skeleton>
                 <Skeleton animation={false} variant="rounded" width={37} height={300}></Skeleton> */}
