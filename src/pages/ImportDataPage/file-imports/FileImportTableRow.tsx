@@ -41,6 +41,7 @@ export function FileImportTableRow(props: TableRowComponentProps<FileImport>) {
       function: async (progress) => {
         try {
           await clancy.removeFileImport(row, progress)
+          handleAuditLogChange()
         } finally {
           // setLoading(false)
         }
@@ -48,7 +49,6 @@ export function FileImportTableRow(props: TableRowComponentProps<FileImport>) {
       name: `Remove file import`,
       priority: 8,
     })
-    handleAuditLogChange()
   }
 
   return (

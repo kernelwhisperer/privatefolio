@@ -23,12 +23,21 @@ export function FileDrop(props: PaperProps & { defaultBg?: string }) {
     setDragOver(false)
   }
 
-  const handleFileUpload = (file: File) => {
+  const handleFileUpload = async (file: File) => {
+    // must clone the file, otherwise multiple upload doesn't work on mobile
+    // https://github.com/GoogleChrome/developer.chrome.com/issues/2563#issuecomment-1464499084
+    const buffer = await file.arrayBuffer()
+    const clone = new File([buffer], file.name, {
+      lastModified: file.lastModified,
+      type: file.type,
+    })
+
     enqueueTask({
       description: `Importing "${file.name}".`,
       determinate: true,
       function: async (progress) => {
-        await clancy.addFileImport(file, progress)
+        await clancy.addFileImport(clone, progress)
+        handleAuditLogChange()
       },
       name: `Import file`,
       priority: 8,
@@ -40,7 +49,6 @@ export function FileDrop(props: PaperProps & { defaultBg?: string }) {
     setDragOver(false)
     if (e.dataTransfer.files) {
       Array.from(e.dataTransfer.files).forEach(handleFileUpload)
-      handleAuditLogChange()
     }
   }
 
@@ -48,7 +56,6 @@ export function FileDrop(props: PaperProps & { defaultBg?: string }) {
     const files = e.target.files
     if (files) {
       Array.from(files).forEach(handleFileUpload)
-      handleAuditLogChange()
     }
   }
 
