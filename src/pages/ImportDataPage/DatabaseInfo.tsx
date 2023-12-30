@@ -92,31 +92,31 @@ export function DatabaseInfo() {
       <Stack sx={{ paddingX: 2, paddingY: 1 }} gap={1}>
         <Stack direction="row" justifyContent="space-between">
           <SectionTitle>Disk Usage</SectionTitle>
-          <Stack direction="row" gap={1}>
-            <StorageRounded fontSize="small" />
-            {storageUsage === null ? (
-              <Skeleton height={20} width={80}></Skeleton>
-            ) : storageUsage === 0 ? (
-              <Typography color="text.secondary" component="span" variant="inherit">
-                Unknown
-              </Typography>
-            ) : (
-              <Tooltip
-                title={
-                  <Stack>
-                    <span>{formatFileSize(storageUsage, true)}</span>
-                    <i className="secondary">
-                      <span>{formatNumber(storageUsage)} Bytes</span>
-                    </i>
-                  </Stack>
-                }
-              >
+          {storageUsage === null ? (
+            <Skeleton height={20} width={80}></Skeleton>
+          ) : storageUsage === 0 ? (
+            <Typography color="text.secondary" component="span" variant="body2">
+              Unknown
+            </Typography>
+          ) : (
+            <Tooltip
+              title={
+                <Stack>
+                  <span>{formatFileSize(storageUsage, true)}</span>
+                  <i className="secondary">
+                    <span>{formatNumber(storageUsage)} Bytes</span>
+                  </i>
+                </Stack>
+              }
+            >
+              <Stack direction="row" gap={1}>
+                <StorageRounded fontSize="small" />
                 <Typography fontFamily={MonoFont} variant="body2">
                   <span>{formatFileSize(storageUsage)}</span>
                 </Typography>
-              </Tooltip>
-            )}
-          </Stack>
+              </Stack>
+            </Tooltip>
+          )}
         </Stack>
         <Stack direction="row" justifyContent="space-between">
           <SectionTitle>Audit logs</SectionTitle>

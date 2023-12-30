@@ -62,7 +62,8 @@ export function ConnectionDrawer({ open, toggleOpen, ...rest }: DrawerProps & Po
     <Drawer open={open} onClose={toggleOpen} {...rest}>
       <form onSubmit={handleSubmit}>
         <StaggeredList
-          padding={2}
+          paddingX={2}
+          paddingY={1}
           gap={4}
           show={open}
           secondary

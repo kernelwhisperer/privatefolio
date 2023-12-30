@@ -47,7 +47,14 @@ export const SettingsDrawerContents = ({
   const devMode = useStore($devMode)
 
   return (
-    <StaggeredList padding={2} gap={4} show={open} secondary sx={{ overflowX: "hidden" }}>
+    <StaggeredList
+      paddingX={2}
+      paddingY={1}
+      gap={4}
+      show={open}
+      secondary
+      sx={{ overflowX: "hidden" }}
+    >
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <Typography variant="subtitle1" letterSpacing="0.025rem">
           Settings
@@ -68,7 +75,7 @@ export const SettingsDrawerContents = ({
         <SectionTitle id="social-links" role="listitem">
           Community
         </SectionTitle>
-        <CustomLink target="_blank" href="https://t.me/protofun" role="listitem">
+        <CustomLink target="_blank" href="https://t.me/privatefolio" role="listitem">
           <Telegram fontSize="small" />
           <span>Telegram</span>
         </CustomLink>
@@ -80,7 +87,11 @@ export const SettingsDrawerContents = ({
           <Twitter fontSize="small" />
           <span>Twitter</span>
         </CustomLink>
-        <CustomLink target="_blank" href="https://github.com/kernelwhisperer" role="listitem">
+        <CustomLink
+          target="_blank"
+          href="https://github.com/kernelwhisperer/privatefolio"
+          role="listitem"
+        >
           <GitHub fontSize="small" />
           <span>GitHub</span>
         </CustomLink>
