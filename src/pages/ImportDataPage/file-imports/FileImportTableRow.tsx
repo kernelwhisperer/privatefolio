@@ -51,6 +51,18 @@ export function FileImportTableRow(props: TableRowComponentProps<FileImport>) {
     })
   }
 
+  // const isTablet = useMediaQuery("(max-width: 899px)")
+
+  // if (isTablet) {
+  //   return (
+  //     <TableRow hover {...rest}>
+  //       <TableCell sx={{ width: "100%" }}>
+  //         <Stack direction="row" justifyContent="space-between" alignItems="center"></Stack>
+  //       </TableCell>
+  //     </TableRow>
+  //   )
+  // }
+
   return (
     <TableRow hover {...rest}>
       <TableCell sx={{ maxWidth: 180, minWidth: 180, width: 180 }}>

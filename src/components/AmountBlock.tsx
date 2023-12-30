@@ -10,12 +10,19 @@ type AmountBlockProps = {
   currencySymbol?: string
   formatOpts?: Intl.NumberFormatOptions
   significantDigits?: number
+  tooltipMessage?: string
 }
 
 const DEFAULT_SIGNIFICANT_DIGITS = 2
 
 export function AmountBlock(props: AmountBlockProps) {
-  const { amount, currencySymbol, significantDigits, formatOpts = EMPTY_OBJECT } = props
+  const {
+    amount,
+    currencySymbol,
+    significantDigits,
+    tooltipMessage,
+    formatOpts = EMPTY_OBJECT,
+  } = props
 
   const decimals = significantDigits ?? DEFAULT_SIGNIFICANT_DIGITS
 
@@ -32,8 +39,7 @@ export function AmountBlock(props: AmountBlockProps) {
             {currencySymbol}
           </Box>
         ) : (
-          // TODO
-          "Use the 'Compute balances' action to compute these values."
+          tooltipMessage
         )
       }
     >

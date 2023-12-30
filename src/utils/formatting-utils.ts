@@ -56,7 +56,6 @@ export function formatHour(date: Date | number, opts: Intl.DateTimeFormatOptions
 export function formatDateWithHour(date: Date | number, opts: Intl.DateTimeFormatOptions = {}) {
   return new Intl.DateTimeFormat(locale, {
     day: "numeric",
-    fractionalSecondDigits: 3, // TODO make this a setting
     hour: "numeric",
     hour12: false,
     minute: "numeric",

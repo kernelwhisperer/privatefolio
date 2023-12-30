@@ -17,6 +17,6 @@ export const $reducedMotion = atom<ReducedMotionSetting>(
   (localStorage.getItem("reduced-motion") as ReducedMotionSetting) || "user"
 )
 export const $loopsAllowed = atom<boolean>(false)
-export const $devMode = atom<boolean>(localStorage.getItem("dev-mode") === "true")
+export const $debugMode = atom<boolean>(localStorage.getItem("debug-mode") === "true")
 
-logAtoms({ $devMode, $loopsAllowed, $reducedMotion })
+logAtoms({ $debugMode, $loopsAllowed, $reducedMotion })

@@ -8,9 +8,9 @@
     "email": "hello@danielconstantin.net"
   },
   "scripts": {
-    "dev": "vite --port 3000 --host --clearScreen=false",
-    "build": "tsc && vite build",
-    "start": "vite preview",
+    "dev": "VITE_APP_VERSION=`npm pkg get version` VITE_GIT_HASH=`git rev-parse HEAD` VITE_GIT_DATE=`git show -s --format=%cI $(git rev-parse HEAD)` vite --port 3000 --host --clearScreen=false",
+    "build": "VITE_APP_VERSION=`npm pkg get version` VITE_GIT_HASH=`git rev-parse HEAD` VITE_GIT_DATE=`git show -s --format=%cI $(git rev-parse HEAD)` tsc && vite build",
+    "start": "VITE_APP_VERSION=`npm pkg get version` VITE_GIT_HASH=`git rev-parse HEAD` VITE_GIT_DATE=`git show -s --format=%cI $(git rev-parse HEAD)` vite preview",
     "lint": "eslint .",
     "lint:fix": "npm run lint -- --fix",
     "check-types": "tsc --noEmit",

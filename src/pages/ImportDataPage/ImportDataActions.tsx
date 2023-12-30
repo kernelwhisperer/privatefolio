@@ -30,7 +30,7 @@ export function ImportDataActions() {
 
   const confirm = useConfirm()
 
-  // const devMode = useStore($devMode)
+  // const debugMode = useStore($debugMode)
 
   return (
     <>

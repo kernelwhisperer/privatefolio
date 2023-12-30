@@ -28,12 +28,7 @@ export function BalanceTableRow(props: TableRowComponentProps<Balance>) {
         sx={{ cursor: "pointer" }}
         {...rest}
       >
-        <TableCell
-          sx={{
-            // maxWidth: 380, minWidth: 380,
-            width: "100%",
-          }}
-        >
+        <TableCell sx={{ width: "100%" }}>
           <Stack direction="row" justifyContent="space-between" alignItems="center">
             <Stack direction="row" gap={1} alignItems="center" component="div">
               <AssetAvatar size="medium" src={assetMap[symbol]?.image} alt={symbol} />

@@ -110,6 +110,7 @@ export function FileImportsTable() {
             TableRowComponent={FileImportTableRow}
             rows={rows}
             queryTime={queryTime}
+            defaultRowsPerPage={10}
             //
           />
           {showDrop && <FileDrop defaultBg="var(--mui-palette-background-default)" />}

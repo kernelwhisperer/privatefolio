@@ -129,7 +129,10 @@ export function AuditLogTableRow(props: TableRowComponentProps<AuditLog>) {
           </TableCell>
         )}
         <TableCell align="right">
-          <AmountBlock amount={balance} />
+          <AmountBlock
+            amount={balance}
+            tooltipMessage="Use the 'Compute balances' action to compute these values."
+          />
         </TableCell>
       </TableRow>
       {/* {open && (

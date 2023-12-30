@@ -1,4 +1,4 @@
-import { CloseRounded, GitHub, Telegram, Twitter } from "@mui/icons-material"
+import { CloseRounded, GitHub, OpenInNew, Telegram, Twitter } from "@mui/icons-material"
 import {
   FormControlLabel,
   IconButton,
@@ -10,10 +10,11 @@ import {
 } from "@mui/material"
 import { useStore } from "@nanostores/react"
 import React from "react"
+import { GIT_DATE } from "src/settings"
+import { formatDate, formatHour } from "src/utils/formatting-utils"
 
-import { $devMode, AppVerProps, PopoverToggleProps } from "../../stores/app-store"
+import { $debugMode, AppVerProps, PopoverToggleProps } from "../../stores/app-store"
 import { MonoFont } from "../../theme"
-import { formatDate } from "../../utils/formatting-utils"
 import { SectionTitle } from "../SectionTitle"
 import { StaggeredList } from "../StaggeredList"
 import { ReducedMotion } from "./ReducedMotion"
@@ -44,7 +45,7 @@ export const SettingsDrawerContents = ({
   open,
   toggleOpen,
 }: MenuContentsProps) => {
-  const devMode = useStore($devMode)
+  const debugMode = useStore($debugMode)
 
   return (
     <StaggeredList
@@ -98,7 +99,7 @@ export const SettingsDrawerContents = ({
       </div>
       <div>
         <SectionTitle id="social-links" role="listitem">
-          Debug
+          Developer tools
         </SectionTitle>
         <Typography sx={{ opacity: 0.5 }} fontFamily={MonoFont} variant="body2">
           App version: {appVer}
@@ -107,20 +108,23 @@ export const SettingsDrawerContents = ({
           App digest: {gitHash.slice(0, 7)}
         </Typography>
         <Typography sx={{ opacity: 0.5 }} fontFamily={MonoFont} variant="body2">
-          Release date: {formatDate(new Date())}
+          Build date: {formatDate(new Date(GIT_DATE))}
+          {debugMode && ` at ${formatHour(new Date(GIT_DATE))}`}
         </Typography>
-
-        <FormControlLabel
+        <MenuItem
+          role="listitem"
+          component={FormControlLabel}
+          tabIndex={0}
           sx={{
             "&:hover": {
               color: "text.primary",
             },
+            borderRadius: 0.5,
             color: "text.secondary",
             display: "flex",
             justifyContent: "space-between",
-            marginLeft: 0,
-            marginRight: 0,
-            paddingY: 1,
+            marginX: -1,
+            paddingX: 1,
           }}
           slotProps={{
             typography: {
@@ -131,16 +135,37 @@ export const SettingsDrawerContents = ({
             <Switch
               color="secondary"
               size="small"
-              checked={devMode}
+              checked={debugMode}
               onChange={(event) => {
                 localStorage.setItem("dev-mode", event.target.checked ? "true" : "false")
-                $devMode.set(event.target.checked)
+                $debugMode.set(event.target.checked)
               }}
             />
           }
-          label="Dev mode"
+          label="Debug mode"
           labelPlacement="start"
         />
+        <MenuItem
+          target="_blank"
+          href="https://github.com/kernelwhisperer/privatefolio/issues/new"
+          role="listitem"
+          component={MuiLink}
+          tabIndex={0}
+          sx={{
+            "&:hover": {
+              color: "text.primary",
+            },
+            borderRadius: 0.5,
+            color: "text.secondary",
+            display: "flex",
+            gap: 1,
+            marginX: -1,
+            paddingX: 1,
+          }}
+        >
+          <Typography variant="body2">Report an issue</Typography>
+          <OpenInNew fontSize="inherit" />
+        </MenuItem>
       </div>
     </StaggeredList>
   )

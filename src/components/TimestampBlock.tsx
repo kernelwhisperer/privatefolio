@@ -3,7 +3,7 @@ import { useStore } from "@nanostores/react"
 import React from "react"
 
 import { Timestamp } from "../interfaces"
-import { $devMode } from "../stores/app-store"
+import { $debugMode } from "../stores/app-store"
 import {
   formatDate,
   formatDateRelative,
@@ -19,7 +19,7 @@ type TimestampBlockProps = {
 export function TimestampBlock(props: TimestampBlockProps) {
   const { timestamp, relative } = props
 
-  const devMode = useStore($devMode)
+  const debugMode = useStore($debugMode)
 
   return (
     <Tooltip
@@ -27,6 +27,7 @@ export function TimestampBlock(props: TimestampBlockProps) {
         <Stack>
           <span>
             {formatDateWithHour(timestamp, {
+              fractionalSecondDigits: debugMode ? 3 : undefined,
               second: "numeric",
               timeZoneName: "short",
             })}{" "}
@@ -34,12 +35,13 @@ export function TimestampBlock(props: TimestampBlockProps) {
           </span>
           <span>
             {formatDateWithHour(timestamp, {
+              fractionalSecondDigits: debugMode ? 3 : undefined,
               second: "numeric",
               timeZone: "UTC",
               timeZoneName: "short",
             })}
           </span>
-          {devMode && (
+          {debugMode && (
             <span>
               {timestamp} <span className="secondary">unix timestamp</span>
             </span>
