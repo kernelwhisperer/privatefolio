@@ -153,8 +153,8 @@ export function TaskDropdown() {
               opacity: "1 !important",
             },
             marginX: -1,
-            maxWidth: 340,
-            minWidth: 340,
+            maxWidth: 360,
+            minWidth: 360,
             paddingY: 0.5,
           }}
         >

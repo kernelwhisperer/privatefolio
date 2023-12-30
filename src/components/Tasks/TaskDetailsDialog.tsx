@@ -80,8 +80,10 @@ export function TaskDetailsDialog({ taskId, ...props }: DialogProps & { taskId: 
     <Dialog
       sx={{
         [`& .MuiDialog-paper`]: {
-          maxWidth: 480,
-          minWidth: 480,
+          margin: 2,
+          maxWidth: "min(100%, 480px)",
+          minWidth: 320,
+          width: 480,
         },
       }}
       // aria-labelledby="task-details-title"
