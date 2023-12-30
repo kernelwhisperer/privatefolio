@@ -13,7 +13,7 @@ import React from "react"
 import { GIT_DATE } from "src/settings"
 import { formatDate, formatHour } from "src/utils/formatting-utils"
 
-import { $debugMode, AppVerProps, PopoverToggleProps } from "../../stores/app-store"
+import { $debugMode, $telemetry, AppVerProps, PopoverToggleProps } from "../../stores/app-store"
 import { MonoFont } from "../../theme"
 import { SectionTitle } from "../SectionTitle"
 import { StaggeredList } from "../StaggeredList"
@@ -46,6 +46,7 @@ export const SettingsDrawerContents = ({
   toggleOpen,
 }: MenuContentsProps) => {
   const debugMode = useStore($debugMode)
+  const telemetry = useStore($telemetry)
 
   return (
     <StaggeredList
@@ -137,12 +138,46 @@ export const SettingsDrawerContents = ({
               size="small"
               checked={debugMode}
               onChange={(event) => {
-                localStorage.setItem("dev-mode", event.target.checked ? "true" : "false")
+                localStorage.setItem("debug-mode", event.target.checked ? "true" : "false")
                 $debugMode.set(event.target.checked)
               }}
             />
           }
           label="Debug mode"
+          labelPlacement="start"
+        />
+        <MenuItem
+          role="listitem"
+          component={FormControlLabel}
+          tabIndex={0}
+          sx={{
+            "&:hover": {
+              color: "text.primary",
+            },
+            borderRadius: 0.5,
+            color: "text.secondary",
+            display: "flex",
+            justifyContent: "space-between",
+            marginX: -1,
+            paddingX: 1,
+          }}
+          slotProps={{
+            typography: {
+              variant: "body2",
+            },
+          }}
+          control={
+            <Switch
+              color="secondary"
+              size="small"
+              checked={telemetry}
+              onChange={(event) => {
+                localStorage.setItem("no-telemetry", event.target.checked ? "false" : "true")
+                $telemetry.set(event.target.checked)
+              }}
+            />
+          }
+          label="Telemetry"
           labelPlacement="start"
         />
         <MenuItem
