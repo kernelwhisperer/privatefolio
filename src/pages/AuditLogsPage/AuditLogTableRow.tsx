@@ -1,27 +1,16 @@
 import { AddRounded, RemoveRounded, SvgIconComponent, TrendingFlat } from "@mui/icons-material"
-import {
-  alpha,
-  Avatar,
-  Box,
-  Chip,
-  Stack,
-  TableCell,
-  TableRow,
-  Tooltip,
-  Typography,
-} from "@mui/material"
+import { alpha, Avatar, Chip, Stack, TableCell, TableRow, Tooltip } from "@mui/material"
 import { green, grey, red } from "@mui/material/colors"
 import { useStore } from "@nanostores/react"
 import React from "react"
+import { AmountBlock } from "src/components/AmountBlock"
 
 import { AssetAvatar } from "../../components/AssetAvatar"
-import { TimestampCell } from "../../components/TimestampCell"
+import { TimestampBlock } from "../../components/TimestampBlock"
 import { Truncate } from "../../components/Truncate"
 import { AuditLog, AuditLogOperation } from "../../interfaces"
 import { INTEGRATIONS } from "../../settings"
 import { $assetMap, $integrationMap } from "../../stores/metadata-store"
-import { MonoFont } from "../../theme"
-import { formatNumber } from "../../utils/formatting-utils"
 import { TableRowComponentProps } from "../../utils/table-utils"
 
 const redColor = red[400]
@@ -45,7 +34,7 @@ const OPERATION_ICONS: Partial<Record<AuditLogOperation, SvgIconComponent>> = {
 
 export function AuditLogTableRow(props: TableRowComponentProps<AuditLog>) {
   const { row, relativeTime, headCells, ...rest } = props
-  const { symbol, change, changeN, operation, timestamp, integration, wallet, balance } = row
+  const { symbol, changeN, operation, timestamp, integration, wallet, balance } = row
 
   const assetMap = useStore($assetMap)
   const integrationMap = useStore($integrationMap)
@@ -71,23 +60,10 @@ export function AuditLogTableRow(props: TableRowComponentProps<AuditLog>) {
         // hover={!open}
         // onClick={toggleOpen}
         // className={open ? "TableRow-open-top" : undefined}
-        sx={() => ({
-          // ...(open
-          //   ? {
-          //       "--mui-palette-TableCell-border": "rgba(0,0,0,0)",
-          //       background: "var(--mui-palette-background-default)",
-          //     }
-          //   : {}),
-          // [theme.breakpoints.down("lg")]: {
-          //   display: "flex",
-          //   flexWrap: "wrap",
-          //   // backgroundColor: theme.palette.secondary.main,
-          // },
-        })}
         {...rest}
       >
         <TableCell sx={{ maxWidth: 200, minWidth: 200, width: 200 }}>
-          <TimestampCell timestamp={timestamp} relative={relativeTime} />
+          <TimestampBlock timestamp={timestamp} relative={relativeTime} />
         </TableCell>
         <TableCell sx={{ maxWidth: 160, minWidth: 160, width: 140 }}>
           <Stack direction="row" gap={0.5} alignItems="center" component="div">
@@ -122,22 +98,13 @@ export function AuditLogTableRow(props: TableRowComponentProps<AuditLog>) {
           align="right"
           sx={{
             color: changeColor,
-            fontFamily: MonoFont,
             //
             maxWidth: 140,
             minWidth: 140,
             width: 140,
           }}
         >
-          <Tooltip title={<Box sx={{ fontFamily: MonoFont }}>{change}</Box>}>
-            <span>
-              {formatNumber(changeN, {
-                maximumFractionDigits: 2, // TODO make this configurable
-                minimumFractionDigits: 2,
-                signDisplay: "always",
-              })}
-            </span>
-          </Tooltip>
+          <AmountBlock amount={changeN} formatOpts={{ signDisplay: "always" }} />
         </TableCell>
         {showAssetColumn && (
           <TableCell sx={{ maxWidth: 140, minWidth: 140, width: 140 }}>
@@ -153,29 +120,8 @@ export function AuditLogTableRow(props: TableRowComponentProps<AuditLog>) {
             </Stack>
           </TableCell>
         )}
-        <TableCell align="right" sx={{ fontFamily: MonoFont }}>
-          <Tooltip
-            title={
-              typeof balance === "number" ? (
-                <Box sx={{ fontFamily: MonoFont }}>{balance}</Box>
-              ) : (
-                "Use the 'Compute balances' action to compute these values."
-              )
-            }
-          >
-            <span>
-              {typeof balance === "number" ? (
-                formatNumber(balance, {
-                  maximumFractionDigits: 2, // TODO make this configurable
-                  minimumFractionDigits: 2,
-                })
-              ) : (
-                <Typography color="text.secondary" component="span" variant="inherit">
-                  Unknown
-                </Typography>
-              )}
-            </span>
-          </Tooltip>
+        <TableCell align="right">
+          <AmountBlock amount={balance} />
         </TableCell>
       </TableRow>
       {/* {open && (

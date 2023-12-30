@@ -59,3 +59,5 @@ export function timeQueue<T extends (...args: any[]) => void>(
     }
   }
 }
+
+export const EMPTY_OBJECT = Object.freeze({})

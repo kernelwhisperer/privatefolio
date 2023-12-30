@@ -12,7 +12,7 @@ import {
 import { useStore } from "@nanostores/react"
 import React, { MouseEvent, useState } from "react"
 import { IntegrationAvatar } from "src/components/IntegrationAvatar"
-import { TimestampCell } from "src/components/TimestampCell"
+import { TimestampBlock } from "src/components/TimestampBlock"
 import { Truncate } from "src/components/Truncate"
 import { useConfirm } from "src/hooks/useConfirm"
 import { Connection } from "src/interfaces"
@@ -87,19 +87,9 @@ export function ConnectionTableRow(props: TableRowComponentProps<Connection>) {
   }
 
   return (
-    <TableRow
-      hover
-      {...rest}
-      // sx={(theme) => ({
-      //   [theme.breakpoints.down("lg")]: {
-      //     display: "flex",
-      //     flexWrap: "wrap",
-      //     // backgroundColor: theme.palette.secondary.main,
-      //   },
-      // })}
-    >
+    <TableRow hover {...rest}>
       <TableCell sx={{ maxWidth: 180, minWidth: 180, width: 180 }}>
-        <TimestampCell timestamp={timestamp} relative={relativeTime} />
+        <TimestampBlock timestamp={timestamp} relative={relativeTime} />
       </TableCell>
       <TableCell sx={{ maxWidth: 180, minWidth: 180, width: 180 }}>
         {!syncedAt ? (
@@ -107,7 +97,7 @@ export function ConnectionTableRow(props: TableRowComponentProps<Connection>) {
             Not synced
           </Typography>
         ) : (
-          <TimestampCell timestamp={syncedAt} relative={relativeTime} />
+          <TimestampBlock timestamp={syncedAt} relative={relativeTime} />
         )}
       </TableCell>
       <TableCell sx={{ maxWidth: 24, minWidth: 24, width: 24 }}>

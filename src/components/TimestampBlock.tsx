@@ -11,12 +11,12 @@ import {
   formatHour,
 } from "../utils/formatting-utils"
 
-type TimestampCellProps = {
+type TimestampBlockProps = {
   relative?: boolean
   timestamp: Timestamp
 }
 
-export function TimestampCell(props: TimestampCellProps) {
+export function TimestampBlock(props: TimestampBlockProps) {
   const { timestamp, relative } = props
 
   const devMode = useStore($devMode)

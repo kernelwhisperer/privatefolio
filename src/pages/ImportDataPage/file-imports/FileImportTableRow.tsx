@@ -11,7 +11,7 @@ import {
 import { useStore } from "@nanostores/react"
 import React, { MouseEvent, useState } from "react"
 import { IntegrationAvatar } from "src/components/IntegrationAvatar"
-import { TimestampCell } from "src/components/TimestampCell"
+import { TimestampBlock } from "src/components/TimestampBlock"
 import { Truncate } from "src/components/Truncate"
 import { FileImport } from "src/interfaces"
 import { INTEGRATIONS } from "src/settings"
@@ -52,19 +52,9 @@ export function FileImportTableRow(props: TableRowComponentProps<FileImport>) {
   }
 
   return (
-    <TableRow
-      hover
-      {...rest}
-      // sx={(theme) => ({
-      //   [theme.breakpoints.down("lg")]: {
-      //     display: "flex",
-      //     flexWrap: "wrap",
-      //     // backgroundColor: theme.palette.secondary.main,
-      //   },
-      // })}
-    >
+    <TableRow hover {...rest}>
       <TableCell sx={{ maxWidth: 180, minWidth: 180, width: 180 }}>
-        <TimestampCell timestamp={timestamp} relative={relativeTime} />
+        <TimestampBlock timestamp={timestamp} relative={relativeTime} />
       </TableCell>
       <TableCell sx={{ maxWidth: 160, minWidth: 160, width: 140 }}>
         {integration ? (
@@ -103,7 +93,7 @@ export function FileImportTableRow(props: TableRowComponentProps<FileImport>) {
         </Tooltip>
       </TableCell>
       <TableCell sx={{ maxWidth: 180, minWidth: 180, width: 180 }}>
-        <TimestampCell timestamp={lastModified} relative={relativeTime} />
+        <TimestampBlock timestamp={lastModified} relative={relativeTime} />
       </TableCell>
       <TableCell
         sx={{ fontFamily: MonoFont, maxWidth: 128, minWidth: 128, width: 128 }}

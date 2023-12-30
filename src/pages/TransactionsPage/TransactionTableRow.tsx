@@ -1,17 +1,16 @@
 import { AddRounded, RemoveRounded, SvgIconComponent, SwapHoriz } from "@mui/icons-material"
-import { alpha, Avatar, Box, Chip, Stack, TableCell, TableRow, Tooltip } from "@mui/material"
+import { alpha, Avatar, Chip, Stack, TableCell, TableRow, Tooltip } from "@mui/material"
 import { green, grey, red } from "@mui/material/colors"
 import { useStore } from "@nanostores/react"
 import React from "react"
+import { AmountBlock } from "src/components/AmountBlock"
 
 import { AssetAvatar } from "../../components/AssetAvatar"
-import { TimestampCell } from "../../components/TimestampCell"
+import { TimestampBlock } from "../../components/TimestampBlock"
 import { Truncate } from "../../components/Truncate"
 import { Transaction, TransactionType } from "../../interfaces"
 import { INTEGRATIONS } from "../../settings"
 import { $assetMap, $integrationMap } from "../../stores/metadata-store"
-import { MonoFont } from "../../theme"
-import { formatNumber } from "../../utils/formatting-utils"
 import { TableRowComponentProps } from "../../utils/table-utils"
 
 const redColor = red[400]
@@ -51,7 +50,7 @@ export function TransactionTableRow(props: TableRowComponentProps<Transaction>) 
     <>
       <TableRow hover>
         <TableCell sx={{ maxWidth: 200, minWidth: 200, width: 200 }}>
-          <TimestampCell timestamp={timestamp} relative={relativeTime} />
+          <TimestampBlock timestamp={timestamp} relative={relativeTime} />
         </TableCell>
         <TableCell sx={{ maxWidth: 160, minWidth: 160, width: 140 }}>
           <Stack direction="row" gap={0.5} alignItems="center" component="div">
@@ -86,24 +85,16 @@ export function TransactionTableRow(props: TableRowComponentProps<Transaction>) 
           align="right"
           sx={{
             color: redColor,
-            fontFamily: MonoFont,
             //
             maxWidth: 120,
             minWidth: 120,
             width: 120,
           }}
         >
-          {outgoingN && (
-            <Tooltip title={<Box sx={{ fontFamily: MonoFont }}>{outgoingN}</Box>}>
-              <span>
-                {formatNumber(outgoingN * -1, {
-                  maximumFractionDigits: 2, // TODO make this configurable
-                  minimumFractionDigits: 2,
-                  signDisplay: "always",
-                })}
-              </span>
-            </Tooltip>
-          )}
+          <AmountBlock
+            amount={outgoingN ? outgoingN * -1 : outgoingN}
+            formatOpts={{ signDisplay: "always" }}
+          />
         </TableCell>
         <TableCell sx={{ maxWidth: 140, minWidth: 140, width: 140 }}>
           {outgoingSymbol && (
@@ -121,24 +112,13 @@ export function TransactionTableRow(props: TableRowComponentProps<Transaction>) 
           align="right"
           sx={{
             color: greenColor,
-            fontFamily: MonoFont,
             //
             maxWidth: 120,
             minWidth: 120,
             width: 120,
           }}
         >
-          {incomingN && (
-            <Tooltip title={<Box sx={{ fontFamily: MonoFont }}>{incomingN}</Box>}>
-              <span>
-                {formatNumber(incomingN, {
-                  maximumFractionDigits: 2, // TODO make this configurable
-                  minimumFractionDigits: 2,
-                  signDisplay: "always",
-                })}
-              </span>
-            </Tooltip>
-          )}
+          <AmountBlock amount={incomingN} formatOpts={{ signDisplay: "always" }} />
         </TableCell>
         <TableCell sx={{ maxWidth: 120, minWidth: 120, width: 120 }}>
           {incomingSymbol && (
