@@ -19,6 +19,7 @@ const defaultOptions: TooltipOptions = {
   backgroundColor: "yellow",
   borderColor: "blue",
   color: "green",
+  compact: false,
   dateSecondary: false,
   followMode: "top",
   horizontalDeadzoneWidth: 45,
@@ -73,12 +74,12 @@ export class TooltipElement {
       display: "flex",
       "flex-direction": "column",
       "font-family": MainFont,
-      "font-size": "14px",
+      "font-size": this._options.compact ? "12px" : "14px",
       "font-weight": "300",
       left: "0%",
-      "line-height": "16px",
+      "line-height": this._options.compact ? "14px" : "16px",
       opacity: "0",
-      padding: "8px 12px",
+      padding: this._options.compact ? "4px 8px" : "8px 12px",
       "pointer-events": "none",
       position: "absolute",
       top: "0",
@@ -88,7 +89,7 @@ export class TooltipElement {
 
     const titleElement = document.createElement("div")
     applyStyle(titleElement, {
-      "font-size": "16px",
+      "font-size": this._options.compact ? "14px" : "16px",
       "font-weight": "500",
       "line-height": "20px",
     })
@@ -101,7 +102,7 @@ export class TooltipElement {
       display: "flex",
       "flex-direction": "row",
       "font-weight": "400",
-      "margin-bottom": "8px",
+      "margin-bottom": this._options.compact ? "4px" : "8px",
     })
     element.appendChild(dateContainer)
 
@@ -120,9 +121,9 @@ export class TooltipElement {
     const priceElement = document.createElement("div")
     applyStyle(priceElement, {
       "font-family": MonoFont,
-      "font-size": "18px",
+      "font-size": this._options.compact ? "16px" : "18px",
       "font-weight": "500",
-      "line-height": "18px",
+      "line-height": this._options.compact ? "16px" : "18px",
     })
     setElementText(priceElement, "")
     element.appendChild(priceElement)
@@ -169,7 +170,7 @@ export class TooltipElement {
     if (content.title !== undefined && this._titleElement) {
       setElementText(this._titleElement, content.title)
     }
-    setElementText(this._priceElement, `${content.price} ${content.symbol}`)
+    setElementText(this._priceElement, `${content.symbol}${content.price}`)
     setElementText(this._dateElement, content.date)
     setElementText(this._timeElement, this._options.showTime ? `at ${content.time}` : "")
   }

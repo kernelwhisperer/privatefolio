@@ -359,6 +359,7 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
               <Stack
                 sx={{
                   borderBottom: "1px solid var(--mui-palette-TableCell-border)",
+                  marginLeft: -0.5,
                   minHeight: 43,
                 }}
                 alignItems="center"
@@ -563,7 +564,7 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
                     onClick={toggleLogScale}
                     sx={{ borderRadius: 0.5, paddingX: 1 }}
                   >
-                    Log scale
+                    Log
                   </Button>
                 </div>
               </Stack>

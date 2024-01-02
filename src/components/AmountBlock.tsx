@@ -7,24 +7,25 @@ import { formatNumber } from "../utils/formatting-utils"
 
 type AmountBlockProps = {
   amount?: number
+  currencyName?: string
   currencySymbol?: string
   formatOpts?: Intl.NumberFormatOptions
   significantDigits?: number
   tooltipMessage?: string
 }
 
-const DEFAULT_SIGNIFICANT_DIGITS = 2
-
 export function AmountBlock(props: AmountBlockProps) {
   const {
     amount,
+    currencyName,
     currencySymbol,
     significantDigits,
     tooltipMessage,
     formatOpts = EMPTY_OBJECT,
   } = props
 
-  const decimals = significantDigits ?? DEFAULT_SIGNIFICANT_DIGITS
+  const minimumFractionDigits = significantDigits
+  const maximumFractionDigits = significantDigits || 99
 
   return (
     <Tooltip
@@ -32,11 +33,11 @@ export function AmountBlock(props: AmountBlockProps) {
         typeof amount === "number" ? (
           <Box sx={{ fontFamily: MonoFont }}>
             {formatNumber(amount, {
-              maximumFractionDigits: significantDigits || 99,
-              minimumFractionDigits: decimals,
+              maximumFractionDigits,
+              minimumFractionDigits,
               ...formatOpts,
             })}{" "}
-            {currencySymbol}
+            {currencyName}
           </Box>
         ) : (
           tooltipMessage
@@ -46,16 +47,13 @@ export function AmountBlock(props: AmountBlockProps) {
       <Typography fontFamily={MonoFont} variant="inherit" component="span">
         {typeof amount === "number" ? (
           <>
+            {currencySymbol}
             {formatNumber(amount, {
-              maximumFractionDigits: decimals, // TODO make this configurable
-              minimumFractionDigits: decimals,
+              maximumFractionDigits: minimumFractionDigits,
+              minimumFractionDigits,
+              // notation: "compact",
               ...formatOpts,
-            })}{" "}
-            {currencySymbol && (
-              <Typography color="text.secondary" component="span" variant="inherit">
-                {currencySymbol}
-              </Typography>
-            )}
+            })}
           </>
         ) : (
           <Typography color="text.secondary" component="span" variant="inherit">

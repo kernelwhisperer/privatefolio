@@ -173,6 +173,7 @@ export function MemoryTable<T extends BaseType>(props: MemoryTableProps<T>) {
   })
 
   const isTablet = useMediaQuery("(max-width: 899px)")
+  const isMobile = useMediaQuery("(max-width: 599px)")
 
   return (
     <>
@@ -229,6 +230,8 @@ export function MemoryTable<T extends BaseType>(props: MemoryTableProps<T>) {
                     <TableBody>
                       {visibleRows.map((row) => (
                         <TableRowComponent
+                          isTablet={isTablet}
+                          isMobile={isMobile}
                           key={row._id}
                           headCells={headCells}
                           relativeTime={relativeTime}

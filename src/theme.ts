@@ -82,7 +82,7 @@ export const theme: CssVarsThemeOptions = {
           main: "rgb(160, 160, 160)",
         },
         text: {
-          secondary: "rgba(255, 255, 255, 0.66)",
+          secondary: "rgba(255, 255, 255, 0.55)",
         },
       },
     },

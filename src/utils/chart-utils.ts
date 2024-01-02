@@ -1,16 +1,19 @@
 import { Theme } from "@mui/material"
 import { CandlestickSeriesPartialOptions } from "lightweight-charts"
+import { Currency } from "src/stores/currency-store"
 
 import { TooltipPrimitiveOptions } from "../lightweight-charts/plugins/tooltip/tooltip"
 import { formatNumber } from "./formatting-utils"
+import { memoize } from "./fp-utils"
 
-export function createPriceFormatter(significantDigits: number, unitLabel: string) {
+export const createPriceFormatter = memoize((currency: Currency) => {
+  // TODO allowCompactPriceScale
   return (x: number) =>
-    `${formatNumber(x, {
-      maximumFractionDigits: significantDigits,
-      minimumFractionDigits: significantDigits,
-    })} ${unitLabel}`
-}
+    `${currency.symbol}${formatNumber(x, {
+      maximumFractionDigits: currency.significantDigits,
+      minimumFractionDigits: currency.significantDigits,
+    })}`
+})
 
 export const greenColorDark = "rgb(0, 150, 108)"
 // export const redColorDark = "rgb(220, 60, 70)"
@@ -41,6 +44,10 @@ export type CommonTooltipOptions = {
   backgroundColor: string
   borderColor: string
   color: string
+  /**
+   * @default false
+   */
+  compact: boolean
   /**
    * @default false
    */

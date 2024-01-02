@@ -22,6 +22,8 @@ export interface HeadCell<T extends BaseType> {
 
 export type TableRowComponentProps<T extends BaseType> = {
   headCells: HeadCell<T>[]
+  isMobile: boolean
+  isTablet: boolean
   relativeTime: boolean
   row: T
 }

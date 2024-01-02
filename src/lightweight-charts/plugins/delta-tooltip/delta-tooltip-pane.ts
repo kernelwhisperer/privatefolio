@@ -10,21 +10,23 @@ import {
 import { MainFont, MonoFont } from "../../../theme"
 import { CommonTooltipOptions } from "../../../utils/chart-utils"
 
-const styles = {
-  itemBlockPadding: 10,
-  itemInlinePadding: 12,
-  tooltipLineFontFamilies: [MainFont, MonoFont] as string[],
-  tooltipLineFontSizes: [14, 18] as number[],
-  tooltipLineFontWeights: [400, 500] as number[],
-  tooltipLineLineHeights: [23, 20] as number[],
-} as const
+const getStyles = (compact: boolean) =>
+  ({
+    itemBlockPadding: compact ? 5 : 10,
+    itemInlinePadding: compact ? 8 : 12,
+    tooltipLineFontFamilies: [MainFont, MonoFont] as string[],
+    tooltipLineFontSizes: compact ? [12, 16] : ([14, 18] as number[]),
+    tooltipLineFontWeights: [400, 500] as number[],
+    tooltipLineLineHeights: compact ? [18, 16] : ([23, 20] as number[]),
+  } as const)
 
 function determineSectionWidth(
   ctx: CanvasRenderingContext2D,
   lines: string[],
   fontSizes: number[],
   fontWeights: number[],
-  fontFamilies: string[]
+  fontFamilies: string[],
+  compact: boolean
 ) {
   let maxTextWidth = 0
   ctx.save()
@@ -34,11 +36,11 @@ function determineSectionWidth(
     if (measurement.width > maxTextWidth) maxTextWidth = measurement.width
   })
   ctx.restore()
-  return maxTextWidth + styles.itemInlinePadding * 2
+  return maxTextWidth + getStyles(compact).itemInlinePadding * 2
 }
 
-function determineSectionHeight(lines: string[], lineHeights: number[]) {
-  let height = styles.itemBlockPadding * 1.5 // TODO: the height spacing is inconsistent across different devices...
+function determineSectionHeight(lines: string[], lineHeights: number[], compact) {
+  let height = getStyles(compact).itemBlockPadding * 1.5 // TODO: the height spacing is inconsistent across different devices...
   lines.forEach((_line, index) => {
     height += lineHeights[index]
   })
@@ -66,31 +68,43 @@ type CalculatedDrawingPositions = CalculatedVerticalDrawingPositions &
   CalculatedHorizontalDrawingPositions
 
 function calculateVerticalDrawingPositions(
-  data: DeltaTooltipData
+  data: DeltaTooltipData,
+  compact
 ): CalculatedVerticalDrawingPositions {
   const mainY = data.topSpacing
 
   const leftTooltipHeight =
     data.tooltips.length < 1
       ? 0
-      : determineSectionHeight(data.tooltips[0].lineContent, styles.tooltipLineLineHeights)
+      : determineSectionHeight(
+          data.tooltips[0].lineContent,
+          getStyles(compact).tooltipLineLineHeights,
+          compact
+        )
   const rightTooltipHeight =
     data.tooltips.length < 2
       ? 0
-      : determineSectionHeight(data.tooltips[1].lineContent, styles.tooltipLineLineHeights)
+      : determineSectionHeight(
+          data.tooltips[1].lineContent,
+          getStyles(compact).tooltipLineLineHeights,
+          compact
+        )
   const deltaHeight = determineSectionHeight(
     [data.deltaTopLine, data.deltaBottomLine].filter(Boolean),
-    styles.tooltipLineLineHeights
+    getStyles(compact).tooltipLineLineHeights,
+    compact
   )
 
   const mainHeight = Math.max(leftTooltipHeight, rightTooltipHeight, deltaHeight)
   const leftTooltipTextY = Math.round(
-    styles.itemBlockPadding + (mainHeight - leftTooltipHeight) / 2
+    getStyles(compact).itemBlockPadding + (mainHeight - leftTooltipHeight) / 2
   )
   const rightTooltipTextY = Math.round(
-    styles.itemBlockPadding + (mainHeight - rightTooltipHeight) / 2
+    getStyles(compact).itemBlockPadding + (mainHeight - rightTooltipHeight) / 2
   )
-  const deltaTextY = Math.round(styles.itemBlockPadding + (mainHeight - deltaHeight) / 2)
+  const deltaTextY = Math.round(
+    getStyles(compact).itemBlockPadding + (mainHeight - deltaHeight) / 2
+  )
 
   return {
     deltaTextY,
@@ -105,15 +119,17 @@ function calculateInitialTooltipPosition(
   data: DeltaTooltipData,
   index: number,
   ctx: CanvasRenderingContext2D,
-  mediaSize: Size
+  mediaSize: Size,
+  compact: boolean
 ) {
   const lines = data.tooltips[index].lineContent
   const tooltipWidth = determineSectionWidth(
     ctx,
     lines,
-    styles.tooltipLineFontSizes,
-    styles.tooltipLineFontWeights,
-    styles.tooltipLineFontFamilies
+    getStyles(compact).tooltipLineFontSizes,
+    getStyles(compact).tooltipLineFontWeights,
+    getStyles(compact).tooltipLineFontFamilies,
+    compact
   )
   const halfWidth = tooltipWidth / 2
   const idealX = Math.min(
@@ -133,9 +149,10 @@ function calculateInitialTooltipPosition(
 function calculateDrawingHorizontalPositions(
   data: DeltaTooltipData,
   ctx: CanvasRenderingContext2D,
-  mediaSize: Size
+  mediaSize: Size,
+  compact: boolean
 ): CalculatedHorizontalDrawingPositions {
-  const leftPosition = calculateInitialTooltipPosition(data, 0, ctx, mediaSize)
+  const leftPosition = calculateInitialTooltipPosition(data, 0, ctx, mediaSize, compact)
   if (data.tooltips.length < 2) {
     return {
       deltaCentreX: 0,
@@ -146,16 +163,17 @@ function calculateDrawingHorizontalPositions(
       rightTooltipCentreX: 0,
     }
   }
-  const rightPosition = calculateInitialTooltipPosition(data, 1, ctx, mediaSize)
+  const rightPosition = calculateInitialTooltipPosition(data, 1, ctx, mediaSize, compact)
   const minDeltaWidth =
     data.tooltips.length < 2
       ? 0
       : determineSectionWidth(
           ctx,
           [data.deltaTopLine, data.deltaBottomLine].filter(Boolean),
-          styles.tooltipLineFontSizes,
-          styles.tooltipLineFontWeights,
-          styles.tooltipLineFontFamilies // TODO
+          getStyles(compact).tooltipLineFontSizes,
+          getStyles(compact).tooltipLineFontWeights,
+          getStyles(compact).tooltipLineFontFamilies,
+          compact
         )
 
   const overlapWidth = minDeltaWidth + leftPosition.x + leftPosition.width - rightPosition.x
@@ -194,11 +212,12 @@ function calculateDrawingHorizontalPositions(
 function calculateDrawingPositions(
   data: DeltaTooltipData,
   ctx: CanvasRenderingContext2D,
-  mediaSize: Size
+  mediaSize: Size,
+  compact: boolean
 ): CalculatedDrawingPositions {
   return {
-    ...calculateVerticalDrawingPositions(data),
-    ...calculateDrawingHorizontalPositions(data, ctx, mediaSize),
+    ...calculateVerticalDrawingPositions(data, compact),
+    ...calculateDrawingHorizontalPositions(data, ctx, mediaSize, compact),
   }
 }
 
@@ -215,7 +234,12 @@ class DeltaTooltipPaneRenderer implements ISeriesPrimitivePaneRenderer {
     if (this._data.tooltips.length < 1) return
     target.useMediaCoordinateSpace((scope) => {
       const ctx = scope.context
-      const drawingPositions = calculateDrawingPositions(this._data, ctx, scope.mediaSize)
+      const drawingPositions = calculateDrawingPositions(
+        this._data,
+        ctx,
+        scope.mediaSize,
+        this._options.compact
+      )
       this._drawMainTooltip(ctx, drawingPositions)
       this._drawDeltaArea(ctx, drawingPositions)
       this._drawTooltipsText(ctx, drawingPositions)
@@ -257,12 +281,14 @@ class DeltaTooltipPaneRenderer implements ISeriesPrimitivePaneRenderer {
         (tooltipIndex === 0 ? positions.leftTooltipTextY : positions.rightTooltipTextY)
 
       tooltip.lineContent.forEach((line: string, lineIndex: number) => {
-        ctx.font = `${styles.tooltipLineFontWeights[lineIndex]} ${styles.tooltipLineFontSizes[lineIndex]}px ${styles.tooltipLineFontFamilies[lineIndex]}`
+        ctx.font = `${getStyles(this._options.compact).tooltipLineFontWeights[lineIndex]} ${
+          getStyles(this._options.compact).tooltipLineFontSizes[lineIndex]
+        }px ${getStyles(this._options.compact).tooltipLineFontFamilies[lineIndex]}`
         ctx.fillStyle = lineIndex === 0 ? this._options.secondaryColor : this._options.color
         ctx.textAlign = "center"
         ctx.textBaseline = "top"
         ctx.fillText(line, x, y)
-        y += styles.tooltipLineLineHeights[lineIndex]
+        y += getStyles(this._options.compact).tooltipLineLineHeights[lineIndex]
       })
     })
     ctx.restore()
@@ -276,7 +302,9 @@ class DeltaTooltipPaneRenderer implements ISeriesPrimitivePaneRenderer {
     const lines = [this._data.deltaTopLine, this._data.deltaBottomLine]
 
     lines.forEach((line: string, lineIndex: number) => {
-      ctx.font = `${styles.tooltipLineFontWeights[lineIndex]} ${styles.tooltipLineFontSizes[lineIndex]}px ${styles.tooltipLineFontFamilies[lineIndex]}`
+      ctx.font = `${getStyles(this._options.compact).tooltipLineFontWeights[lineIndex]} ${
+        getStyles(this._options.compact).tooltipLineFontSizes[lineIndex]
+      }px ${getStyles(this._options.compact).tooltipLineFontFamilies[lineIndex]}`
       ctx.fillStyle = this._data.deltaTextColor
       ctx.textAlign = "center"
       ctx.textBaseline = "top"
@@ -289,12 +317,13 @@ class DeltaTooltipPaneRenderer implements ISeriesPrimitivePaneRenderer {
         const padding = 4
         const backgroundWidth = percentSize.width + padding * 2 + 1
         const fullSize = ctx.measureText(line).width + padding * 2
-        const backgroundHeight = styles.tooltipLineLineHeights[lineIndex] + padding
+        const backgroundHeight =
+          getStyles(this._options.compact).tooltipLineLineHeights[lineIndex] + padding
         ctx.fillStyle = darken(this._data.deltaBackgroundColor, 0.15)
         ctx.fillRect(x - fullSize / 2 + valueSize, y - padding, backgroundWidth, backgroundHeight)
       }
 
-      y += styles.tooltipLineLineHeights[lineIndex]
+      y += getStyles(this._options.compact).tooltipLineLineHeights[lineIndex]
     })
     ctx.restore()
   }
@@ -359,6 +388,7 @@ const defaultOptions: CommonTooltipOptions = {
   backgroundColor: "yellow",
   borderColor: "blue",
   color: "green",
+  compact: false,
   dateSecondary: false,
   secondaryColor: "brown",
   showTime: true,

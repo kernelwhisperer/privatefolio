@@ -258,7 +258,7 @@ export class DeltaTooltipPrimitive implements ISeriesPrimitive<Time> {
         const priceY = series.priceToCoordinate(priceValue) ?? -1000
         const [date, time] = formattedDateAndTime(data.time ? convertTime(data.time) : undefined)
         const state: DeltaSingleTooltipData = {
-          lineContent: [date, `${priceString} ${this._options.currencySymbol}`],
+          lineContent: [date, `${this._options.currencySymbol}${priceString}`],
           x: point.x,
         }
         if (this._options.showTime) {
@@ -296,7 +296,7 @@ export class DeltaTooltipPrimitive implements ISeriesPrimitive<Time> {
       deltaContent.deltaBottomLine = `${positive ? "+" : ""}${formatNumber(priceChange, {
         maximumFractionDigits: this._options.significantDigits,
         minimumFractionDigits: this._options.significantDigits,
-      })} ${positive ? "+" : ""}${pctChange.toFixed(2)}%`
+      })} ${positive ? "+" : ""}${pctChange.toFixed(this._options.tooltip?.compact ? 0 : 2)}%`
       deltaContent.deltaBackgroundColor = positive
         ? alpha(greenColorDark, 0.2)
         : alpha(redColor, 0.2)

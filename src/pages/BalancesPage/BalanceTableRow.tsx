@@ -1,8 +1,9 @@
-import { Divider, Stack, TableCell, TableRow, Typography, useMediaQuery } from "@mui/material"
+import { Stack, TableCell, TableRow, Typography } from "@mui/material"
 import { useStore } from "@nanostores/react"
 import React from "react"
 import { useNavigate } from "react-router-dom"
 import { AmountBlock } from "src/components/AmountBlock"
+import { $baseCurrency } from "src/stores/currency-store"
 
 import { AssetAvatar } from "../../components/AssetAvatar"
 import { Balance } from "../../interfaces"
@@ -10,13 +11,13 @@ import { $assetMap } from "../../stores/metadata-store"
 import { TableRowComponentProps } from "../../utils/table-utils"
 
 export function BalanceTableRow(props: TableRowComponentProps<Balance>) {
-  const { row, headCells: _headCells, relativeTime: _relativeTime, ...rest } = props
+  const { row, isTablet, ...rest } = props
   const { symbol, balance, price, value } = row
-  const navigate = useNavigate()
 
+  const navigate = useNavigate()
   const assetMap = useStore($assetMap)
 
-  const isTablet = useMediaQuery("(max-width: 899px)")
+  const currency = useStore($baseCurrency)
 
   if (isTablet) {
     return (
@@ -32,8 +33,8 @@ export function BalanceTableRow(props: TableRowComponentProps<Balance>) {
           <Stack direction="row" justifyContent="space-between" alignItems="center">
             <Stack direction="row" gap={1} alignItems="center" component="div">
               <AssetAvatar size="medium" src={assetMap[symbol]?.image} alt={symbol} />
-              <Stack gap={0.5}>
-                <Typography variant="body1" sx={{ marginBottom: -0.5 }}>
+              <Stack>
+                <Typography variant="body1">
                   <span>{symbol}</span>
                 </Typography>
                 <Typography
@@ -43,12 +44,31 @@ export function BalanceTableRow(props: TableRowComponentProps<Balance>) {
                   letterSpacing={0.5}
                 >
                   <AmountBlock amount={balance} />
-                  <Divider orientation="vertical" sx={{ display: "inline", marginRight: 1 }} />
-                  <AmountBlock amount={price?.value} currencySymbol="USD" significantDigits={2} />
                 </Typography>
               </Stack>
             </Stack>
-            <AmountBlock amount={value} currencySymbol="USD" significantDigits={2} />
+            <Stack alignItems="flex-end">
+              <Typography variant="body1">
+                <AmountBlock
+                  amount={value}
+                  currencySymbol={currency.symbol}
+                  currencyName={currency.name}
+                  significantDigits={currency.significantDigits}
+                />
+              </Typography>
+              <Typography
+                color="text.secondary"
+                variant="caption"
+                fontWeight={300}
+                letterSpacing={0.5}
+              >
+                <AmountBlock
+                  amount={price?.value}
+                  currencySymbol={currency.symbol}
+                  currencyName={currency.name}
+                />
+              </Typography>
+            </Stack>
           </Stack>
         </TableCell>
       </TableRow>
@@ -73,13 +93,22 @@ export function BalanceTableRow(props: TableRowComponentProps<Balance>) {
         </Stack>
       </TableCell>
       <TableCell align="right" sx={{ maxWidth: 220, minWidth: 220, width: 220 }}>
-        <AmountBlock amount={price?.value} currencySymbol="USD" significantDigits={2} />
+        <AmountBlock
+          amount={price?.value}
+          currencySymbol={currency.symbol}
+          currencyName={currency.name}
+        />
       </TableCell>
       <TableCell align="right" sx={{ maxWidth: 220, minWidth: 220, width: 220 }}>
         <AmountBlock amount={balance} />
       </TableCell>
       <TableCell align="right" sx={{ maxWidth: 220, minWidth: 220, width: 220 }}>
-        <AmountBlock amount={value} currencySymbol="USD" significantDigits={2} />
+        <AmountBlock
+          amount={value}
+          currencySymbol={currency.symbol}
+          currencyName={currency.name}
+          significantDigits={currency.significantDigits}
+        />
       </TableCell>
     </TableRow>
   )

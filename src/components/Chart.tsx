@@ -62,7 +62,7 @@ function BaseChart(props: ChartProps) {
         textColor: theme.palette.text.primary,
       },
       rightPriceScale: {
-        minimumWidth: 88,
+        // minimumWidth: 88,
       },
       width: containerRef.current?.clientWidth,
       ...chartOptions,
@@ -90,10 +90,10 @@ function BaseChart(props: ChartProps) {
     chartRef.current = createChart(containerRef.current, chartOpts)
 
     chartRef.current.timeScale().applyOptions({
-      borderVisible: false,
-      secondsVisible: true,
-      timeVisible: true,
-      // rightOffset: isMobile || window.location.toString().includes("machine=true") ? 4 : 8,
+      // borderVisible: false,
+      // secondsVisible: true,
+      // timeVisible: true,
+      // rightOffset: 0,
       // secondsVisible: ["Block"].includes($timeframe.get()),
       // timeVisible: ["Hour", "Minute", "Block"].includes($timeframe.get()),
     })
@@ -127,12 +127,6 @@ function BaseChart(props: ChartProps) {
     chartRef.current?.priceScale("right").applyOptions(priceScaleOptions)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [priceScaleOptions])
-
-  // TODO
-  // unitLabel,
-  // significantDigits,
-  // allowCompactPriceScale,
-  // onChartReady,
 
   return (
     <Box
