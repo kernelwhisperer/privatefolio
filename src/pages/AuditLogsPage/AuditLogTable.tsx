@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo } from "react"
+import { $activeAccount } from "src/stores/account-store"
 
 import {
   QueryFunction,
@@ -19,21 +20,27 @@ export function AuditLogTable(props: AuditLogsTableProps) {
 
   const queryFn: QueryFunction<AuditLog> = useCallback(
     async (filters, rowsPerPage, page, order) => {
-      const auditLogs = await clancy.findAuditLogs({
-        filters: { symbol, ...filters },
-        limit: rowsPerPage,
-        order,
-        skip: page * rowsPerPage,
-      })
+      const auditLogs = await clancy.findAuditLogs(
+        {
+          filters: { symbol, ...filters },
+          limit: rowsPerPage,
+          order,
+          skip: page * rowsPerPage,
+        },
+        $activeAccount.get()
+      )
 
       return [
         auditLogs,
         () =>
           clancy
-            .findAuditLogs({
-              fields: [],
-              filters: { symbol, ...filters },
-            })
+            .findAuditLogs(
+              {
+                fields: [],
+                filters: { symbol, ...filters },
+              },
+              $activeAccount.get()
+            )
             .then((logs) => logs.length),
       ]
     },

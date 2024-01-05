@@ -5,6 +5,7 @@ import React, { useEffect, useMemo, useState } from "react"
 import { MemoryTable } from "src/components/EnhancedTable/MemoryTable"
 import { useBoolean } from "src/hooks/useBoolean"
 import { Connection } from "src/interfaces"
+import { $activeAccount } from "src/stores/account-store"
 import { HeadCell } from "src/utils/table-utils"
 import { clancy } from "src/workers/remotes"
 
@@ -19,7 +20,7 @@ export function ConnectionsTable() {
   useEffect(() => {
     async function fetchData() {
       const start = Date.now()
-      const rows = await clancy.getConnections()
+      const rows = await clancy.getConnections($activeAccount.get())
       setQueryTime(Date.now() - start)
       console.log("📜 LOG > fetchData > rows:", rows)
       setRows(rows)

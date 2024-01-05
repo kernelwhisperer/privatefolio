@@ -313,6 +313,9 @@ export const theme: CssVarsThemeOptions = {
           },
           border: "1px solid var(--mui-palette-divider)",
           boxShadow: "unset",
+          // "html[data-mui-color-scheme='dark'] &": {
+          //   border: 0,
+          // },
         },
       },
       variants: [

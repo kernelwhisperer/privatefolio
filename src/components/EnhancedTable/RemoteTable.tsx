@@ -189,6 +189,8 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
                     <TableBody>
                       {rows.map((row) => (
                         <TableRowComponent
+                          isTablet={false} // TODO
+                          isMobile={false} // TODO
                           key={row._id}
                           headCells={headCells}
                           relativeTime={relativeTime}

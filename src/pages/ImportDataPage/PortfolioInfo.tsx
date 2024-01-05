@@ -2,6 +2,7 @@ import { Paper, Skeleton, Stack, Typography, TypographyProps } from "@mui/materi
 import { useStore } from "@nanostores/react"
 import { proxy } from "comlink"
 import React, { useEffect, useState } from "react"
+import { $activeAccount } from "src/stores/account-store"
 
 import { Timestamp } from "../../interfaces"
 import { $filterOptionsMap } from "../../stores/metadata-store"
@@ -19,12 +20,16 @@ export function PortfolioInfo() {
 
   useEffect(() => {
     function fetchData() {
-      clancy.getValue<Timestamp>("genesis", 0).then(setGenesis)
+      clancy.getValue<Timestamp>("genesis", 0, $activeAccount.get()).then(setGenesis)
     }
 
     fetchData()
 
-    const unsubscribePromise = clancy.subscribeToKV("genesis", proxy(fetchData))
+    const unsubscribePromise = clancy.subscribeToKV(
+      "genesis",
+      proxy(fetchData),
+      $activeAccount.get()
+    )
 
     return () => {
       unsubscribePromise.then((unsubscribe) => {
@@ -35,12 +40,16 @@ export function PortfolioInfo() {
 
   useEffect(() => {
     function fetchData() {
-      clancy.getValue<Timestamp>("lastTx", 0).then(setLastTx)
+      clancy.getValue<Timestamp>("lastTx", 0, $activeAccount.get()).then(setLastTx)
     }
 
     fetchData()
 
-    const unsubscribePromise = clancy.subscribeToKV("lastTx", proxy(fetchData))
+    const unsubscribePromise = clancy.subscribeToKV(
+      "lastTx",
+      proxy(fetchData),
+      $activeAccount.get()
+    )
 
     return () => {
       unsubscribePromise.then((unsubscribe) => {

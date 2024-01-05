@@ -11,7 +11,15 @@ import { $assetMap } from "../../stores/metadata-store"
 import { TableRowComponentProps } from "../../utils/table-utils"
 
 export function BalanceTableRow(props: TableRowComponentProps<Balance>) {
-  const { row, isTablet, ...rest } = props
+  const {
+    row,
+    isTablet,
+    headCells: _headCells,
+    isMobile: _isMobile,
+    isTablet: _isTablet,
+    relativeTime: _relativeTime,
+    ...rest
+  } = props
   const { symbol, balance, price, value } = row
 
   const navigate = useNavigate()
@@ -24,7 +32,7 @@ export function BalanceTableRow(props: TableRowComponentProps<Balance>) {
       <TableRow
         hover
         onClick={() => {
-          navigate(`/asset/${symbol}`)
+          navigate(`./asset/${symbol}`)
         }}
         sx={{ cursor: "pointer" }}
         {...rest}
@@ -79,7 +87,7 @@ export function BalanceTableRow(props: TableRowComponentProps<Balance>) {
     <TableRow
       hover
       onClick={() => {
-        navigate(`/asset/${symbol}`)
+        navigate(`./asset/${symbol}`)
       }}
       sx={{ cursor: "pointer" }}
       {...rest}

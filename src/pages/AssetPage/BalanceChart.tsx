@@ -1,5 +1,6 @@
 import { UTCTimestamp } from "lightweight-charts"
 import React, { useCallback } from "react"
+import { $activeAccount } from "src/stores/account-store"
 
 import { QueryFunction, SingleSeriesChart } from "../../components/SingleSeriesChart"
 import { clancy } from "../../workers/remotes"
@@ -12,7 +13,7 @@ export function BalanceChart(props: BalanceChartProps) {
   const { symbol } = props
 
   const queryFn: QueryFunction = useCallback(async () => {
-    const docs = await clancy.getHistoricalBalances({ symbol })
+    const docs = await clancy.getHistoricalBalances({ accountName: $activeAccount.get(), symbol })
 
     const records = docs.map((item) => ({
       time: (item.timestamp / 1000) as UTCTimestamp,

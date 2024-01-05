@@ -2,7 +2,6 @@
 
 import { AppBar, Container, Grid, Stack, Toolbar } from "@mui/material"
 import React from "react"
-import { useLocation } from "react-router-dom"
 
 import { TaskDropdown } from "../Tasks/TaskDropdown"
 import { AccountPicker } from "./AccountPicker"
@@ -11,11 +10,6 @@ import { NavigationMenu } from "./NavigationMenu"
 import { SettingsDrawer } from "./SettingsDrawer"
 
 export function Header() {
-  const location = useLocation()
-  const { pathname } = location
-
-  const overriddenPathname = pathname.includes("/asset/") ? "/" : pathname
-
   return (
     <AppBar
       position="static"
@@ -45,7 +39,7 @@ export function Header() {
               alignItems="center"
               justifyContent={{ md: "center" }}
             >
-              <NavigationMenu activePath={overriddenPathname} />
+              <NavigationMenu />
             </Grid>
             <Grid
               item

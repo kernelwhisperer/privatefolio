@@ -7,6 +7,7 @@ import { Asset, AuditLogOperation, Integration, IntegrationMetadata } from "../i
 import { DEFAULT_DEBOUNCE_DURATION, INTEGRATIONS } from "../settings"
 import { logAtoms } from "../utils/browser-utils"
 import { clancy } from "../workers/remotes"
+import { $activeAccount } from "./account-store"
 
 export type FilterOptionsMap = {
   incomingSymbol: string[]
@@ -46,7 +47,7 @@ async function computeFilterMap() {
   const wallets = new Set<string>()
   const operations = new Set<AuditLogOperation>()
 
-  const fileImports = await clancy.getFileImports()
+  const fileImports = await clancy.getFileImports($activeAccount.get())
   for (const fileImport of fileImports) {
     const { meta } = fileImport
 
@@ -60,7 +61,7 @@ async function computeFilterMap() {
     meta.operations.forEach((x) => operations.add(x))
   }
 
-  const connections = await clancy.getConnections()
+  const connections = await clancy.getConnections($activeAccount.get())
   for (const connection of connections) {
     const { integration, meta } = connection
 

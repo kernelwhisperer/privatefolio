@@ -1,35 +1,86 @@
-import { Avatar, Button, Drawer, IconButton, Portal, Stack, Tooltip } from "@mui/material"
+import { IconButton, InputBase, Select, Tooltip } from "@mui/material"
 import { useStore } from "@nanostores/react"
-import React from "react"
+import { proxy } from "comlink"
+import React, { useEffect } from "react"
+import { useLocation } from "react-router-dom"
+import { useBoolean } from "src/hooks/useBoolean"
 import { $accounts, $activeAccount } from "src/stores/account-store"
+import { computeMetadata, computeMetadataDebounced } from "src/stores/metadata-store"
+import { clancy } from "src/workers/remotes"
 
 import { AccountAvatar } from "../AccountAvatar"
+import { NavMenuItem } from "../NavMenuItem"
 
 export function AccountPicker() {
   const accounts = useStore($accounts)
   const activeAccount = useStore($activeAccount)
+  const { value: open, toggle: toggleOpen } = useBoolean(false)
+
+  const location = useLocation()
+  const { pathname } = location
+  const currentPath = pathname.split("/").slice(3).join("/")
+
+  useEffect(() => {
+    computeMetadata()
+    const unsubscribePromise = clancy.subscribeToAuditLogs(
+      proxy(computeMetadataDebounced),
+      activeAccount
+    )
+
+    return () => {
+      unsubscribePromise.then((unsubscribe) => {
+        unsubscribe()
+      })
+    }
+  }, [activeAccount])
 
   return (
     <>
-      <Tooltip title={activeAccount}>
-        <IconButton
-          sx={{
-            "&:hover": {
-              transform: "rotate(-30deg)",
-            },
-            marginRight: -1,
-            transition: "transform 0.33s",
-          }}
-        >
-          <AccountAvatar alt={"0xf98C96B5d10faAFc2324847c82305Bd5fd7E5ad3"} size="small" />
+      <Tooltip title="Accounts">
+        <IconButton onClick={toggleOpen} sx={{ marginRight: -1 }}>
+          <AccountAvatar alt={activeAccount} size="small" />
         </IconButton>
       </Tooltip>
-      <Portal>
+      <Select
+        open={open}
+        onClose={toggleOpen}
+        onOpen={toggleOpen}
+        value={activeAccount}
+        IconComponent={() => false}
+        input={
+          <InputBase sx={{ height: 36, position: "absolute", visibility: "hidden", width: 36 }} />
+        }
+        MenuProps={{
+          anchorOrigin: {
+            horizontal: "right",
+            vertical: "bottom",
+          },
+          transformOrigin: {
+            horizontal: "right",
+            vertical: "top",
+          },
+        }}
+      >
+        {accounts.map((x, index) => (
+          <NavMenuItem
+            value={x}
+            key={x}
+            onClick={() => {
+              $activeAccount.set(x)
+            }}
+            to={`/u/${index}/${currentPath}`}
+            label={x}
+            avatar={<AccountAvatar alt={x} src={x} />}
+          />
+        ))}
+      </Select>
+
+      {/* <Portal>
         <Drawer
-          variant="permanent"
+          // variant="permanent"
           anchor="left"
           keepMounted
-          open // </>={open}
+          open={false} // </>={open}
           // transitionDuration={500}
           // TODO this should have a delay
           // onClose={toggleOpen}
@@ -72,7 +123,7 @@ export function AccountPicker() {
             ))}
           </Stack>
         </Drawer>
-      </Portal>
+      </Portal> */}
     </>
   )
 }

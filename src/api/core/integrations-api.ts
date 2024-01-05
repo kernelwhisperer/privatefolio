@@ -16,7 +16,7 @@ export async function findIntegrations(nameMap: Record<string, boolean>) {
 
   for (let page = 1; page <= EXCHANGE_PAGES; page++) {
     // console.log(`Exchanges: Fetching page ${page}`)
-    const response = await fetch(`${EXCHANGE_FILES_LOCATION}/page-${page}.json`)
+    const response = await fetch(`/${EXCHANGE_FILES_LOCATION}/page-${page}.json`)
     const exchanges: Exchange[] = await response.json()
 
     for (const exchange of exchanges) {
@@ -30,7 +30,7 @@ export async function findIntegrations(nameMap: Record<string, boolean>) {
 
   for (let page = 1; page <= BLOCKCHAIN_PAGES; page++) {
     // console.log(`Exchanges: Fetching page ${page}`)
-    const response = await fetch(`${BLOCKCHAIN_FILES_LOCATION}/page-${page}.json`)
+    const response = await fetch(`/${BLOCKCHAIN_FILES_LOCATION}/page-${page}.json`)
     const chains: Blockchain[] = await response.json()
 
     for (const chain of chains) {

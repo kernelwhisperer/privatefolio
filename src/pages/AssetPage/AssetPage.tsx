@@ -30,7 +30,7 @@ export default function AssetPage({ show }: { show: boolean }) {
 
   return (
     <StaggeredList component="main" gap={2} show={show}>
-      <BackButton to="/" sx={{ marginLeft: 1 }}>
+      <BackButton to=".." sx={{ marginLeft: 1 }}>
         Home
       </BackButton>
       <Stack direction="row" gap={1} alignItems="center" component="div" sx={{ marginX: 2 }}>
@@ -51,38 +51,11 @@ export default function AssetPage({ show }: { show: boolean }) {
       </Stack>
       <Stack>
         <Tabs value={tab}>
-          <NavTab
-            value=""
-            to={`/asset/${symbol}`}
-            label="Price history"
-            replace
-            //
-          />
-          <NavTab
-            value="balance"
-            to={`/asset/${symbol}?tab=balance`}
-            label="Balance history"
-            replace
-          />
-          {/* <NavTab
-            value="pnl"
-            to={`/asset/${symbol}?tab=pnl`}
-            label="Profit & Loss"
-            replace
-            //
-          /> */}
-          <NavTab
-            value="transactions"
-            to={`/asset/${symbol}?tab=transactions`}
-            label="Transactions"
-            replace
-          />
-          <NavTab
-            value="audit-logs"
-            to={`/asset/${symbol}?tab=audit-logs`}
-            label="Audit logs"
-            replace
-          />
+          <NavTab value="" to="" label="Price history" replace />
+          <NavTab value="balance" to={`?tab=balance`} label="Balance history" replace />
+          {/* <NavTab value="pnl" to={`?tab=pnl`} label="Profit & Loss" replace /> */}
+          <NavTab value="transactions" to={`?tab=transactions`} label="Transactions" replace />
+          <NavTab value="audit-logs" to={`?tab=audit-logs`} label="Audit logs" replace />
         </Tabs>
         {tab === "" && <PriceChart symbol={symbol} />}
         {tab === "balance" && <BalanceChart symbol={symbol} />}

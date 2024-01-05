@@ -6,6 +6,7 @@ import { MemoryTable } from "src/components/EnhancedTable/MemoryTable"
 import { FileDrop } from "src/components/FileDrop"
 import { StaggeredList } from "src/components/StaggeredList"
 import { FileImport } from "src/interfaces"
+import { $activeAccount } from "src/stores/account-store"
 import { HeadCell } from "src/utils/table-utils"
 import { clancy } from "src/workers/remotes"
 
@@ -19,7 +20,7 @@ export function FileImportsTable() {
   useEffect(() => {
     async function fetchData() {
       const start = Date.now()
-      const rows = await clancy.getFileImports()
+      const rows = await clancy.getFileImports($activeAccount.get())
       setQueryTime(Date.now() - start)
       setRows(rows)
       setTimeout(() => {

@@ -18,7 +18,7 @@ export async function findAssets(symbolMap: Record<string, boolean>) {
 
   for (let page = 1; page <= ASSET_PAGES; page++) {
     // console.log(`Assets: Fetching page ${page}`)
-    const response = await fetch(`${ASSET_FILES_LOCATION}/page-${page}.json`)
+    const response = await fetch(`/${ASSET_FILES_LOCATION}/page-${page}.json`)
     const assets: Asset[] = await response.json()
 
     for (const asset of assets) {

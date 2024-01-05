@@ -3,6 +3,7 @@ import { Paper, Skeleton, Stack, Tooltip, Typography, TypographyProps } from "@m
 import { proxy } from "comlink"
 import { debounce } from "lodash-es"
 import React, { useEffect, useState } from "react"
+import { $activeAccount } from "src/stores/account-store"
 
 import { DEFAULT_DEBOUNCE_DURATION } from "../../settings"
 import { MonoFont } from "../../theme"
@@ -43,7 +44,7 @@ export function DatabaseInfo() {
 
   useEffect(() => {
     function fetchData() {
-      clancy.countAuditLogs().then(setAuditLogs)
+      clancy.countAuditLogs($activeAccount.get()).then(setAuditLogs)
     }
 
     fetchData()
@@ -54,7 +55,8 @@ export function DatabaseInfo() {
           setAuditLogs(null)
           fetchData()
         }, DEFAULT_DEBOUNCE_DURATION)
-      )
+      ),
+      $activeAccount.get()
     )
 
     return () => {
@@ -66,7 +68,7 @@ export function DatabaseInfo() {
 
   useEffect(() => {
     function fetchData() {
-      clancy.countTransactions().then(setTransactions)
+      clancy.countTransactions($activeAccount.get()).then(setTransactions)
     }
 
     fetchData()
@@ -77,7 +79,8 @@ export function DatabaseInfo() {
           setTransactions(null)
           fetchData()
         }, DEFAULT_DEBOUNCE_DURATION)
-      )
+      ),
+      $activeAccount.get()
     )
 
     return () => {
