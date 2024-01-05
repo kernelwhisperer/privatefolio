@@ -229,7 +229,9 @@ export async function computeBalances(
     historicalBalances = {}
   }
 
-  if (latestDay === 0) return
+  if (latestDay === 0 && since === 0) return
+
+  if (latestDay === 0) latestDay = since
 
   // The balances remain the same until today
   progress([95, `Filling balances to reach today`])
