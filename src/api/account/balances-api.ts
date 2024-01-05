@@ -1,3 +1,4 @@
+import { formatDate } from "src/utils/formatting-utils"
 import { noop } from "src/utils/utils"
 
 import { Balance, BalanceMap, Timestamp } from "../../interfaces"
@@ -6,7 +7,7 @@ import { ProgressCallback } from "../../stores/task-store"
 import { getPricesForAsset } from "../core/daily-prices-api"
 import { getAccount } from "../database"
 import { validateOperation } from "../database-utils"
-import { countAuditLogs, findAuditLogs } from "./audit-logs-api"
+import { countAuditLogs, indexAuditLogs } from "./audit-logs-api"
 import { getValue, setValue } from "./kv-api"
 
 export async function getLatestBalances(accountName = "main"): Promise<Balance[]> {
@@ -80,31 +81,54 @@ export async function getHistoricalBalances(request: GetHistoricalBalancesReques
 }
 
 export type ComputeBalancesRequest = {
-  accountName?: string
   pageSize?: number
+  since?: Timestamp
   until?: Timestamp
 }
 
 export async function computeBalances(
   progress: ProgressCallback = noop,
   signal?: AbortSignal,
-  request: ComputeBalancesRequest = {}
+  request: ComputeBalancesRequest = {},
+  accountName = "main"
 ) {
-  const { pageSize = DB_OPERATION_PAGE_SIZE, until = Date.now(), accountName = "main" } = request
+  const { pageSize = DB_OPERATION_PAGE_SIZE, until = Date.now() } = request
+  let since = request.since
 
   const account = getAccount(accountName)
-  // TODO cursor
-  const count = await countAuditLogs(accountName)
-  progress([0, `Computing balances from ${count} audit logs`])
+  if (since === undefined) {
+    since = (await getValue<Timestamp>("balancesCursor", 0, accountName)) as Timestamp
+  }
+
+  if (since !== 0) {
+    progress([0, `Refreshing balances starting ${formatDate(since)}`])
+  }
+
+  const { indexes } = await account.auditLogsDB.getIndexes()
+  if (indexes.length === 1) {
+    await indexAuditLogs(undefined, accountName)
+  }
+
+  const count =
+    since === 0
+      ? await countAuditLogs(accountName)
+      : (await account.auditLogsDB.find({ selector: { timestamp: { $gte: since } } })).docs.length
+  progress([0, `Computing balances for ${count} audit logs`])
 
   let recordsLength = 0
-  const latestBalances: BalanceMap = {
+  let latestBalances: BalanceMap = {
     _id: 0,
     timestamp: 0,
   }
+  if (since !== 0) {
+    const latestBalancesDoc = await account.balancesDB.get(String(since - 86400000))
+    const { _id, _rev, ...latestBalancesMap } = latestBalancesDoc
+    latestBalances = latestBalancesMap
+  }
+
   let historicalBalances: Record<number, BalanceMap> = {}
 
-  let latestDay = 0
+  let latestDay: Timestamp = 0
 
   for (let i = 0; i < count; i += pageSize) {
     if (signal?.aborted) {
@@ -115,20 +139,18 @@ export async function computeBalances(
     const lastIndex = Math.min(i + pageSize, count)
 
     progress([(i * 90) / count, `Processing logs ${firstIndex} to ${lastIndex}`])
-    const logs = await findAuditLogs(
-      {
-        limit: pageSize,
-        order: "asc",
-        skip: i,
-      },
-      accountName
-    )
+    const { docs: logs } = await account.auditLogsDB.find({
+      limit: pageSize,
+      selector: { timestamp: { $gte: since } },
+      skip: i,
+      sort: [{ timestamp: "asc" }],
+    })
 
     // progress([(i * 100) / count, `Processing logs ${firstIndex} to ${lastIndex} - fetch complete`])
     for (const log of logs) {
       const { symbol, changeN, timestamp } = log
 
-      const nextDay = timestamp - (timestamp % 86400000)
+      const nextDay: Timestamp = timestamp - (timestamp % 86400000)
 
       // fill the daily gaps
       if (latestDay !== 0) {
@@ -193,17 +215,19 @@ export async function computeBalances(
       ((i + pageSize) * 90) / Math.max(count, pageSize),
       `Processing logs ${firstIndex} to ${lastIndex} complete`,
     ])
+    progress([
+      ((i + pageSize) * 90) / Math.max(count, pageSize),
+      `Processed ${balances.length} daily balances`,
+    ])
 
-    // free memory, only keep last day
-    historicalBalances = {
-      [latestDay]: historicalBalances[latestDay],
-    }
+    // free memory
+    historicalBalances = {}
   }
 
   if (latestDay === 0) return
 
   // The balances remain the same until today
-  progress([95, `Filling the balances to reach today`])
+  progress([95, `Filling balances to reach today`])
   for (let i = latestDay + 86400000; i <= until; i += 86400000) {
     historicalBalances[i] = latestBalances
     latestDay = i
@@ -222,5 +246,5 @@ export async function computeBalances(
 
   await setValue("balancesCursor", latestDay, accountName)
   recordsLength += balances.length
-  progress([100, `Saved ${recordsLength - 1} records to disk`])
+  progress([100, `Saved ${recordsLength} records to disk`])
 }

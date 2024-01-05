@@ -52,7 +52,7 @@ export async function indexAuditLogs(progress: ProgressCallback = noop, accountN
 
 type FindAuditLogsRequest = {
   fields?: string[]
-  filters?: Partial<Record<keyof AuditLog, string | number>>
+  filters?: Partial<Record<keyof AuditLog, string | number | PouchDB.Find.ConditionOperators>>
   limit?: number
   /**
    * orderBy = timestamp, always

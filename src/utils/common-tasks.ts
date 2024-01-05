@@ -1,4 +1,5 @@
 import { Connection } from "src/interfaces"
+import { $activeAccount } from "src/stores/account-store"
 
 import { $filterOptionsMap, computeMetadata } from "../stores/metadata-store"
 import { $taskQueue, enqueueTask, TaskPriority } from "../stores/task-store"
@@ -6,13 +7,13 @@ import { clancy } from "../workers/remotes"
 
 export function handleAuditLogChange() {
   enqueueIndexDatabase()
-  enqueueComputeBalances()
+  enqueueRecomputeBalances()
   enqueueFetchPrices()
   enqueueComputeNetworth()
 }
 
 export function refreshNetworth() {
-  enqueueComputeBalances()
+  enqueueRefreshBalances()
   enqueueFetchPrices()
   enqueueComputeNetworth()
 }
@@ -29,31 +30,50 @@ export function enqueueIndexDatabase() {
       "Index audit logs and transactions to allow sorting, filtering and quicker query times.",
     determinate: true,
     function: async (progress) => {
-      await clancy.indexAuditLogs(progress)
-      await clancy.indexTransactions(progress)
-      await clancy.computeGenesis()
-      await clancy.computeLastTx()
+      await clancy.indexAuditLogs(progress, $activeAccount.get())
+      await clancy.indexTransactions(progress, $activeAccount.get())
+      await clancy.computeGenesis($activeAccount.get())
+      await clancy.computeLastTx($activeAccount.get())
     },
     name: "Index database",
     priority: TaskPriority.Medium,
   })
 }
 
-export function enqueueComputeBalances() {
+export function enqueueRecomputeBalances() {
   const taskQueue = $taskQueue.get()
 
-  const existing = taskQueue.find((task) => task.name === "Compute balances")
+  const existing = taskQueue.find((task) => task.name === "Recompute balances")
 
   if (existing) return
 
   enqueueTask({
     abortable: true,
-    description: "Computing balances of owned assets.",
+    description: "Recomputing balances of owned assets.",
     determinate: true,
     function: async (progress, signal) => {
-      await clancy.computeBalances(progress, signal)
+      await clancy.computeBalances(progress, signal, { since: 0 }, $activeAccount.get())
     },
-    name: "Compute balances",
+    name: "Recompute balances",
+    priority: TaskPriority.Medium,
+  })
+}
+
+export function enqueueRefreshBalances() {
+  const taskQueue = $taskQueue.get()
+
+  const existing = taskQueue.find((task) => task.name === "Refresh balances")
+
+  if (existing) return
+
+  enqueueTask({
+    abortable: true,
+    description: "Refreshing balances of owned assets.",
+    determinate: true,
+    function: async (progress, signal) => {
+      await clancy.computeBalances(progress, signal, undefined, $activeAccount.get())
+    },
+    name: "Refresh balances",
     priority: TaskPriority.Medium,
   })
 }
@@ -95,7 +115,7 @@ export function enqueueComputeNetworth() {
     description: "Computing historical networth.",
     determinate: true,
     function: async (progress) => {
-      await clancy.computeNetworth(progress)
+      await clancy.computeNetworth(progress, $activeAccount.get())
     },
     name: "Compute networth",
     priority: TaskPriority.Low,
@@ -107,7 +127,7 @@ export function enqueueSyncConnection(connection: Connection) {
     description: `Sync "${connection.address}"`,
     determinate: true,
     function: async (progress) => {
-      await clancy.syncConnection(progress, connection)
+      await clancy.syncConnection(progress, connection, $activeAccount.get())
     },
     name: "Sync connection",
     priority: TaskPriority.High,

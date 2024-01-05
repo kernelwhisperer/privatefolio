@@ -41,49 +41,49 @@ exports[`should fetch historical balances 2`] = `
   {
     "BTC": 0.072958518,
     "_id": "1504742400000",
-    "_rev": "2-37442e18569517e3e8dc62231f583fb0",
+    "_rev": "2-dcad4c4b7364c7b84b2429884373815c",
     "timestamp": 1504742400000,
   },
   {
     "BTC": 0.072958518,
     "_id": "1504828800000",
-    "_rev": "1-ce91ad3807ea9d7d5fadcce65d908135",
+    "_rev": "2-c556a7a4336bf1490dfbb77ec79f4a81",
     "timestamp": 1504828800000,
   },
   {
     "BTC": 0.072958518,
     "_id": "1504915200000",
-    "_rev": "1-b2126b1422c629a15cae38e2b4928bc3",
+    "_rev": "2-b0bacd15cfb691da731d94cb5417dbba",
     "timestamp": 1504915200000,
   },
   {
     "BTC": 0.072958518,
     "_id": "1505001600000",
-    "_rev": "1-4a4370ef6b8cd55809ddba93a6d0231b",
+    "_rev": "2-983c718bbd7a35de6bb23691eaa48b04",
     "timestamp": 1505001600000,
   },
   {
     "BTC": 0.072958518,
     "_id": "1505088000000",
-    "_rev": "1-eb9a878c0de5165bbcd63faf30f17281",
+    "_rev": "2-f4d0a4650341174f11a859e501a40684",
     "timestamp": 1505088000000,
   },
   {
     "BTC": 0.072958518,
     "_id": "1505174400000",
-    "_rev": "1-1dff9d3e58f4bda518453f8e6244d611",
+    "_rev": "2-17ccf76a032dd994d946084a46b4baad",
     "timestamp": 1505174400000,
   },
   {
     "BTC": 0.072958518,
     "_id": "1505260800000",
-    "_rev": "1-045fce3e3ccc2af6ea20fff369a158d0",
+    "_rev": "2-99f74a55915a5c895006ad00231a11f5",
     "timestamp": 1505260800000,
   },
   {
     "BTC": 0.072958518,
     "_id": "1505347200000",
-    "_rev": "1-6e4f013a8e0590fef8696300ac967249",
+    "_rev": "2-a8b5cba10b08ace131fc35e00e287418",
     "timestamp": 1505347200000,
   },
 ]
@@ -125,7 +125,7 @@ exports[`should have balances computed 1`] = `
 [
   {
     "_id": "1217276216_3604660326_0",
-    "_rev": "2-18bebd9ef23e650d8bc8f03c09ddf381",
+    "_rev": "3-d4e726ed34cefe5f8815a6d77f7a6822",
     "balance": 0.072958518,
     "change": "0.036979259",
     "changeN": 0.036979259,

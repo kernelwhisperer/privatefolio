@@ -11,10 +11,10 @@ import React from "react"
 import { useConfirm } from "../../hooks/useConfirm"
 import { enqueueTask, TaskPriority } from "../../stores/task-store"
 import {
-  enqueueComputeBalances,
   enqueueComputeNetworth,
   enqueueFetchPrices,
   enqueueIndexDatabase,
+  enqueueRecomputeBalances,
 } from "../../utils/common-tasks"
 import { clancy } from "../../workers/remotes"
 
@@ -65,14 +65,14 @@ export function ImportDataActions() {
         <MenuItem
           dense
           onClick={() => {
-            enqueueComputeBalances()
+            enqueueRecomputeBalances()
             handleClose()
           }}
         >
           <ListItemIcon>
             <CalculateOutlined fontSize="small" />
           </ListItemIcon>
-          <ListItemText>Compute balances</ListItemText>
+          <ListItemText>Recompute balances</ListItemText>
         </MenuItem>
         <MenuItem
           dense

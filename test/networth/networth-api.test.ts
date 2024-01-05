@@ -6,7 +6,6 @@ import { computeNetworth, getHistoricalNetworth } from "src/api/account/networth
 import { fetchDailyPrices } from "src/api/core/daily-prices-api"
 import { resetAccount } from "src/api/database"
 import { ProgressUpdate } from "src/stores/task-store"
-import { wait } from "src/utils/utils"
 import { beforeAll, expect, it } from "vitest"
 
 const accountName = "green"
@@ -21,25 +20,30 @@ beforeAll(async () => {
   const file = new File([buffer], fileName, { lastModified: 0, type: "text/csv" })
   await addFileImport(file, undefined, accountName)
   const until = Date.UTC(2017, 8, 14, 0, 0, 0, 0) // 14 Sep 2017
-  await computeBalances(undefined, undefined, {
-    accountName,
-    until,
-  })
+  await computeBalances(
+    undefined,
+    undefined,
+    {
+      until,
+    },
+    accountName
+  )
   await fetchDailyPrices({ symbols: ["BTC"] })
 })
 
 it("should compute historical networth", async () => {
   // arrange
   // act
-  await wait(2000)
+  // await wait(2000)
   const updates: ProgressUpdate[] = []
   await computeNetworth((state) => updates.push(state), accountName)
   const networthArray = await getHistoricalNetworth(accountName)
   // assert
   expect(updates.join("\n")).toMatchInlineSnapshot(
     `
-    "0,Computing historical networth for 14 total balances
-    100,Computed all networth records"
+    "5,Computing networth for all 14 days
+    10,Computing networth starting Sep 01, 2017
+    100,Computing networth for today"
   `
   )
   expect(networthArray.length).toMatchInlineSnapshot(`14`)
