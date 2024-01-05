@@ -7,15 +7,16 @@ import { clancy } from "../workers/remotes"
 
 export function handleAuditLogChange() {
   enqueueIndexDatabase()
-  enqueueRecomputeBalances()
+  // invalidate balancesCursor
+  enqueueRefreshBalances()
   enqueueFetchPrices()
-  enqueueComputeNetworth()
+  enqueueRefreshNetworth()
 }
 
 export function refreshNetworth() {
   enqueueRefreshBalances()
   enqueueFetchPrices()
-  enqueueComputeNetworth()
+  enqueueRefreshNetworth()
 }
 
 export function enqueueIndexDatabase() {
@@ -104,20 +105,38 @@ export function enqueueFetchPrices() {
   })
 }
 
-export function enqueueComputeNetworth() {
+export function enqueueRecomputeNetworth() {
   const taskQueue = $taskQueue.get()
 
-  const existing = taskQueue.find((task) => task.name === "Compute networth")
+  const existing = taskQueue.find((task) => task.name === "Recompute networth")
 
   if (existing) return
 
   enqueueTask({
-    description: "Computing historical networth.",
+    description: "Recomputing historical networth.",
+    determinate: true,
+    function: async (progress) => {
+      await clancy.computeNetworth(progress, $activeAccount.get(), 0)
+    },
+    name: "Recompute networth",
+    priority: TaskPriority.Low,
+  })
+}
+
+export function enqueueRefreshNetworth() {
+  const taskQueue = $taskQueue.get()
+
+  const existing = taskQueue.find((task) => task.name === "Refresh networth")
+
+  if (existing) return
+
+  enqueueTask({
+    description: "Refresh historical networth.",
     determinate: true,
     function: async (progress) => {
       await clancy.computeNetworth(progress, $activeAccount.get())
     },
-    name: "Compute networth",
+    name: "Refresh networth",
     priority: TaskPriority.Low,
   })
 }

@@ -1,3 +1,4 @@
+import { proxy } from "comlink"
 import {
   ChartData,
   PriceApiId,
@@ -230,4 +231,19 @@ export async function fetchDailyPrices(
       progress([(i * 100) / symbols.length, `Skipped ${symbol}: ${error}`])
     }
   }
+}
+
+export function subscribeToDailyPrices(callback: () => void) {
+  const changesSub = core.dailyPricesDB
+    .changes({
+      live: true,
+      since: "now",
+    })
+    .on("change", callback)
+
+  return proxy(() => {
+    try {
+      changesSub.cancel()
+    } catch {}
+  })
 }

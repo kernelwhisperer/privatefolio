@@ -1,12 +1,12 @@
 import { formatDate } from "src/utils/formatting-utils"
 import { noop } from "src/utils/utils"
 
-import { Networth, Time } from "../../interfaces"
+import { Networth, Time, Timestamp } from "../../interfaces"
 import { ProgressCallback } from "../../stores/task-store"
 import { getAssetPriceMap } from "../core/daily-prices-api"
 import { getAccount } from "../database"
 import { validateOperation } from "../database-utils"
-import { getHistoricalBalances } from "./balances-api"
+import { getValue } from "./kv-api"
 
 export async function getHistoricalNetworth(accountName = "main") {
   const account = getAccount(accountName)
@@ -19,12 +19,38 @@ export async function getHistoricalNetworth(accountName = "main") {
 
 const pageSize = 250
 
-export async function computeNetworth(progress: ProgressCallback = noop, accountName = "main") {
+export async function computeNetworth(
+  progress: ProgressCallback = noop,
+  accountName = "main",
+  since?: Timestamp
+) {
   const account = getAccount(accountName)
 
-  const balances = await getHistoricalBalances({ accountName })
+  if (since === undefined) {
+    since = (await getValue<Timestamp>("balancesCursor", 0, accountName)) as Timestamp
+  }
+
+  const { indexes } = await account.balancesDB.getIndexes()
+  if (indexes.length === 1) {
+    await account.balancesDB.createIndex({
+      index: {
+        fields: ["timestamp"],
+        name: "timestamp",
+      },
+    })
+  }
+
+  const balances = await account.balancesDB
+    .find({
+      selector: {
+        timestamp: { $gte: since },
+      },
+      sort: [{ timestamp: "asc" }],
+    })
+    .then((x) => x.docs)
+
   const count = balances.length
-  progress([5, `Computing networth for all ${count} days`])
+  progress([5, `Computing networth for ${count} days`])
 
   const docIds: Array<{ id: string }> = []
   const documentMap: Record<string, Networth> = {}
@@ -73,5 +99,4 @@ export async function computeNetworth(progress: ProgressCallback = noop, account
 
   const updates = await account.networthDB.bulkDocs(docs)
   validateOperation(updates)
-  progress([100, `Computing networth for today`])
 }

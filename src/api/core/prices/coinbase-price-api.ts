@@ -29,6 +29,7 @@ function getInterval(timeInterval: ResolutionString) {
   throw new Error(`Timeframe '${timeInterval}' is not supported for this metric.`)
 }
 
+// https://docs.cloud.coinbase.com/exchange/reference/exchangerestapi_getproductcandles
 // https://docs.cloud.coinbase.com/advanced-trade-api/reference/retailbrokerageapi_getcandles
 export async function queryPrices(request: QueryRequest) {
   const { timeInterval, since, until, limit = 900, pair } = request

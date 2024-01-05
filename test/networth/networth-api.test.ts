@@ -31,21 +31,37 @@ beforeAll(async () => {
   await fetchDailyPrices({ symbols: ["BTC"] })
 })
 
-it("should compute historical networth", async () => {
+it.sequential("should compute historical networth", async () => {
   // arrange
   // act
-  // await wait(2000)
   const updates: ProgressUpdate[] = []
-  await computeNetworth((state) => updates.push(state), accountName)
+  await computeNetworth((state) => updates.push(state), accountName, 0)
   const networthArray = await getHistoricalNetworth(accountName)
   // assert
   expect(updates.join("\n")).toMatchInlineSnapshot(
     `
-    "5,Computing networth for all 14 days
-    10,Computing networth starting Sep 01, 2017
-    100,Computing networth for today"
+    "5,Computing networth for 14 days
+    10,Computing networth starting Sep 01, 2017"
   `
   )
   expect(networthArray.length).toMatchInlineSnapshot(`14`)
+  expect(networthArray).toMatchSnapshot()
+})
+
+it.sequential("should refresh networth", async () => {
+  // arrange
+  // act
+  const updates: ProgressUpdate[] = []
+  await computeNetworth((state) => updates.push(state), accountName)
+  const networthArray = await getHistoricalNetworth(accountName)
+  // assert
+  expect(updates.join("\n")).toMatchInlineSnapshot(`
+    "5,Computing networth for 1 days
+    10,Computing networth starting Sep 14, 2017"
+  `)
+  expect(networthArray.length).toMatchInlineSnapshot(`
+      "5,Computing networth for 1 days
+      10,Computing networth starting Sep 14, 2017"
+    `)
   expect(networthArray).toMatchSnapshot()
 })

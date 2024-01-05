@@ -49,12 +49,17 @@ export type GetHistoricalBalancesRequest = {
 export async function getHistoricalBalances(request: GetHistoricalBalancesRequest) {
   const { symbol, limit, skip, accountName = "main" } = request
   const account = getAccount(accountName)
-  await account.balancesDB.createIndex({
-    index: {
-      fields: ["timestamp"],
-      name: "timestamp",
-    },
-  })
+
+  const { indexes } = await account.balancesDB.getIndexes()
+  if (indexes.length === 1) {
+    await account.balancesDB.createIndex({
+      index: {
+        fields: ["timestamp"],
+        name: "timestamp",
+      },
+    })
+  }
+
   const balances = await account.balancesDB.find({
     fields: symbol ? [symbol, "timestamp"] : undefined,
     limit,

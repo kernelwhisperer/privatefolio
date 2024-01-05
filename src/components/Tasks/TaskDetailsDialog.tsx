@@ -152,7 +152,14 @@ export function TaskDetailsDialog({ taskId, ...props }: DialogProps & { taskId: 
                 )}
                 {updates.map((update, index) => (
                   <div key={index}>
-                    <TimeLabel timestamp={parseInt(update)} /> {updateMap[update][1]}...
+                    <TimeLabel timestamp={parseInt(update)} />{" "}
+                    {!updateMap[update][1].includes("Error") ? (
+                      `${updateMap[update][1]}...`
+                    ) : (
+                      <Typography variant="inherit" color="error" component="span">
+                        {updateMap[update][1]}
+                      </Typography>
+                    )}
                   </div>
                 ))}
                 {completed && (
