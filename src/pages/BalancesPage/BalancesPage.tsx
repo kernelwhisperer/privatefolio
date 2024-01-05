@@ -1,5 +1,8 @@
+import { CachedRounded } from "@mui/icons-material"
+import { IconButton, Tooltip } from "@mui/material"
 import React, { useEffect, useMemo, useState } from "react"
 import { $activeAccount } from "src/stores/account-store"
+import { refreshNetworth } from "src/utils/common-tasks"
 
 import { MemoryTable } from "../../components/EnhancedTable/MemoryTable"
 import { NoDataCard } from "../../components/NoDataCard"
@@ -60,6 +63,11 @@ export default function BalancesPage({ show }: { show: boolean }) {
         <div>
           <Subheading>
             <span>Net worth</span>
+            <Tooltip title="Refresh networth">
+              <IconButton color="secondary" onClick={refreshNetworth} sx={{ marginRight: -1 }}>
+                <CachedRounded fontSize="small" />
+              </IconButton>
+            </Tooltip>
           </Subheading>
           <BalancesChart />
         </div>

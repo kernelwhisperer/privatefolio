@@ -35,7 +35,8 @@ export function PendingTaskProgress({ sx = {}, ...rest }: CircularProgressProps)
         variant="determinate"
         sx={{
           // color: (theme) => theme.palette.grey[theme.palette.mode === "light" ? 300 : 800],
-          color: "var(--mui-palette-LinearProgress-infoBg)",
+          // color: "var(--mui-palette-LinearProgress-infoBg)",
+          color: "var(--mui-palette-LinearProgress-secondaryBg)",
           left: 0,
           position: "absolute",
           top: 0,
@@ -49,7 +50,8 @@ export function PendingTaskProgress({ sx = {}, ...rest }: CircularProgressProps)
         key={task.id}
         variant={task.determinate ? "determinate" : "indeterminate"}
         disableShrink={!task.determinate}
-        color="info"
+        // color="info"
+        color="secondary"
         sx={{
           left: 0,
           position: "absolute",

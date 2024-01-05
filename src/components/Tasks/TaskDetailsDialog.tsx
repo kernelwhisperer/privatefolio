@@ -115,7 +115,8 @@ export function TaskDetailsDialog({ taskId, ...props }: DialogProps & { taskId: 
                     : (task as FinishedTask).errorMessage
                     ? "error"
                     : progressPercent !== 100
-                    ? "info"
+                    ? // ? "info"
+                      "secondary"
                     : "success"
                 }
                 sx={{ height: 8 }}
@@ -158,7 +159,10 @@ export function TaskDetailsDialog({ taskId, ...props }: DialogProps & { taskId: 
                   <div>
                     {task.errorMessage ? (
                       <>
-                        <TimeLabel timestamp={task.completedAt as number} /> {task.errorMessage}
+                        <TimeLabel timestamp={task.completedAt as number} />{" "}
+                        <Typography variant="inherit" color="error" component="span">
+                          {task.errorMessage}
+                        </Typography>
                       </>
                     ) : (
                       <>

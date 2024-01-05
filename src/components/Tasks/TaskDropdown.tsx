@@ -116,7 +116,7 @@ export function TaskDropdown() {
         <Button
           size="small"
           variant="outlined"
-          color={pendingTask ? "info" : "secondary"}
+          color={"secondary"}
           sx={{ paddingY: 0.5 }}
           onClick={handleClick}
           startIcon={pendingTask ? <PendingTaskProgress /> : <DoneAllRounded />}
@@ -176,7 +176,7 @@ export function TaskDropdown() {
                 }
               >
                 <ListItemButton disabled>
-                  <HourglassEmptyRounded sx={{ marginRight: 1, width: 16 }} color="info" />
+                  <HourglassEmptyRounded sx={{ marginRight: 1.25, width: 14 }} color="secondary" />
                   <ListItemText primary={<Truncate>{task.name}</Truncate>} />
                 </ListItemButton>
               </ListItem>

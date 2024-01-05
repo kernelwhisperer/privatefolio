@@ -11,6 +11,12 @@ export function handleAuditLogChange() {
   enqueueComputeNetworth()
 }
 
+export function refreshNetworth() {
+  enqueueComputeBalances()
+  enqueueFetchPrices()
+  enqueueComputeNetworth()
+}
+
 export function enqueueIndexDatabase() {
   const taskQueue = $taskQueue.get()
 

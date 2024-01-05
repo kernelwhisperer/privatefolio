@@ -5,6 +5,7 @@ import { DB_OPERATION_PAGE_SIZE } from "../../settings"
 import { ProgressCallback } from "../../stores/task-store"
 import { getPricesForAsset } from "../core/daily-prices-api"
 import { getAccount } from "../database"
+import { validateOperation } from "../database-utils"
 import { countAuditLogs, findAuditLogs } from "./audit-logs-api"
 import { getValue, setValue } from "./kv-api"
 
@@ -32,7 +33,7 @@ export async function getLatestBalances(accountName = "main"): Promise<Balance[]
     )
     return balances
   } catch (error) {
-    console.log("📜 LOG > getLatestBalances > error:", error)
+    console.error(error)
     return []
   }
 }
@@ -163,7 +164,8 @@ export async function computeBalances(
     //   (i * 100) / count,
     //   `Processing logs ${firstIndex} to ${lastIndex} - compute complete`,
     // ])
-    await account.auditLogsDB.bulkDocs(logs)
+    const logUpdates = await account.auditLogsDB.bulkDocs(logs)
+    validateOperation(logUpdates)
 
     //
     // progress([
@@ -183,7 +185,9 @@ export async function computeBalances(
     }))
     // console.log("ComputeBalances db results", balances)
     recordsLength += balances.length
-    await account.balancesDB.bulkDocs(balances)
+    const balanceUpdates = await account.balancesDB.bulkDocs(balances)
+    validateOperation(balanceUpdates)
+
     await setValue("balancesCursor", latestDay, accountName)
     progress([
       ((i + pageSize) * 90) / Math.max(count, pageSize),
@@ -213,7 +217,9 @@ export async function computeBalances(
     _rev: "ok" in doc.docs[0] ? doc.docs[0].ok._rev : undefined,
     timestamp: Number(doc.id),
   }))
-  await account.balancesDB.bulkDocs(balances)
+  const balanceUpdates = await account.balancesDB.bulkDocs(balances)
+  validateOperation(balanceUpdates)
+
   await setValue("balancesCursor", latestDay, accountName)
   recordsLength += balances.length
   progress([100, `Saved ${recordsLength - 1} records to disk`])

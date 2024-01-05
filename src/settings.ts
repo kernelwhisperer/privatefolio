@@ -25,7 +25,7 @@ export const CONNECTIONS = {
 export const DEFAULT_DEBOUNCE_DURATION = 1500
 
 export const DB_OPERATION_PAGE_SIZE = 1000
-export const PRICE_API_PAGINATION = 900
+export const PRICE_API_PAGINATION = 900 // coinbase limit is 300, binance is 1000
 
 export const DISALLOW_BINANCE_PRICE_API = import.meta.env.DISALLOW_BINANCE_PRICE_API === "true"
 export const APP_VERSION = import.meta.env.VITE_APP_VERSION?.replaceAll('"', "")

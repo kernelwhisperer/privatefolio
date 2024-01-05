@@ -135,7 +135,8 @@ export const SettingsDrawerContents = ({
           control={
             <Switch
               color="secondary"
-              size="small"
+              sx={{ marginY: "-3px" }}
+              size="small" // TODO this is not implemented
               checked={debugMode}
               onChange={(event) => {
                 localStorage.setItem("debug-mode", event.target.checked ? "true" : "false")
@@ -169,7 +170,8 @@ export const SettingsDrawerContents = ({
           control={
             <Switch
               color="secondary"
-              size="small"
+              size="small" // TODO this is not implemented
+              sx={{ marginY: "-3px" }}
               checked={telemetry}
               onChange={(event) => {
                 localStorage.setItem("no-telemetry", event.target.checked ? "false" : "true")
