@@ -59,9 +59,6 @@ it.sequential("should refresh networth", async () => {
     "5,Computing networth for 1 days
     10,Computing networth starting Sep 14, 2017"
   `)
-  expect(networthArray.length).toMatchInlineSnapshot(`
-      "5,Computing networth for 1 days
-      10,Computing networth starting Sep 14, 2017"
-    `)
+  expect(networthArray.length).toMatchInlineSnapshot(`14`)
   expect(networthArray).toMatchSnapshot()
 })
