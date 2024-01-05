@@ -3,10 +3,10 @@ import { a, useTransition } from "@react-spring/web"
 import React, { lazy, useEffect } from "react"
 import { Navigate, Route, Routes, useLocation } from "react-router-dom"
 
+import { AccountIndexRoute } from "./AccountIndexRoute"
 import { ErrorBoundary } from "./components/ErrorBoundary"
 import { Header } from "./components/Header/Header"
 import { $pendingTask } from "./stores/task-store"
-import { UserIndexRoute } from "./UserIndexRoute"
 import { SPRING_CONFIGS } from "./utils/utils"
 
 const AuditLogsPage = lazy(() => import("./pages/AuditLogsPage/AuditLogsPage"))
@@ -68,7 +68,7 @@ export default function App() {
           >
             <ErrorBoundary>
               <Routes location={item}>
-                <Route path="/u/:userIndex" element={<UserIndexRoute />}>
+                <Route path="/u/:accountIndex" element={<AccountIndexRoute />}>
                   <Route
                     index
                     element={<BalancesPage show={key === pathname && appPath === ""} />}

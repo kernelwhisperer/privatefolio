@@ -12,7 +12,7 @@ import { Tabs } from "../Tabs"
 export function NavigationMenu() {
   const location = useLocation()
   const { pathname } = location
-  const userIndex = pathname.split("/")[2]
+  const accountIndex = pathname.split("/")[2]
   const appPath = pathname.split("/").slice(3).join("/")
 
   const overriddenPathname = appPath.includes("asset/") ? "" : appPath
@@ -32,14 +32,18 @@ export function NavigationMenu() {
             <InputBase sx={{ height: 42, position: "absolute", visibility: "hidden", width: 30 }} />
           }
         >
-          <NavMenuItem value="" to={`/u/${userIndex}/`} label="Home" />
+          <NavMenuItem value="" to={`/u/${accountIndex}/`} label="Home" />
           <NavMenuItem
             value="transactions"
-            to={`/u/${userIndex}/transactions`}
+            to={`/u/${accountIndex}/transactions`}
             label="Transactions"
           />
-          <NavMenuItem value="audit-logs" to={`/u/${userIndex}/audit-logs`} label="Audit logs" />
-          <NavMenuItem value="import-data" to={`/u/${userIndex}/import-data`} label="Import data" />
+          <NavMenuItem value="audit-logs" to={`/u/${accountIndex}/audit-logs`} label="Audit logs" />
+          <NavMenuItem
+            value="import-data"
+            to={`/u/${accountIndex}/import-data`}
+            label="Import data"
+          />
         </Select>
         <Tooltip title="Navigation menu">
           <IconButton edge="start" onClick={toggleOpen}>
@@ -67,10 +71,10 @@ export function NavigationMenu() {
           },
         })}
       >
-        <NavTab value="" to={`/u/${userIndex}/`} label="Home" />
-        <NavTab value="transactions" to={`/u/${userIndex}/transactions`} label="Transactions" />
-        <NavTab value="audit-logs" to={`/u/${userIndex}/audit-logs`} label="Audit logs" />
-        <NavTab value="import-data" to={`/u/${userIndex}/import-data`} label="Import data" />
+        <NavTab value="" to={`/u/${accountIndex}/`} label="Home" />
+        <NavTab value="transactions" to={`/u/${accountIndex}/transactions`} label="Transactions" />
+        <NavTab value="audit-logs" to={`/u/${accountIndex}/audit-logs`} label="Audit logs" />
+        <NavTab value="import-data" to={`/u/${accountIndex}/import-data`} label="Import data" />
       </Tabs>
     </>
   )
