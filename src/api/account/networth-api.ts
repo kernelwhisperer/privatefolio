@@ -1,3 +1,4 @@
+import { proxy } from "comlink"
 import { formatDate } from "src/utils/formatting-utils"
 import { noop } from "src/utils/utils"
 
@@ -99,4 +100,20 @@ export async function computeNetworth(
 
   const updates = await account.networthDB.bulkDocs(docs)
   validateOperation(updates)
+}
+
+export function subscribeToNetworth(callback: () => void, accountName = "main") {
+  const account = getAccount(accountName)
+  const changesSub = account.networthDB
+    .changes({
+      live: true,
+      since: "now",
+    })
+    .on("change", callback)
+
+  return proxy(() => {
+    try {
+      changesSub.cancel()
+    } catch {}
+  })
 }

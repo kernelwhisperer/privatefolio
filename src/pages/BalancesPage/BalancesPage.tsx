@@ -1,6 +1,9 @@
 import { CachedRounded } from "@mui/icons-material"
 import { IconButton, Tooltip } from "@mui/material"
+import { proxy } from "comlink"
+import { debounce } from "lodash-es"
 import React, { useEffect, useMemo, useState } from "react"
+import { DEFAULT_DEBOUNCE_DURATION } from "src/settings"
 import { $activeAccount } from "src/stores/account-store"
 import { refreshNetworth } from "src/utils/common-tasks"
 
@@ -19,11 +22,29 @@ export default function BalancesPage({ show }: { show: boolean }) {
   const [rows, setRows] = useState<Balance[]>([])
 
   useEffect(() => {
-    const start = Date.now()
-    clancy.getLatestBalances($activeAccount.get()).then((balances) => {
-      setQueryTime(Date.now() - start)
-      setRows(balances)
-    })
+    function fetchData() {
+      const start = Date.now()
+      clancy.getLatestBalances($activeAccount.get()).then((balances) => {
+        setQueryTime(Date.now() - start)
+        setRows(balances)
+      })
+    }
+
+    fetchData()
+
+    const unsubscribePromise = clancy.subscribeToDailyPrices(
+      proxy(
+        debounce(() => {
+          fetchData()
+        }, DEFAULT_DEBOUNCE_DURATION)
+      )
+    )
+
+    return () => {
+      unsubscribePromise.then((unsubscribe) => {
+        unsubscribe()
+      })
+    }
   }, [])
 
   const headCells = useMemo<HeadCell<Balance>[]>(
