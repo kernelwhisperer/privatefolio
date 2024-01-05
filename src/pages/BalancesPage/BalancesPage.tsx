@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react"
+import { $activeAccount } from "src/stores/account-store"
 
 import { MemoryTable } from "../../components/EnhancedTable/MemoryTable"
 import { NoDataCard } from "../../components/NoDataCard"
@@ -16,7 +17,7 @@ export default function BalancesPage({ show }: { show: boolean }) {
 
   useEffect(() => {
     const start = Date.now()
-    clancy.getLatestBalances().then((balances) => {
+    clancy.getLatestBalances($activeAccount.get()).then((balances) => {
       setQueryTime(Date.now() - start)
       setRows(balances)
     })

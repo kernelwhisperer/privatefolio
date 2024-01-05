@@ -242,7 +242,15 @@ export const theme: CssVarsThemeOptions = {
         slotProps: { backdrop: { invisible: true } },
       },
       styleOverrides: {
-        paper: {
+        paperAnchorLeft: {
+          // borderBottomRightRadius: 16,
+          // borderLeft: "none",
+          // borderTopRightRadius: 16,
+          border: 0,
+          borderRadius: 16,
+          left: 8,
+        },
+        paperAnchorRight: {
           borderBottom: "none",
           borderBottomLeftRadius: 16,
           borderRight: "none",
@@ -305,6 +313,9 @@ export const theme: CssVarsThemeOptions = {
           },
           border: "1px solid var(--mui-palette-divider)",
           boxShadow: "unset",
+          // "html[data-mui-color-scheme='dark'] &": {
+          //   border: 0,
+          // },
         },
       },
       variants: [

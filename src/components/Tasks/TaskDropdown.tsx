@@ -112,7 +112,7 @@ export function TaskDropdown() {
 
   return (
     <>
-      <Tooltip title="Open Task dropdown">
+      <Tooltip title="Background tasks">
         <Button
           size="small"
           variant="outlined"

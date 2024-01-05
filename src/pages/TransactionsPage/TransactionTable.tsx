@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo } from "react"
+import { $activeAccount } from "src/stores/account-store"
 
 import {
   QueryFunction,
@@ -29,23 +30,29 @@ export function TransactionTable(props: TransactionsTableProps) {
           }
         : {}
 
-      const transactions = await clancy.findTransactions({
-        filters,
-        limit: rowsPerPage,
-        order,
-        selectorOverrides,
-        skip: page * rowsPerPage,
-      })
+      const transactions = await clancy.findTransactions(
+        {
+          filters,
+          limit: rowsPerPage,
+          order,
+          selectorOverrides,
+          skip: page * rowsPerPage,
+        },
+        $activeAccount.get()
+      )
 
       return [
         transactions,
         () =>
           clancy
-            .findTransactions({
-              fields: [],
-              filters,
-              selectorOverrides,
-            })
+            .findTransactions(
+              {
+                fields: [],
+                filters,
+                selectorOverrides,
+              },
+              $activeAccount.get()
+            )
             .then((logs) => logs.length),
       ]
     },

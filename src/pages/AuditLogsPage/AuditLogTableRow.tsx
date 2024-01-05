@@ -33,7 +33,7 @@ const OPERATION_ICONS: Partial<Record<AuditLogOperation, SvgIconComponent>> = {
 }
 
 export function AuditLogTableRow(props: TableRowComponentProps<AuditLog>) {
-  const { row, relativeTime, headCells, ...rest } = props
+  const { row, relativeTime, headCells, isMobile: _isMobile, isTablet: _isTablet, ...rest } = props
   const { symbol, changeN, operation, timestamp, integration, wallet, balance } = row
 
   const assetMap = useStore($assetMap)

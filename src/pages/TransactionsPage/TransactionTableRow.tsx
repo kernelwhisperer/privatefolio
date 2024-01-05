@@ -28,7 +28,7 @@ const OPERATION_ICONS: Partial<Record<TransactionType, SvgIconComponent>> = {
 }
 
 export function TransactionTableRow(props: TableRowComponentProps<Transaction>) {
-  const { relativeTime, row } = props
+  const { relativeTime, isMobile: _isMobile, isTablet: _isTablet, row } = props
   const {
     incomingN,
     incomingSymbol,

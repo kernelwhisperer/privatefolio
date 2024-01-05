@@ -1,15 +1,13 @@
 import Container from "@mui/material/Container"
 import { a, useTransition } from "@react-spring/web"
-import { proxy } from "comlink"
 import React, { lazy, useEffect } from "react"
 import { Navigate, Route, Routes, useLocation } from "react-router-dom"
 
 import { ErrorBoundary } from "./components/ErrorBoundary"
 import { Header } from "./components/Header/Header"
-import { computeMetadata, computeMetadataDebounced } from "./stores/metadata-store"
 import { $pendingTask } from "./stores/task-store"
+import { UserIndexRoute } from "./UserIndexRoute"
 import { SPRING_CONFIGS } from "./utils/utils"
-import { clancy } from "./workers/remotes"
 
 const AuditLogsPage = lazy(() => import("./pages/AuditLogsPage/AuditLogsPage"))
 const ImportDataPage = lazy(() => import("./pages/ImportDataPage/ImportDataPage"))
@@ -20,6 +18,7 @@ const AssetPage = lazy(() => import("./pages/AssetPage/AssetPage"))
 export default function App() {
   const location = useLocation()
   const { pathname } = location
+  const appPath = pathname.split("/").slice(3).join("/")
 
   const transitions = useTransition(location, {
     config: SPRING_CONFIGS.veryQuick,
@@ -32,18 +31,6 @@ export default function App() {
     keys: (location) => location.pathname,
     leave: { opacity: 1 },
   })
-
-  useEffect(() => {
-    computeMetadata()
-
-    const unsubscribePromise = clancy.subscribeToAuditLogs(proxy(computeMetadataDebounced))
-
-    return () => {
-      unsubscribePromise.then((unsubscribe) => {
-        unsubscribe()
-      })
-    }
-  }, [])
 
   useEffect(() => {
     const beforeUnloadHandler = (event) => {
@@ -65,8 +52,8 @@ export default function App() {
   return (
     <>
       <Header />
-      <Container maxWidth="lg" sx={{ paddingTop: 3 }}>
-        {transitions((styles, item) => (
+      <Container maxWidth="lg" sx={{ paddingTop: 2 }}>
+        {transitions((styles, item, { key }) => (
           <a.div
             style={
               {
@@ -81,24 +68,34 @@ export default function App() {
           >
             <ErrorBoundary>
               <Routes location={item}>
-                <Route path="/" element={<BalancesPage show={pathname === "/"} />} />
-                <Route
-                  path="/asset/:symbol"
-                  element={<AssetPage show={pathname.includes("/asset")} />}
-                />
-                <Route
-                  path="/import-data"
-                  element={<ImportDataPage show={pathname === "/import-data"} />}
-                />
-                <Route
-                  path="/transactions"
-                  element={<TransactionsPage show={pathname === "/transactions"} />}
-                />
-                <Route
-                  path="/audit-logs"
-                  element={<AuditLogsPage show={pathname === "/audit-logs"} />}
-                />
-                <Route path="*" element={<Navigate to="/" />} />
+                <Route path="/u/:userIndex" element={<UserIndexRoute />}>
+                  <Route
+                    index
+                    element={<BalancesPage show={key === pathname && appPath === ""} />}
+                  />
+                  <Route
+                    path="asset/:symbol"
+                    element={<AssetPage show={key === pathname && appPath.includes("asset")} />}
+                  />
+                  <Route
+                    path="import-data"
+                    element={
+                      <ImportDataPage show={key === pathname && appPath === "import-data"} />
+                    }
+                  />
+                  <Route
+                    path="transactions"
+                    element={
+                      <TransactionsPage show={key === pathname && appPath === "transactions"} />
+                    }
+                  />
+                  <Route
+                    path="audit-logs"
+                    element={<AuditLogsPage show={key === pathname && appPath === "audit-logs"} />}
+                  />
+                  <Route path="*" element={<Navigate to="/" />} />
+                </Route>
+                <Route path="*" element={<Navigate to="/u/0" />} />
               </Routes>
             </ErrorBoundary>
           </a.div>

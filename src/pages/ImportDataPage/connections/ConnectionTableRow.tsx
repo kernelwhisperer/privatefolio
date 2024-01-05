@@ -25,7 +25,14 @@ import { TableRowComponentProps } from "src/utils/table-utils"
 import { clancy } from "src/workers/remotes"
 
 export function ConnectionTableRow(props: TableRowComponentProps<Connection>) {
-  const { row, relativeTime, headCells: _headCells, ...rest } = props
+  const {
+    row,
+    relativeTime,
+    headCells: _headCells,
+    isMobile: _isMobile,
+    isTablet: _isTablet,
+    ...rest
+  } = props
   const { address, timestamp, syncedAt, integration, label, meta } = row
 
   const integrationMap = useStore($integrationMap)

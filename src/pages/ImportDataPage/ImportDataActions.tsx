@@ -34,7 +34,7 @@ export function ImportDataActions() {
 
   return (
     <>
-      <Tooltip title="Open Actions dropdown">
+      <Tooltip title="Database actions">
         <IconButton color="secondary" onClick={handleClick} sx={{ marginRight: -1 }}>
           <MoreHoriz fontSize="small" />
         </IconButton>

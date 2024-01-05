@@ -90,7 +90,7 @@ function BaseChart(props: ChartProps) {
     chartRef.current = createChart(containerRef.current, chartOpts)
 
     chartRef.current.timeScale().applyOptions({
-      // borderVisible: false,
+      borderVisible: false,
       // secondsVisible: true,
       // timeVisible: true,
       // rightOffset: 0,

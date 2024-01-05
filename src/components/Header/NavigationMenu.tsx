@@ -2,13 +2,21 @@ import { MenuRounded } from "@mui/icons-material"
 import { Box, IconButton, InputBase, Select, tabsClasses, Tooltip } from "@mui/material"
 import { grey } from "@mui/material/colors"
 import React from "react"
+import { useLocation } from "react-router-dom"
 import { useBoolean } from "src/hooks/useBoolean"
 
 import { NavMenuItem } from "../NavMenuItem"
 import { NavTab } from "../NavTab"
 import { Tabs } from "../Tabs"
 
-export function NavigationMenu({ activePath }: { activePath: string }) {
+export function NavigationMenu() {
+  const location = useLocation()
+  const { pathname } = location
+  const userIndex = pathname.split("/")[2]
+  const appPath = pathname.split("/").slice(3).join("/")
+
+  const overriddenPathname = appPath.includes("asset/") ? "" : appPath
+
   const { value: open, toggle: toggleOpen } = useBoolean(false)
 
   return (
@@ -18,25 +26,29 @@ export function NavigationMenu({ activePath }: { activePath: string }) {
           open={open}
           onClose={toggleOpen}
           onOpen={toggleOpen}
-          value={activePath || ""}
+          value={overriddenPathname || ""}
           IconComponent={() => false}
           input={
             <InputBase sx={{ height: 42, position: "absolute", visibility: "hidden", width: 30 }} />
           }
         >
-          <NavMenuItem value="/" to="/" label="Home" />
-          <NavMenuItem value="/transactions" to="/transactions" label="Transactions" />
-          <NavMenuItem value="/audit-logs" to="/audit-logs" label="Audit logs" />
-          <NavMenuItem value="/import-data" to="/import-data" label="Import data" />
+          <NavMenuItem value="" to={`/u/${userIndex}/`} label="Home" />
+          <NavMenuItem
+            value="transactions"
+            to={`/u/${userIndex}/transactions`}
+            label="Transactions"
+          />
+          <NavMenuItem value="audit-logs" to={`/u/${userIndex}/audit-logs`} label="Audit logs" />
+          <NavMenuItem value="import-data" to={`/u/${userIndex}/import-data`} label="Import data" />
         </Select>
-        <Tooltip title="Open Navigation menu">
+        <Tooltip title="Navigation menu">
           <IconButton edge="start" onClick={toggleOpen}>
             <MenuRounded fontSize="inherit" />
           </IconButton>
         </Tooltip>
       </Box>
       <Tabs
-        value={activePath}
+        value={overriddenPathname}
         sx={(theme) => ({
           display: { sm: "block", xs: "none" },
           height: 48,
@@ -55,10 +67,10 @@ export function NavigationMenu({ activePath }: { activePath: string }) {
           },
         })}
       >
-        <NavTab value="/" to="/" label="Home" />
-        <NavTab value="/transactions" to="/transactions" label="Transactions" />
-        <NavTab value="/audit-logs" to="/audit-logs" label="Audit logs" />
-        <NavTab value="/import-data" to="/import-data" label="Import data" />
+        <NavTab value="" to={`/u/${userIndex}/`} label="Home" />
+        <NavTab value="transactions" to={`/u/${userIndex}/transactions`} label="Transactions" />
+        <NavTab value="audit-logs" to={`/u/${userIndex}/audit-logs`} label="Audit logs" />
+        <NavTab value="import-data" to={`/u/${userIndex}/import-data`} label="Import data" />
       </Tabs>
     </>
   )

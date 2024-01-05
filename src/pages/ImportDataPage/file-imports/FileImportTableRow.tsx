@@ -24,7 +24,14 @@ import { TableRowComponentProps } from "src/utils/table-utils"
 import { clancy } from "src/workers/remotes"
 
 export function FileImportTableRow(props: TableRowComponentProps<FileImport>) {
-  const { row, relativeTime, headCells: _headCells, ...rest } = props
+  const {
+    row,
+    relativeTime,
+    headCells: _headCells,
+    isMobile: _isMobile,
+    isTablet: _isTablet,
+    ...rest
+  } = props
   const { name, meta, timestamp, lastModified, size } = row
   const integration = meta?.integration
 

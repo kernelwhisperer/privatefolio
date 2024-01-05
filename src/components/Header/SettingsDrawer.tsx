@@ -11,7 +11,7 @@ export function SettingsDrawer() {
 
   return (
     <>
-      <Tooltip title="Open Settings drawer">
+      <Tooltip title="Settings">
         <IconButton
           color="secondary"
           onClick={toggleOpen}
