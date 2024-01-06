@@ -239,19 +239,22 @@ export async function computeBalances(
     historicalBalances[i] = latestBalances
     latestDay = i
   }
-  const balancesIds = Object.keys(historicalBalances).map((x) => ({ id: x }))
-  const { results: balancesDocs } = await account.balancesDB.bulkGet({ docs: balancesIds })
-  // eslint-disable-next-line no-loop-func
-  const balances: BalanceMap[] = balancesDocs.map((doc) => ({
-    ...historicalBalances[doc.id],
-    _id: doc.id,
-    _rev: "ok" in doc.docs[0] ? doc.docs[0].ok._rev : undefined,
-    timestamp: Number(doc.id),
-  }))
-  const balanceUpdates = await account.balancesDB.bulkDocs(balances)
-  validateOperation(balanceUpdates)
+
+  if (Object.keys(historicalBalances).length > 0) {
+    const balancesIds = Object.keys(historicalBalances).map((x) => ({ id: x }))
+    const { results: balancesDocs } = await account.balancesDB.bulkGet({ docs: balancesIds })
+    // eslint-disable-next-line no-loop-func
+    const balances: BalanceMap[] = balancesDocs.map((doc) => ({
+      ...historicalBalances[doc.id],
+      _id: doc.id,
+      _rev: "ok" in doc.docs[0] ? doc.docs[0].ok._rev : undefined,
+      timestamp: Number(doc.id),
+    }))
+    const balanceUpdates = await account.balancesDB.bulkDocs(balances)
+    validateOperation(balanceUpdates)
+    recordsLength += balances.length
+  }
 
   await setValue("balancesCursor", latestDay, accountName)
-  recordsLength += balances.length
   progress([100, `Saved ${recordsLength} records to disk`])
 }
