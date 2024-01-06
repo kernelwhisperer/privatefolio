@@ -46,7 +46,7 @@ export function NavigationMenu() {
           />
         </Select>
         <Tooltip title="Navigation menu">
-          <IconButton edge="start" onClick={toggleOpen}>
+          <IconButton edge="start" onClick={toggleOpen} color="secondary">
             <MenuRounded fontSize="inherit" />
           </IconButton>
         </Tooltip>
