@@ -1,5 +1,6 @@
 import { Paper } from "@mui/material"
 import React, { useCallback, useEffect, useState } from "react"
+import { $activeAccount } from "src/stores/account-store"
 
 import { StackedChart, StackedDataType } from "../../components/StackedChart"
 import { Time } from "../../interfaces"
@@ -11,7 +12,7 @@ export function BalancesChart() {
 
   const query = useCallback(async () => {
     setLoading(true)
-    const docs = await clancy.getHistoricalBalances({ limit: 200 })
+    const docs = await clancy.getHistoricalBalances($activeAccount.get(), { limit: 200 })
     console.log("📜 LOG > query > docs:", docs)
 
     const balances = await Promise.all(

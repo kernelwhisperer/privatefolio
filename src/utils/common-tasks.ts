@@ -53,7 +53,7 @@ export function enqueueRecomputeBalances() {
     description: "Recomputing balances of owned assets.",
     determinate: true,
     function: async (progress, signal) => {
-      await clancy.computeBalances(progress, signal, { since: 0 }, $activeAccount.get())
+      await clancy.computeBalances($activeAccount.get(), { since: 0 }, progress, signal)
     },
     name: "Recompute balances",
     priority: TaskPriority.Medium,
@@ -72,7 +72,7 @@ export function enqueueRefreshBalances() {
     description: "Refreshing balances of owned assets.",
     determinate: true,
     function: async (progress, signal) => {
-      await clancy.computeBalances(progress, signal, undefined, $activeAccount.get())
+      await clancy.computeBalances($activeAccount.get(), undefined, progress, signal)
     },
     name: "Refresh balances",
     priority: TaskPriority.Medium,

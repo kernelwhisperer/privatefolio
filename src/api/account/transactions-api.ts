@@ -14,7 +14,7 @@ const _filterOrderBySpecificity = [
   "integration",
 ]
 
-export async function indexTransactions(progress: ProgressCallback, accountName = "main") {
+export async function indexTransactions(progress: ProgressCallback, accountName: string) {
   const account = getAccount(accountName)
   progress([60, "Transactions: cleaning up stale indexes"])
   await account.transactionsDB.viewCleanup()
@@ -76,14 +76,11 @@ type FindTransactionsRequest = {
   skip?: number
 }
 
-export async function findTransactions(
-  request: FindTransactionsRequest = {},
-  accountName = "main"
-) {
+export async function findTransactions(request: FindTransactionsRequest = {}, accountName: string) {
   const account = getAccount(accountName)
   const { indexes } = await account.transactionsDB.getIndexes()
   if (indexes.length === 1) {
-    await indexTransactions(console.log)
+    await indexTransactions(console.log, accountName)
   }
 
   const { filters = {}, limit, skip, order = "desc", fields, selectorOverrides = {} } = request
@@ -129,7 +126,7 @@ export async function findTransactions(
   return docs as Transaction[]
 }
 
-export async function countTransactions(accountName = "main") {
+export async function countTransactions(accountName: string) {
   const account = getAccount(accountName)
   const indexes = await account.transactionsDB.allDocs({
     // Prefix search
@@ -143,7 +140,7 @@ export async function countTransactions(accountName = "main") {
   return result.total_rows - indexes.rows.length
 }
 
-export function subscribeToTransactions(callback: () => void, accountName = "main") {
+export function subscribeToTransactions(callback: () => void, accountName: string) {
   const account = getAccount(accountName)
   const changesSub = account.transactionsDB
     .changes({

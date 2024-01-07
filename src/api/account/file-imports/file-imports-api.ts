@@ -9,7 +9,7 @@ import { parseCsv } from "./csv-utils"
 export async function addFileImport(
   file: File,
   progress: ProgressCallback = noop,
-  accountName = "main"
+  accountName: string
 ) {
   const account = getAccount(accountName)
   const { name, type, lastModified, size } = file
@@ -49,7 +49,7 @@ export async function addFileImport(
   return { _id, metadata }
 }
 
-export async function getFileImports(accountName = "main") {
+export async function getFileImports(accountName: string) {
   const account = getAccount(accountName)
   const res = await account.fileImportsDB.allDocs<FileImport>({
     include_docs: true,
@@ -60,7 +60,7 @@ export async function getFileImports(accountName = "main") {
 export async function removeFileImport(
   fileImport: FileImport,
   progress: ProgressCallback,
-  accountName = "main"
+  accountName: string
 ) {
   const account = getAccount(accountName)
   // TODO consider pagination
@@ -113,7 +113,7 @@ export async function removeFileImport(
   return res.ok
 }
 
-export function subscribeToFileImports(callback: () => void, accountName = "main") {
+export function subscribeToFileImports(callback: () => void, accountName: string) {
   const account = getAccount(accountName)
   const changesSub = account.fileImportsDB
     .changes({

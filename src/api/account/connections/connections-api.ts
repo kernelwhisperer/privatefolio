@@ -10,7 +10,7 @@ import { parser } from "./evm-parser"
 
 export async function addConnection(
   connection: Omit<Connection, "_id" | "_rev" | "timestamp" | "syncedAt">,
-  accountName = "main"
+  accountName: string
 ) {
   let { address, integration, label } = connection
 
@@ -31,7 +31,7 @@ export async function addConnection(
   return (await account.connectionsDB.get(_id)) as Connection
 }
 
-export async function getConnections(accountName = "main") {
+export async function getConnections(accountName: string) {
   const account = getAccount(accountName)
   const res = await account.connectionsDB.allDocs<Connection>({
     include_docs: true,
@@ -42,7 +42,7 @@ export async function getConnections(accountName = "main") {
 export async function removeConnection(
   connection: Connection,
   progress: ProgressCallback,
-  accountName = "main"
+  accountName: string
 ) {
   const account = getAccount(accountName)
 
@@ -77,7 +77,7 @@ export async function removeConnection(
   return res.ok
 }
 
-export function subscribeToConnections(callback: () => void, accountName = "main") {
+export function subscribeToConnections(callback: () => void, accountName: string) {
   const account = getAccount(accountName)
   const changesSub = account.connectionsDB
     .changes({
@@ -99,7 +99,7 @@ export function subscribeToConnections(callback: () => void, accountName = "main
 export async function syncConnection(
   progress: ProgressCallback,
   connection: Connection,
-  accountName = "main"
+  accountName: string
 ) {
   const rpcProvider = new FullEtherscanProvider()
   const rows = await rpcProvider.getTransactions(connection.address)

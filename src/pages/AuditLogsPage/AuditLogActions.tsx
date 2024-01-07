@@ -1,6 +1,7 @@
 import { MemoryRounded, MoreHoriz } from "@mui/icons-material"
 import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem } from "@mui/material"
 import React, { useState } from "react"
+import { $activeAccount } from "src/stores/account-store"
 
 import { enqueueTask, TaskPriority } from "../../stores/task-store"
 import { clancy } from "../../workers/remotes"
@@ -36,8 +37,8 @@ export function AuditLogActions() {
           onClick={() => {
             enqueueTask({
               description: "Recomputing indexes for all audit logs.",
-              function: async () => {
-                await clancy.indexAuditLogs()
+              function: async (progress) => {
+                await clancy.indexAuditLogs(progress, $activeAccount.get())
               },
               name: "Recompute audit logs indexes",
               priority: TaskPriority.Low,

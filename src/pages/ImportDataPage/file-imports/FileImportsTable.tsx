@@ -33,7 +33,8 @@ export function FileImportsTable() {
     const unsubscribePromise = clancy.subscribeToFileImports(
       proxy(async () => {
         await fetchData()
-      })
+      }),
+      $activeAccount.get()
     )
 
     return () => {

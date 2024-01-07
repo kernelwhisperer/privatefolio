@@ -13,6 +13,7 @@ import {
 } from "@mui/material"
 import { isAddress } from "ethers"
 import React, { useCallback, useEffect, useState } from "react"
+import { $activeAccount } from "src/stores/account-store"
 import { enqueueSyncConnection } from "src/utils/common-tasks"
 import { clancy } from "src/workers/remotes"
 
@@ -46,7 +47,7 @@ export function ConnectionDrawer({ open, toggleOpen, ...rest }: DrawerProps & Po
       setLoading(true)
 
       clancy
-        .addConnection({ address, integration, label })
+        .addConnection({ address, integration, label }, $activeAccount.get())
         .then((connection) => {
           toggleOpen()
           enqueueSyncConnection(connection)

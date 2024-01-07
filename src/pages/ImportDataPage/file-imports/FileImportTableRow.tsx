@@ -15,6 +15,7 @@ import { TimestampBlock } from "src/components/TimestampBlock"
 import { Truncate } from "src/components/Truncate"
 import { FileImport } from "src/interfaces"
 import { INTEGRATIONS } from "src/settings"
+import { $activeAccount } from "src/stores/account-store"
 import { $integrationMap } from "src/stores/metadata-store"
 import { enqueueTask } from "src/stores/task-store"
 import { MonoFont } from "src/theme"
@@ -47,7 +48,7 @@ export function FileImportTableRow(props: TableRowComponentProps<FileImport>) {
       determinate: true,
       function: async (progress) => {
         try {
-          await clancy.removeFileImport(row, progress)
+          await clancy.removeFileImport(row, progress, $activeAccount.get())
           handleAuditLogChange()
         } finally {
           // setLoading(false)

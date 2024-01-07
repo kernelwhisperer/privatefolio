@@ -39,14 +39,7 @@ it.sequential("should compute historical balances", async () => {
   const until = Date.UTC(2017, 8, 14, 0, 0, 0, 0) // 14 Sep 2017
   // act
   const updates: ProgressUpdate[] = []
-  await computeBalances(
-    (state) => updates.push(state),
-    undefined,
-    {
-      until,
-    },
-    accountName
-  )
+  await computeBalances(accountName, { until }, (state) => updates.push(state))
   // assert
   const balancesCursor = await getValue<Timestamp>("balancesCursor", undefined, accountName)
   expect(balancesCursor).toBe(until)
@@ -66,13 +59,12 @@ it.sequential("should re-compute today's balances", async () => {
   // act
   const updates: ProgressUpdate[] = []
   await computeBalances(
-    (state) => updates.push(state),
-    undefined,
+    accountName,
     {
       since: 1504742400000,
       until,
     },
-    accountName
+    (state) => updates.push(state)
   )
   // assert
   const balancesCursor = await getValue<Timestamp>("balancesCursor", undefined, accountName)
@@ -91,7 +83,7 @@ it.sequential("should re-compute today's balances", async () => {
 it.sequential("should fetch historical balances", async () => {
   // arrange
   // act
-  const balances = await getHistoricalBalances({ accountName })
+  const balances = await getHistoricalBalances(accountName)
   // assert
   expect(balances.length).toMatchInlineSnapshot(`14`)
   expect(balances).toMatchSnapshot()

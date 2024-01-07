@@ -31,7 +31,8 @@ export function ConnectionsTable() {
     const unsubscribePromise = clancy.subscribeToConnections(
       proxy(async () => {
         await fetchData()
-      })
+      }),
+      $activeAccount.get()
     )
 
     return () => {

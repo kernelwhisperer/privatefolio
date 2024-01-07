@@ -20,14 +20,7 @@ beforeAll(async () => {
   const file = new File([buffer], fileName, { lastModified: 0, type: "text/csv" })
   await addFileImport(file, undefined, accountName)
   const until = Date.UTC(2017, 8, 14, 0, 0, 0, 0) // 14 Sep 2017
-  await computeBalances(
-    undefined,
-    undefined,
-    {
-      until,
-    },
-    accountName
-  )
+  await computeBalances(accountName, { until })
   await fetchDailyPrices({ symbols: ["BTC"] })
 })
 

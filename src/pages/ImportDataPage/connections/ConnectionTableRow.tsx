@@ -17,6 +17,7 @@ import { Truncate } from "src/components/Truncate"
 import { useConfirm } from "src/hooks/useConfirm"
 import { Connection } from "src/interfaces"
 import { INTEGRATIONS } from "src/settings"
+import { $activeAccount } from "src/stores/account-store"
 import { $integrationMap } from "src/stores/metadata-store"
 import { enqueueTask, TaskPriority } from "src/stores/task-store"
 import { MonoFont } from "src/theme"
@@ -62,7 +63,7 @@ export function ConnectionTableRow(props: TableRowComponentProps<Connection>) {
       determinate: true,
       function: async (progress) => {
         try {
-          await clancy.removeConnection(row, progress)
+          await clancy.removeConnection(row, progress, $activeAccount.get())
         } finally {
           setIsRemoving(false)
         }
@@ -82,7 +83,7 @@ export function ConnectionTableRow(props: TableRowComponentProps<Connection>) {
       determinate: true,
       function: async (progress) => {
         try {
-          await clancy.syncConnection(progress, row)
+          await clancy.syncConnection(progress, row, $activeAccount.get())
         } finally {
           setIsSyncing(false)
         }

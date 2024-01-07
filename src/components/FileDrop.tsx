@@ -1,5 +1,6 @@
 import { Paper, PaperProps, Stack, Typography, useTheme } from "@mui/material"
 import React, { useRef, useState } from "react"
+import { $activeAccount } from "src/stores/account-store"
 
 import { enqueueTask } from "../stores/task-store"
 import { handleAuditLogChange } from "../utils/common-tasks"
@@ -38,7 +39,7 @@ export function FileDrop(props: PaperProps & { defaultBg?: string }) {
       description: `Importing "${file.name}".`,
       determinate: true,
       function: async (progress) => {
-        await clancy.addFileImport(clone, progress)
+        await clancy.addFileImport(clone, progress, $activeAccount.get())
         handleAuditLogChange()
       },
       name: `Import file`,

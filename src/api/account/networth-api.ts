@@ -9,7 +9,7 @@ import { getAccount } from "../database"
 import { validateOperation } from "../database-utils"
 import { getValue } from "./kv-api"
 
-export async function getHistoricalNetworth(accountName = "main") {
+export async function getHistoricalNetworth(accountName: string) {
   const account = getAccount(accountName)
   const balances = await account.networthDB.allDocs({
     include_docs: true,
@@ -22,7 +22,7 @@ const pageSize = 250
 
 export async function computeNetworth(
   progress: ProgressCallback = noop,
-  accountName = "main",
+  accountName: string,
   since?: Timestamp
 ) {
   const account = getAccount(accountName)
@@ -102,7 +102,7 @@ export async function computeNetworth(
   validateOperation(updates)
 }
 
-export function subscribeToNetworth(callback: () => void, accountName = "main") {
+export function subscribeToNetworth(callback: () => void, accountName: string) {
   const account = getAccount(accountName)
   const changesSub = account.networthDB
     .changes({

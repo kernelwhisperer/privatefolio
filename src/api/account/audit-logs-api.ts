@@ -9,7 +9,7 @@ import { getAccount } from "../database"
 const _filterOrder = ["integration", "wallet", "operation", "symbol"]
 const _filterOrderBySpecificity = ["symbol", "operation", "wallet", "integration"]
 
-export async function indexAuditLogs(progress: ProgressCallback = noop, accountName = "main") {
+export async function indexAuditLogs(progress: ProgressCallback = noop, accountName: string) {
   const account = getAccount(accountName)
   progress([0, "Audit logs: cleaning up stale indexes"])
   await account.auditLogsDB.viewCleanup()
@@ -63,11 +63,11 @@ type FindAuditLogsRequest = {
   skip?: number
 }
 
-export async function findAuditLogs(request: FindAuditLogsRequest = {}, accountName = "main") {
+export async function findAuditLogs(request: FindAuditLogsRequest = {}, accountName: string) {
   const account = getAccount(accountName)
   const { indexes } = await account.auditLogsDB.getIndexes()
   if (indexes.length === 1) {
-    await indexAuditLogs(undefined, accountName)
+    await indexAuditLogs(console.log, accountName)
   }
 
   const { filters = {}, limit, skip, order = "desc", fields } = request
@@ -110,7 +110,7 @@ export async function findAuditLogs(request: FindAuditLogsRequest = {}, accountN
   return docs as AuditLog[]
 }
 
-export async function countAuditLogs(accountName = "main") {
+export async function countAuditLogs(accountName: string) {
   const account = getAccount(accountName)
   const indexes = await account.auditLogsDB.allDocs({
     include_docs: false,
@@ -123,7 +123,7 @@ export async function countAuditLogs(accountName = "main") {
   return result.total_rows - indexes.rows.length
 }
 
-export function subscribeToAuditLogs(callback: () => void, accountName = "main") {
+export function subscribeToAuditLogs(callback: () => void, accountName: string) {
   const account = getAccount(accountName)
   const changesSub = account.auditLogsDB
     .changes({

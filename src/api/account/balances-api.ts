@@ -10,7 +10,7 @@ import { validateOperation } from "../database-utils"
 import { countAuditLogs, indexAuditLogs } from "./audit-logs-api"
 import { getValue, setValue } from "./kv-api"
 
-export async function getLatestBalances(accountName = "main"): Promise<Balance[]> {
+export async function getLatestBalances(accountName: string): Promise<Balance[]> {
   const account = getAccount(accountName)
   const balancesCursor = await getValue<Timestamp>("balancesCursor", undefined, accountName)
 
@@ -40,14 +40,16 @@ export async function getLatestBalances(accountName = "main"): Promise<Balance[]
 }
 
 export type GetHistoricalBalancesRequest = {
-  accountName?: string
   limit?: number
   skip?: number
   symbol?: string
 }
 
-export async function getHistoricalBalances(request: GetHistoricalBalancesRequest) {
-  const { symbol, limit, skip, accountName = "main" } = request
+export async function getHistoricalBalances(
+  accountName: string,
+  request: GetHistoricalBalancesRequest = {}
+) {
+  const { symbol, limit, skip } = request
   const account = getAccount(accountName)
 
   const { indexes } = await account.balancesDB.getIndexes()
@@ -92,10 +94,10 @@ export type ComputeBalancesRequest = {
 }
 
 export async function computeBalances(
-  progress: ProgressCallback = noop,
-  signal?: AbortSignal,
+  accountName: string,
   request: ComputeBalancesRequest = {},
-  accountName = "main"
+  progress: ProgressCallback = noop,
+  signal?: AbortSignal
 ) {
   const { pageSize = DB_OPERATION_PAGE_SIZE, until = Date.now() } = request
   let since = request.since
