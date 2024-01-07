@@ -9,10 +9,19 @@ import { getAccount } from "../database"
 import { validateOperation } from "../database-utils"
 import { countAuditLogs, indexAuditLogs } from "./audit-logs-api"
 import { getValue, setValue } from "./kv-api"
+import { invalidateNetworth } from "./networth-api"
+
+export async function invalidateBalances(newValue: Timestamp, accountName: string) {
+  const existing = (await getValue<Timestamp>("balancesCursor", 0, accountName)) as Timestamp
+
+  if (newValue < existing) {
+    await setValue("balancesCursor", newValue, accountName)
+  }
+}
 
 export async function getLatestBalances(accountName: string): Promise<Balance[]> {
   const account = getAccount(accountName)
-  const balancesCursor = await getValue<Timestamp>("balancesCursor", undefined, accountName)
+  const balancesCursor = await getValue<Timestamp>("balancesCursor", 0, accountName)
 
   try {
     const balanceMap = await account.balancesDB.get(String(balancesCursor))
@@ -234,8 +243,9 @@ export async function computeBalances(
     historicalBalances = {}
   }
 
-  progress([95, `Setting networth cursor to ${formatDate(since)}`])
-  await setValue("networthCursor", since, accountName)
+  const newCursor = since - (since % 86400000) - 86400000
+  progress([95, `Setting networth cursor to ${formatDate(newCursor)}`])
+  await invalidateNetworth(newCursor, accountName)
 
   if (latestDay === 0 && since === 0) return
   if (latestDay === 0) latestDay = since

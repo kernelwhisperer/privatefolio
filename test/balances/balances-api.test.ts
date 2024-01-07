@@ -41,14 +41,15 @@ it.sequential("should compute historical balances", async () => {
   const updates: ProgressUpdate[] = []
   await computeBalances(accountName, { until }, (state) => updates.push(state))
   // assert
-  const balancesCursor = await getValue<Timestamp>("balancesCursor", undefined, accountName)
+  const balancesCursor = await getValue<Timestamp>("balancesCursor", 0, accountName)
   expect(balancesCursor).toBe(until)
   expect(updates.join("\n")).toMatchInlineSnapshot(`
     "0,Computing balances for 2 audit logs
     0,Processing logs 1 to 2
     90,Processing logs 1 to 2 complete
     90,Processed 7 daily balances
-    95,Filling balances to reach today
+    95,Setting networth cursor to Dec 31, 1969
+    96,Filling balances to reach today
     100,Saved 14 records to disk"
   `)
 })
@@ -67,7 +68,7 @@ it.sequential("should re-compute today's balances", async () => {
     (state) => updates.push(state)
   )
   // assert
-  const balancesCursor = await getValue<Timestamp>("balancesCursor", undefined, accountName)
+  const balancesCursor = await getValue<Timestamp>("balancesCursor", 0, accountName)
   expect(balancesCursor).toBe(until)
   expect(updates.join("\n")).toMatchInlineSnapshot(`
     "0,Refreshing balances starting Sep 07, 2017
@@ -75,7 +76,8 @@ it.sequential("should re-compute today's balances", async () => {
     0,Processing logs 1 to 1
     90,Processing logs 1 to 1 complete
     90,Processed 1 daily balances
-    95,Filling balances to reach today
+    95,Setting networth cursor to Sep 06, 2017
+    96,Filling balances to reach today
     100,Saved 8 records to disk"
   `)
 })

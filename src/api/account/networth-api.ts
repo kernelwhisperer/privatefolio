@@ -9,6 +9,14 @@ import { getAccount } from "../database"
 import { validateOperation } from "../database-utils"
 import { getValue, setValue } from "./kv-api"
 
+export async function invalidateNetworth(newValue: Timestamp, accountName: string) {
+  const existing = (await getValue<Timestamp>("networthCursor", 0, accountName)) as Timestamp
+
+  if (newValue < existing) {
+    await setValue("networthCursor", newValue, accountName)
+  }
+}
+
 export async function getHistoricalNetworth(accountName: string) {
   const account = getAccount(accountName)
   const balances = await account.networthDB.allDocs({

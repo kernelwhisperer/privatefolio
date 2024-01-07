@@ -5,7 +5,8 @@ import { formatDate } from "src/utils/formatting-utils"
 import { hashString, noop } from "src/utils/utils"
 
 import { getAccount } from "../../database"
-import { setValue } from "../kv-api"
+import { invalidateBalances } from "../balances-api"
+import { invalidateNetworth } from "../networth-api"
 import { parseCsv } from "./csv-utils"
 
 export async function addFileImport(
@@ -55,8 +56,8 @@ export async function addFileImport(
   if (oldestTimestamp) {
     const newCursor = oldestTimestamp - (oldestTimestamp % 86400000) - 86400000
     progress([25, `Setting balances cursor to ${formatDate(newCursor)}`])
-    await setValue("balancesCursor", newCursor, accountName)
-    await setValue("networthCursor", newCursor, accountName)
+    await invalidateBalances(newCursor, accountName)
+    await invalidateNetworth(newCursor, accountName)
   }
 
   // save metadata
@@ -117,8 +118,8 @@ export async function removeFileImport(
   if (oldestTimestamp) {
     const newCursor = oldestTimestamp - (oldestTimestamp % 86400000) - 86400000
     progress([25, `Setting balances cursor to ${formatDate(newCursor)}`])
-    await setValue("balancesCursor", newCursor, accountName)
-    await setValue("networthCursor", newCursor, accountName)
+    await invalidateBalances(newCursor, accountName)
+    await invalidateNetworth(newCursor, accountName)
   }
 
   // Transactions
