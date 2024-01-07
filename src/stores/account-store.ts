@@ -1,6 +1,6 @@
 import { atom, computed } from "nanostores"
 
-export const $accounts = atom<string[]>(["main", "cold storage", "hot wallet"])
+export const $accounts = atom<string[]>(["main"])
 
 const accountIndex = window.location.pathname.split("/")[2]
 const user = $accounts.get()[accountIndex]

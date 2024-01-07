@@ -29,7 +29,7 @@ export function NavigationMenu() {
           value={overriddenPathname || ""}
           IconComponent={() => false}
           input={
-            <InputBase sx={{ height: 42, position: "absolute", visibility: "hidden", width: 30 }} />
+            <InputBase sx={{ height: 36, position: "absolute", visibility: "hidden", width: 30 }} />
           }
         >
           <NavMenuItem value="" to={`/u/${accountIndex}/`} label="Home" />
@@ -47,7 +47,7 @@ export function NavigationMenu() {
         </Select>
         <Tooltip title="Navigation menu">
           <IconButton edge="start" onClick={toggleOpen} color="secondary">
-            <MenuRounded fontSize="inherit" />
+            <MenuRounded fontSize="small" />
           </IconButton>
         </Tooltip>
       </Box>

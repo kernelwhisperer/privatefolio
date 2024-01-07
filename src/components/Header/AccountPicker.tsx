@@ -1,4 +1,14 @@
-import { IconButton, InputBase, Select, Tooltip } from "@mui/material"
+import { Add } from "@mui/icons-material"
+import {
+  Box,
+  IconButton,
+  InputBase,
+  ListItemAvatar,
+  ListItemText,
+  MenuItem,
+  Select,
+  Tooltip,
+} from "@mui/material"
 import { useStore } from "@nanostores/react"
 import { proxy } from "comlink"
 import React, { useEffect } from "react"
@@ -35,7 +45,7 @@ export function AccountPicker() {
   }, [activeAccount])
 
   return (
-    <>
+    <Box>
       <Tooltip title="Accounts">
         <IconButton onClick={toggleOpen} sx={{ marginRight: -1 }}>
           <AccountAvatar alt={activeAccount} size="small" />
@@ -48,7 +58,7 @@ export function AccountPicker() {
         value={activeAccount}
         IconComponent={() => false}
         input={
-          <InputBase sx={{ height: 36, position: "absolute", visibility: "hidden", width: 36 }} />
+          <InputBase sx={{ height: 36, position: "absolute", visibility: "hidden", width: 16 }} />
         }
         MenuProps={{
           anchorOrigin: {
@@ -73,6 +83,25 @@ export function AccountPicker() {
             avatar={<AccountAvatar alt={x} src={x} />}
           />
         ))}
+        <MenuItem
+          sx={{ minWidth: 240 }}
+          // onClick={() => {
+
+          // }}
+        >
+          <ListItemAvatar
+            sx={{
+              alignItems: "center",
+              display: "flex",
+              justifyContent: "center",
+              marginRight: 2,
+              minWidth: 28,
+            }}
+          >
+            <Add fontSize="medium" color="secondary" />
+          </ListItemAvatar>
+          <ListItemText primary={"Add account"} />
+        </MenuItem>
       </Select>
 
       {/* <Portal>
@@ -124,6 +153,6 @@ export function AccountPicker() {
           </Stack>
         </Drawer>
       </Portal> */}
-    </>
+    </Box>
   )
 }
