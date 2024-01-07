@@ -43,6 +43,22 @@ export async function addFileImport(
   progress([80, `Saving ${transactions.length} transactions to disk`])
   await account.transactionsDB.bulkDocs(transactions)
 
+  // update cursor
+  let oldestTimestamp: Timestamp | undefined
+
+  for (const log of logs) {
+    if (!oldestTimestamp || log.timestamp < oldestTimestamp) {
+      oldestTimestamp = log.timestamp
+    }
+  }
+
+  if (oldestTimestamp) {
+    const newCursor = oldestTimestamp - (oldestTimestamp % 86400000) - 86400000
+    progress([25, `Setting balances cursor to ${formatDate(newCursor)}`])
+    await setValue("balancesCursor", newCursor, accountName)
+    await setValue("networthCursor", newCursor, accountName)
+  }
+
   // save metadata
   const fileImport = await account.fileImportsDB.get(_id)
   fileImport.meta = metadata
@@ -99,9 +115,10 @@ export async function removeFileImport(
   }
 
   if (oldestTimestamp) {
-    const newCursor = oldestTimestamp - (oldestTimestamp % 86400000)
-    progress([25, `Setting new balances cursor to ${formatDate(newCursor)}`])
+    const newCursor = oldestTimestamp - (oldestTimestamp % 86400000) - 86400000
+    progress([25, `Setting balances cursor to ${formatDate(newCursor)}`])
     await setValue("balancesCursor", newCursor, accountName)
+    await setValue("networthCursor", newCursor, accountName)
   }
 
   // Transactions
@@ -128,8 +145,8 @@ export async function removeFileImport(
 
   //
   progress([95, `Removing file import`])
-  const res = await account.fileImportsDB.remove(fileImport)
-  return res.ok
+  const _res = await account.fileImportsDB.remove(fileImport)
+  return logs.rows.length
 }
 
 export function subscribeToFileImports(callback: () => void, accountName: string) {

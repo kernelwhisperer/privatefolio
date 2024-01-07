@@ -34,7 +34,6 @@ export async function getLatestBalances(accountName: string): Promise<Balance[]>
     )
     return balances
   } catch (error) {
-    console.error(error)
     return []
   }
 }
@@ -128,9 +127,13 @@ export async function computeBalances(
     timestamp: 0,
   }
   if (since !== 0) {
-    const latestBalancesDoc = await account.balancesDB.get(String(since - 86400000))
-    const { _id, _rev, ...latestBalancesMap } = latestBalancesDoc
-    latestBalances = latestBalancesMap
+    try {
+      const latestBalancesDoc = await account.balancesDB.get(String(since - 86400000))
+      const { _id, _rev, ...latestBalancesMap } = latestBalancesDoc
+      latestBalances = latestBalancesMap
+    } catch {
+      // ignore
+    }
   }
 
   let historicalBalances: Record<number, BalanceMap> = {}
@@ -231,12 +234,14 @@ export async function computeBalances(
     historicalBalances = {}
   }
 
-  if (latestDay === 0 && since === 0) return
+  progress([95, `Setting networth cursor to ${formatDate(since)}`])
+  await setValue("networthCursor", since, accountName)
 
+  if (latestDay === 0 && since === 0) return
   if (latestDay === 0) latestDay = since
 
   // The balances remain the same until today
-  progress([95, `Filling balances to reach today`])
+  progress([96, `Filling balances to reach today`])
   for (let i = latestDay + 86400000; i <= until; i += 86400000) {
     historicalBalances[i] = latestBalances
     latestDay = i

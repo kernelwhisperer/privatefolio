@@ -7,7 +7,7 @@ import { ProgressCallback } from "../../stores/task-store"
 import { getAssetPriceMap } from "../core/daily-prices-api"
 import { getAccount } from "../database"
 import { validateOperation } from "../database-utils"
-import { getValue } from "./kv-api"
+import { getValue, setValue } from "./kv-api"
 
 export async function getHistoricalNetworth(accountName: string) {
   const account = getAccount(accountName)
@@ -15,7 +15,17 @@ export async function getHistoricalNetworth(accountName: string) {
     include_docs: true,
   })
 
-  return balances.rows.map((x) => x.doc) as Networth[]
+  const cursor = (await getValue<Timestamp>("networthCursor", 0, accountName)) as Timestamp
+  const cursorAsTime = cursor / 1000
+
+  const list: Networth[] = []
+  for (const row of balances.rows) {
+    if (row.doc?.time && row.doc.time <= cursorAsTime) {
+      list.push(row.doc as Networth)
+    }
+  }
+
+  return list
 }
 
 const pageSize = 250
@@ -28,7 +38,7 @@ export async function computeNetworth(
   const account = getAccount(accountName)
 
   if (since === undefined) {
-    since = (await getValue<Timestamp>("balancesCursor", 0, accountName)) as Timestamp
+    since = (await getValue<Timestamp>("networthCursor", 0, accountName)) as Timestamp
   }
 
   const { indexes } = await account.balancesDB.getIndexes()
@@ -100,6 +110,12 @@ export async function computeNetworth(
 
   const updates = await account.networthDB.bulkDocs(docs)
   validateOperation(updates)
+
+  if (balances.length > 0) {
+    const cursor = balances[balances.length - 1].timestamp
+    progress([99, `Setting networth cursor to ${formatDate(cursor)}`])
+    await setValue("networthCursor", cursor, accountName)
+  }
 }
 
 export function subscribeToNetworth(callback: () => void, accountName: string) {

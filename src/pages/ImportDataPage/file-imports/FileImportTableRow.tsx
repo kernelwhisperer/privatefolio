@@ -48,8 +48,10 @@ export function FileImportTableRow(props: TableRowComponentProps<FileImport>) {
       determinate: true,
       function: async (progress) => {
         try {
-          await clancy.removeFileImport(row, progress, $activeAccount.get())
-          handleAuditLogChange()
+          const logsChanged = await clancy.removeFileImport(row, progress, $activeAccount.get())
+          if (logsChanged > 0) {
+            handleAuditLogChange()
+          }
         } finally {
           // setLoading(false)
         }

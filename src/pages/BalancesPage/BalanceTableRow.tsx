@@ -101,14 +101,14 @@ export function BalanceTableRow(props: TableRowComponentProps<Balance>) {
         </Stack>
       </TableCell>
       <TableCell align="right" sx={{ maxWidth: 220, minWidth: 220, width: 220 }}>
+        <AmountBlock amount={balance} />
+      </TableCell>
+      <TableCell align="right" sx={{ maxWidth: 220, minWidth: 220, width: 220 }}>
         <AmountBlock
           amount={price?.value}
           currencySymbol={currency.symbol}
           currencyName={currency.name}
         />
-      </TableCell>
-      <TableCell align="right" sx={{ maxWidth: 220, minWidth: 220, width: 220 }}>
-        <AmountBlock amount={balance} />
       </TableCell>
       <TableCell align="right" sx={{ maxWidth: 220, minWidth: 220, width: 220 }}>
         <AmountBlock

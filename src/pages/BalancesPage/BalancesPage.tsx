@@ -56,17 +56,17 @@ export default function BalancesPage({ show }: { show: boolean }) {
         sortable: true,
       },
       {
+        key: "balance",
+        label: "Balance",
+        numeric: true,
+        sortable: true,
+      },
+      {
         key: "price",
         label: "Price",
         numeric: true,
         sortable: true,
         valueSelector: (row: Balance) => row.price?.value,
-      },
-      {
-        key: "balance",
-        label: "Balance",
-        numeric: true,
-        sortable: true,
       },
       {
         key: "value",

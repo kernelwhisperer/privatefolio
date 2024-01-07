@@ -110,7 +110,7 @@ export function ImportDataActions() {
                 </>
               ),
               extraQuestions: ["Remove daily price data too."],
-              title: "Wipe database",
+              title: "Wipe account data",
               variant: "warning",
             })
             if (confirmed) {
@@ -122,7 +122,7 @@ export function ImportDataActions() {
                   }
                   await clancy.resetAccount("main")
                 },
-                name: "Wipe database",
+                name: "Wipe account data",
                 priority: TaskPriority.High,
               })
               handleClose()
@@ -132,7 +132,7 @@ export function ImportDataActions() {
           <ListItemIcon>
             <Storage fontSize="small" />
           </ListItemIcon>
-          <ListItemText>Wipe database</ListItemText>
+          <ListItemText>Wipe account data</ListItemText>
         </MenuItem>
       </Menu>
     </>

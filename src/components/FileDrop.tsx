@@ -39,8 +39,10 @@ export function FileDrop(props: PaperProps & { defaultBg?: string }) {
       description: `Importing "${file.name}".`,
       determinate: true,
       function: async (progress) => {
-        await clancy.addFileImport(clone, progress, $activeAccount.get())
-        handleAuditLogChange()
+        const { metadata } = await clancy.addFileImport(clone, progress, $activeAccount.get())
+        if (metadata.logs > 0) {
+          handleAuditLogChange()
+        }
       },
       name: `Import file`,
       priority: 8,
