@@ -1,9 +1,11 @@
 import { proxy } from "comlink"
-import { FileImport } from "src/interfaces"
+import { FileImport, Timestamp } from "src/interfaces"
 import { ProgressCallback } from "src/stores/task-store"
+import { formatDate } from "src/utils/formatting-utils"
 import { hashString, noop } from "src/utils/utils"
 
 import { getAccount } from "../../database"
+import { setValue } from "../kv-api"
 import { parseCsv } from "./csv-utils"
 
 export async function addFileImport(
@@ -68,6 +70,7 @@ export async function removeFileImport(
     // Prefix search
     // https://pouchdb.com/api.html#batch_fetch
     endkey: `${fileImport._id}\ufff0`,
+    include_docs: true,
     startkey: fileImport._id,
   } as PouchDB.Core.AllDocsWithinRangeOptions)
   progress([25, `Removing ${logs.rows.length} audit logs`])
@@ -84,6 +87,23 @@ export async function removeFileImport(
   await account.auditLogsDB.bulkDocs(
     logs.rows.map((row) => ({ _deleted: true, _id: row.id, _rev: row.value.rev } as never))
   )
+  // Update cursor
+  let oldestTimestamp: Timestamp | undefined
+
+  for (const row of logs.rows) {
+    if (!row.doc?.timestamp) continue
+
+    if (!oldestTimestamp || row.doc.timestamp < oldestTimestamp) {
+      oldestTimestamp = row.doc.timestamp
+    }
+  }
+
+  if (oldestTimestamp) {
+    const newCursor = oldestTimestamp - (oldestTimestamp % 86400000)
+    progress([25, `Setting new balances cursor to ${formatDate(newCursor)}`])
+    await setValue("balancesCursor", newCursor, accountName)
+  }
+
   // Transactions
   const txns = await account.transactionsDB.allDocs({
     // Prefix search
@@ -109,7 +129,6 @@ export async function removeFileImport(
   //
   progress([95, `Removing file import`])
   const res = await account.fileImportsDB.remove(fileImport)
-  progress([100, `Removal complete`])
   return res.ok
 }
 

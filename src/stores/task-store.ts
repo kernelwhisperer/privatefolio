@@ -1,7 +1,6 @@
 import { proxy } from "comlink"
 import { atom, map } from "nanostores"
 
-import { logAtoms } from "../utils/browser-utils"
 import { timeQueue } from "../utils/utils"
 
 export enum TaskPriority {
@@ -42,7 +41,7 @@ export const $taskQueue = atom<Task[]>([])
 export const $pendingTask = atom<Task | undefined>()
 export const $progressHistory = map<Record<string, Record<number, ProgressUpdate>>>({})
 
-logAtoms({ $pendingTask, $taskHistory, $taskQueue })
+// logAtoms({ $pendingTask, $taskHistory, $taskQueue })
 
 function createProgressCallback(taskId: string) {
   return timeQueue((update: ProgressUpdate) => {
