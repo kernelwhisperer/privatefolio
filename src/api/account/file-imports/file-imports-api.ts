@@ -22,7 +22,9 @@ export async function addFileImport(
   }
 
   const timestamp = new Date().getTime()
-  const _id = hashString(`${name}_${size}_${lastModified}`)
+  // FIXME Looks like on mobile, lastModified is set to Date.now()
+  // const _id = hashString(`${name}_${size}_${lastModified}`)
+  const _id = hashString(`${name}_${size}`)
 
   await account.fileImportsDB.put({
     _id,

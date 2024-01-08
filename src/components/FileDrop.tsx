@@ -25,7 +25,7 @@ export function FileDrop(props: PaperProps & { defaultBg?: string }) {
   }
 
   const handleFileUpload = async (file: File) => {
-    // TODO now the UI does not changing until the file is imported
+    // TODO now the UI "freezes" until the file is imported
 
     // must clone the file, otherwise multiple upload doesn't work on mobile
     // https://github.com/GoogleChrome/developer.chrome.com/issues/2563#issuecomment-1464499084
