@@ -46,7 +46,6 @@ it.sequential("should compute historical balances", async () => {
   expect(updates.join("\n")).toMatchInlineSnapshot(`
     "0,Computing balances for 2 audit logs
     0,Processing logs 1 to 2
-    90,Processing logs 1 to 2 complete
     90,Processed 7 daily balances
     95,Setting networth cursor to Dec 31, 1969
     96,Filling balances to reach today
@@ -74,7 +73,6 @@ it.sequential("should re-compute today's balances", async () => {
     "0,Refreshing balances starting Sep 07, 2017
     0,Computing balances for 1 audit logs
     0,Processing logs 1 to 1
-    90,Processing logs 1 to 1 complete
     90,Processed 1 daily balances
     95,Setting networth cursor to Sep 06, 2017
     96,Filling balances to reach today

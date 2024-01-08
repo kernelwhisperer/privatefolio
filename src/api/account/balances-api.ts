@@ -232,10 +232,6 @@ export async function computeBalances(
     await setValue("balancesCursor", latestDay, accountName)
     progress([
       ((i + pageSize) * 90) / Math.max(count, pageSize),
-      `Processing logs ${firstIndex} to ${lastIndex} complete`,
-    ])
-    progress([
-      ((i + pageSize) * 90) / Math.max(count, pageSize),
       `Processed ${balances.length} daily balances`,
     ])
 
