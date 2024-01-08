@@ -13,6 +13,7 @@ import {
 } from "@mui/material"
 import { useStore } from "@nanostores/react"
 import React, { useEffect, useMemo, useRef } from "react"
+import { $debugMode } from "src/stores/app-store"
 
 import { $pendingTask, $progressHistory, $taskHistory, FinishedTask } from "../../stores/task-store"
 import { formatHour } from "../../utils/formatting-utils"
@@ -21,9 +22,9 @@ import { StaggeredList } from "../StaggeredList"
 import { LinearProgressWithLabel } from "./LinearProgressWithLabel"
 import { TaskDuration } from "./TaskDuration"
 
-const TimeLabel = ({ timestamp }: { timestamp: number }) => (
+const TimeLabel = ({ timestamp, debugMode }: { debugMode: boolean; timestamp: number }) => (
   <Typography variant="caption" color="text.secondary">
-    {formatHour(timestamp, { fractionalSecondDigits: 3 })}
+    {formatHour(timestamp, debugMode ? { fractionalSecondDigits: 3 } : { second: "2-digit" })}
   </Typography>
 )
 
@@ -73,6 +74,8 @@ export function TaskDetailsDialog({ taskId, ...props }: DialogProps & { taskId: 
     // Clear the timeout when the component is unmounted or dependencies change
     return () => clearTimeout(timer)
   }, [updateMap])
+
+  const debugMode = useStore($debugMode)
 
   if (!task) return null
 
@@ -147,12 +150,13 @@ export function TaskDetailsDialog({ taskId, ...props }: DialogProps & { taskId: 
               <Typography variant="caption" component="div">
                 {"startedAt" in task && (
                   <div>
-                    <TimeLabel timestamp={task.startedAt as number} /> Starting task...
+                    <TimeLabel timestamp={task.startedAt as number} debugMode={debugMode} />{" "}
+                    Starting task...
                   </div>
                 )}
                 {updates.map((update, index) => (
                   <div key={index}>
-                    <TimeLabel timestamp={parseInt(update)} />{" "}
+                    <TimeLabel timestamp={parseInt(update)} debugMode={debugMode} />{" "}
                     {!updateMap[update][1].includes("Error") ? (
                       `${updateMap[update][1]}...`
                     ) : (
@@ -166,14 +170,15 @@ export function TaskDetailsDialog({ taskId, ...props }: DialogProps & { taskId: 
                   <div>
                     {task.errorMessage ? (
                       <>
-                        <TimeLabel timestamp={task.completedAt as number} />{" "}
+                        <TimeLabel timestamp={task.completedAt as number} debugMode={debugMode} />{" "}
                         <Typography variant="inherit" color="error" component="span">
                           {task.errorMessage}
                         </Typography>
                       </>
                     ) : (
                       <>
-                        <TimeLabel timestamp={task.completedAt as number} /> Task completed!
+                        <TimeLabel timestamp={task.completedAt as number} debugMode={debugMode} />{" "}
+                        Task completed!
                       </>
                     )}
                   </div>
