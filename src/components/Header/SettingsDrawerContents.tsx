@@ -21,7 +21,16 @@ import { ReducedMotion } from "./ReducedMotion"
 import { ThemeMode } from "./ThemeMode"
 
 const CustomLink = ({ children, ...rest }: any) => (
-  <MenuItem component={MuiLink} tabIndex={0} role="button" sx={{ borderRadius: 0.5 }} {...rest}>
+  <MenuItem
+    component={MuiLink}
+    tabIndex={0}
+    role="button"
+    sx={{
+      borderRadius: 0.5,
+      minHeight: "auto !important",
+    }}
+    {...rest}
+  >
     <Typography
       variant="h6"
       component="div"
@@ -125,6 +134,7 @@ export const SettingsDrawerContents = ({
             display: "flex",
             justifyContent: "space-between",
             marginX: -1,
+            minHeight: "auto !important",
             paddingX: 1,
           }}
           slotProps={{
@@ -160,6 +170,7 @@ export const SettingsDrawerContents = ({
             display: "flex",
             justifyContent: "space-between",
             marginX: -1,
+            minHeight: "auto !important",
             paddingX: 1,
           }}
           slotProps={{
