@@ -5,7 +5,6 @@ import { findAssets } from "../api/core/assets-api"
 import { findIntegrations } from "../api/core/integrations-api"
 import { Asset, AuditLogOperation, Integration, IntegrationMetadata } from "../interfaces"
 import { DEFAULT_DEBOUNCE_DURATION, INTEGRATIONS } from "../settings"
-import { logAtoms } from "../utils/browser-utils"
 import { clancy } from "../workers/remotes"
 import { $activeAccount } from "./account-store"
 
@@ -101,7 +100,7 @@ keepMount($assetMap)
 keepMount($filterOptionsMap)
 keepMount($integrationMap)
 
-logAtoms({ $assetMap, $filterMap: $filterOptionsMap, $integrationMap })
+// logAtoms({ $assetMap, $filterMap: $filterOptionsMap, $integrationMap })
 
 export async function computeMetadata() {
   const filterMap = await computeFilterMap()
