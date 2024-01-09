@@ -276,7 +276,6 @@ export interface Connection {
   meta?: {
     logs: number
     operations: AuditLogOperation[]
-    rows: number
     symbols: string[]
     transactions: number
     wallets: string[]

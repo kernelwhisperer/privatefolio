@@ -22,7 +22,7 @@ export function ConnectionsTable() {
       const start = Date.now()
       const rows = await clancy.getConnections($activeAccount.get())
       setQueryTime(Date.now() - start)
-      console.log("📜 LOG > fetchData > rows:", rows)
+      // console.log("📜 LOG > fetchData > rows:", rows)
       setRows(rows)
     }
 

@@ -1,10 +1,11 @@
 import { proxy } from "comlink"
-import { getAddress } from "ethers"
+import { BlockTag, getAddress } from "ethers"
 import { ProgressCallback } from "src/stores/task-store"
 
 import { AuditLog, AuditLogOperation, Connection, Transaction } from "../../../interfaces"
 import { hashString } from "../../../utils/utils"
 import { getAccount } from "../../database"
+import { getValue, setValue } from "../kv-api"
 import { FullEtherscanProvider } from "./etherscan-rpc"
 import { parser } from "./evm-parser"
 
@@ -18,7 +19,7 @@ export async function addConnection(
   const account = getAccount(accountName)
 
   const timestamp = new Date().getTime()
-  const _id = hashString(`${integration}_${address}_${label}`)
+  const _id = hashString(`con_${integration}_${address}_${label}`)
 
   await account.connectionsDB.put<Connection>({
     ...connection,
@@ -99,11 +100,15 @@ export function subscribeToConnections(callback: () => void, accountName: string
 export async function syncConnection(
   progress: ProgressCallback,
   connection: Connection,
-  accountName: string
+  accountName: string,
+  since?: BlockTag
 ) {
+  if (since === undefined) {
+    since = (await getValue<BlockTag>(connection._id, "0", accountName)) as string
+  }
+
   const rpcProvider = new FullEtherscanProvider()
-  const rows = await rpcProvider.getTransactions(connection.address)
-  console.log("📜 LOG > syncConnection > rows:", rows)
+  const rows = await rpcProvider.getTransactions(connection.address, since)
 
   const logs: AuditLog[] = []
   let transactions: Transaction[] = []
@@ -148,16 +153,33 @@ export async function syncConnection(
   const metadata: Connection["meta"] = {
     logs: logs.length,
     operations: Object.keys(operationMap) as AuditLogOperation[],
-    rows: rows.length - 1,
     symbols: Object.keys(symbolMap),
     transactions: transactions.length,
     wallets: Object.keys(walletMap),
   }
 
-  connection.meta = metadata
-  console.log("📜 LOG > metadata:", metadata)
+  // set cursor
+  if (rows.length > 0) {
+    const newCursor = String(Number(rows[rows.length - 1].blockNumber) + 1)
+
+    progress([95, `Setting cursor to block number ${newCursor}`])
+    await setValue(connection._id, newCursor, accountName)
+  }
+
+  if (connection.meta) {
+    connection.meta = {
+      logs: connection.meta.logs + metadata.logs,
+      operations: [...new Set(connection.meta.operations.concat(metadata.operations))],
+      symbols: [...new Set(connection.meta.symbols.concat(metadata.symbols))],
+      transactions: connection.meta.transactions + metadata.transactions,
+      wallets: [...new Set(connection.meta.wallets.concat(metadata.wallets))],
+    }
+  } else {
+    connection.meta = metadata
+  }
   connection.syncedAt = new Date().getTime()
 
+  progress([96, `Saving metadata`])
   await account.connectionsDB.put(connection)
   return connection
 }

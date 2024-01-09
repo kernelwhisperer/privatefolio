@@ -2,6 +2,7 @@ import type { BlockTag, Transaction } from "ethers"
 import { EtherscanProvider } from "ethers"
 
 export type BlockchainTransaction = Transaction & {
+  blockNumber: string
   /**
    * @example "1443428683"
    */
