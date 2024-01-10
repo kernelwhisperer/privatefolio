@@ -72,6 +72,7 @@ export async function removeConnection(
   )
 
   //
+  await setValue(connection._id, 0, accountName)
   progress([95, `Removing connection`])
   const res = await account.connectionsDB.remove(connection)
   progress([100, `Removal complete`])
@@ -109,6 +110,7 @@ export async function syncConnection(
 
   const rpcProvider = new FullEtherscanProvider()
   const rows = await rpcProvider.getTransactions(connection.address, since)
+  console.log("📜 LOG > rows:", rows)
 
   const logs: AuditLog[] = []
   let transactions: Transaction[] = []
@@ -153,6 +155,7 @@ export async function syncConnection(
   const metadata: Connection["meta"] = {
     logs: logs.length,
     operations: Object.keys(operationMap) as AuditLogOperation[],
+    rows: rows.length,
     symbols: Object.keys(symbolMap),
     transactions: transactions.length,
     wallets: Object.keys(walletMap),
@@ -170,6 +173,7 @@ export async function syncConnection(
     connection.meta = {
       logs: connection.meta.logs + metadata.logs,
       operations: [...new Set(connection.meta.operations.concat(metadata.operations))],
+      rows: connection.meta.rows + metadata.rows,
       symbols: [...new Set(connection.meta.symbols.concat(metadata.symbols))],
       transactions: connection.meta.transactions + metadata.transactions,
       wallets: [...new Set(connection.meta.wallets.concat(metadata.wallets))],

@@ -8,6 +8,13 @@ export function parser(
   _index: number,
   connection: Connection
 ): ParserResult {
+  if (BigInt(row.value) === 0n) {
+    return {
+      logs: [],
+      txns: [],
+    }
+  }
+
   const { integration } = connection
   //
   const operation: AuditLogOperation =

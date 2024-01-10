@@ -54,12 +54,12 @@ export function ConnectionsTable() {
         label: "Synced at",
         sortable: true,
       },
-      {
-        filterable: true,
-        hideLabel: true,
-        key: "integration",
-        label: "Integration",
-      },
+      // {
+      //   filterable: true,
+      //   hideLabel: true,
+      //   key: "integration",
+      //   label: "Integration",
+      // },
       {
         key: "address",
         label: "Address",

@@ -108,21 +108,19 @@ export function ConnectionTableRow(props: TableRowComponentProps<Connection>) {
           <TimestampBlock timestamp={syncedAt} relative={relativeTime} />
         )}
       </TableCell>
-      <TableCell sx={{ maxWidth: 24, minWidth: 24, width: 24 }}>
-        {integration ? (
-          <Stack direction="row" gap={0.5} alignItems="center" component="div">
-            <IntegrationAvatar
-              size="small"
-              src={integrationMap[integration]?.image}
-              alt={INTEGRATIONS[integration]}
-            />
-          </Stack>
-        ) : (
-          <Skeleton></Skeleton>
-        )}
-      </TableCell>
-      <TableCell sx={{ fontFamily: MonoFont, maxWidth: 300, minWidth: 300, width: 300 }}>
+      <TableCell sx={{ fontFamily: MonoFont, maxWidth: 420, minWidth: 300, width: 420 }}>
         <Stack spacing={1} direction="row">
+          {integration ? (
+            <Stack direction="row" gap={0.5} alignItems="center" component="div">
+              <IntegrationAvatar
+                size="small"
+                src={integrationMap[integration]?.image}
+                alt={INTEGRATIONS[integration]}
+              />
+            </Stack>
+          ) : (
+            <Skeleton></Skeleton>
+          )}
           <Tooltip title={address}>
             <Truncate>{address}</Truncate>
           </Tooltip>
@@ -154,7 +152,7 @@ export function ConnectionTableRow(props: TableRowComponentProps<Connection>) {
               <Tooltip
                 title={`${formatNumber(meta.logs)} audit logs extracted from ${formatNumber(
                   meta.rows
-                )} document entries`}
+                )} entries`}
               >
                 <span>{formatNumber(meta.logs)}</span>
               </Tooltip>
@@ -173,7 +171,7 @@ export function ConnectionTableRow(props: TableRowComponentProps<Connection>) {
             <Tooltip
               title={`${formatNumber(meta.transactions)} transactions extracted from ${formatNumber(
                 meta.rows
-              )} document entries`}
+              )} entries`}
             >
               <span>{formatNumber(meta.transactions)}</span>
             </Tooltip>
