@@ -124,8 +124,8 @@ exports[`should fetch latest balances without price data 1`] = `
 exports[`should have balances computed 1`] = `
 [
   {
-    "_id": "1217276216_3604660326_0",
-    "_rev": "3-d4e726ed34cefe5f8815a6d77f7a6822",
+    "_id": "2675435331_3604660326_0",
+    "_rev": "3-7986da8a475a42e30343a3a96ddb460d",
     "balance": 0.072958518,
     "change": "0.036979259",
     "changeN": 0.036979259,
@@ -136,8 +136,8 @@ exports[`should have balances computed 1`] = `
     "wallet": "Spot",
   },
   {
-    "_id": "1217276216_1607323056_0",
-    "_rev": "2-b9b99d928b31d7d281ddfbc2250fe888",
+    "_id": "2675435331_1607323056_0",
+    "_rev": "2-cccb1bed4805f298094839a7fe2f4bed",
     "balance": 0.035979259,
     "change": "0.035979259",
     "changeN": 0.035979259,
@@ -153,8 +153,8 @@ exports[`should have balances computed 1`] = `
 exports[`should not have balances computed 1`] = `
 [
   {
-    "_id": "1217276216_3604660326_0",
-    "_rev": "1-decfa4dda7fb3d8f62c1aad27535c9b3",
+    "_id": "2675435331_3604660326_0",
+    "_rev": "1-f1d2238d944c68a08eff841cc9a892fd",
     "change": "0.036979259",
     "changeN": 0.036979259,
     "integration": "coinmama",
@@ -164,8 +164,8 @@ exports[`should not have balances computed 1`] = `
     "wallet": "Spot",
   },
   {
-    "_id": "1217276216_1607323056_0",
-    "_rev": "1-20ba2e26b49006f30d980d5480b5716b",
+    "_id": "2675435331_1607323056_0",
+    "_rev": "1-524e4440eb9597f0f1719287db37e025",
     "change": "0.035979259",
     "changeN": 0.035979259,
     "integration": "coinmama",
