@@ -4,11 +4,19 @@ import { extractTransactions } from "src/utils/extract-utils"
 
 import { HEADER_MATCHER, PARSERS } from "./integrations"
 
-export async function parseCsv(text: string, _fileImportId: string, progress: ProgressCallback) {
+export async function parseCsv(
+  text: string,
+  _fileImportId: string,
+  progress: ProgressCallback,
+  parserContext: Record<string, unknown>
+) {
   // Parse CSV
   const rows = text.trim().split("\n")
 
-  const header = rows[0].replace("ï»¿", "") // mexc
+  const header = rows[0]
+    .replace("ï»¿", "") // mexc
+    .replace(/CurrentValue @ \$\d+(\.\d+)?\/Eth,?/, "CurrentValue") // etherscan
+    .trim()
 
   const integration = HEADER_MATCHER[header]
   const parser = PARSERS[integration]
@@ -30,7 +38,7 @@ export async function parseCsv(text: string, _fileImportId: string, progress: Pr
       if (index !== 0 && (index + 1) % 1000 === 0) {
         progress([(index * 50) / rows.length, `Parsing row ${index + 1}`])
       }
-      const { logs: newLogs, txns } = parser(row, index, _fileImportId)
+      const { logs: newLogs, txns } = parser(row, index, _fileImportId, parserContext)
 
       for (const log of newLogs) {
         logs.push(log)

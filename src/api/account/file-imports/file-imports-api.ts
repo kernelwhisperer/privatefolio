@@ -12,7 +12,8 @@ import { parseCsv } from "./csv-utils"
 export async function addFileImport(
   file: File,
   progress: ProgressCallback = noop,
-  accountName: string
+  accountName: string,
+  parserContext: Record<string, unknown> = {}
 ) {
   const account = getAccount(accountName)
   const { name, type, lastModified, size } = file
@@ -36,7 +37,7 @@ export async function addFileImport(
 
   // parse file
   const text = await file.text()
-  const { metadata, logs, transactions } = await parseCsv(text, _id, progress)
+  const { metadata, logs, transactions } = await parseCsv(text, _id, progress, parserContext)
 
   // save logs
   progress([60, `Saving ${logs.length} audit logs to disk`])

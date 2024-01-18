@@ -1,4 +1,4 @@
-import { HighlightOffRounded, MoreHoriz, SyncRounded } from "@mui/icons-material"
+import { HighlightOffRounded, MoreHoriz, RestartAltRounded, SyncRounded } from "@mui/icons-material"
 import {
   IconButton,
   ListItemIcon,
@@ -24,6 +24,7 @@ import { $activeAccount } from "src/stores/account-store"
 import { $integrationMap } from "src/stores/metadata-store"
 import { enqueueTask, TaskPriority } from "src/stores/task-store"
 import { MonoFont } from "src/theme"
+import { enqueueSyncConnection, handleAuditLogChange } from "src/utils/common-tasks"
 import { formatNumber } from "src/utils/formatting-utils"
 import { TableRowComponentProps } from "src/utils/table-utils"
 import { clancy } from "src/workers/remotes"
@@ -137,7 +138,11 @@ export function ConnectionTableRow(props: TableRowComponentProps<Connection>) {
         )}
       </TableCell>
       <TableCell sx={{ maxWidth: 80, minWidth: 80, width: 80 }} align="right">
-        <IconButton color="secondary" onClick={handleClick} sx={{ marginRight: -0.5 }}>
+        <IconButton
+          color="secondary"
+          onClick={handleClick}
+          sx={{ marginRight: -0.5, marginY: -0.5 }}
+        >
           <MoreHoriz fontSize="small" />
         </IconButton>
         <Menu
@@ -150,16 +155,8 @@ export function ConnectionTableRow(props: TableRowComponentProps<Connection>) {
           <MenuItem
             dense
             onClick={async () => {
-              enqueueTask({
-                description: `Sync "${row.address}"`,
-                determinate: true,
-                function: async (progress) => {
-                  await clancy.syncConnection(progress, row, $activeAccount.get())
-                },
-                name: `Sync connection`,
-                priority: TaskPriority.High,
-              })
-              // handleAuditLogChange() TODO
+              enqueueSyncConnection(row)
+              handleAuditLogChange()
               handleClose()
             }}
           >
@@ -180,12 +177,12 @@ export function ConnectionTableRow(props: TableRowComponentProps<Connection>) {
                 name: `Reset connection`,
                 priority: TaskPriority.High,
               })
-              // handleAuditLogChange() TODO
+              handleAuditLogChange()
               handleClose()
             }}
           >
             <ListItemIcon>
-              <SyncRounded fontSize="small" />
+              <RestartAltRounded fontSize="small" />
             </ListItemIcon>
             <ListItemText>Reset connection</ListItemText>
           </MenuItem>
@@ -214,7 +211,7 @@ export function ConnectionTableRow(props: TableRowComponentProps<Connection>) {
                 name: `Remove connection`,
                 priority: TaskPriority.High,
               })
-              // handleAuditLogChange() TODO
+              handleAuditLogChange()
               handleClose()
             }}
           >

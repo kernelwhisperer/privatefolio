@@ -1,4 +1,4 @@
-import { Stack } from "@mui/material"
+import { Chip, Stack, Tooltip } from "@mui/material"
 import React from "react"
 import { useSearchParams } from "react-router-dom"
 import { NavTab } from "src/components/NavTab"
@@ -31,7 +31,33 @@ export default function ImportDataPage({ show }: { show: boolean }) {
       <Stack>
         <Tabs value={tab}>
           <NavTab value="" to={""} label="File imports" replace />
-          <NavTab value="connections" to={`?tab=connections`} label="Connections" replace />
+          <NavTab
+            value="connections"
+            to={`?tab=connections`}
+            label={
+              <span>
+                Connections{" "}
+                <Tooltip
+                  title={
+                    <>
+                      This feature is still being developed.
+                      <br />
+                      If you have any ideas on how we can improve it, please click on{" "}
+                      <u>Report an issue</u> from the Settings drawer and let us know!
+                    </>
+                  }
+                >
+                  <Chip
+                    size="small"
+                    color="primary"
+                    sx={{ fontSize: "0.65rem", height: 20, paddingX: 0.5 }}
+                    label="BETA"
+                  />
+                </Tooltip>
+              </span>
+            }
+            replace
+          />
         </Tabs>
         {tab === "" && <FileImportsTable />}
         {tab === "connections" && <ConnectionsTable />}

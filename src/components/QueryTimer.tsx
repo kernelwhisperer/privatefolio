@@ -30,7 +30,6 @@ export function QueryTimer({ queryTime }: { queryTime: number | null }) {
                 s
               </span>
               {/* <span>Count query time: 0.1s</span> */}
-              <hr />
               <span className="secondary">
                 Fetching this data can take long because it is read from disk.
               </span>

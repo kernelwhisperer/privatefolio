@@ -14,7 +14,7 @@ import {
 import { isAddress } from "ethers"
 import React, { useCallback, useEffect, useState } from "react"
 import { $activeAccount } from "src/stores/account-store"
-import { enqueueSyncConnection } from "src/utils/common-tasks"
+import { enqueueSyncConnection, handleAuditLogChange } from "src/utils/common-tasks"
 import { clancy } from "src/workers/remotes"
 
 import { AddressInput } from "../../../components/AddressInput"
@@ -51,6 +51,7 @@ export function ConnectionDrawer({ open, toggleOpen, ...rest }: DrawerProps & Po
         .then((connection) => {
           toggleOpen()
           enqueueSyncConnection(connection)
+          handleAuditLogChange()
         })
         .catch(() => {
           setLoading(false)

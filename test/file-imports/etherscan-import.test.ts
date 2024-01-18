@@ -1,0 +1,146 @@
+import fs from "fs"
+import { join } from "path"
+import { findAuditLogs } from "src/api/account/audit-logs-api"
+import { computeBalances, getHistoricalBalances } from "src/api/account/balances-api"
+import { addFileImport } from "src/api/account/file-imports/file-imports-api"
+import { resetAccount } from "src/api/database"
+import { ProgressUpdate } from "src/stores/task-store"
+import { beforeAll, expect, it } from "vitest"
+
+const accountName = "azure"
+
+beforeAll(async () => {
+  //
+  await resetAccount(accountName)
+})
+
+it("should add a file import", async () => {
+  // arrange
+  const fileName = "etherscan.csv"
+  const filePath = join("test/files", fileName)
+  const buffer = await fs.promises.readFile(filePath, "utf8")
+  const file = new File([buffer], fileName, { lastModified: 0, type: "text/csv" })
+  // act
+  const id = await addFileImport(file, undefined, accountName)
+  const auditLogs = await findAuditLogs(
+    {
+      filters: {
+        integration: "etherscan",
+      },
+    },
+    accountName
+  )
+  // assert
+  expect(id).toMatchInlineSnapshot(`
+    {
+      "_id": "32174469",
+      "metadata": {
+        "integration": "etherscan",
+        "logs": 16,
+        "operations": [
+          "Deposit",
+          "Withdraw",
+          "Fee",
+        ],
+        "rows": 9,
+        "symbols": [
+          "ETH",
+        ],
+        "transactions": 0,
+        "wallets": [
+          "Spot",
+        ],
+      },
+    }
+  `)
+  expect(auditLogs.length).toMatchInlineSnapshot(`16`)
+  expect(auditLogs).toMatchSnapshot()
+})
+
+it("should add an erc20 file import", async () => {
+  // arrange
+  const fileName = "etherscan-erc20.csv"
+  const filePath = join("test/files", fileName)
+  const buffer = await fs.promises.readFile(filePath, "utf8")
+  const file = new File([buffer], fileName, { lastModified: 0, type: "text/csv" })
+  // act
+  const id = await addFileImport(file, undefined, accountName, {
+    userAddress: "0xf98c96b5d10faafc2324847c82305bd5fd7e5ad3",
+  })
+  const auditLogs = await findAuditLogs(
+    {
+      filters: {
+        integration: "etherscan-erc20",
+      },
+    },
+    accountName
+  )
+  // assert
+  expect(id).toMatchInlineSnapshot(`
+    {
+      "_id": "3090763006",
+      "metadata": {
+        "integration": "etherscan-erc20",
+        "logs": 8,
+        "operations": [
+          "Deposit",
+        ],
+        "rows": 8,
+        "symbols": [
+          "XNN",
+          "XDATA",
+          "VIU",
+          "INSP",
+          "CAN",
+          "LOOM",
+          "HEALP",
+          "LPT",
+        ],
+        "transactions": 0,
+        "wallets": [
+          "Spot",
+        ],
+      },
+    }
+  `)
+  expect(auditLogs.length).toMatchInlineSnapshot(`8`)
+  expect(auditLogs).toMatchSnapshot()
+})
+
+it.sequential("should compute balances", async () => {
+  // arrange
+  const until = Date.UTC(2021, 0, 0, 0, 0, 0, 0) // 1 Jan 2021
+  // act
+  const updates: ProgressUpdate[] = []
+  await computeBalances(accountName, { until }, (state) => updates.push(state))
+  const balances = await getHistoricalBalances(accountName)
+  const auditLogs = await findAuditLogs({}, accountName)
+  // assert
+  expect(updates.join("\n")).toMatchInlineSnapshot(`
+    "0,Computing balances for 24 audit logs
+    0,Processing logs 1 to 24
+    90,Processed 1153 daily balances
+    95,Setting networth cursor to Dec 31, 1969
+    96,Filling balances to reach today
+    100,Saved 1210 records to disk"
+  `)
+  expect(balances.length).toMatchInlineSnapshot(`1210`)
+  expect(balances[1209]).toMatchInlineSnapshot(`
+    {
+      "CAN": 2,
+      "ETH": -3.117081245895825e-17,
+      "HEALP": 911,
+      "INSP": 777,
+      "LOOM": 10,
+      "LPT": 2.117826656607922,
+      "VIU": 29.9787992,
+      "XDATA": 0.21165476692904842,
+      "XNN": 319.22562200498686,
+      "_id": "1609372800000",
+      "_rev": "1-26ac0a61fc55c1d7c2101c2e594cccf7",
+      "timestamp": 1609372800000,
+    }
+  `)
+  expect(auditLogs.length).toMatchInlineSnapshot(`24`)
+  expect(auditLogs).toMatchSnapshot()
+})

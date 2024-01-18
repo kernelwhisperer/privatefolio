@@ -1,7 +1,7 @@
 import type Decimal from "decimal.js"
 import { OhlcData, SingleValueData, UTCTimestamp } from "lightweight-charts"
 
-import { BlockchainTransaction } from "./api/account/connections/etherscan-rpc"
+import { Erc20Transaction, NativeTransaction } from "./api/account/connections/etherscan-rpc"
 import { INTEGRATIONS } from "./settings"
 
 export type TransactionRole = "Maker" | "Taker"
@@ -115,6 +115,10 @@ export interface BinanceAuditLog extends AuditLog {
   remark: string
   userId: string
   utcTime: string
+}
+
+export interface EtherscanAuditLog extends AuditLog {
+  txHash: string
 }
 
 export interface FileImport {
@@ -289,9 +293,14 @@ export interface Connection {
 }
 
 export type ParserResult = { logs: AuditLog[]; txns?: Transaction[] }
-export type CsvParser = (csvRow: string, index: number, fileImportId: string) => ParserResult
+export type CsvParser = (
+  csvRow: string,
+  index: number,
+  fileImportId: string,
+  parserContext: Record<string, unknown>
+) => ParserResult
 export type EvmParser = (
-  row: BlockchainTransaction,
+  row: NativeTransaction | Erc20Transaction,
   index: number,
   connectionId: string
 ) => ParserResult

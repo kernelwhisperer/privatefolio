@@ -12,6 +12,8 @@ export const INTEGRATIONS = {
   binance: "Binance",
   coinmama: "Coinmama",
   ethereum: "Ethereum",
+  etherscan: "Etherscan",
+  "etherscan-erc20": "Etherscan ERC-20",
   evm: "EVM network",
   mexc: "MEXC",
   op: "Optimism",

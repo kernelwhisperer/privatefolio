@@ -4,7 +4,7 @@ import { validateOperation } from "src/api/database-utils"
 import { ProgressCallback } from "src/stores/task-store"
 
 import { AuditLog, AuditLogOperation, Connection, Transaction } from "../../../interfaces"
-import { hashString } from "../../../utils/utils"
+import { hashString, noop } from "../../../utils/utils"
 import { getAccount } from "../../database"
 import { getValue, setValue } from "../kv-api"
 import { FullEtherscanProvider } from "./etherscan-rpc"
@@ -100,7 +100,7 @@ export function subscribeToConnections(callback: () => void, accountName: string
 // const testAddress = "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
 
 export async function syncConnection(
-  progress: ProgressCallback,
+  progress: ProgressCallback = noop,
   connection: Connection,
   accountName: string,
   since?: BlockTag
@@ -111,6 +111,7 @@ export async function syncConnection(
   if (since === undefined) {
     since = (await getValue<BlockTag>(connection._id, "0", accountName)) as string
   }
+  progress([0, `Starting from block number ${since}`])
 
   const logMap: Record<string, AuditLog> = {}
   const txMap: Record<string, Transaction> = {}
@@ -209,20 +210,24 @@ export async function syncConnection(
 
   // save logs
   const logIds = Object.keys(logMap).map((x) => ({ id: x }))
-  progress([80, `Saving ${logIds.length} audit logs to disk`])
-  const { results: logDocs } = await account.auditLogsDB.bulkGet({ docs: logIds })
+  // TODO bug: bulkDocs hangs if docs.length === 0
+  if (logIds.length > 0) {
+    progress([80, `Saving ${logIds.length} audit logs to disk`])
+    const { results: logDocs } = await account.auditLogsDB.bulkGet({ docs: logIds })
 
-  const logUpdates = await account.auditLogsDB.bulkDocs(
-    logDocs.map((doc) => ({
-      ...logMap[doc.id],
-      _id: doc.id,
-      _rev: "ok" in doc.docs[0] ? doc.docs[0].ok._rev : undefined,
-    }))
-  )
-  validateOperation(logUpdates)
+    const logUpdates = await account.auditLogsDB.bulkDocs(
+      logDocs.map((doc) => ({
+        ...logMap[doc.id],
+        _id: doc.id,
+        _rev: "ok" in doc.docs[0] ? doc.docs[0].ok._rev : undefined,
+      }))
+    )
+    validateOperation(logUpdates)
+  }
 
   // save transactions
   const txIds = Object.keys(txMap).map((x) => ({ id: x }))
+  // TODO bug: bulkDocs hangs if docs.length === 0
   if (txIds.length > 0) {
     progress([90, `Saving ${txIds.length} transactions to disk`])
     const { results: txDocs } = await account.transactionsDB.bulkGet({ docs: txIds })
