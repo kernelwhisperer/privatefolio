@@ -3,6 +3,7 @@ import { join } from "path"
 import { findAuditLogs } from "src/api/account/audit-logs-api"
 import { computeBalances, getHistoricalBalances } from "src/api/account/balances-api"
 import { addFileImport } from "src/api/account/file-imports/file-imports-api"
+import { findTransactions } from "src/api/account/transactions-api"
 import { resetAccount } from "src/api/database"
 import { ProgressUpdate } from "src/stores/task-store"
 import { beforeAll, expect, it } from "vitest"
@@ -46,7 +47,7 @@ it("should add a file import", async () => {
         "symbols": [
           "ETH",
         ],
-        "transactions": 0,
+        "transactions": 9,
         "wallets": [
           "Spot",
         ],
@@ -115,6 +116,7 @@ it.sequential("should compute balances", async () => {
   await computeBalances(accountName, { until }, (state) => updates.push(state))
   const balances = await getHistoricalBalances(accountName)
   const auditLogs = await findAuditLogs({}, accountName)
+  const transactions = await findTransactions({}, accountName)
   // assert
   expect(updates.join("\n")).toMatchInlineSnapshot(`
     "0,Computing balances for 24 audit logs
@@ -143,4 +145,6 @@ it.sequential("should compute balances", async () => {
   `)
   expect(auditLogs.length).toMatchInlineSnapshot(`24`)
   expect(auditLogs).toMatchSnapshot()
+  expect(transactions.length).toMatchInlineSnapshot(`9`)
+  expect(transactions).toMatchSnapshot()
 })

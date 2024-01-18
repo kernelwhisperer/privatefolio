@@ -1,4 +1,10 @@
-import { AuditLogOperation, EtherscanAuditLog, Integration, ParserResult } from "src/interfaces"
+import {
+  AuditLogOperation,
+  EtherscanAuditLog,
+  Integration,
+  ParserResult,
+  Transaction,
+} from "src/interfaces"
 import { asUTC } from "src/utils/formatting-utils"
 import { hashString } from "src/utils/utils"
 
@@ -41,12 +47,12 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
     txHash,
     txnFee,
     txnFeeUsd,
-    valueIn,
-    valueOut,
+    // valueIn,
+    // valueOut,
   }
   //
   const hash = hashString(`${index}_${csvRow}`)
-  const _id = `${fileImportId}_${hash}`
+  const txId = `${fileImportId}_${hash}`
   const timestamp = asUTC(new Date(Number(unixTimestamp) * 1000))
 
   if (valueIn === "0" && valueOut === "0") {
@@ -61,31 +67,57 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
 
   const logs: EtherscanAuditLog[] = [
     {
-      _id,
+      _id: `${txId}_0`,
       change,
       changeN,
       integration: Identifier,
       operation,
       symbol,
       timestamp,
+      txId,
       wallet,
-      ...txMeta,
     },
   ]
 
+  let fee: string | undefined, feeN: number | undefined
+
   if (txnFee !== "0" && valueIn === "0") {
+    fee = `-${txnFee}`
+    feeN = parseFloat(fee)
+
     logs.push({
-      _id: `${fileImportId}_${hash}_fee`,
-      change: `-${txnFee}`,
-      changeN: parseFloat(`-${txnFee}`),
+      _id: `${txId}_1`,
+      change: fee,
+      changeN: feeN,
       integration: Identifier,
       operation: "Fee",
       symbol,
       timestamp,
+      txId,
       wallet,
-      ...txMeta,
     })
   }
 
-  return { logs }
+  const tx: Transaction = {
+    _id: txId,
+    fee,
+    feeN,
+    feeSymbol: symbol,
+    incoming: valueIn,
+    incomingN: parseFloat(valueIn),
+    incomingSymbol: symbol,
+    integration: Identifier,
+    outgoing: valueOut,
+    outgoingN: parseFloat(valueOut),
+    outgoingSymbol: symbol,
+    // price,
+    // priceN,
+    // role,
+    timestamp,
+    type: operation,
+    wallet,
+    ...txMeta,
+  }
+
+  return { logs, txns: [tx] }
 }

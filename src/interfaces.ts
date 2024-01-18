@@ -6,7 +6,7 @@ import { INTEGRATIONS } from "./settings"
 
 export type TransactionRole = "Maker" | "Taker"
 export type TransactionSide = "BUY" | "SELL"
-export type TransactionType = "Buy" | "Sell" | "Swap"
+export type TransactionType = "Buy" | "Sell" | "Swap" | "Deposit" | "Withdraw"
 // type ExchangeId = "mexc" | "binance"
 
 export type BigNumber = Decimal
@@ -106,6 +106,7 @@ export interface AuditLog {
   operation: AuditLogOperation
   symbol: string
   timestamp: Timestamp
+  txId?: string
   wallet: string
 }
 
@@ -117,9 +118,7 @@ export interface BinanceAuditLog extends AuditLog {
   utcTime: string
 }
 
-export interface EtherscanAuditLog extends AuditLog {
-  txHash: string
-}
+export type EtherscanAuditLog = AuditLog
 
 export interface FileImport {
   _id: string
