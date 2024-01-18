@@ -44,7 +44,23 @@ export function AmountBlock(props: AmountBlockProps) {
         )
       }
     >
-      <Typography fontFamily={MonoFont} variant="inherit" component="span">
+      <Typography
+        fontFamily={MonoFont}
+        variant="inherit"
+        component="span"
+        sx={{ cursor: amount ? "pointer" : undefined }}
+        onClick={() => {
+          if (!amount) return
+
+          navigator.clipboard.writeText(
+            formatNumber(amount, {
+              maximumFractionDigits,
+              minimumFractionDigits,
+              ...formatOpts,
+            })
+          )
+        }}
+      >
         {typeof amount === "number" ? (
           <>
             {currencySymbol}

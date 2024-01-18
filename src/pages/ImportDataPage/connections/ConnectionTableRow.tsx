@@ -1,7 +1,10 @@
-import { HighlightOffRounded, SyncRounded } from "@mui/icons-material"
+import { HighlightOffRounded, MoreHoriz, SyncRounded } from "@mui/icons-material"
 import {
-  CircularProgress,
   IconButton,
+  ListItemIcon,
+  ListItemText,
+  Menu,
+  MenuItem,
   Skeleton,
   Stack,
   TableCell,
@@ -10,7 +13,7 @@ import {
   Typography,
 } from "@mui/material"
 import { useStore } from "@nanostores/react"
-import React, { MouseEvent, useState } from "react"
+import React, { useState } from "react"
 import { IntegrationAvatar } from "src/components/IntegrationAvatar"
 import { TimestampBlock } from "src/components/TimestampBlock"
 import { Truncate } from "src/components/Truncate"
@@ -38,60 +41,15 @@ export function ConnectionTableRow(props: TableRowComponentProps<Connection>) {
 
   const integrationMap = useStore($integrationMap)
 
-  const [isRemoving, setIsRemoving] = useState(false)
-  const [isSyncing, setIsSyncing] = useState(false)
   const confirm = useConfirm()
 
-  async function handleRemove(event: MouseEvent<HTMLButtonElement>) {
-    event.preventDefault()
-    const { confirmed } = await confirm({
-      content: (
-        <>
-          All audit logs and transactions linked to this connection will be deleted.
-          <br /> This action is permanent. Are you sure you wish to continue?
-        </>
-      ),
-      title: "Remove connection",
-      variant: "warning",
-    })
-
-    if (!confirmed) return
-
-    setIsRemoving(true)
-    enqueueTask({
-      description: `Remove "${row.label}", alongside its audit logs and transactions.`,
-      determinate: true,
-      function: async (progress) => {
-        try {
-          await clancy.removeConnection(row, progress, $activeAccount.get())
-        } finally {
-          setIsRemoving(false)
-        }
-      },
-      name: `Remove file import`,
-      priority: TaskPriority.High,
-    })
-    // handleAuditLogChange() TODO
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const open = Boolean(anchorEl)
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget)
   }
-
-  async function handleSync(event: MouseEvent<HTMLButtonElement>) {
-    event.preventDefault()
-
-    setIsSyncing(true)
-    enqueueTask({
-      description: `Sync "${row.address}"`,
-      determinate: true,
-      function: async (progress) => {
-        try {
-          await clancy.syncConnection(progress, row, $activeAccount.get())
-        } finally {
-          setIsSyncing(false)
-        }
-      },
-      name: `Sync connection`,
-      priority: TaskPriority.High,
-    })
-    // handleAuditLogChange() TODO
+  const handleClose = () => {
+    setAnchorEl(null)
   }
 
   return (
@@ -178,45 +136,94 @@ export function ConnectionTableRow(props: TableRowComponentProps<Connection>) {
           </>
         )}
       </TableCell>
-      <TableCell sx={{ maxWidth: 80, minWidth: 80, width: 80 }}>
-        <Stack direction="row" gap={1} justifyContent="flex-end">
-          <Tooltip title={isRemoving ? "Syncing..." : "Sync connection"}>
-            <span>
-              <IconButton
-                size="small"
-                color="secondary"
-                sx={{ height: 28, marginLeft: -1 }}
-                onClick={handleSync}
-                disabled={isSyncing}
-              >
-                {isRemoving ? (
-                  <CircularProgress size={14} color="inherit" />
-                ) : (
-                  <SyncRounded fontSize="inherit" />
-                )}
-              </IconButton>
-            </span>
-          </Tooltip>
-          <Tooltip
-            title={isRemoving ? "Removing..." : "Remove connection (including its audit logs)"}
+      <TableCell sx={{ maxWidth: 80, minWidth: 80, width: 80 }} align="right">
+        <IconButton color="secondary" onClick={handleClick} sx={{ marginRight: -0.5 }}>
+          <MoreHoriz fontSize="small" />
+        </IconButton>
+        <Menu
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleClose}
+          anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+          transformOrigin={{ horizontal: "right", vertical: "top" }}
+        >
+          <MenuItem
+            dense
+            onClick={async () => {
+              enqueueTask({
+                description: `Sync "${row.address}"`,
+                determinate: true,
+                function: async (progress) => {
+                  await clancy.syncConnection(progress, row, $activeAccount.get())
+                },
+                name: `Sync connection`,
+                priority: TaskPriority.High,
+              })
+              // handleAuditLogChange() TODO
+              handleClose()
+            }}
           >
-            <span>
-              <IconButton
-                size="small"
-                color="secondary"
-                sx={{ height: 28, marginLeft: -1 }}
-                onClick={handleRemove}
-                disabled={isRemoving}
-              >
-                {isRemoving ? (
-                  <CircularProgress size={14} color="inherit" />
-                ) : (
-                  <HighlightOffRounded fontSize="inherit" />
-                )}
-              </IconButton>
-            </span>
-          </Tooltip>
-        </Stack>
+            <ListItemIcon>
+              <SyncRounded fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Sync connection</ListItemText>
+          </MenuItem>
+          <MenuItem
+            dense
+            onClick={async () => {
+              enqueueTask({
+                description: `Reset "${row.address}"`,
+                determinate: true,
+                function: async (progress) => {
+                  await clancy.syncConnection(progress, row, $activeAccount.get(), 0)
+                },
+                name: `Reset connection`,
+                priority: TaskPriority.High,
+              })
+              // handleAuditLogChange() TODO
+              handleClose()
+            }}
+          >
+            <ListItemIcon>
+              <SyncRounded fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Reset connection</ListItemText>
+          </MenuItem>
+          <MenuItem
+            dense
+            onClick={async () => {
+              const { confirmed } = await confirm({
+                content: (
+                  <>
+                    All audit logs and transactions linked to this connection will be deleted.
+                    <br /> This action is permanent. Are you sure you wish to continue?
+                  </>
+                ),
+                title: "Remove connection",
+                variant: "warning",
+              })
+
+              if (!confirmed) return
+
+              enqueueTask({
+                description: `Remove "${row.label}", alongside its audit logs and transactions.`,
+                determinate: true,
+                function: async (progress) => {
+                  await clancy.removeConnection(row, progress, $activeAccount.get())
+                },
+                name: `Remove connection`,
+                priority: TaskPriority.High,
+              })
+              // handleAuditLogChange() TODO
+              handleClose()
+            }}
+          >
+            <ListItemIcon>
+              <HighlightOffRounded fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Remove connection</ListItemText>
+          </MenuItem>
+        </Menu>
       </TableCell>
     </TableRow>
   )

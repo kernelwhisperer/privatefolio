@@ -1,5 +1,6 @@
 import { proxy } from "comlink"
 import { BlockTag, getAddress } from "ethers"
+import { validateOperation } from "src/api/database-utils"
 import { ProgressCallback } from "src/stores/task-store"
 
 import { AuditLog, AuditLogOperation, Connection, Transaction } from "../../../interfaces"
@@ -7,7 +8,7 @@ import { hashString } from "../../../utils/utils"
 import { getAccount } from "../../database"
 import { getValue, setValue } from "../kv-api"
 import { FullEtherscanProvider } from "./etherscan-rpc"
-import { parser } from "./evm-parser"
+import { erc20Parser, parser } from "./evm-parser"
 
 export async function addConnection(
   connection: Omit<Connection, "_id" | "_rev" | "timestamp" | "syncedAt">,
@@ -104,72 +105,156 @@ export async function syncConnection(
   accountName: string,
   since?: BlockTag
 ) {
+  const account = getAccount(accountName)
+  const rpcProvider = new FullEtherscanProvider()
+
   if (since === undefined) {
     since = (await getValue<BlockTag>(connection._id, "0", accountName)) as string
   }
 
-  const rpcProvider = new FullEtherscanProvider()
-  const rows = await rpcProvider.getTransactions(connection.address, since)
-  console.log("📜 LOG > rows:", rows)
-
-  const logs: AuditLog[] = []
-  let transactions: Transaction[] = []
+  const logMap: Record<string, AuditLog> = {}
+  const txMap: Record<string, Transaction> = {}
   const symbolMap: Record<string, boolean> = {}
   const walletMap: Record<string, boolean> = {}
   const operationMap: Partial<Record<AuditLogOperation, boolean>> = {}
 
-  progress([0, `Parsing ${rows.length} rows`])
-  rows.forEach((row, index) => {
+  // normal transactions
+  const normal = await rpcProvider.getTransactions(connection.address, since)
+  console.log("📜 LOG > normal:", normal)
+
+  progress([0, `Fetching normal transactions`])
+  progress([10, `Parsing ${normal.length} normal transactions`])
+  normal.forEach((row, index) => {
     try {
       if (index !== 0 && (index + 1) % 1000 === 0) {
-        progress([(index * 50) / rows.length, `Parsing row ${index + 1}`])
+        progress([(index * 15) / normal.length, `Parsing row ${index + 1}`])
       }
-      const { logs: newLogs, txns } = parser(row, index, connection)
+      const { logs, txns = [] } = parser(row, index, connection)
 
-      for (const log of newLogs) {
-        logs.push(log)
+      if (logs.length === 0) console.log("📜 LOG > logs.length === 0:", row)
+
+      for (const log of logs) {
+        logMap[log._id] = log
         symbolMap[log.symbol] = true
         walletMap[log.wallet] = true
         operationMap[log.operation] = true
       }
 
-      if (txns) {
-        transactions = transactions.concat(txns)
+      for (const transaction of txns) {
+        txMap[transaction._id] = transaction
       }
     } catch (error) {
       progress([0, `Error parsing row ${index + 1}: ${String(error)}`])
     }
   })
 
-  const account = getAccount(accountName)
+  // internal transactions
+  const internal = await rpcProvider.getInternalTransactions(connection.address, since)
+  console.log("📜 LOG > internal:", internal)
+
+  progress([25, `Fetching internal transactions`])
+  progress([35, `Parsing ${internal.length} internal transactions`])
+  internal.forEach((row, index) => {
+    try {
+      if (index !== 0 && (index + 1) % 1000 === 0) {
+        progress([35 + (index * 15) / internal.length, `Parsing row ${index + 1}`])
+      }
+      const { logs, txns = [] } = parser(row, index, connection)
+      if (logs.length === 0) console.log("📜 LOG > logs.length === 0:", row)
+
+      for (const log of logs) {
+        logMap[log._id] = log
+        symbolMap[log.symbol] = true
+        walletMap[log.wallet] = true
+        operationMap[log.operation] = true
+      }
+
+      for (const transaction of txns) {
+        txMap[transaction._id] = transaction
+      }
+    } catch (error) {
+      progress([0, `Error parsing row ${index + 1}: ${String(error)}`])
+    }
+  })
+
+  // erc20 transactions
+  const erc20 = await rpcProvider.getErc20Transactions(connection.address, since)
+  console.log("📜 LOG > erc20:", erc20)
+
+  progress([50, `Fetching erc20 transactions`])
+  progress([60, `Parsing ${erc20.length} erc20 transactions`])
+  erc20.forEach((row, index) => {
+    try {
+      if (index !== 0 && (index + 1) % 1000 === 0) {
+        progress([60 + (index * 15) / erc20.length, `Parsing row ${index + 1}`])
+      }
+      const { logs, txns = [] } = erc20Parser(row, index, connection)
+      if (logs.length === 0) console.log("📜 LOG > logs.length === 0:", row)
+
+      for (const log of logs) {
+        logMap[log._id] = log
+        symbolMap[log.symbol] = true
+        walletMap[log.wallet] = true
+        operationMap[log.operation] = true
+      }
+
+      for (const transaction of txns) {
+        txMap[transaction._id] = transaction
+      }
+    } catch (error) {
+      progress([0, `Error parsing row ${index + 1}: ${String(error)}`])
+    }
+  })
+  console.log("📜 LOG > erc20.forEach > logs:", logMap)
 
   // save logs
-  progress([60, `Saving ${logs.length} audit logs to disk`])
-  await account.auditLogsDB.bulkDocs(logs)
+  const logIds = Object.keys(logMap).map((x) => ({ id: x }))
+  progress([80, `Saving ${logIds.length} audit logs to disk`])
+  const { results: logDocs } = await account.auditLogsDB.bulkGet({ docs: logIds })
+
+  const logUpdates = await account.auditLogsDB.bulkDocs(
+    logDocs.map((doc) => ({
+      ...logMap[doc.id],
+      _id: doc.id,
+      _rev: "ok" in doc.docs[0] ? doc.docs[0].ok._rev : undefined,
+    }))
+  )
+  validateOperation(logUpdates)
 
   // save transactions
-  progress([80, `Saving ${transactions.length} transactions to disk`])
-  await account.transactionsDB.bulkDocs(transactions)
+  const txIds = Object.keys(txMap).map((x) => ({ id: x }))
+  if (txIds.length > 0) {
+    progress([90, `Saving ${txIds.length} transactions to disk`])
+    const { results: txDocs } = await account.transactionsDB.bulkGet({ docs: txIds })
+    const txUpdates = await account.transactionsDB.bulkDocs(
+      txDocs.map((doc) => ({
+        ...txMap[doc.id],
+        _id: doc.id,
+        _rev: "ok" in doc.docs[0] ? doc.docs[0].ok._rev : undefined,
+      }))
+    )
+    validateOperation(txUpdates)
+  }
 
   // save metadata
   const metadata: Connection["meta"] = {
-    logs: logs.length,
+    logs: logIds.length,
     operations: Object.keys(operationMap) as AuditLogOperation[],
-    rows: rows.length,
+    rows: normal.length + internal.length + erc20.length,
     symbols: Object.keys(symbolMap),
-    transactions: transactions.length,
+    transactions: txIds.length,
     wallets: Object.keys(walletMap),
   }
 
   // set cursor
-  if (rows.length > 0) {
-    const newCursor = String(Number(rows[rows.length - 1].blockNumber) + 1)
+  if (normal.length > 0) {
+    const newCursor = String(Number(normal[normal.length - 1].blockNumber) + 1)
 
     progress([95, `Setting cursor to block number ${newCursor}`])
     await setValue(connection._id, newCursor, accountName)
   }
 
-  if (connection.meta) {
+  if (connection.meta && since !== 0) {
     connection.meta = {
       logs: connection.meta.logs + metadata.logs,
       operations: [...new Set(connection.meta.operations.concat(metadata.operations))],
@@ -183,7 +268,7 @@ export async function syncConnection(
   }
   connection.syncedAt = new Date().getTime()
 
-  progress([96, `Saving metadata`])
+  progress([99, `Saving metadata`])
   await account.connectionsDB.put(connection)
   return connection
 }
