@@ -296,11 +296,26 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
     const start = Date.now()
 
     queryFn().then((result) => {
+      if (activeInterval === "1w") {
+        const aggregatedData: ChartData[] = []
+
+        for (let i = 0; i < result.length; i += 7) {
+          const weekData = result.slice(i, i + 7)
+          const open = weekData[0]?.value
+          const close = weekData[weekData.length - 1]?.value
+          const low = Math.min(...weekData.map((d) => d.value))
+          const high = Math.max(...weekData.map((d) => d.value))
+
+          aggregatedData.push({ close, high, low, open, time: weekData[0]?.time, value: close })
+        }
+        result = aggregatedData
+      }
+
       setData(result)
       setLoading(false)
       setQueryTime(Date.now() - start)
     })
-  }, [queryFn])
+  }, [queryFn, activeInterval])
 
   const transitions = useTransition(loading, {
     config: SPRING_CONFIGS.veryQuick,
