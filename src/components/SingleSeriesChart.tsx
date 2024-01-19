@@ -25,11 +25,14 @@ import {
   DeepPartial,
   IChartApi,
   ISeriesApi,
+  MouseEventParams,
   SeriesOptionsCommon,
   SeriesType,
+  Time,
 } from "lightweight-charts"
 import { merge } from "lodash-es"
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { $inspectTime } from "src/stores/pages/balances-store"
 
 import { useBoolean } from "../hooks/useBoolean"
 import { ChartData } from "../interfaces"
@@ -169,6 +172,21 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
     },
     [activeType, seriesOptions]
   )
+
+  useEffect(() => {
+    if (!chartRef.current || cursorMode !== "inspect") return
+
+    function handleClick(param: MouseEventParams<Time>) {
+      $inspectTime.set(typeof param.time === "number" ? param.time * 1000 : undefined)
+    }
+
+    chartRef.current.subscribeClick(handleClick)
+
+    return () => {
+      $inspectTime.set(undefined)
+      chartRef.current?.unsubscribeClick(handleClick)
+    }
+  }, [seriesReady, cursorMode])
 
   useEffect(() => {
     if (!seriesRef.current || !seriesReady) return

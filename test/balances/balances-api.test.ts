@@ -1,11 +1,7 @@
 import fs from "fs"
 import { join } from "path"
 import { findAuditLogs } from "src/api/account/audit-logs-api"
-import {
-  computeBalances,
-  getHistoricalBalances,
-  getLatestBalances,
-} from "src/api/account/balances-api"
+import { computeBalances, getBalancesAt, getHistoricalBalances } from "src/api/account/balances-api"
 import { addFileImport } from "src/api/account/file-imports/file-imports-api"
 import { getValue } from "src/api/account/kv-api"
 import { fetchDailyPrices } from "src/api/core/daily-prices-api"
@@ -99,7 +95,7 @@ it.sequential("should have balances computed", async () => {
 it.sequential("should fetch latest balances without price data", async () => {
   // arrange
   // act
-  const balances = await getLatestBalances(accountName)
+  const balances = await getBalancesAt(undefined, accountName)
   // assert
   expect(balances).toMatchSnapshot()
 })
@@ -108,7 +104,7 @@ it.sequential("should fetch latest balances with price data", async () => {
   // arrange
   await fetchDailyPrices({ symbols: ["BTC"] })
   // act
-  const balances = await getLatestBalances(accountName)
+  const balances = await getBalancesAt(undefined, accountName)
   // assert
   expect(balances).toMatchSnapshot()
 })

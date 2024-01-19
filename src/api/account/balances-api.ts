@@ -19,9 +19,13 @@ export async function invalidateBalances(newValue: Timestamp, accountName: strin
   }
 }
 
-export async function getLatestBalances(accountName: string): Promise<Balance[]> {
+export async function getBalancesAt(
+  cursor: Timestamp = -1,
+  accountName: string
+): Promise<Balance[]> {
   const account = getAccount(accountName)
-  const balancesCursor = await getValue<Timestamp>("balancesCursor", 0, accountName)
+  const balancesCursor =
+    cursor !== -1 ? cursor : await getValue<Timestamp>("balancesCursor", 0, accountName)
 
   try {
     const balanceMap = await account.balancesDB.get(String(balancesCursor))

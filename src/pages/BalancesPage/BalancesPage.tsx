@@ -1,11 +1,14 @@
 import { CachedRounded } from "@mui/icons-material"
-import { IconButton, Tooltip } from "@mui/material"
+import { IconButton, Tooltip, Typography } from "@mui/material"
+import { useStore } from "@nanostores/react"
 import { proxy } from "comlink"
 import { debounce } from "lodash-es"
 import React, { useEffect, useMemo, useState } from "react"
 import { DEFAULT_DEBOUNCE_DURATION } from "src/settings"
 import { $activeAccount } from "src/stores/account-store"
+import { $inspectTime } from "src/stores/pages/balances-store"
 import { refreshNetworth } from "src/utils/common-tasks"
+import { formatDate } from "src/utils/formatting-utils"
 
 import { MemoryTable } from "../../components/EnhancedTable/MemoryTable"
 import { NoDataCard } from "../../components/NoDataCard"
@@ -21,10 +24,12 @@ export default function BalancesPage({ show }: { show: boolean }) {
   const [queryTime, setQueryTime] = useState<number | null>(null)
   const [rows, setRows] = useState<Balance[]>([])
 
+  const inspectTime = useStore($inspectTime)
+
   useEffect(() => {
     function fetchData() {
       const start = Date.now()
-      clancy.getLatestBalances($activeAccount.get()).then((balances) => {
+      clancy.getBalancesAt(inspectTime, $activeAccount.get()).then((balances) => {
         setQueryTime(Date.now() - start)
         setRows(balances)
       })
@@ -45,7 +50,7 @@ export default function BalancesPage({ show }: { show: boolean }) {
         unsubscribe()
       })
     }
-  }, [])
+  }, [inspectTime])
 
   const headCells = useMemo<HeadCell<Balance>[]>(
     () => [
@@ -95,7 +100,14 @@ export default function BalancesPage({ show }: { show: boolean }) {
       )}
       <div>
         <Subheading>
-          <span>Balances</span>
+          <span>
+            Balances{" "}
+            {inspectTime !== undefined && (
+              <Typography variant="caption" color="text.secondary">
+                at {formatDate(inspectTime)}
+              </Typography>
+            )}
+          </span>
         </Subheading>
         {queryTime !== null && rows.length === 0 ? (
           <NoDataCard />
