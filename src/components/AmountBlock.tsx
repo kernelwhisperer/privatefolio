@@ -18,7 +18,7 @@ export function AmountBlock(props: AmountBlockProps) {
   const {
     amount,
     currencyName,
-    currencySymbol,
+    currencySymbol = "",
     significantDigits,
     tooltipMessage,
     formatOpts = EMPTY_OBJECT,
@@ -62,15 +62,12 @@ export function AmountBlock(props: AmountBlockProps) {
         }}
       >
         {typeof amount === "number" ? (
-          <>
-            {currencySymbol}
-            {formatNumber(amount, {
-              maximumFractionDigits: minimumFractionDigits,
-              minimumFractionDigits,
-              // notation: "compact",
-              ...formatOpts,
-            })}
-          </>
+          `${currencySymbol}${formatNumber(amount, {
+            maximumFractionDigits: minimumFractionDigits,
+            minimumFractionDigits,
+            // notation: "compact",
+            ...formatOpts,
+          })}`.replace(`${currencySymbol}-`, `-${currencySymbol}`)
         ) : (
           <Typography color="text.secondary" component="span" variant="inherit">
             Unknown

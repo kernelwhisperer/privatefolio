@@ -296,7 +296,9 @@ export class DeltaTooltipPrimitive implements ISeriesPrimitive<Time> {
       deltaContent.deltaBottomLine = `${positive ? "+" : ""}${formatNumber(priceChange, {
         maximumFractionDigits: this._options.significantDigits,
         minimumFractionDigits: this._options.significantDigits,
-      })} ${positive ? "+" : ""}${pctChange.toFixed(this._options.tooltip?.compact ? 0 : 2)}%`
+      })} ${positive ? "+" : ""}${
+        isNaN(pctChange) ? 0 : pctChange.toFixed(this._options.tooltip?.compact ? 0 : 2)
+      }%`
       deltaContent.deltaBackgroundColor = positive
         ? alpha(greenColorDark, 0.2)
         : alpha(redColor, 0.2)
