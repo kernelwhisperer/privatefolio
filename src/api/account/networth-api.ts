@@ -82,39 +82,55 @@ export async function computeNetworth(
   const docIds: Array<{ id: string }> = []
   const documentMap: Record<string, Networth> = {}
 
-  for (let i = 0; i < count; i += pageSize) {
-    await Promise.all(
-      balances
-        .slice(i, i + pageSize)
-        .map(async ({ _id, _rev, timestamp, ...balanceMap }, index) => {
-          const priceMap = await getAssetPriceMap(timestamp)
+  let latestNetworth: Networth = {
+    _id: "0",
+    change: 0,
+    changePercentage: 0,
+    time: 0 as Time,
+    value: 0,
+  }
 
-          const totalValue = Object.keys(priceMap).reduce((acc, symbol) => {
-            const price = priceMap[symbol]
-            const balance = balanceMap[symbol]
+  for (let i = 0; i < count; i++) {
+    const { _id, _rev, timestamp, ...balanceMap } = balances[i]
 
-            if (!price || !balance) return acc
+    const priceMap = await getAssetPriceMap(timestamp)
 
-            return acc + Math.round(price.value * balance * 100) / 100
-          }, 0)
+    const totalValue = Object.keys(priceMap).reduce((acc, symbol) => {
+      const price = priceMap[symbol]
+      const balance = balanceMap[symbol]
 
-          docIds.push({ id: _id })
+      if (!price || !balance) return acc
 
-          documentMap[_id] = {
-            _id,
-            change: 0,
-            changePercentage: 0,
-            time: (timestamp / 1000) as Time,
-            value: totalValue,
-          }
-          if (index === 0) {
-            progress([
-              10 + (i * 90) / count,
-              `Computing networth starting ${formatDate(timestamp)}`,
-            ])
-          }
-        })
-    )
+      return acc + Math.round(price.value * balance * 100) / 100
+    }, 0)
+
+    docIds.push({ id: _id })
+
+    const networth: Networth = {
+      _id,
+      change: 0,
+      changePercentage: 0,
+      time: (timestamp / 1000) as Time,
+      value: totalValue,
+    }
+
+    if (i !== 0) {
+      networth.change = Math.round((networth.value - latestNetworth.value) * 100) / 100
+      networth.changePercentage =
+        networth.change === 0 || latestNetworth.value === 0
+          ? 0
+          : Math.round((networth.change / latestNetworth.value) * 100 * 100) / 100
+
+      latestNetworth = networth
+    } else {
+      latestNetworth = networth
+    }
+
+    documentMap[_id] = networth
+
+    if (i % pageSize === 0) {
+      progress([10 + (i * 90) / count, `Computing networth starting ${formatDate(timestamp)}`])
+    }
     if (signal?.aborted) {
       throw new Error(signal.reason)
     }

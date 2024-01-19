@@ -6,6 +6,7 @@ import { Navigate, Route, Routes, useLocation } from "react-router-dom"
 import { AccountIndexRoute } from "./AccountIndexRoute"
 import { ErrorBoundary } from "./components/ErrorBoundary"
 import { Header } from "./components/Header/Header"
+import { PnLPage } from "./pages/PnLPage/PnLPage"
 import { $pendingTask } from "./stores/task-store"
 import { SPRING_CONFIGS } from "./utils/utils"
 
@@ -74,6 +75,10 @@ export default function App() {
                     element={<BalancesPage show={key === pathname && appPath === ""} />}
                   />
                   <Route
+                    path="pnl"
+                    element={<PnLPage show={key === pathname && appPath === "pnl"} />}
+                  />
+                  <Route
                     path="asset/:symbol"
                     element={<AssetPage show={key === pathname && appPath.includes("asset")} />}
                   />
@@ -93,7 +98,7 @@ export default function App() {
                     path="audit-logs"
                     element={<AuditLogsPage show={key === pathname && appPath === "audit-logs"} />}
                   />
-                  <Route path="*" element={<Navigate to="/" />} />
+                  <Route path="*" element={<Navigate to="/u/0" />} />
                 </Route>
                 <Route path="*" element={<Navigate to="/u/0" />} />
               </Routes>
