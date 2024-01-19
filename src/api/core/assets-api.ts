@@ -5,7 +5,7 @@ import { AssetMap } from "../../stores/metadata-store"
 export async function findAssets(symbolMap: Record<string, boolean>) {
   const map: AssetMap = {
     EUR: {
-      image: "/assets/overrides/EUR.png",
+      image: `/${ASSET_FILES_LOCATION}/assets/overrides/EUR.png`,
       isStablecoin: true,
       name: "Euro",
       symbol: "EUR",
@@ -26,7 +26,7 @@ export async function findAssets(symbolMap: Record<string, boolean>) {
         map[asset.symbol] = asset
 
         if (asset.symbol === "BUSD") {
-          map[asset.symbol].image = "/assets/overrides/BUSD.svg"
+          map[asset.symbol].image = `/${ASSET_FILES_LOCATION}/overrides/BUSD.svg`
         }
       }
     }
