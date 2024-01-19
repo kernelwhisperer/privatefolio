@@ -4,7 +4,7 @@ import { findAuditLogs } from "src/api/account/audit-logs-api"
 import { computeBalances, getHistoricalBalances } from "src/api/account/balances-api"
 import { addFileImport } from "src/api/account/file-imports/file-imports-api"
 import { findTransactions } from "src/api/account/transactions-api"
-import { resetAccount } from "src/api/database"
+import { getAccount, resetAccount } from "src/api/database"
 import { ProgressUpdate } from "src/stores/task-store"
 import { beforeAll, expect, it } from "vitest"
 
@@ -22,21 +22,19 @@ it("should add a file import", async () => {
   const buffer = await fs.promises.readFile(filePath, "utf8")
   const file = new File([buffer], fileName, { lastModified: 0, type: "text/csv" })
   // act
-  const id = await addFileImport(file, undefined, accountName)
-  const auditLogs = await findAuditLogs(
-    {
-      filters: {
-        integration: "etherscan",
-      },
+  const fileImport = await addFileImport(file, undefined, accountName)
+  const { docs: auditLogs } = await getAccount(accountName).auditLogsDB.find({
+    selector: {
+      fileImportId: fileImport._id,
     },
-    accountName
-  )
+  })
+  auditLogs.sort((a, b) => b.timestamp - a.timestamp)
   // assert
-  expect(id).toMatchInlineSnapshot(`
+  expect(fileImport).toMatchInlineSnapshot(`
     {
       "_id": "32174469",
       "metadata": {
-        "integration": "etherscan",
+        "integration": "ethereum",
         "logs": 16,
         "operations": [
           "Deposit",
@@ -65,23 +63,21 @@ it("should add an erc20 file import", async () => {
   const buffer = await fs.promises.readFile(filePath, "utf8")
   const file = new File([buffer], fileName, { lastModified: 0, type: "text/csv" })
   // act
-  const id = await addFileImport(file, undefined, accountName, {
+  const fileImport = await addFileImport(file, undefined, accountName, {
     userAddress: "0xf98c96b5d10faafc2324847c82305bd5fd7e5ad3",
   })
-  const auditLogs = await findAuditLogs(
-    {
-      filters: {
-        integration: "etherscan-erc20",
-      },
+  const { docs: auditLogs } = await getAccount(accountName).auditLogsDB.find({
+    selector: {
+      fileImportId: fileImport._id,
     },
-    accountName
-  )
+  })
+  auditLogs.sort((a, b) => b.timestamp - a.timestamp)
   // assert
-  expect(id).toMatchInlineSnapshot(`
+  expect(fileImport).toMatchInlineSnapshot(`
     {
       "_id": "3090763006",
       "metadata": {
-        "integration": "etherscan-erc20",
+        "integration": "ethereum",
         "logs": 8,
         "operations": [
           "Deposit",

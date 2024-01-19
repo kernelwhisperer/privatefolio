@@ -101,7 +101,7 @@ export async function findAuditLogs(request: FindAuditLogsRequest = {}, accountN
     sort,
   }
   // console.log("📜 LOG > findAuditLogs > _req:", _req)
-  // const explain = await (auditLogsDB as any).explain(_req)
+  // const explain = await (account.auditLogsDB as any).explain(_req)
   // console.log("📜 LOG > findAuditLogs > explain:", explain.index)
 
   //

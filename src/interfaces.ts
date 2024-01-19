@@ -101,6 +101,7 @@ export interface AuditLog {
   balance?: number
   change: string
   changeN: number
+  fileImportId?: string
   integration: Integration
   operation: AuditLogOperation
   symbol: string
