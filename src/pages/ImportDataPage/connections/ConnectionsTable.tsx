@@ -1,11 +1,22 @@
-import { Add, CloudOutlined } from "@mui/icons-material"
-import { IconButton, Paper, Stack, Tooltip, Typography } from "@mui/material"
+import { Add, CloudOutlined, InfoOutlined } from "@mui/icons-material"
+import {
+  Alert,
+  AlertTitle,
+  IconButton,
+  Link,
+  Paper,
+  Stack,
+  Tooltip,
+  Typography,
+} from "@mui/material"
+import { useStore } from "@nanostores/react"
 import { proxy } from "comlink"
 import React, { useEffect, useMemo, useState } from "react"
 import { MemoryTable } from "src/components/EnhancedTable/MemoryTable"
+import { StaggeredList } from "src/components/StaggeredList"
 import { useBoolean } from "src/hooks/useBoolean"
 import { Connection } from "src/interfaces"
-import { $activeAccount } from "src/stores/account-store"
+import { $accountReset, $activeAccount } from "src/stores/account-store"
 import { HeadCell } from "src/utils/table-utils"
 import { clancy } from "src/workers/remotes"
 
@@ -16,6 +27,8 @@ export function ConnectionsTable() {
   const { value: open, toggle: toggleOpen } = useBoolean(false)
   const [queryTime, setQueryTime] = useState<number | null>(null)
   const [rows, setRows] = useState<Connection[]>([])
+
+  const accountReset = useStore($accountReset)
 
   useEffect(() => {
     async function fetchData() {
@@ -40,7 +53,7 @@ export function ConnectionsTable() {
         unsubscribe()
       })
     }
-  }, [])
+  }, [accountReset])
 
   const headCells: HeadCell<Connection>[] = useMemo(
     () => [
@@ -146,6 +159,34 @@ export function ConnectionsTable() {
           //
         />
       )}
+      <StaggeredList component="main" show paddingTop={1}>
+        <Alert
+          icon={<InfoOutlined fontSize="inherit" />}
+          variant="outlined"
+          sx={{
+            "& .MuiAlert-icon": {
+              color: "var(--mui-palette-secondary-main)",
+            },
+            borderColor: "var(--mui-palette-TableCell-border)",
+            color: "var(--mui-palette-secondary-main)",
+          }}
+        >
+          <AlertTitle sx={{ fontSize: "0.85rem" }}>
+            This feature is still being developed.
+          </AlertTitle>
+          If you have any ideas on how we can improve it, please{" "}
+          <Link target="_blank" href="https://github.com/kernelwhisperer/privatefolio/issues/new">
+            let us know
+          </Link>
+          !
+        </Alert>
+        {/* <Chip
+            size="small"
+            color="primary"
+            sx={{ fontSize: "0.65rem", height: 20, paddingX: 0.5 }}
+            label="BETA"
+          /> */}
+      </StaggeredList>
       <ConnectionDrawer open={open} toggleOpen={toggleOpen} />
     </>
   )

@@ -113,10 +113,11 @@ export function enqueueRecomputeNetworth() {
   if (existing) return
 
   enqueueTask({
+    abortable: true,
     description: "Recomputing historical networth.",
     determinate: true,
-    function: async (progress) => {
-      await clancy.computeNetworth(progress, $activeAccount.get(), 0)
+    function: async (progress, signal) => {
+      await clancy.computeNetworth($activeAccount.get(), 0, progress, signal)
     },
     name: "Recompute networth",
     priority: TaskPriority.Low,
@@ -131,10 +132,11 @@ export function enqueueRefreshNetworth() {
   if (existing) return
 
   enqueueTask({
+    abortable: true,
     description: "Refresh historical networth.",
     determinate: true,
-    function: async (progress) => {
-      await clancy.computeNetworth(progress, $activeAccount.get())
+    function: async (progress, signal) => {
+      await clancy.computeNetworth($activeAccount.get(), undefined, progress, signal)
     },
     name: "Refresh networth",
     priority: TaskPriority.Low,

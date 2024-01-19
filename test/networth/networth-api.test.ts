@@ -28,7 +28,7 @@ it.sequential("should compute historical networth", async () => {
   // arrange
   // act
   const updates: ProgressUpdate[] = []
-  await computeNetworth((state) => updates.push(state), accountName, 0)
+  await computeNetworth(accountName, 0, (state) => updates.push(state))
   const networthArray = await getHistoricalNetworth(accountName)
   // assert
   expect(updates.join("\n")).toMatchInlineSnapshot(
@@ -46,7 +46,7 @@ it.sequential("should refresh networth", async () => {
   // arrange
   // act
   const updates: ProgressUpdate[] = []
-  await computeNetworth((state) => updates.push(state), accountName)
+  await computeNetworth(accountName, undefined, (state) => updates.push(state))
   const networthArray = await getHistoricalNetworth(accountName)
   // assert
   expect(updates.join("\n")).toMatchInlineSnapshot(`

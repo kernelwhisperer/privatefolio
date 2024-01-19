@@ -1,15 +1,16 @@
 import {
   AuditLog,
-  Integration,
   ParserResult,
   Transaction,
   TransactionRole,
   TransactionSide,
 } from "src/interfaces"
+import { FileImportParser, Integration } from "src/settings"
 import { TZ_OFFSET } from "src/utils/formatting-utils"
 import { hashString } from "src/utils/utils"
 
-export const Identifier: Integration = "mexc"
+export const Identifier = FileImportParser.mexc
+export const integration: Integration = "mexc"
 
 export const HEADER = "Pairs,Time,Side,Filled Price,Executed Amount,Total,Fee,Role"
 
@@ -36,7 +37,6 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
   const totalN = parseFloat(total)
   const feeSymbol = quoteSymbol // ?
   //
-  const integration = Identifier
   const wallet = "Spot"
 
   const txns: Transaction[] = []

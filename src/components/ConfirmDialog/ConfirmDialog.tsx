@@ -53,7 +53,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
       </DialogTitle>
       <DialogContent>
         <DialogContentText>{content}</DialogContentText>
-        <Stack paddingX={0.5} paddingTop={2}>
+        <Stack paddingX={0.5}>
           {extraQuestions.map((question, index) => (
             <FormControlLabel
               key={index}
@@ -74,6 +74,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
                 "&:hover .MuiTypography-root": {
                   color: "text.primary",
                 },
+                paddingTop: index === 0 ? 2 : 0,
               }}
             />
           ))}

@@ -37,38 +37,44 @@ export async function addFileImport(
 
   // parse file
   const text = await file.text()
-  const { metadata, logs, transactions } = await parseCsv(text, _id, progress, parserContext)
+  try {
+    const { metadata, logs, transactions } = await parseCsv(text, _id, progress, parserContext)
 
-  // save logs
-  progress([60, `Saving ${logs.length} audit logs to disk`])
-  await account.auditLogsDB.bulkDocs(logs)
+    // save logs
+    progress([60, `Saving ${logs.length} audit logs to disk`])
+    await account.auditLogsDB.bulkDocs(logs)
 
-  // save transactions
-  progress([80, `Saving ${transactions.length} transactions to disk`])
-  await account.transactionsDB.bulkDocs(transactions)
+    // save transactions
+    progress([80, `Saving ${transactions.length} transactions to disk`])
+    await account.transactionsDB.bulkDocs(transactions)
 
-  // update cursor
-  let oldestTimestamp: Timestamp | undefined
+    // update cursor
+    let oldestTimestamp: Timestamp | undefined
 
-  for (const log of logs) {
-    if (!oldestTimestamp || log.timestamp < oldestTimestamp) {
-      oldestTimestamp = log.timestamp
+    for (const log of logs) {
+      if (!oldestTimestamp || log.timestamp < oldestTimestamp) {
+        oldestTimestamp = log.timestamp
+      }
     }
+
+    if (oldestTimestamp) {
+      const newCursor = oldestTimestamp - (oldestTimestamp % 86400000) - 86400000
+      progress([25, `Setting balances cursor to ${formatDate(newCursor)}`])
+      await invalidateBalances(newCursor, accountName)
+      await invalidateNetworth(newCursor, accountName)
+    }
+
+    // save metadata
+    const fileImport = await account.fileImportsDB.get(_id)
+    fileImport.meta = metadata
+    await account.fileImportsDB.put<FileImport>(fileImport)
+
+    return { _id, metadata }
+  } catch (error) {
+    const fileImport = await account.fileImportsDB.get(_id)
+    await account.fileImportsDB.remove(fileImport)
+    throw error
   }
-
-  if (oldestTimestamp) {
-    const newCursor = oldestTimestamp - (oldestTimestamp % 86400000) - 86400000
-    progress([25, `Setting balances cursor to ${formatDate(newCursor)}`])
-    await invalidateBalances(newCursor, accountName)
-    await invalidateNetworth(newCursor, accountName)
-  }
-
-  // save metadata
-  const fileImport = await account.fileImportsDB.get(_id)
-  fileImport.meta = metadata
-  await account.fileImportsDB.put<FileImport>(fileImport)
-
-  return { _id, metadata }
 }
 
 export async function getFileImports(accountName: string) {

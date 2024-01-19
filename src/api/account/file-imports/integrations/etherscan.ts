@@ -1,14 +1,10 @@
-import {
-  AuditLogOperation,
-  EtherscanAuditLog,
-  Integration,
-  ParserResult,
-  Transaction,
-} from "src/interfaces"
+import { AuditLogOperation, EtherscanAuditLog, ParserResult, Transaction } from "src/interfaces"
+import { FileImportParser, Integration } from "src/settings"
 import { asUTC } from "src/utils/formatting-utils"
 import { hashString } from "src/utils/utils"
 
-export const Identifier: Integration = "etherscan"
+export const Identifier = FileImportParser.etherscan
+export const integration: Integration = "ethereum"
 
 export const HEADER =
   '"Txhash","Blockno","UnixTimestamp","DateTime (UTC)","From","To","ContractAddress","Value_IN(ETH)","Value_OUT(ETH)","CurrentValue","TxnFee(ETH)","TxnFee(USD)","Historical $Price/Eth","Status","ErrCode","Method"'
@@ -70,7 +66,7 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
       _id: `${txId}_0`,
       change,
       changeN,
-      integration: Identifier,
+      integration,
       operation,
       symbol,
       timestamp,
@@ -89,7 +85,7 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
       _id: `${txId}_1`,
       change: fee,
       changeN: feeN,
-      integration: Identifier,
+      integration,
       operation: "Fee",
       symbol,
       timestamp,
@@ -106,7 +102,7 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
     incoming: valueIn,
     incomingN: parseFloat(valueIn),
     incomingSymbol: symbol,
-    integration: Identifier,
+    integration,
     outgoing: valueOut,
     outgoingN: parseFloat(valueOut),
     outgoingSymbol: symbol,

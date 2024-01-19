@@ -2,7 +2,7 @@ import { Paper, Skeleton, Stack, Typography, TypographyProps } from "@mui/materi
 import { useStore } from "@nanostores/react"
 import { proxy } from "comlink"
 import React, { useEffect, useState } from "react"
-import { $activeAccount } from "src/stores/account-store"
+import { $accountReset, $activeAccount } from "src/stores/account-store"
 
 import { Timestamp } from "../../interfaces"
 import { $filterOptionsMap } from "../../stores/metadata-store"
@@ -17,6 +17,8 @@ function SectionTitle(props: TypographyProps) {
 export function PortfolioInfo() {
   const [genesis, setGenesis] = useState<Timestamp | null>(null)
   const [lastTx, setLastTx] = useState<Timestamp | null>(null)
+
+  const accountReset = useStore($accountReset)
 
   useEffect(() => {
     function fetchData() {
@@ -36,7 +38,7 @@ export function PortfolioInfo() {
         unsubscribe()
       })
     }
-  }, [])
+  }, [accountReset])
 
   useEffect(() => {
     function fetchData() {
@@ -56,7 +58,7 @@ export function PortfolioInfo() {
         unsubscribe()
       })
     }
-  }, [])
+  }, [accountReset])
 
   const filterMap = useStore($filterOptionsMap)
 

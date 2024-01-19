@@ -1,8 +1,10 @@
-import { AuditLogOperation, EtherscanAuditLog, Integration, ParserResult } from "src/interfaces"
+import { AuditLogOperation, EtherscanAuditLog, ParserResult } from "src/interfaces"
+import { FileImportParser, Integration } from "src/settings"
 import { asUTC } from "src/utils/formatting-utils"
 import { hashString } from "src/utils/utils"
 
-export const Identifier: Integration = "etherscan-erc20"
+export const Identifier = FileImportParser["etherscan-erc20"]
+export const integration: Integration = "ethereum"
 
 export const HEADER =
   '"Txhash","Blockno","UnixTimestamp","DateTime (UTC)","From","To","TokenValue","USDValueDayOfTx","ContractAddress","TokenName","TokenSymbol"'
@@ -63,7 +65,7 @@ export function parser(
       _id,
       change,
       changeN,
-      integration: Identifier,
+      integration,
       operation,
       symbol,
       timestamp,

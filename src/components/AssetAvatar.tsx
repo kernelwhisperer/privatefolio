@@ -28,7 +28,7 @@ const SIZE_MAP = {
 }
 
 export function AssetAvatar(props: AssetAvatarProps) {
-  const { alt, size = "medium", sx, ...rest } = props
+  const { alt = "", size = "medium", sx, ...rest } = props
   const color = stringToColor(alt)
 
   return (

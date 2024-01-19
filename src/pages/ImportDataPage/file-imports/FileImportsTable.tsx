@@ -1,12 +1,13 @@
 import { FolderOutlined } from "@mui/icons-material"
 import { Stack } from "@mui/material"
+import { useStore } from "@nanostores/react"
 import { proxy } from "comlink"
 import React, { useEffect, useMemo, useState } from "react"
 import { MemoryTable } from "src/components/EnhancedTable/MemoryTable"
 import { FileDrop } from "src/components/FileDrop"
 import { StaggeredList } from "src/components/StaggeredList"
 import { FileImport } from "src/interfaces"
-import { $activeAccount } from "src/stores/account-store"
+import { $accountReset, $activeAccount } from "src/stores/account-store"
 import { HeadCell } from "src/utils/table-utils"
 import { clancy } from "src/workers/remotes"
 
@@ -16,6 +17,8 @@ export function FileImportsTable() {
   const [showDrop, setShowDrop] = useState<boolean>(false)
   const [queryTime, setQueryTime] = useState<number | null>(null)
   const [rows, setRows] = useState<FileImport[]>([])
+
+  const accountReset = useStore($accountReset)
 
   useEffect(() => {
     async function fetchData() {
@@ -42,7 +45,7 @@ export function FileImportsTable() {
         unsubscribe()
       })
     }
-  }, [])
+  }, [accountReset])
 
   const headCells: HeadCell<FileImport>[] = useMemo(
     () => [

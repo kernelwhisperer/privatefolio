@@ -39,9 +39,10 @@ export async function getHistoricalNetworth(accountName: string) {
 const pageSize = 250
 
 export async function computeNetworth(
-  progress: ProgressCallback = noop,
   accountName: string,
-  since?: Timestamp
+  since?: Timestamp,
+  progress: ProgressCallback = noop,
+  signal?: AbortSignal
 ) {
   const account = getAccount(accountName)
 
@@ -58,6 +59,9 @@ export async function computeNetworth(
       },
     })
   }
+  if (signal?.aborted) {
+    throw new Error(signal.reason)
+  }
 
   const balances = await account.balancesDB
     .find({
@@ -67,6 +71,10 @@ export async function computeNetworth(
       sort: [{ timestamp: "asc" }],
     })
     .then((x) => x.docs)
+
+  if (signal?.aborted) {
+    throw new Error(signal.reason)
+  }
 
   const count = balances.length
   progress([5, `Computing networth for ${count} days`])
@@ -107,6 +115,9 @@ export async function computeNetworth(
           }
         })
     )
+    if (signal?.aborted) {
+      throw new Error(signal.reason)
+    }
   }
 
   const { results: docsWithRevision } = await account.networthDB.bulkGet({ docs: docIds })

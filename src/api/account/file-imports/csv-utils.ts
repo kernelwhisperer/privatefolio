@@ -2,7 +2,7 @@ import { AuditLog, AuditLogOperation, FileImport, Transaction } from "src/interf
 import { ProgressCallback } from "src/stores/task-store"
 import { extractTransactions } from "src/utils/extract-utils"
 
-import { HEADER_MATCHER, PARSERS } from "./integrations"
+import { HEADER_MATCHER, INTEGRATIONS, PARSERS } from "./integrations"
 
 export async function parseCsv(
   text: string,
@@ -18,8 +18,9 @@ export async function parseCsv(
     .replace(/CurrentValue @ \$\d+(\.\d+)?\/Eth,?/, "CurrentValue") // etherscan
     .trim()
 
-  const integration = HEADER_MATCHER[header]
-  const parser = PARSERS[integration]
+  const parserId = HEADER_MATCHER[header]
+  const parser = PARSERS[parserId]
+  const integration = INTEGRATIONS[parserId]
 
   if (!parser) {
     throw new Error(`File import unsupported, unknown header: ${header}`)

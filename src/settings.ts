@@ -7,13 +7,32 @@ export const EXCHANGE_FILES_LOCATION = "app-images/exchanges"
 export const BLOCKCHAIN_PAGES = 1
 export const BLOCKCHAIN_FILES_LOCATION = "app-images/blockchains"
 
-export const INTEGRATIONS = {
+export enum FileImportParser {
+  "binance",
+  "mexc",
+  "coinmama",
+  "etherscan",
+  "etherscan-erc20",
+}
+
+export const INTEGRATION_IDS = [
+  "arbitrum",
+  "binance",
+  "coinmama",
+  "ethereum",
+  "evm",
+  "mexc",
+  "op",
+  "polygon",
+] as const
+
+export type Integration = (typeof INTEGRATION_IDS)[number]
+
+export const INTEGRATIONS: Record<Integration, string> = {
   arbitrum: "Arbitrum",
   binance: "Binance",
   coinmama: "Coinmama",
   ethereum: "Ethereum",
-  etherscan: "Etherscan",
-  "etherscan-erc20": "Etherscan ERC-20",
   evm: "EVM network",
   mexc: "MEXC",
   op: "Optimism",

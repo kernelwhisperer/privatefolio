@@ -5,6 +5,7 @@ const savedAccounts = localStorage.getItem("accounts")
 const accounts: string[] = savedAccounts ? JSON.parse(savedAccounts) : ["main"]
 
 export const $accounts = atom<string[]>(accounts)
+export const $accountReset = atom<number>(0)
 
 $accounts.listen((accounts) => {
   localStorage.setItem("accounts", JSON.stringify(accounts))

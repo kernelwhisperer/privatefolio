@@ -1,9 +1,10 @@
 import { StorageRounded } from "@mui/icons-material"
 import { Paper, Skeleton, Stack, Tooltip, Typography, TypographyProps } from "@mui/material"
+import { useStore } from "@nanostores/react"
 import { proxy } from "comlink"
 import { debounce } from "lodash-es"
 import React, { useEffect, useState } from "react"
-import { $activeAccount } from "src/stores/account-store"
+import { $accountReset, $activeAccount } from "src/stores/account-store"
 
 import { DEFAULT_DEBOUNCE_DURATION } from "../../settings"
 import { MonoFont } from "../../theme"
@@ -19,6 +20,7 @@ export function DatabaseInfo() {
   const [auditLogs, setAuditLogs] = useState<number | null>(null)
   const [transactions, setTransactions] = useState<number | null>(null)
   // const [genesis, setGenesis] = useState<number | null>(null)
+  const accountReset = useStore($accountReset)
 
   useEffect(() => {
     function fetchData() {
@@ -40,7 +42,7 @@ export function DatabaseInfo() {
     }, 2500)
 
     return () => clearInterval(interval)
-  }, [])
+  }, [accountReset])
 
   useEffect(() => {
     function fetchData() {
@@ -64,7 +66,7 @@ export function DatabaseInfo() {
         unsubscribe()
       })
     }
-  }, [])
+  }, [accountReset])
 
   useEffect(() => {
     function fetchData() {
@@ -88,7 +90,7 @@ export function DatabaseInfo() {
         unsubscribe()
       })
     }
-  }, [])
+  }, [accountReset])
 
   return (
     <Paper sx={{ minWidth: 340 }}>

@@ -1,8 +1,10 @@
-import { AuditLog, AuditLogOperation, Integration, ParserResult, Transaction } from "src/interfaces"
+import { AuditLog, AuditLogOperation, ParserResult, Transaction } from "src/interfaces"
+import { FileImportParser, Integration } from "src/settings"
 import { asUTC } from "src/utils/formatting-utils"
 import { hashString } from "src/utils/utils"
 
-export const Identifier: Integration = "coinmama"
+export const Identifier = FileImportParser.coinmama
+export const integration: Integration = "coinmama"
 
 export const HEADER = "Transaction, Type,	Amount,	Date Created,	Status"
 
@@ -48,7 +50,7 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
     incoming,
     incomingN,
     incomingSymbol,
-    integration: Identifier,
+    integration,
     outgoing,
     outgoingN,
     outgoingSymbol,
@@ -64,7 +66,7 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
       _id: `${txId}_0`,
       change: incoming,
       changeN: incomingN,
-      integration: Identifier,
+      integration,
       operation: transaction as AuditLogOperation,
       symbol,
       timestamp,

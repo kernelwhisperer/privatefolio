@@ -20,7 +20,7 @@ import { proxy } from "comlink"
 import React, { useCallback, useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { useBoolean } from "src/hooks/useBoolean"
-import { $accounts, $activeAccount } from "src/stores/account-store"
+import { $accountReset, $accounts, $activeAccount } from "src/stores/account-store"
 import { computeMetadata, computeMetadataDebounced } from "src/stores/metadata-store"
 import { clancy } from "src/workers/remotes"
 
@@ -31,6 +31,7 @@ import { SectionTitle } from "../SectionTitle"
 export function AccountPicker() {
   const accounts = useStore($accounts)
   const activeAccount = useStore($activeAccount)
+  const accountReset = useStore($accountReset)
   const { value: open, toggle: toggleOpen } = useBoolean(false)
 
   const location = useLocation()
@@ -49,7 +50,7 @@ export function AccountPicker() {
         unsubscribe()
       })
     }
-  }, [activeAccount])
+  }, [accountReset, activeAccount])
 
   const { value: modalOpen, toggle: toggleModalOpen } = useBoolean(false)
   const [name, setName] = useState("")

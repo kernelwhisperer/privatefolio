@@ -2,11 +2,15 @@ import {
   CalculateOutlined,
   CurrencyExchange,
   MemoryRounded,
+  MoneyOffRounded,
   MoreHoriz,
-  Storage,
+  PersonRemoveRounded,
+  RestartAltRounded,
 } from "@mui/icons-material"
 import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Tooltip } from "@mui/material"
+import { useStore } from "@nanostores/react"
 import React from "react"
+import { $accountReset, $accounts, $activeAccount } from "src/stores/account-store"
 
 import { useConfirm } from "../../hooks/useConfirm"
 import { enqueueTask, TaskPriority } from "../../stores/task-store"
@@ -31,6 +35,8 @@ export function ImportDataActions() {
   const confirm = useConfirm()
 
   // const debugMode = useStore($debugMode)
+
+  const activeAccount = useStore($activeAccount)
 
   return (
     <>
@@ -101,28 +107,25 @@ export function ImportDataActions() {
         <MenuItem
           dense
           onClick={async () => {
-            const { confirmed, extraAnswers } = await confirm({
+            const { confirmed } = await confirm({
               content: (
                 <>
-                  This action is permanent. All data will be lost.
+                  Asset prices are stored in a separate database, do not contain any sensitive
+                  information and are stored on disk in order to speed things up.
+                  <br />
                   <br />
                   Are you sure you wish to continue?
                 </>
               ),
-              extraQuestions: ["Remove daily price data too."],
-              title: "Wipe account data",
-              variant: "warning",
+              title: "Delete asset prices",
             })
             if (confirmed) {
               enqueueTask({
-                description: "Removing all data saved on disk.",
+                description: "Removing asset price data, which is saved on disk.",
                 function: async () => {
-                  if (extraAnswers[0]) {
-                    await clancy.resetCoreDatabase()
-                  }
-                  await clancy.resetAccount("main")
+                  await clancy.resetCoreDatabase()
                 },
-                name: "Wipe account data",
+                name: "Delete asset prices",
                 priority: TaskPriority.High,
               })
               handleClose()
@@ -130,9 +133,79 @@ export function ImportDataActions() {
           }}
         >
           <ListItemIcon>
-            <Storage fontSize="small" />
+            <MoneyOffRounded fontSize="small" />
           </ListItemIcon>
-          <ListItemText>Wipe account data</ListItemText>
+          <ListItemText>Delete asset prices</ListItemText>
+        </MenuItem>
+        <MenuItem
+          dense
+          onClick={async () => {
+            const { confirmed } = await confirm({
+              content: (
+                <>
+                  This action is permanent. All the data belonging to {activeAccount} will be lost.
+                  <br />
+                  <br />
+                  Are you sure you wish to continue?
+                </>
+              ),
+              title: "Reset account",
+              variant: "warning",
+            })
+            if (confirmed) {
+              enqueueTask({
+                description: `Removing all data belonging to '${activeAccount}' from disk.`,
+                function: async () => {
+                  await clancy.resetAccount($activeAccount.get())
+                  $accountReset.set(Math.random())
+                },
+                name: "Reset account",
+                priority: TaskPriority.High,
+              })
+              handleClose()
+            }
+          }}
+        >
+          <ListItemIcon>
+            <RestartAltRounded fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Reset account</ListItemText>
+        </MenuItem>
+        <MenuItem
+          dense
+          disabled={activeAccount === "main"}
+          onClick={async () => {
+            const { confirmed } = await confirm({
+              content: (
+                <>
+                  This action is permanent. All the data belonging to {activeAccount} will be lost.
+                  <br />
+                  <br />
+                  Are you sure you wish to continue?
+                </>
+              ),
+              title: "Delete account",
+              variant: "warning",
+            })
+            if (confirmed) {
+              enqueueTask({
+                description: `Removing all data belonging to '${activeAccount}' from disk.`,
+                function: async () => {
+                  await clancy.deleteAccount(activeAccount)
+                  $activeAccount.set("main")
+                  $accounts.set($accounts.get().filter((x) => x !== activeAccount))
+                },
+                name: "Delete account",
+                priority: TaskPriority.High,
+              })
+              handleClose()
+            }
+          }}
+        >
+          <ListItemIcon>
+            <PersonRemoveRounded fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Delete account</ListItemText>
         </MenuItem>
       </Menu>
     </>

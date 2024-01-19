@@ -2,7 +2,8 @@ import type Decimal from "decimal.js"
 import { OhlcData, SingleValueData, UTCTimestamp } from "lightweight-charts"
 
 import { Erc20Transaction, NativeTransaction } from "./api/account/connections/etherscan-rpc"
-import { INTEGRATIONS } from "./settings"
+import { Integration } from "./settings"
+export type { Integration } from "./settings"
 
 export type TransactionRole = "Maker" | "Taker"
 export type TransactionSide = "BUY" | "SELL"
@@ -56,8 +57,6 @@ export type AuditLogOperation =
   | "Distribution"
   | "Withdraw"
   | "Funding Fee"
-
-export type Integration = keyof typeof INTEGRATIONS
 
 export type PriceApiId = "coinbase" | "binance"
 
