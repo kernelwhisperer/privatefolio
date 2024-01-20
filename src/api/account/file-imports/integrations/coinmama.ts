@@ -1,9 +1,9 @@
 import { AuditLog, AuditLogOperation, ParserResult, Transaction } from "src/interfaces"
-import { FileImportParser, Integration } from "src/settings"
+import { Integration, ParserId } from "src/settings"
 import { asUTC } from "src/utils/formatting-utils"
 import { hashString } from "src/utils/utils"
 
-export const Identifier = FileImportParser.coinmama
+export const Identifier: ParserId = "coinmama"
 export const integration: Integration = "coinmama"
 
 export const HEADER = "Transaction, Type,	Amount,	Date Created,	Status"

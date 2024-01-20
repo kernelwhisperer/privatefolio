@@ -2,7 +2,7 @@ import { AuditLog, AuditLogOperation, FileImport, Transaction } from "src/interf
 import { ProgressCallback } from "src/stores/task-store"
 import { extractTransactions } from "src/utils/extract-utils"
 
-import { HEADER_MATCHER, INTEGRATIONS, PARSERS } from "./integrations"
+import { HEADER_MATCHER, INTEGRATION_MATCHER, PARSER_MATCHER } from "./integrations"
 
 export async function parseCsv(
   text: string,
@@ -19,8 +19,8 @@ export async function parseCsv(
     .trim()
 
   const parserId = HEADER_MATCHER[header]
-  const parser = PARSERS[parserId]
-  const integration = INTEGRATIONS[parserId]
+  const parser = PARSER_MATCHER[parserId]
+  const integration = INTEGRATION_MATCHER[parserId]
 
   if (!parser) {
     throw new Error(`File import unsupported, unknown header: ${header}`)

@@ -1,9 +1,9 @@
 import { AuditLogOperation, BinanceAuditLog, ParserResult } from "src/interfaces"
-import { FileImportParser, Integration } from "src/settings"
+import { Integration, ParserId } from "src/settings"
 import { TZ_OFFSET } from "src/utils/formatting-utils"
 import { hashString } from "src/utils/utils"
 
-export const Identifier = FileImportParser.binance
+export const Identifier: ParserId = "binance"
 export const integration: Integration = "binance"
 
 export const HEADER = '"User_ID","UTC_Time","Account","Operation","Coin","Change","Remark"'

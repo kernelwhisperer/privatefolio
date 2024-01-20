@@ -1,9 +1,9 @@
 import { AuditLogOperation, EtherscanAuditLog, ParserResult, Transaction } from "src/interfaces"
-import { FileImportParser, Integration } from "src/settings"
+import { Integration, ParserId } from "src/settings"
 import { asUTC } from "src/utils/formatting-utils"
 import { hashString } from "src/utils/utils"
 
-export const Identifier = FileImportParser.etherscan
+export const Identifier: ParserId = "etherscan"
 export const integration: Integration = "ethereum"
 
 export const HEADER =

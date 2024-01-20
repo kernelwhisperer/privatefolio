@@ -11,6 +11,7 @@ import { $accountReset, $activeAccount } from "src/stores/account-store"
 import { HeadCell } from "src/utils/table-utils"
 import { clancy } from "src/workers/remotes"
 
+import { FileImportHelp } from "./FileImportHelp"
 import { FileImportTableRow } from "./FileImportTableRow"
 
 export function FileImportsTable() {
@@ -28,7 +29,7 @@ export function FileImportsTable() {
       setRows(rows)
       setTimeout(() => {
         setShowDrop(true)
-      }, 330)
+      }, 0)
     }
 
     fetchData().then()
@@ -99,7 +100,7 @@ export function FileImportsTable() {
   )
 
   return (
-    <>
+    <StaggeredList gap={1}>
       {queryTime !== null && rows.length === 0 ? (
         <FileDrop sx={{ padding: 4 }}>
           <Stack alignItems="center">
@@ -108,19 +109,20 @@ export function FileImportsTable() {
           </Stack>
         </FileDrop>
       ) : (
-        <StaggeredList gap={1}>
-          <MemoryTable<FileImport>
-            initOrderBy="timestamp"
-            headCells={headCells}
-            TableRowComponent={FileImportTableRow}
-            rows={rows}
-            queryTime={queryTime}
-            defaultRowsPerPage={10}
-            //
-          />
-          {showDrop && <FileDrop defaultBg="var(--mui-palette-background-default)" />}
-        </StaggeredList>
+        <MemoryTable<FileImport>
+          initOrderBy="timestamp"
+          headCells={headCells}
+          TableRowComponent={FileImportTableRow}
+          rows={rows}
+          queryTime={queryTime}
+          defaultRowsPerPage={10}
+          //
+        />
       )}
-    </>
+      {queryTime !== null && rows.length !== 0 && showDrop && (
+        <FileDrop defaultBg="var(--mui-palette-background-default)" />
+      )}
+      <FileImportHelp />
+    </StaggeredList>
   )
 }

@@ -5,11 +5,11 @@ import {
   TransactionRole,
   TransactionSide,
 } from "src/interfaces"
-import { FileImportParser, Integration } from "src/settings"
+import { Integration, ParserId } from "src/settings"
 import { TZ_OFFSET } from "src/utils/formatting-utils"
 import { hashString } from "src/utils/utils"
 
-export const Identifier = FileImportParser.mexc
+export const Identifier: ParserId = "mexc"
 export const integration: Integration = "mexc"
 
 export const HEADER = "Pairs,Time,Side,Filled Price,Executed Amount,Total,Fee,Role"

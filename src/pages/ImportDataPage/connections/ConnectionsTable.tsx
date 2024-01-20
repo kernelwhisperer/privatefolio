@@ -1,17 +1,9 @@
-import { Add, CloudOutlined, InfoOutlined } from "@mui/icons-material"
-import {
-  Alert,
-  AlertTitle,
-  IconButton,
-  Link,
-  Paper,
-  Stack,
-  Tooltip,
-  Typography,
-} from "@mui/material"
+import { Add, CloudOutlined } from "@mui/icons-material"
+import { AlertTitle, IconButton, Link, Paper, Stack, Tooltip, Typography } from "@mui/material"
 import { useStore } from "@nanostores/react"
 import { proxy } from "comlink"
 import React, { useEffect, useMemo, useState } from "react"
+import { Callout } from "src/components/Callout"
 import { MemoryTable } from "src/components/EnhancedTable/MemoryTable"
 import { StaggeredList } from "src/components/StaggeredList"
 import { useBoolean } from "src/hooks/useBoolean"
@@ -160,17 +152,7 @@ export function ConnectionsTable() {
         />
       )}
       <StaggeredList component="main" show paddingTop={1}>
-        <Alert
-          icon={<InfoOutlined fontSize="inherit" />}
-          variant="outlined"
-          sx={{
-            "& .MuiAlert-icon": {
-              color: "var(--mui-palette-secondary-main)",
-            },
-            borderColor: "var(--mui-palette-TableCell-border)",
-            color: "var(--mui-palette-secondary-main)",
-          }}
-        >
+        <Callout>
           <AlertTitle sx={{ fontSize: "0.85rem" }}>
             This feature is still being developed.
           </AlertTitle>
@@ -179,7 +161,7 @@ export function ConnectionsTable() {
             let us know
           </Link>
           !
-        </Alert>
+        </Callout>
         {/* <Chip
             size="small"
             color="primary"
