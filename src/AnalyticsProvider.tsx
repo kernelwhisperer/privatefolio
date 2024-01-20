@@ -1,20 +1,8 @@
 import React, { PropsWithChildren, useEffect } from "react"
-import { v4 as uuid } from "uuid"
 
-import { APP_VERSION, GIT_HASH, POSTHOG_KEY } from "./settings"
+import { POSTHOG_KEY } from "./settings"
 import { $telemetry } from "./stores/app-store"
 import { isProduction } from "./utils/utils"
-
-export function getDeviceId() {
-  let deviceId = localStorage.getItem("p-device-uuid")
-
-  if (!deviceId) {
-    deviceId = uuid()
-    localStorage.setItem("p-device-uuid", deviceId as string)
-  }
-
-  return deviceId as string
-}
 
 export function AnalyticsProvider({ children }: PropsWithChildren) {
   useEffect(() => {
@@ -45,12 +33,6 @@ export function AnalyticsProvider({ children }: PropsWithChildren) {
         posthog.init(POSTHOG_KEY, {
           api_host: "https://ph.protocol.fun",
           ui_host: "https://eu.posthog.com",
-        })
-
-        const deviceId = getDeviceId()
-        posthog.identify(deviceId, {
-          appVer: APP_VERSION,
-          gitHash: GIT_HASH,
         })
 
         console.log("Telemetry enabled")
