@@ -5,6 +5,7 @@ import * as React from "react"
 import * as ReactDOM from "react-dom/client"
 import { BrowserRouter } from "react-router-dom"
 
+import { AnalyticsProvider } from "./AnalyticsProvider"
 import App from "./App"
 import { ConfirmDialogProvider } from "./hooks/useConfirm"
 import { ThemeProvider } from "./ThemeProvider"
@@ -15,6 +16,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <ThemeProvider>
       <ConfirmDialogProvider>
         <App />
+        <AnalyticsProvider />
       </ConfirmDialogProvider>
     </ThemeProvider>
   </BrowserRouter>

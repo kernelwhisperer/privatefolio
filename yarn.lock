@@ -4405,6 +4405,11 @@ fetch-cookie@0.11.0:
   dependencies:
     tough-cookie "^2.3.3 || ^3.0.1 || ^4.0.0"
 
+fflate@^0.4.1:
+  version "0.4.8"
+  resolved "https://registry.yarnpkg.com/fflate/-/fflate-0.4.8.tgz#f90b82aefbd8ac174213abb338bd7ef848f0f5ae"
+  integrity sha512-FJqqoDBR00Mdj9ppamLa/Y7vxm+PRmNWA67N846RvsoYVMKB4q3y/de5PA7gUmRMYK/8CMz2GDZQmCRN1wBcWA==
+
 fflate@^0.8.1:
   version "0.8.1"
   resolved "https://registry.yarnpkg.com/fflate/-/fflate-0.8.1.tgz#1ed92270674d2ad3c73f077cd0acf26486dae6c9"
@@ -5976,6 +5981,13 @@ postcss@^8.4.32:
     nanoid "^3.3.7"
     picocolors "^1.0.0"
     source-map-js "^1.0.2"
+
+posthog-js@^1.100.0:
+  version "1.100.0"
+  resolved "https://registry.yarnpkg.com/posthog-js/-/posthog-js-1.100.0.tgz#687b9a6e4ed226aa6572f4040b418ea0c8b3d353"
+  integrity sha512-r2XZEiHQ9mBK7D1G9k57I8uYZ2kZTAJ0OCX6K/OOdCWN8jKPhw3h5F9No5weilP6eVAn+hrsy7NvPV7SCX7gMg==
+  dependencies:
+    fflate "^0.4.1"
 
 pouchdb-abstract-mapreduce@7.3.1:
   version "7.3.1"

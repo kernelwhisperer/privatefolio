@@ -61,3 +61,10 @@ export function timeQueue<T extends (...args: any[]) => void>(
 }
 
 export const EMPTY_OBJECT = Object.freeze({})
+
+export const SITE_DOMAIN = "https://privatefolio.app"
+
+export const isServerSide = typeof window === "undefined"
+export const isProduction = isServerSide
+  ? false
+  : Boolean(window.location.toString().includes(SITE_DOMAIN))

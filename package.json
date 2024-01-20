@@ -40,6 +40,7 @@
     "lightweight-charts": "^4.1.1",
     "lodash-es": "^4.17.21",
     "nanostores": "^0.9.5",
+    "posthog-js": "^1.100.0",
     "pouchdb": "^8.0.1",
     "pouchdb-browser": "^8.0.1",
     "pouchdb-find": "^8.0.1",
