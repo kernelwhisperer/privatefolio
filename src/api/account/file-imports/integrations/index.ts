@@ -8,7 +8,8 @@ import * as etherscanErc20 from "./etherscan-erc20"
 import * as mexc from "./mexc"
 
 export const HEADER_MATCHER: Record<string, ParserId> = {
-  [binance.HEADER]: binance.Identifier,
+  [binance.HEADERS[0]]: binance.Identifier,
+  [binance.HEADERS[1]]: binance.Identifier,
   [mexc.HEADER]: mexc.Identifier,
   [coinmama.HEADER]: coinmama.Identifier,
   [etherscan.HEADER]: etherscan.Identifier,

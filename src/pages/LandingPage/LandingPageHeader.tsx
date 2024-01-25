@@ -42,8 +42,8 @@ export default function LandingPageHeader() {
               <Button
                 component={Link}
                 to="/u/0"
-                variant="contained"
-                color="primary"
+                variant="outlined"
+                color="secondary"
                 sx={{ minWidth: 107 }}
               >
                 Launch app

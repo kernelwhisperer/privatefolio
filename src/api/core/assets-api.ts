@@ -5,7 +5,7 @@ import { AssetMap } from "../../stores/metadata-store"
 export async function findAssets(symbolMap: Record<string, boolean>) {
   const map: AssetMap = {
     EUR: {
-      image: `/${ASSET_FILES_LOCATION}/assets/overrides/EUR.png`,
+      image: `/${ASSET_FILES_LOCATION}/overrides/EUR.png`,
       isStablecoin: true,
       name: "Euro",
       symbol: "EUR",

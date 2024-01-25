@@ -102,7 +102,6 @@ export const SettingsDrawerContents = ({
             <path d="M212.05,218c-13.8,0-24.7,11.84-24.7,26.57s11.14,26.57,24.7,26.57c13.8,0,24.7-11.83,24.7-26.57C237,229.81,225.85,218,212.05,218Z" />
             <path d="M300.43,218c-13.8,0-24.7,11.84-24.7,26.57s11.14,26.57,24.7,26.57c13.81,0,24.7-11.83,24.7-26.57S314,218,300.43,218Z" />
           </svg>
-
           <span>Discord</span>
         </CustomLink>
         <CustomLink target="_blank" href="https://twitter.com/kernelwhisperer" role="listitem">

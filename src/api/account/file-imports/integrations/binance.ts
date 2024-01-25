@@ -6,7 +6,10 @@ import { hashString } from "src/utils/utils"
 export const Identifier: ParserId = "binance"
 export const integration: Integration = "binance"
 
-export const HEADER = '"User_ID","UTC_Time","Account","Operation","Coin","Change","Remark"'
+export const HEADERS = [
+  '"User_ID","UTC_Time","Account","Operation","Coin","Change","Remark"',
+  "User_ID,UTC_Time,Account,Operation,Coin,Change,Remark",
+]
 
 export function parser(csvRow: string, index: number, fileImportId: string): ParserResult {
   const row = csvRow.replaceAll('"', "")
