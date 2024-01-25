@@ -24,7 +24,11 @@ export function Header() {
       }}
     >
       <Toolbar disableGutters>
-        <Container maxWidth="lg" sx={{ paddingX: { xs: 2 }, paddingY: 0, position: "relative" }}>
+        <Container
+          disableGutters
+          maxWidth="lg"
+          sx={{ paddingX: { xs: 2 }, paddingY: 0, position: "relative" }}
+        >
           <Grid container spacing={{ sm: 2, xs: 0 }} paddingX={2} marginY={1}>
             <Grid item md={3} sx={{ display: { md: "block", xs: "none" } }}>
               <Stack direction="row" gap={1} alignItems="center" sx={{ height: "100%" }}>

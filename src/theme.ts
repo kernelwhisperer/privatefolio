@@ -203,17 +203,6 @@ export const theme: CssVarsThemeOptions = {
         },
       },
     },
-    MuiContainer: {
-      defaultProps: {
-        disableGutters: true,
-      },
-      styleOverrides: {
-        root: {
-          paddingLeft: "16px !important",
-          paddingRight: "16px !important",
-        },
-      },
-    },
     MuiDialog: {
       defaultProps: {
         PaperProps: {

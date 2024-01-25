@@ -10,6 +10,7 @@ import { PnLPage } from "./pages/PnLPage/PnLPage"
 import { $pendingTask } from "./stores/task-store"
 import { SPRING_CONFIGS } from "./utils/utils"
 
+const LandingPage = lazy(() => import("./pages/LandingPage/LandingPage"))
 const AuditLogsPage = lazy(() => import("./pages/AuditLogsPage/AuditLogsPage"))
 const ImportDataPage = lazy(() => import("./pages/ImportDataPage/ImportDataPage"))
 const TransactionsPage = lazy(() => import("./pages/TransactionsPage/TransactionsPage"))
@@ -52,8 +53,8 @@ export default function App() {
 
   return (
     <>
-      <Header />
-      <Container maxWidth="lg" sx={{ paddingTop: 2 }}>
+      {pathname !== "/" && <Header />}
+      <Container disableGutters maxWidth="lg" sx={{ paddingTop: 2, paddingX: { xs: 2 } }}>
         {transitions((styles, item, { key }) => (
           <a.div
             style={
@@ -100,7 +101,11 @@ export default function App() {
                   />
                   <Route path="*" element={<Navigate to="/u/0" />} />
                 </Route>
-                <Route path="*" element={<Navigate to="/u/0" />} />
+                <Route
+                  path="/"
+                  element={<LandingPage show={key === pathname && pathname === "/"} />}
+                />
+                <Route path="*" element={<Navigate to="/" />} />
               </Routes>
             </ErrorBoundary>
           </a.div>
