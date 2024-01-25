@@ -100,7 +100,7 @@ export function FileImportsTable() {
   )
 
   return (
-    <StaggeredList gap={1}>
+    <>
       {queryTime !== null && rows.length === 0 ? (
         <FileDrop sx={{ padding: 4 }}>
           <Stack alignItems="center">
@@ -119,10 +119,12 @@ export function FileImportsTable() {
           //
         />
       )}
-      {queryTime !== null && rows.length !== 0 && showDrop && (
-        <FileDrop defaultBg="var(--mui-palette-background-default)" />
-      )}
-      <FileImportHelp />
-    </StaggeredList>
+      <StaggeredList paddingTop={1} gap={1}>
+        {queryTime !== null && rows.length !== 0 && showDrop && (
+          <FileDrop defaultBg="var(--mui-palette-background-default)" />
+        )}
+        <FileImportHelp />
+      </StaggeredList>
+    </>
   )
 }

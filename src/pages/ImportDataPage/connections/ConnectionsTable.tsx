@@ -151,7 +151,7 @@ export function ConnectionsTable() {
           //
         />
       )}
-      <StaggeredList component="main" show paddingTop={1}>
+      <StaggeredList component="main" paddingTop={1}>
         <Callout>
           <AlertTitle sx={{ fontSize: "0.85rem" }}>
             This feature is still being developed.
