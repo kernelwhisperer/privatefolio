@@ -89,8 +89,8 @@ export default function LandingPage({ show }: { show: boolean }) {
           <Typography color="text.secondary" variant="body2">
             Surface strengths and weaknesses, inspect historical net worth and balances, prepare
             your tax report, and more.
-            {/* Make better trading decisions with CMM. Journal, analyse,
-          and identify your trading strengths and weaknesses to gain an edge. */}
+            <br />
+            Privatefolio is an open-source, local-first portfolio tracker.
           </Typography>
           <Button
             size="large"
