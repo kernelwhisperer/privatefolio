@@ -19,7 +19,12 @@ const steps = [
         <br />
         <br />
         <a href="/app-images/help/etherscan/step1.png" target="_blank" rel="noreferrer">
-          <img width="100%" src="/app-images/help/etherscan/step1.png" alt="Step visualization" />
+          <img
+            height={217}
+            width={433}
+            src="/app-images/help/etherscan/step1.png"
+            alt="Step visualization"
+          />
         </a>
       </>
     ),
@@ -34,7 +39,12 @@ const steps = [
         <br />
         <br />
         <a href="/app-images/help/etherscan/step2.png" target="_blank" rel="noreferrer">
-          <img width="100%" src="/app-images/help/etherscan/step2.png" alt="Step visualization" />
+          <img
+            height={249}
+            width={433}
+            src="/app-images/help/etherscan/step2.png"
+            alt="Step visualization"
+          />
         </a>
       </>
     ),

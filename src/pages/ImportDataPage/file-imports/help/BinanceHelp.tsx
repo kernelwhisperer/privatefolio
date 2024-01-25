@@ -26,7 +26,9 @@ const steps = [
           rel="noreferrer"
         >
           <img
-            width="100%"
+            // width="100%" FIXME this is to avoid layout jumps
+            height={201}
+            width={433}
             src="https://public.bnbstatic.com/image/cms/article/body/202401/66f3d1ab78ec47cd25bc7f1f47681fe0.png"
             alt="Step visualization"
           />
@@ -47,7 +49,9 @@ const steps = [
           rel="noreferrer"
         >
           <img
-            width="100%"
+            height={203}
+            width={433}
+            // width="100%"
             src="https://public.bnbstatic.com/image/cms/article/body/202401/7f5790d524eeb91156ff2cd2e0f26972.png"
             alt="Step visualization"
           />
@@ -68,7 +72,8 @@ const steps = [
           rel="noreferrer"
         >
           <img
-            width="100%"
+            height={415}
+            width={433}
             src="https://public.bnbstatic.com/image/cms/article/body/202401/a8d16a3f1114ae1bc62ff84e8affdd07.png"
             alt="Step visualization"
           />
@@ -90,7 +95,8 @@ const steps = [
           rel="noreferrer"
         >
           <img
-            width="100%"
+            height={419}
+            width={433}
             src="https://public.bnbstatic.com/image/cms/article/body/202401/3e36984bc3e1bde5f0fd5cb8db8d1987.png"
             alt="Step visualization"
           />
@@ -112,7 +118,8 @@ const steps = [
           rel="noreferrer"
         >
           <img
-            width="100%"
+            height={421}
+            width={433}
             src="https://public.bnbstatic.com/image/cms/article/body/202401/0b6cb437fc9d280c3ddbe4466e7d5069.png"
             alt="Step visualization"
           />
