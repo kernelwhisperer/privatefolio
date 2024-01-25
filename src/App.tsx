@@ -6,6 +6,7 @@ import { Navigate, Route, Routes, useLocation } from "react-router-dom"
 import { AccountIndexRoute } from "./AccountIndexRoute"
 import { ErrorBoundary } from "./components/ErrorBoundary"
 import { Header } from "./components/Header/Header"
+import LandingPageHeader from "./pages/LandingPage/LandingPageHeader"
 import { PnLPage } from "./pages/PnLPage/PnLPage"
 import { $pendingTask } from "./stores/task-store"
 import { SPRING_CONFIGS } from "./utils/utils"
@@ -53,7 +54,7 @@ export default function App() {
 
   return (
     <>
-      {pathname !== "/" && <Header />}
+      {pathname !== "/" ? <Header /> : <LandingPageHeader />}
       <Container disableGutters maxWidth="lg" sx={{ paddingTop: 2, paddingX: { xs: 2 } }}>
         {transitions((styles, item, { key }) => (
           <a.div
