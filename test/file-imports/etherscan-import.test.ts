@@ -123,22 +123,7 @@ it.sequential("should compute balances", async () => {
     100,Saved 1210 records to disk"
   `)
   expect(balances.length).toMatchInlineSnapshot(`1210`)
-  expect(balances[1209]).toMatchInlineSnapshot(`
-    {
-      "CAN": 2,
-      "ETH": 0,
-      "HEALP": 911,
-      "INSP": 777,
-      "LOOM": 10,
-      "LPT": 2.117826656607922,
-      "VIU": 29.9787992,
-      "XDATA": 0.21165476692904842,
-      "XNN": 319.22562200498686,
-      "_id": "1609372800000",
-      "_rev": "1-73582b6f315e29d497c2bf55f3936455",
-      "timestamp": 1609372800000,
-    }
-  `)
+  expect(balances).toMatchSnapshot()
   expect(auditLogs.length).toMatchInlineSnapshot(`24`)
   expect(auditLogs).toMatchSnapshot()
   expect(transactions.length).toMatchInlineSnapshot(`9`)

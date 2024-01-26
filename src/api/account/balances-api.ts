@@ -196,18 +196,24 @@ export async function computeBalances(
 
       // update balance
       if (!latestBalances[symbol]) {
-        latestBalances[symbol] = 0
+        latestBalances[symbol] = changeN
+      } else {
+        latestBalances[symbol] = new Decimal(latestBalances[symbol]).plus(changeN).toNumber()
       }
-      latestBalances[symbol] = new Decimal(latestBalances[symbol]).plus(changeN).toNumber()
       latestBalances.timestamp = nextDay
 
       // update audit log
       log.balance = latestBalances[symbol]
 
+      // remove zero balances
+      if (latestBalances[symbol] === 0) {
+        delete latestBalances[symbol]
+      }
+
       // update historical balances
       if (!historicalBalances[nextDay]) {
         historicalBalances[nextDay] = Object.assign({}, latestBalances)
-      } else {
+      } else if (latestBalances[symbol] !== 0) {
         historicalBalances[nextDay][symbol] = latestBalances[symbol]
       }
 
