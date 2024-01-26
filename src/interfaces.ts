@@ -308,3 +308,5 @@ export type EvmParser = (
   index: number,
   connectionId: string
 ) => ParserResult
+
+export type ParserContextFn = (req: string[]) => Promise<Record<string, unknown>>

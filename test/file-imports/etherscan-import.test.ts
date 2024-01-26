@@ -63,9 +63,9 @@ it("should add an erc20 file import", async () => {
   const buffer = await fs.promises.readFile(filePath, "utf8")
   const file = new File([buffer], fileName, { lastModified: 0, type: "text/csv" })
   // act
-  const fileImport = await addFileImport(file, undefined, accountName, {
+  const fileImport = await addFileImport(file, undefined, accountName, async () => ({
     userAddress: "0xf98c96b5d10faafc2324847c82305bd5fd7e5ad3",
-  })
+  }))
   const { docs: auditLogs } = await getAccount(accountName).auditLogsDB.find({
     selector: {
       importId: fileImport._id,

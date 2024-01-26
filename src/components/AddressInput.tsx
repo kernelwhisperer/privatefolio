@@ -49,3 +49,9 @@ export function AddressInput({ value, onChange, ...rest }: AddressInputProps) {
     />
   )
 }
+
+export function AddressInputUncontrolled(props: Omit<TextFieldProps, "onChange" | "value">) {
+  const [value, onChange] = useState("")
+
+  return <AddressInput value={value} onChange={onChange} {...props} />
+}

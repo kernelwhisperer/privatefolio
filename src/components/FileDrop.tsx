@@ -1,10 +1,15 @@
 import { Paper, PaperProps, Stack, Typography, useTheme } from "@mui/material"
+import { proxy } from "comlink"
 import React, { useRef, useState } from "react"
+import { ConfirmDialogContextType, useConfirm } from "src/hooks/useConfirm"
+import { ParserContextFn } from "src/interfaces"
 import { $activeAccount } from "src/stores/account-store"
 
 import { enqueueTask } from "../stores/task-store"
 import { handleAuditLogChange } from "../utils/common-tasks"
 import { clancy } from "../workers/remotes"
+import { AddressInputUncontrolled } from "./AddressInput"
+import { SectionTitle } from "./SectionTitle"
 
 export function FileDrop(props: PaperProps & { defaultBg?: string }) {
   const theme = useTheme()
@@ -24,6 +29,8 @@ export function FileDrop(props: PaperProps & { defaultBg?: string }) {
     setDragOver(false)
   }
 
+  const confirm = useConfirm()
+
   const handleFileUpload = async (file: File) => {
     // TODO now the UI "freezes" until the file is imported
 
@@ -39,7 +46,12 @@ export function FileDrop(props: PaperProps & { defaultBg?: string }) {
       description: `Importing "${file.name}".`,
       determinate: true,
       function: async (progress) => {
-        const { metadata } = await clancy.addFileImport(clone, progress, $activeAccount.get())
+        const { metadata } = await clancy.addFileImport(
+          clone,
+          progress,
+          $activeAccount.get(),
+          proxy(createParserContextFn(confirm))
+        )
         if (metadata.logs > 0) {
           handleAuditLogChange()
         }
@@ -109,4 +121,48 @@ export function FileDrop(props: PaperProps & { defaultBg?: string }) {
       />
     </Paper>
   )
+}
+
+function createParserContextFn(confirm: ConfirmDialogContextType["confirm"]) {
+  return async function getParserContext(requirements: string[]) {
+    const { confirmed, event } = await confirm({
+      content: (
+        <>
+          Before this file import can be processed you need to fill the following form.
+          <br />
+          <br />
+          {requirements.map((requirement, index) => {
+            return (
+              <div key={index}>
+                <SectionTitle>{requirement}</SectionTitle>
+                <AddressInputUncontrolled
+                  variant="outlined"
+                  fullWidth
+                  size="small"
+                  required
+                  name={requirement}
+                />
+              </div>
+            )
+          })}
+        </>
+      ),
+      title: "Import file needs extra information",
+    })
+
+    if (confirmed && event) {
+      const formData = new FormData(event.target as HTMLFormElement)
+      const parserContext = requirements.reduce(
+        (acc, requirement) => ({
+          ...acc,
+          [requirement]: formData.get(requirement),
+        }),
+        {} as ReturnType<ParserContextFn>
+      )
+
+      return parserContext
+    }
+
+    throw new Error("User did not provide necessary information.")
+  } as ParserContextFn
 }

@@ -1,4 +1,10 @@
-import { AuditLog, AuditLogOperation, FileImport, Transaction } from "src/interfaces"
+import {
+  AuditLog,
+  AuditLogOperation,
+  FileImport,
+  ParserContextFn,
+  Transaction,
+} from "src/interfaces"
 import { ProgressCallback } from "src/stores/task-store"
 import { extractTransactions } from "src/utils/extract-utils"
 
@@ -8,7 +14,7 @@ export async function parseCsv(
   text: string,
   _fileImportId: string,
   progress: ProgressCallback,
-  parserContext: Record<string, unknown>
+  getParserContext: ParserContextFn
 ) {
   // Parse CSV
   const rows = text.trim().split("\n")
@@ -25,6 +31,9 @@ export async function parseCsv(
   if (!parser) {
     throw new Error(`File import unsupported, unknown header: ${header}`)
   }
+
+  const requirements = parserId === "etherscan-erc20" ? ["userAddress"] : []
+  const parserContext = requirements.length === 0 ? {} : await getParserContext(requirements)
 
   const logs: AuditLog[] = []
   let transactions: Transaction[] = []
@@ -52,7 +61,7 @@ export async function parseCsv(
         transactions = transactions.concat(txns)
       }
     } catch (error) {
-      progress([0, `Error parsing row ${index + 1}: ${String(error)}`])
+      throw new Error(`Cannot parse row ${index + 1}: ${String(error)}`)
     }
   })
 

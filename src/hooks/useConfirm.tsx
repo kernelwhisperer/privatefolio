@@ -1,5 +1,6 @@
 import React, {
   createContext,
+  FormEvent,
   PropsWithChildren,
   ReactNode,
   useCallback,
@@ -11,20 +12,16 @@ import ConfirmDialog from "../components/ConfirmDialog/ConfirmDialog"
 
 type ConfirmationRequest = {
   content: string | ReactNode
-  /**
-   * Extra questions to ask the user
-   */
-  extraQuestions?: string[]
   title: string
   variant?: "danger" | "warning" | "info" | "success"
 }
 
-type ConfirmationResult = {
+export type ConfirmationResult = {
   confirmed: boolean
-  extraAnswers: boolean[]
+  event?: FormEvent<HTMLFormElement>
 }
 
-interface ConfirmDialogContextType {
+export interface ConfirmDialogContextType {
   confirm: (request: ConfirmationRequest) => Promise<ConfirmationResult>
 }
 
@@ -43,9 +40,9 @@ export function ConfirmDialogProvider({ children }: PropsWithChildren) {
   }, [])
 
   const handleClose = useCallback(
-    (confirmed: boolean, extraAnswers: boolean[]) => {
+    (confirmed: boolean, event?: FormEvent<HTMLFormElement>) => {
       if (state) {
-        state.resolve({ confirmed, extraAnswers })
+        state.resolve({ confirmed, event })
         setState(null)
       }
     },
@@ -62,7 +59,6 @@ export function ConfirmDialogProvider({ children }: PropsWithChildren) {
           title={state.request.title}
           content={state.request.content}
           variant={state.request.variant}
-          extraQuestions={state.request.extraQuestions}
         />
       )}
     </ConfirmDialogContext.Provider>

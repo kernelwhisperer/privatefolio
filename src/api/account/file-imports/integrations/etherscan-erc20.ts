@@ -1,3 +1,4 @@
+import { isAddress } from "ethers"
 import { AuditLogOperation, EtherscanAuditLog, ParserResult } from "src/interfaces"
 import { Integration, ParserId } from "src/settings"
 import { asUTC } from "src/utils/formatting-utils"
@@ -19,6 +20,10 @@ export function parser(
 
   if (!userAddress) {
     throw new Error("'userAddress' is required for this type of file import")
+  }
+
+  if (!isAddress(userAddress)) {
+    throw new Error("'userAddress' is not valid.")
   }
 
   const row = csvRow.replaceAll('"', "")

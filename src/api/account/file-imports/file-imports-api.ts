@@ -1,5 +1,5 @@
 import { proxy } from "comlink"
-import { FileImport, Timestamp } from "src/interfaces"
+import { FileImport, ParserContextFn, Timestamp } from "src/interfaces"
 import { ProgressCallback } from "src/stores/task-store"
 import { formatDate } from "src/utils/formatting-utils"
 import { hashString, noop } from "src/utils/utils"
@@ -13,7 +13,7 @@ export async function addFileImport(
   file: File,
   progress: ProgressCallback = noop,
   accountName: string,
-  parserContext: Record<string, unknown> = {}
+  getParserContext: ParserContextFn = async () => ({})
 ) {
   const account = getAccount(accountName)
   const { name, type, lastModified, size } = file
@@ -38,7 +38,7 @@ export async function addFileImport(
   // parse file
   const text = await file.text()
   try {
-    const { metadata, logs, transactions } = await parseCsv(text, _id, progress, parserContext)
+    const { metadata, logs, transactions } = await parseCsv(text, _id, progress, getParserContext)
 
     // save logs
     progress([60, `Saving ${logs.length} audit logs to disk`])
