@@ -390,8 +390,8 @@ exports[`should compute balances 5`] = `
 [
   {
     "_id": "32174469_2471540929_1",
-    "_rev": "2-97298fceb838db602f377b539cea5e43",
-    "balance": -3.117081245895825e-17,
+    "_rev": "2-d75b787da883223b74248e8e08ace1f3",
+    "balance": 0,
     "change": "-0.0003213",
     "changeN": -0.0003213,
     "fileImportId": "32174469",
@@ -404,8 +404,8 @@ exports[`should compute balances 5`] = `
   },
   {
     "_id": "32174469_2471540929_0",
-    "_rev": "2-7d5214eb16336557560cee9c36b49012",
-    "balance": 0.00032129999999996883,
+    "_rev": "2-d072cb6d303b42c0bdfaad08ec18a074",
+    "balance": 0.0003213,
     "change": "-0.468064038",
     "changeN": -0.468064038,
     "fileImportId": "32174469",
@@ -476,8 +476,8 @@ exports[`should compute balances 5`] = `
   },
   {
     "_id": "32174469_4171546297_0",
-    "_rev": "2-8b03ae6baf54e7dd3dd6e404eb42dba9",
-    "balance": 0.46851995999999996,
+    "_rev": "2-a5df955a59f849f3d985b66b307ef994",
+    "balance": 0.46851996,
     "change": "-0.03",
     "changeN": -0.03,
     "fileImportId": "32174469",
@@ -548,8 +548,8 @@ exports[`should compute balances 5`] = `
   },
   {
     "_id": "32174469_3745186990_0",
-    "_rev": "2-d9a85002dcf9ea13c1a11a357516460a",
-    "balance": 0.49893995999999996,
+    "_rev": "2-556de1c5d30ee6a3219e964c8fe56fd4",
+    "balance": 0.49893996,
     "change": "-1",
     "changeN": -1,
     "fileImportId": "32174469",
@@ -664,8 +664,8 @@ exports[`should compute balances 5`] = `
   },
   {
     "_id": "32174469_1010805629_0",
-    "_rev": "2-208d36d8efe80e77e5285034c7a323b0",
-    "balance": 1.4993809599999999,
+    "_rev": "2-a862877f4945f2022928b9e17295feda",
+    "balance": 1.49938096,
     "change": "-0.5",
     "changeN": -0.5,
     "fileImportId": "32174469",
@@ -678,8 +678,8 @@ exports[`should compute balances 5`] = `
   },
   {
     "_id": "32174469_3666988626_1",
-    "_rev": "2-1e032787dde4b916a829bfe7b68a2c44",
-    "balance": 1.9993809599999999,
+    "_rev": "2-eca1785e6d876b130e7e9947ed7179a7",
+    "balance": 1.99938096,
     "change": "-0.00042102",
     "changeN": -0.00042102,
     "fileImportId": "32174469",

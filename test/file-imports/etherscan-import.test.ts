@@ -126,7 +126,7 @@ it.sequential("should compute balances", async () => {
   expect(balances[1209]).toMatchInlineSnapshot(`
     {
       "CAN": 2,
-      "ETH": -3.117081245895825e-17,
+      "ETH": 0,
       "HEALP": 911,
       "INSP": 777,
       "LOOM": 10,
@@ -135,7 +135,7 @@ it.sequential("should compute balances", async () => {
       "XDATA": 0.21165476692904842,
       "XNN": 319.22562200498686,
       "_id": "1609372800000",
-      "_rev": "1-26ac0a61fc55c1d7c2101c2e594cccf7",
+      "_rev": "1-73582b6f315e29d497c2bf55f3936455",
       "timestamp": 1609372800000,
     }
   `)
