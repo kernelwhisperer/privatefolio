@@ -21,7 +21,7 @@ beforeAll(async () => {
   await addFileImport(file, undefined, accountName)
   const until = Date.UTC(2017, 8, 14, 0, 0, 0, 0) // 14 Sep 2017
   await computeBalances(accountName, { until })
-  await fetchDailyPrices({ symbols: ["BTC"] })
+  await fetchDailyPrices({ priceApiId: "coinbase", symbols: ["BTC"] })
 })
 
 it.sequential("should compute historical networth", async () => {

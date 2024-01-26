@@ -13,6 +13,7 @@ import { formatDate } from "src/utils/formatting-utils"
 import { noop } from "src/utils/utils"
 
 import { core } from "../database"
+import { validateOperation } from "../database-utils"
 import { PAIR_MAPPER, PRICE_APIS, PRICE_MAPPER } from "./prices/providers"
 
 export async function indexDailyPrices() {
@@ -30,11 +31,7 @@ export async function indexDailyPrices() {
   })
 }
 
-export async function getPricesForAsset(
-  symbol: string,
-  source = "coinbase",
-  timestamp?: Timestamp
-) {
+export async function getPricesForAsset(symbol: string, source: PriceApiId, timestamp?: Timestamp) {
   if (symbol === "USDT" && !!timestamp) {
     return [{ time: timestamp / 1000, value: 1 }] as ChartData[]
   }
@@ -123,7 +120,7 @@ export async function getPriceCursor(
 }
 
 type FetchDailyPricesRequest = {
-  apiPreference?: PriceApiId
+  priceApiId: PriceApiId
   symbols?: string[]
 }
 
@@ -132,7 +129,7 @@ export async function fetchDailyPrices(
   progress: ProgressCallback = noop,
   signal?: AbortSignal
 ) {
-  const { symbols, apiPreference = "coinbase" } = request
+  const { symbols, priceApiId } = request
 
   if (!symbols) {
     throw new Error("No symbols provided") // TODO prevent this
@@ -144,12 +141,12 @@ export async function fetchDailyPrices(
   const now = Date.now()
   const today: Timestamp = now - (now % 86400000)
 
-  const priceApi = PRICE_APIS[apiPreference]
-  const priceMapper = PRICE_MAPPER[apiPreference]
-  const pairMapper = PAIR_MAPPER[apiPreference]
+  const priceApi = PRICE_APIS[priceApiId]
+  const priceMapper = PRICE_MAPPER[priceApiId]
+  const pairMapper = PAIR_MAPPER[priceApiId]
 
   if (!priceApi || !priceMapper || !pairMapper) {
-    throw new Error(`Price api ${apiPreference} is not supported`)
+    throw new Error(`Price api ${priceApiId} is not supported`)
   }
 
   for (let i = 1; i <= symbols.length; i++) {
@@ -160,14 +157,14 @@ export async function fetchDailyPrices(
     }
 
     try {
-      let since: Timestamp | undefined = await getPriceCursor(symbol, apiPreference)
+      let since: Timestamp | undefined = await getPriceCursor(symbol, priceApiId)
       let until: Timestamp | undefined = today
 
       if (!since) since = today - 86400000 * PRICE_API_PAGINATION
 
       while (true) {
         const pair = pairMapper(symbol)
-        const source = apiPreference
+        const source = priceApiId
 
         const results = await priceApi({
           limit: PRICE_API_PAGINATION,
@@ -176,6 +173,11 @@ export async function fetchDailyPrices(
           timeInterval: "1d" as ResolutionString,
           until,
         })
+
+        if (results.length === 0) {
+          progress([(i * 100) / symbols.length, `Skipped ${symbol}: no results`])
+          break
+        }
 
         const docIds: Array<{ id: string }> = []
 
@@ -204,12 +206,8 @@ export async function fetchDailyPrices(
           _rev: "ok" in x.docs[0] ? x.docs[0].ok._rev : undefined,
         }))
 
-        // const dbReceipts =
-        await core.dailyPricesDB.bulkDocs(docs)
-        // console.log(
-        //   "📜 LOG > dbReceipts:",
-        //   dbReceipts.find((x) => !x.rev?.includes("1-"))
-        // )
+        const updates = await core.dailyPricesDB.bulkDocs(docs)
+        validateOperation(updates)
 
         const start = (priceMapper(results[0]).time as number) * 1000
         const end = (priceMapper(results[results.length - 1]).time as number) * 1000

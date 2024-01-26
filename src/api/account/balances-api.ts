@@ -1,7 +1,7 @@
 import { formatDate } from "src/utils/formatting-utils"
 import { noop } from "src/utils/utils"
 
-import { Balance, BalanceMap, Timestamp } from "../../interfaces"
+import { Balance, BalanceMap, PriceApiId, Timestamp } from "../../interfaces"
 import { DB_OPERATION_PAGE_SIZE } from "../../settings"
 import { ProgressCallback } from "../../stores/task-store"
 import { getPricesForAsset } from "../core/daily-prices-api"
@@ -21,6 +21,7 @@ export async function invalidateBalances(newValue: Timestamp, accountName: strin
 
 export async function getBalancesAt(
   cursor: Timestamp = -1,
+  priceApiId: PriceApiId,
   accountName: string
 ): Promise<Balance[]> {
   const account = getAccount(accountName)
@@ -34,7 +35,7 @@ export async function getBalancesAt(
 
     const balances = await Promise.all(
       balanceDocs.map(async (x) => {
-        const prices = await getPricesForAsset(x.symbol, undefined, timestamp)
+        const prices = await getPricesForAsset(x.symbol, priceApiId, timestamp)
         const price = prices.length > 0 ? prices[0] : undefined
 
         return {

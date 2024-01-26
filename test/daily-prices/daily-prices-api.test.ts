@@ -25,7 +25,7 @@ beforeAll(async () => {
 it("should fetch no prices", async () => {
   // act
   const updates: ProgressUpdate[] = []
-  await fetchDailyPrices({ symbols: [] }, (state) => updates.push(state))
+  await fetchDailyPrices({ priceApiId: "coinbase", symbols: [] }, (state) => updates.push(state))
   // assert
   expect(updates.join("\n")).toMatchInlineSnapshot(`"0,Fetching asset prices for 0 symbols"`)
 })
@@ -37,11 +37,11 @@ it("should fetch BTC prices using Binance", async (test) => {
   // arrange
   const updates: ProgressUpdate[] = []
   // act
-  await fetchDailyPrices({ apiPreference: "binance", symbols: ["BTC"] }, (state) =>
+  await fetchDailyPrices({ priceApiId: "binance", symbols: ["BTC"] }, (state) =>
     updates.push(state)
   )
   const records = await getPricesForAsset("BTC", "binance")
-  await fetchDailyPrices({ apiPreference: "binance", symbols: ["BTC"] }, (state) =>
+  await fetchDailyPrices({ priceApiId: "binance", symbols: ["BTC"] }, (state) =>
     updates.push(state)
   )
   // assert
@@ -92,9 +92,13 @@ it("should fetch BTC prices using Coinbase", async () => {
   // arrange
   const updates: ProgressUpdate[] = []
   // act
-  await fetchDailyPrices({ symbols: ["BTC"] }, (state) => updates.push(state))
-  const records = await getPricesForAsset("BTC")
-  await fetchDailyPrices({ symbols: ["BTC"] }, (state) => updates.push(state))
+  await fetchDailyPrices({ priceApiId: "coinbase", symbols: ["BTC"] }, (state) =>
+    updates.push(state)
+  )
+  const records = await getPricesForAsset("BTC", "coinbase")
+  await fetchDailyPrices({ priceApiId: "coinbase", symbols: ["BTC"] }, (state) =>
+    updates.push(state)
+  )
   // assert
   // console.log(updates.join("\n"))
   let prevRecord

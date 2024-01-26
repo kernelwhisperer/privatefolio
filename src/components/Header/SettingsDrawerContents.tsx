@@ -17,6 +17,7 @@ import { $debugMode, $telemetry, AppVerProps, PopoverToggleProps } from "../../s
 import { MonoFont } from "../../theme"
 import { SectionTitle } from "../SectionTitle"
 import { StaggeredList } from "../StaggeredList"
+import { PriceAPI } from "./PriceAPI"
 import { ReducedMotion } from "./ReducedMotion"
 import { ThemeMode } from "./ThemeMode"
 
@@ -81,6 +82,10 @@ export const SettingsDrawerContents = ({
       <div>
         <SectionTitle>Animations</SectionTitle>
         <ReducedMotion />
+      </div>
+      <div>
+        <SectionTitle>Price API</SectionTitle>
+        <PriceAPI />
       </div>
       <div role="list" aria-labelledby="social-links">
         <SectionTitle id="social-links" role="listitem">
@@ -159,7 +164,10 @@ export const SettingsDrawerContents = ({
               size="small" // TODO this is not implemented
               checked={debugMode}
               onChange={(event) => {
-                localStorage.setItem("debug-mode", event.target.checked ? "true" : "false")
+                localStorage.setItem(
+                  "privatefolio-debug-mode",
+                  event.target.checked ? "true" : "false"
+                )
                 $debugMode.set(event.target.checked)
               }}
             />
@@ -195,7 +203,10 @@ export const SettingsDrawerContents = ({
               sx={{ marginY: "-3px" }}
               checked={telemetry}
               onChange={(event) => {
-                localStorage.setItem("no-telemetry", event.target.checked ? "false" : "true")
+                localStorage.setItem(
+                  "privatefolio-no-telemetry",
+                  event.target.checked ? "false" : "true"
+                )
                 $telemetry.set(event.target.checked)
               }}
             />

@@ -1,4 +1,5 @@
 import { Connection } from "src/interfaces"
+import { $priceApi } from "src/stores/account-settings-store"
 import { $activeAccount } from "src/stores/account-store"
 
 import { $filterOptionsMap, computeMetadata } from "../stores/metadata-store"
@@ -94,6 +95,7 @@ export function enqueueFetchPrices() {
       await computeMetadata()
       await clancy.fetchDailyPrices(
         {
+          priceApiId: $priceApi.get(),
           symbols: $filterOptionsMap.get().symbol,
         },
         progress,

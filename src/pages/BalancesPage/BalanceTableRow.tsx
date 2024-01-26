@@ -3,7 +3,7 @@ import { useStore } from "@nanostores/react"
 import React from "react"
 import { useNavigate } from "react-router-dom"
 import { AmountBlock } from "src/components/AmountBlock"
-import { $baseCurrency } from "src/stores/currency-store"
+import { $baseCurrency } from "src/stores/account-settings-store"
 
 import { AssetAvatar } from "../../components/AssetAvatar"
 import { Balance } from "../../interfaces"

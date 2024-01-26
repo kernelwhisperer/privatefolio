@@ -15,7 +15,7 @@ export function ReducedMotion() {
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     const newReducedMotion = newValue === 0 ? "always" : newValue === 1 ? "user" : "never"
     $reducedMotion.set(newReducedMotion)
-    localStorage.setItem("reduced-motion", newReducedMotion)
+    localStorage.setItem("privatefolio-reduced-motion", newReducedMotion)
   }
 
   return (

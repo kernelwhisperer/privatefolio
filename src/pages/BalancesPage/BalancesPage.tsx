@@ -5,6 +5,7 @@ import { proxy } from "comlink"
 import { debounce } from "lodash-es"
 import React, { useEffect, useMemo, useState } from "react"
 import { DEFAULT_DEBOUNCE_DURATION } from "src/settings"
+import { $priceApi } from "src/stores/account-settings-store"
 import { $activeAccount } from "src/stores/account-store"
 import { $inspectTime } from "src/stores/pages/balances-store"
 import { refreshNetworth } from "src/utils/common-tasks"
@@ -29,7 +30,7 @@ export default function BalancesPage({ show }: { show: boolean }) {
   useEffect(() => {
     function fetchData() {
       const start = Date.now()
-      clancy.getBalancesAt(inspectTime, $activeAccount.get()).then((balances) => {
+      clancy.getBalancesAt(inspectTime, $priceApi.get(), $activeAccount.get()).then((balances) => {
         setQueryTime(Date.now() - start)
         setRows(balances)
       })

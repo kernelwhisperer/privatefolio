@@ -1,6 +1,6 @@
 import { Theme } from "@mui/material"
 import { CandlestickSeriesPartialOptions } from "lightweight-charts"
-import { Currency } from "src/stores/currency-store"
+import { Currency } from "src/stores/account-settings-store"
 
 import { TooltipPrimitiveOptions } from "../lightweight-charts/plugins/tooltip/tooltip"
 import { formatNumber } from "./formatting-utils"

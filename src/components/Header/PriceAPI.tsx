@@ -1,22 +1,20 @@
-import { DarkModeOutlined, LightMode, SettingsBrightness } from "@mui/icons-material"
-import { Tab, Tabs, tabsClasses, useColorScheme, useTheme } from "@mui/material"
-import React, { useEffect } from "react"
+import { Tab, Tabs, tabsClasses } from "@mui/material"
+import { useStore } from "@nanostores/react"
+import React from "react"
+import { PriceApiId } from "src/interfaces"
+import { $priceApiPref, $priceApiPreferences } from "src/stores/account-settings-store"
+import { $activeAccount } from "src/stores/account-store"
 
 import { bgColor } from "../../theme"
 
-export function ThemeMode() {
-  const theme = useTheme()
+export function PriceAPI() {
+  const priceApiPref = useStore($priceApiPref)
 
-  useEffect(() => {
-    document
-      .querySelector('meta[name="theme-color"]')
-      ?.setAttribute("content", theme.palette.background.default)
-  }, [theme.palette.background.default])
-
-  const { mode = "system", setMode } = useColorScheme()
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
-    const newMode = newValue === 0 ? "light" : newValue === 1 ? "system" : "dark"
-    setMode(newMode)
+    const newApiPreference: PriceApiId | undefined =
+      newValue === 0 ? "coinbase" : newValue === 1 ? "binance" : undefined
+
+    $priceApiPreferences.setKey($activeAccount.get(), newApiPreference)
   }
 
   return (
@@ -25,7 +23,7 @@ export function ThemeMode() {
       <Tabs
         variant="fullWidth"
         // textColor="inherit"
-        value={mode === "light" ? 0 : mode === "system" ? 1 : 2}
+        value={priceApiPref === "coinbase" ? 0 : priceApiPref === "binance" ? 1 : 2}
         onChange={handleTabChange}
         sx={(theme) => ({
           background: "var(--mui-palette-background-default)",
@@ -53,9 +51,9 @@ export function ThemeMode() {
           },
         })}
       >
-        <Tab label="Light" icon={<LightMode />} iconPosition="start" />
-        <Tab label="System" icon={<SettingsBrightness />} iconPosition="start" />
-        <Tab label="Dark" icon={<DarkModeOutlined />} iconPosition="start" />
+        <Tab label="Coinbase" />
+        <Tab label="Binance" />
+        <Tab label="Default" />
       </Tabs>
     </>
   )

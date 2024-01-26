@@ -71,7 +71,7 @@ export default function LandingPage({ show }: { show: boolean }) {
           </Button>
         </StaggeredList>
       </StaggeredList>
-      <StaggeredList gap={2} sx={{ width: "100%" }}>
+      <StaggeredList gap={2} sx={{ width: "100%" }} show={show}>
         <Paper sx={{ marginX: "auto", maxWidth: 420, padding: 2 }}>
           <Stack gap={1} alignItems="flex-start">
             <Typography fontFamily={SerifFont} variant="h6">
