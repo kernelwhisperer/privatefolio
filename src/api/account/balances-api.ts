@@ -1,3 +1,4 @@
+import Decimal from "decimal.js"
 import { formatDate } from "src/utils/formatting-utils"
 import { noop } from "src/utils/utils"
 
@@ -197,7 +198,7 @@ export async function computeBalances(
       if (!latestBalances[symbol]) {
         latestBalances[symbol] = 0
       }
-      latestBalances[symbol] += changeN
+      latestBalances[symbol] = new Decimal(latestBalances[symbol]).plus(changeN).toNumber()
       latestBalances.timestamp = nextDay
 
       // update audit log
