@@ -1,4 +1,10 @@
-import { AuditLogOperation, EtherscanAuditLog, ParserResult, Transaction } from "src/interfaces"
+import {
+  AuditLogOperation,
+  EtherscanAuditLog,
+  ParserResult,
+  Transaction,
+  TransactionType,
+} from "src/interfaces"
 import { Integration, ParserId } from "src/settings"
 import { asUTC } from "src/utils/formatting-utils"
 import { hashString } from "src/utils/utils"
@@ -43,26 +49,35 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
     txHash,
     txnFee,
     txnFeeUsd,
-    // valueIn,
-    // valueOut,
+    valueIn,
+    valueOut,
   }
+  // console.log(txMeta)
   //
   const hash = hashString(`${index}_${csvRow}`)
   const txId = `${fileImportId}_${hash}`
   const timestamp = asUTC(new Date(Number(unixTimestamp) * 1000))
 
-  if (valueIn === "0" && valueOut === "0") {
-    throw new Error("Cannot parse etherscan tx")
-  }
-
-  const operation: AuditLogOperation = valueOut === "0" && valueIn !== "0" ? "Deposit" : "Withdraw"
-  const change = operation === "Deposit" ? valueIn : `-${valueOut}`
-  const changeN = parseFloat(change)
   const symbol = "ETH"
   const wallet = "Spot"
 
-  const logs: EtherscanAuditLog[] = [
-    {
+  const logs: EtherscanAuditLog[] = []
+  let type: TransactionType
+  const operation: AuditLogOperation =
+    valueOut === "0" && valueIn !== "0"
+      ? "Deposit"
+      : valueIn === "0" && valueOut === "0"
+      ? "Smart Contract Interaction"
+      : "Withdraw"
+
+  if (operation === "Smart Contract Interaction") {
+    type = "Unknown"
+  } else {
+    type = operation
+    const change = operation === "Deposit" ? valueIn : `-${valueOut}`
+    const changeN = parseFloat(change)
+
+    logs.push({
       _id: `${txId}_0`,
       change,
       changeN,
@@ -74,8 +89,8 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
       timestamp,
       txId,
       wallet,
-    },
-  ]
+    })
+  }
 
   let fee: string | undefined, feeN: number | undefined
 
@@ -116,7 +131,7 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
     // priceN,
     // role,
     timestamp,
-    type: operation,
+    type,
     wallet,
     ...txMeta,
   }

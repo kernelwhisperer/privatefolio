@@ -7,7 +7,7 @@ export type { Integration } from "./settings"
 
 export type TransactionRole = "Maker" | "Taker"
 export type TransactionSide = "BUY" | "SELL"
-export type TransactionType = "Buy" | "Sell" | "Swap" | "Deposit" | "Withdraw"
+export type TransactionType = "Buy" | "Sell" | "Swap" | "Deposit" | "Withdraw" | "Unknown"
 // type ExchangeId = "mexc" | "binance"
 
 export type BigNumber = Decimal
@@ -61,6 +61,7 @@ export type AuditLogOperation =
   | "Funding Fee"
   | "Conversion"
   | "Transfer"
+  | "Smart Contract Interaction"
 
 export type PriceApiId = "coinbase" | "binance"
 
