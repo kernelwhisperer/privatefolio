@@ -59,6 +59,8 @@ export type AuditLogOperation =
   | "Distribution"
   | "Withdraw"
   | "Funding Fee"
+  | "Conversion"
+  | "Transfer"
 
 export type PriceApiId = "coinbase" | "binance"
 

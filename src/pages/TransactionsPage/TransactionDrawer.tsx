@@ -1,12 +1,23 @@
-import { CloseRounded } from "@mui/icons-material"
-import { Box, Drawer, DrawerProps, IconButton, Stack, Typography } from "@mui/material"
+import { ArrowRightAltRounded, CloseRounded } from "@mui/icons-material"
+import {
+  Box,
+  Button,
+  Drawer,
+  DrawerProps,
+  IconButton,
+  Skeleton,
+  Stack,
+  Typography,
+} from "@mui/material"
+import { useStore } from "@nanostores/react"
 import React, { useEffect, useState } from "react"
+import { Link } from "react-router-dom"
 import { AmountBlock } from "src/components/AmountBlock"
 import { SectionTitle } from "src/components/SectionTitle"
 import { StaggeredList } from "src/components/StaggeredList"
 import { TimestampBlock } from "src/components/TimestampBlock"
 import { Transaction } from "src/interfaces"
-import { $activeAccount } from "src/stores/account-store"
+import { $activeAccount, $activeIndex } from "src/stores/account-store"
 import { PopoverToggleProps } from "src/stores/app-store"
 import { greenColor, redColor } from "src/utils/chart-utils"
 import { clancy } from "src/workers/remotes"
@@ -19,6 +30,7 @@ type TransactionDrawerProps = DrawerProps &
 
 export function TransactionDrawer(props: TransactionDrawerProps) {
   const { open, toggleOpen, tx, relativeTime, ...rest } = props
+  const activeIndex = useStore($activeIndex)
 
   const {
     incomingN,
@@ -41,6 +53,7 @@ export function TransactionDrawer(props: TransactionDrawerProps) {
     if (!open) return
 
     clancy.findAuditLogsForTxId(_id, $activeAccount.get()).then((logs) => {
+      console.log("📜 LOG > clancy.findAuditLogsForTxId > logs:", logs)
       setLogsNumber(logs.length)
     })
   }, [_id, open])
@@ -100,7 +113,24 @@ export function TransactionDrawer(props: TransactionDrawerProps) {
         </div>
         <div>
           <SectionTitle>Audit logs</SectionTitle>
-          <span>{logsNumber}</span>
+          {logsNumber === null ? (
+            <Skeleton height={20} width={80}></Skeleton>
+          ) : (
+            <>
+              {logsNumber}
+              <Button
+                size="small"
+                color="secondary"
+                component={Link}
+                to={`/u/${activeIndex}/audit-logs?txId=${_id}`}
+                sx={{ marginLeft: 2 }}
+                // onClick={toggleOpen}
+                endIcon={<ArrowRightAltRounded fontSize="inherit" />}
+              >
+                Inspect
+              </Button>
+            </>
+          )}
         </div>
         {/* type */}
         {/* wallet */}

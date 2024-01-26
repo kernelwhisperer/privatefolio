@@ -18,9 +18,25 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
   const userId = columns[0]
   const utcTime = columns[1]
   const account = columns[2]
-  const operation = columns[3]
+  let operation = columns[3]
     .replace("Transaction ", "")
+    .replace("Sold", "Sell")
+    .replace("Fiat ", "")
+    .replace("Asset Conversion Transfer", "Conversion")
+    .replace("Crypto Box", "Gift")
+    .replace("Distribution", "Gift")
+    // .replace("Launchpool Earnings Withdrawal", "")
+    // .replace("Launchpool Subscription/Redemption", "")
+    .replace("Insurance Fund Compensation", "Insurance Fund")
+    // .replace("Commission History", "Fee")
+    .replace("Binance Convert", "Conversion")
+    .replace("Withdrawal", "Withdraw")
     .replace("Spend", "Sell") as AuditLogOperation
+  if (operation.includes("Small Assets Exchange")) {
+    operation = "Conversion"
+  } else if (operation.includes("Transfer Between")) {
+    operation = "Transfer"
+  }
   const coin = columns[4]
   const change = columns[5]
   const remark = columns[6]

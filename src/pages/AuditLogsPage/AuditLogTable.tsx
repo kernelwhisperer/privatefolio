@@ -1,5 +1,8 @@
+import { Box } from "@mui/material"
 import React, { useCallback, useMemo } from "react"
+import { FilterChip } from "src/components/FilterChip"
 import { $activeAccount } from "src/stores/account-store"
+import { stringToColor } from "src/utils/color-utils"
 
 import {
   QueryFunction,
@@ -13,13 +16,20 @@ import { AuditLogTableRow } from "./AuditLogTableRow"
 
 interface AuditLogsTableProps extends Pick<RemoteTableProps<AuditLog>, "defaultRowsPerPage"> {
   symbol?: string
+  txId?: string
 }
 
 export function AuditLogTable(props: AuditLogsTableProps) {
-  const { symbol, ...rest } = props
+  const { symbol, txId, ...rest } = props
 
   const queryFn: QueryFunction<AuditLog> = useCallback(
     async (filters, rowsPerPage, page, order) => {
+      if (txId) {
+        const auditLogs = await clancy.findAuditLogsForTxId(txId, $activeAccount.get())
+        // auditLogs.sort((a, b) => (b.importIndex > a.importIndex ? -1 : 1))
+        return [auditLogs, auditLogs.length]
+      }
+
       const auditLogs = await clancy.findAuditLogs(
         {
           filters: { symbol, ...filters },
@@ -44,7 +54,7 @@ export function AuditLogTable(props: AuditLogsTableProps) {
             .then((logs) => logs.length),
       ]
     },
-    [symbol]
+    [symbol, txId]
   )
 
   const headCells = useMemo<HeadCell<AuditLog>[]>(
@@ -52,20 +62,20 @@ export function AuditLogTable(props: AuditLogsTableProps) {
       {
         key: "timestamp",
         label: "Timestamp",
-        sortable: true,
+        sortable: !txId,
       },
       {
-        filterable: true,
+        filterable: !txId,
         key: "integration",
         label: "Integration",
       },
       {
-        filterable: true,
+        filterable: !txId,
         key: "wallet",
         label: "Wallet",
       },
       {
-        filterable: true,
+        filterable: !txId,
         key: "operation",
         label: "Operation",
       },
@@ -77,7 +87,7 @@ export function AuditLogTable(props: AuditLogsTableProps) {
       ...(!symbol
         ? ([
             {
-              filterable: true,
+              filterable: !txId,
               key: "symbol",
               label: "Asset",
             },
@@ -89,11 +99,29 @@ export function AuditLogTable(props: AuditLogsTableProps) {
         numeric: true,
       },
     ],
-    [symbol]
+    [symbol, txId]
   )
 
+  // TODO this should me a separate component using memory table
   return (
     <>
+      {txId && (
+        <Box
+          sx={{
+            marginBottom: 1,
+            marginLeft: 1,
+            marginTop: 0.5,
+          }}
+        >
+          <FilterChip
+            label={`Transaction Id = ${txId}`}
+            color={stringToColor("Transaction Id")}
+            // onDelete={() => {
+            // TODO
+            // }}
+          />
+        </Box>
+      )}
       <RemoteTable
         initOrderBy="timestamp"
         headCells={headCells}
