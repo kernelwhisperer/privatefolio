@@ -38,11 +38,11 @@ export const DEFAULT_CURRENCIES: Currency[] = [
 
 export const $baseCurrency = atom<Currency>(DEFAULT_CURRENCIES[0])
 
+export const defaultApiPreference: PriceApiId = "coinbase"
 export const $priceApiPreferences = persistentMap<Record<string, PriceApiId | undefined>>(
   "privatefolio-price-api-pref",
   {}
 )
-export const defaultApiPreference: PriceApiId = "coinbase"
 
 export const $priceApiPref = computed(
   [$activeAccount, $priceApiPreferences],
@@ -54,3 +54,16 @@ export const $priceApiPref = computed(
 export const $priceApi = computed($priceApiPref, (priceApiPref) => {
   return priceApiPref || defaultApiPreference
 })
+
+export const $hideSmallBalancesMap = persistentMap<Record<string, string | undefined>>(
+  "privatefolio-small-balances",
+  {}
+)
+
+export const $hideSmallBalances = computed(
+  [$activeAccount, $hideSmallBalancesMap],
+  (activeAccount, hideSmallBalancesMap) => {
+    const val = hideSmallBalancesMap[activeAccount]
+    return typeof val === "string" ? val === "true" : true
+  }
+)

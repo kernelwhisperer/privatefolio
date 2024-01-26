@@ -22,7 +22,8 @@ export async function invalidateBalances(newValue: Timestamp, accountName: strin
 export async function getBalancesAt(
   cursor: Timestamp = -1,
   priceApiId: PriceApiId,
-  accountName: string
+  accountName: string,
+  hideSmallBalances?: boolean
 ): Promise<Balance[]> {
   const account = getAccount(accountName)
   const balancesCursor =
@@ -46,6 +47,11 @@ export async function getBalancesAt(
         }
       })
     )
+
+    if (hideSmallBalances) {
+      return balances.filter((x) => x.value && (x.value > 0.1 || x.value < -0.1))
+    }
+
     return balances
   } catch (error) {
     return []

@@ -1,11 +1,15 @@
-import { CachedRounded } from "@mui/icons-material"
+import { CachedRounded, VisibilityOffRounded, VisibilityRounded } from "@mui/icons-material"
 import { IconButton, Tooltip, Typography } from "@mui/material"
 import { useStore } from "@nanostores/react"
 import { proxy } from "comlink"
 import { debounce } from "lodash-es"
 import React, { useEffect, useMemo, useState } from "react"
 import { DEFAULT_DEBOUNCE_DURATION } from "src/settings"
-import { $priceApi } from "src/stores/account-settings-store"
+import {
+  $hideSmallBalances,
+  $hideSmallBalancesMap,
+  $priceApi,
+} from "src/stores/account-settings-store"
 import { $activeAccount } from "src/stores/account-store"
 import { $inspectTime } from "src/stores/pages/balances-store"
 import { refreshNetworth } from "src/utils/common-tasks"
@@ -25,15 +29,18 @@ export default function BalancesPage({ show }: { show: boolean }) {
   const [queryTime, setQueryTime] = useState<number | null>(null)
   const [rows, setRows] = useState<Balance[]>([])
 
+  const hideSmallBalances = useStore($hideSmallBalances)
   const inspectTime = useStore($inspectTime)
 
   useEffect(() => {
     function fetchData() {
       const start = Date.now()
-      clancy.getBalancesAt(inspectTime, $priceApi.get(), $activeAccount.get()).then((balances) => {
-        setQueryTime(Date.now() - start)
-        setRows(balances)
-      })
+      clancy
+        .getBalancesAt(inspectTime, $priceApi.get(), $activeAccount.get(), hideSmallBalances)
+        .then((balances) => {
+          setQueryTime(Date.now() - start)
+          setRows(balances)
+        })
     }
 
     fetchData()
@@ -51,7 +58,7 @@ export default function BalancesPage({ show }: { show: boolean }) {
         unsubscribe()
       })
     }
-  }, [inspectTime])
+  }, [inspectTime, hideSmallBalances])
 
   const headCells = useMemo<HeadCell<Balance>[]>(
     () => [
@@ -109,6 +116,21 @@ export default function BalancesPage({ show }: { show: boolean }) {
               </Typography>
             )}
           </span>
+          <Tooltip title={hideSmallBalances ? "Show small balances" : "Hide small balances"}>
+            <IconButton
+              color="secondary"
+              onClick={() => {
+                $hideSmallBalancesMap.setKey($activeAccount.get(), String(!hideSmallBalances))
+              }}
+              sx={{ marginRight: -1 }}
+            >
+              {hideSmallBalances ? (
+                <VisibilityOffRounded fontSize="small" />
+              ) : (
+                <VisibilityRounded fontSize="small" />
+              )}
+            </IconButton>
+          </Tooltip>
         </Subheading>
         {queryTime !== null && rows.length === 0 ? (
           <NoDataCard />
