@@ -16,8 +16,9 @@ export function BalanceChart(props: BalanceChartProps) {
     const docs = await clancy.getHistoricalBalances($activeAccount.get(), { symbol })
 
     const records = docs.map((item) => ({
+      color: !item[symbol] ? "gray" : undefined,
       time: (item.timestamp / 1000) as UTCTimestamp,
-      value: item[symbol],
+      value: item[symbol] || 0,
     }))
 
     // TODO

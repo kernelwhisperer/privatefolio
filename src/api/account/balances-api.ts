@@ -87,7 +87,7 @@ export async function getHistoricalBalances(
     limit,
     selector: symbol
       ? {
-          [symbol]: { $exists: true },
+          // [symbol]: { $exists: true },
           timestamp: { $exists: true },
         }
       : {
