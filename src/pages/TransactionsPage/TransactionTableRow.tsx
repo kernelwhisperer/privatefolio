@@ -1,9 +1,16 @@
-import { AddRounded, RemoveRounded, SvgIconComponent, SwapHoriz } from "@mui/icons-material"
-import { alpha, Avatar, Chip, Stack, TableCell, TableRow, Tooltip } from "@mui/material"
+import {
+  AddRounded,
+  RemoveRounded,
+  SvgIconComponent,
+  SwapHoriz,
+  Visibility,
+} from "@mui/icons-material"
+import { alpha, Avatar, Chip, IconButton, Stack, TableCell, TableRow, Tooltip } from "@mui/material"
 import { green, grey, red } from "@mui/material/colors"
 import { useStore } from "@nanostores/react"
 import React from "react"
 import { AmountBlock } from "src/components/AmountBlock"
+import { useBoolean } from "src/hooks/useBoolean"
 
 import { AssetAvatar } from "../../components/AssetAvatar"
 import { TimestampBlock } from "../../components/TimestampBlock"
@@ -12,6 +19,7 @@ import { Transaction, TransactionType } from "../../interfaces"
 import { INTEGRATIONS } from "../../settings"
 import { $assetMap, $integrationMap } from "../../stores/metadata-store"
 import { TableRowComponentProps } from "../../utils/table-utils"
+import { TransactionDrawer } from "./TransactionDrawer"
 
 const redColor = red[400]
 const greenColor = green[400]
@@ -45,6 +53,8 @@ export function TransactionTableRow(props: TableRowComponentProps<Transaction>) 
 
   const color = OPERATION_COLORS[type] || grey[500]
   const TypeIconComponent = OPERATION_ICONS[type]
+
+  const { value: open, toggle: toggleOpen } = useBoolean(false)
 
   return (
     <>
@@ -132,7 +142,33 @@ export function TransactionTableRow(props: TableRowComponentProps<Transaction>) 
             </Stack>
           )}
         </TableCell>
+        <TableCell sx={{ maxWidth: 40, minWidth: 40, width: 40 }}>
+          <Tooltip title="Inspect transaction">
+            <IconButton
+              size="small"
+              color="secondary"
+              sx={{
+                ".MuiTableRow-root:hover &": {
+                  visibility: "visible",
+                },
+                height: 28,
+                marginLeft: -1,
+                visibility: "hidden",
+              }}
+              onClick={toggleOpen}
+            >
+              <Visibility fontSize="inherit" />
+            </IconButton>
+          </Tooltip>
+        </TableCell>
       </TableRow>
+      <TransactionDrawer
+        key={row._id}
+        open={open}
+        toggleOpen={toggleOpen}
+        tx={row}
+        relativeTime={relativeTime}
+      />
     </>
   )
 }

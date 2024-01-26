@@ -38,6 +38,8 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
     change,
     changeN,
     coin,
+    importId: fileImportId,
+    importIndex: index,
     integration,
     operation,
     remark,

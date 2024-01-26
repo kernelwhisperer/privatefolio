@@ -41,11 +41,18 @@ export async function indexAuditLogs(progress: ProgressCallback = noop, accountN
       name: "operation",
     },
   })
-  progress([50, "Audit logs: updating index for 'symbol'"])
+  progress([45, "Audit logs: updating index for 'symbol'"])
   await account.auditLogsDB.createIndex({
     index: {
       fields: ["symbol", "timestamp", "integration", "wallet", "operation"], // MUST respect the order in _filterOrder
       name: "symbol",
+    },
+  })
+  progress([50, "Audit logs: updating index for 'txId'"])
+  await account.auditLogsDB.createIndex({
+    index: {
+      fields: ["txId"],
+      name: "txId",
     },
   })
 }
@@ -107,6 +114,28 @@ export async function findAuditLogs(request: FindAuditLogsRequest = {}, accountN
   //
   const { docs, warning } = await account.auditLogsDB.find(_req)
   if (warning) console.warn("findAuditLogs", warning)
+  return docs as AuditLog[]
+}
+
+export async function findAuditLogsForTxId(txId: string, accountName: string) {
+  const account = getAccount(accountName)
+  const { indexes } = await account.auditLogsDB.getIndexes()
+  if (indexes.length === 1) {
+    await indexAuditLogs(console.log, accountName)
+  }
+
+  const _req: PouchDB.Find.FindRequest<AuditLog> = {
+    selector: {
+      txId,
+    },
+  }
+  // console.log("📜 LOG > findAuditLogsForTxId > _req:", _req)
+  // const explain = await (account.auditLogsDB as any).explain(_req)
+  // console.log("📜 LOG > findAuditLogsForTxId > explain:", explain.index)
+
+  //
+  const { docs, warning } = await account.auditLogsDB.find(_req)
+  if (warning) console.warn("findAuditLogsForTxId", warning)
   return docs as AuditLog[]
 }
 

@@ -409,6 +409,13 @@ export const theme: CssVarsThemeOptions = {
           padding: "4px 16px 6px 16px",
         },
         root: {
+          ".MuiTableRow-hover &:hover": {
+            outline: "1px dashed rgba(var(--mui-palette-secondary-mainChannel) / 0.5)",
+            outlineOffset: -1,
+          },
+          "html[data-mui-color-scheme='dark'] .MuiTableRow-hover &:hover": {
+            outline: "1px dashed rgba(var(--mui-palette-primary-mainChannel) / 0.33)",
+          },
           "tbody tr:last-of-type &": {
             borderBottom: "none",
           },
@@ -444,8 +451,6 @@ export const theme: CssVarsThemeOptions = {
         root: {
           "&.MuiTableRow-hover:hover": {
             background: "rgba(var(--mui-palette-secondary-mainChannel) / 0.075) !important",
-            outline: "1px dashed rgba(var(--mui-palette-secondary-mainChannel) / 0.5)",
-            outlineOffset: -1,
           },
           // "&:nth-of-type(odd)": {
           //   backgroundColor: "rgba(45, 45, 45, 0.5)",
@@ -468,7 +473,6 @@ export const theme: CssVarsThemeOptions = {
           // cursor: "pointer",
           "html[data-mui-color-scheme='dark'] &.MuiTableRow-hover:hover": {
             background: "rgba(var(--mui-palette-primary-mainChannel) / 0.05) !important",
-            outline: "1px dashed rgba(var(--mui-palette-primary-mainChannel) / 0.33)",
           },
         },
       },

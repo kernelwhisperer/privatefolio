@@ -1,11 +1,15 @@
 import { ArrowRightAltRounded, GitHub, Telegram } from "@mui/icons-material"
 import { Box, Button, IconButton, Link as MuiLink, Paper, Stack, Typography } from "@mui/material"
+import { useStore } from "@nanostores/react"
 import React from "react"
 import { Link } from "react-router-dom"
 import { StaggeredList } from "src/components/StaggeredList"
+import { $activeIndex } from "src/stores/account-store"
 import { SerifFont } from "src/theme"
 
 export default function LandingPage({ show }: { show: boolean }) {
+  const activeIndex = useStore($activeIndex)
+
   return (
     <Stack gap={8}>
       <StaggeredList
@@ -51,7 +55,7 @@ export default function LandingPage({ show }: { show: boolean }) {
           <Button
             size="large"
             component={Link}
-            to="/u/0"
+            to={`/u/${activeIndex}`}
             variant="contained"
             color="accent"
             sx={{

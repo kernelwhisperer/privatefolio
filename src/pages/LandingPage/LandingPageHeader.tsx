@@ -1,9 +1,13 @@
 import { AppBar, Button, Container, Stack, Toolbar } from "@mui/material"
+import { useStore } from "@nanostores/react"
 import React from "react"
 import { Link } from "react-router-dom"
 import { Logo } from "src/components/Header/Logo"
+import { $activeIndex } from "src/stores/account-store"
 
 export default function LandingPageHeader() {
+  const activeIndex = useStore($activeIndex)
+
   return (
     <>
       <meta name="theme-color" content={"rgb(40, 40, 40)"} />
@@ -41,7 +45,7 @@ export default function LandingPageHeader() {
               <Logo />
               <Button
                 component={Link}
-                to="/u/0"
+                to={`/u/${activeIndex}`}
                 variant="outlined"
                 color="secondary"
                 sx={{ minWidth: 107 }}

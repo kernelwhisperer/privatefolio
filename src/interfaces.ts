@@ -33,6 +33,8 @@ export interface Transaction {
   fee?: string
   feeN?: number
   feeSymbol?: string
+  importId: string
+  importIndex: number
   incoming?: string
   incomingN?: number
   incomingSymbol?: string
@@ -101,7 +103,8 @@ export interface AuditLog {
   balance?: number
   change: string
   changeN: number
-  fileImportId?: string
+  importId: string
+  importIndex: number
   integration: Integration
   operation: AuditLogOperation
   symbol: string

@@ -31,13 +31,17 @@ export default function BalancesPage({ show }: { show: boolean }) {
 
   const hideSmallBalances = useStore($hideSmallBalances)
   const inspectTime = useStore($inspectTime)
+  const activeAccount = useStore($activeAccount)
+  const priceApi = useStore($priceApi)
 
   useEffect(() => {
     function fetchData() {
       const start = Date.now()
       clancy
-        .getBalancesAt(inspectTime, $priceApi.get(), $activeAccount.get(), hideSmallBalances)
+        .getBalancesAt(inspectTime, priceApi, activeAccount, hideSmallBalances)
         .then((balances) => {
+          // fetch no longer accurate
+          if (activeAccount !== $activeAccount.get()) return
           setQueryTime(Date.now() - start)
           setRows(balances)
         })
@@ -58,7 +62,7 @@ export default function BalancesPage({ show }: { show: boolean }) {
         unsubscribe()
       })
     }
-  }, [inspectTime, hideSmallBalances])
+  }, [inspectTime, priceApi, activeAccount, hideSmallBalances])
 
   const headCells = useMemo<HeadCell<Balance>[]>(
     () => [

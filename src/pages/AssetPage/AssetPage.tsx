@@ -25,7 +25,7 @@ export default function AssetPage({ show }: { show: boolean }) {
   const filterMap = useStore($filterOptionsMap)
 
   if (!symbol || (filterMap.symbol && !filterMap.symbol.includes(symbol))) {
-    return <Navigate to="/" replace={true} />
+    return <Navigate to=".." replace={true} />
   }
 
   return (

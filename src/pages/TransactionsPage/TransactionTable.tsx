@@ -101,6 +101,9 @@ export function TransactionTable(props: TransactionsTableProps) {
         key: "incomingSymbol",
         label: "Asset",
       },
+      {
+        label: "",
+      },
     ],
     []
   )

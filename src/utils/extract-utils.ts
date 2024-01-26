@@ -23,37 +23,40 @@ function validGrouping(logs: AuditLog[]) {
   return hasBuy && hasSell
 }
 
+/**
+ * @warn This function mutates the logs param
+ */
 export function extractTransactions(logs: AuditLog[], fileImportId: string): Transaction[] {
   const transactions: Transaction[] = []
 
   const timestampGroups = groupBy(logs, "timestamp")
 
   for (const i in timestampGroups) {
-    const logs = timestampGroups[i]
+    const group = timestampGroups[i]
 
-    if (validGrouping(logs)) {
-      const wallet = logs[0].wallet
-      const integration = logs[0].integration
-      const timestamp = logs[0].timestamp
+    if (validGrouping(group)) {
+      const wallet = group[0].wallet
+      const integration = group[0].integration
+      const timestamp = group[0].timestamp
       //
       const hash = hashString(`${timestamp}`)
       const _id = `${fileImportId}_${hash}`
       // Incoming
-      const buyLogs = logs.filter((log) => log.operation === "Buy")
+      const buyLogs = group.filter((log) => log.operation === "Buy")
       const incomingSymbol: string | undefined = buyLogs[0]?.symbol
       const incomingN = incomingSymbol
         ? buyLogs.reduce((acc, log) => acc + log.changeN, 0)
         : undefined
       const incoming = incomingSymbol ? String(incomingN) : undefined
       // Outgoing
-      const sellLogs = logs.filter((log) => log.operation === "Sell")
+      const sellLogs = group.filter((log) => log.operation === "Sell")
       const outgoingSymbol: string | undefined = sellLogs[0]?.symbol
       const outgoingN = outgoingSymbol
         ? Math.abs(sellLogs.reduce((acc, log) => acc + log.changeN, 0))
         : undefined
       const outgoing = outgoingSymbol ? String(outgoingN) : undefined
       // Fee
-      const feeLogs = logs.filter((log) => log.operation === "Fee")
+      const feeLogs = group.filter((log) => log.operation === "Fee")
       const feeN = Math.abs(feeLogs.reduce((acc, log) => acc + log.changeN, 0))
       const fee = String(feeN)
       const feeSymbol = feeLogs[0]?.symbol
@@ -71,6 +74,8 @@ export function extractTransactions(logs: AuditLog[], fileImportId: string): Tra
         fee,
         feeN,
         feeSymbol,
+        importId: fileImportId,
+        importIndex: parseInt(i),
         incoming,
         incomingN,
         incomingSymbol,
@@ -84,6 +89,11 @@ export function extractTransactions(logs: AuditLog[], fileImportId: string): Tra
         type,
         wallet,
       })
+
+      // update audit logs with txId
+      for (const log of group) {
+        log.txId = _id
+      }
     }
   }
   return transactions

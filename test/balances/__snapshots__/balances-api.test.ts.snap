@@ -125,10 +125,12 @@ exports[`should have balances computed 1`] = `
 [
   {
     "_id": "2675435331_3604660326_0",
-    "_rev": "3-7986da8a475a42e30343a3a96ddb460d",
+    "_rev": "3-618f6a63819e715c02119ed8a18ccd02",
     "balance": 0.072958518,
     "change": "0.036979259",
     "changeN": 0.036979259,
+    "importId": "2675435331",
+    "importIndex": 0,
     "integration": "coinmama",
     "operation": "Buy with Credit Card",
     "symbol": "BTC",
@@ -137,10 +139,12 @@ exports[`should have balances computed 1`] = `
   },
   {
     "_id": "2675435331_1607323056_0",
-    "_rev": "2-cccb1bed4805f298094839a7fe2f4bed",
+    "_rev": "2-5d73369ef87f91c5f7e6accebd298ce5",
     "balance": 0.035979259,
     "change": "0.035979259",
     "changeN": 0.035979259,
+    "importId": "2675435331",
+    "importIndex": 1,
     "integration": "coinmama",
     "operation": "Buy with Credit Card",
     "symbol": "BTC",
@@ -154,9 +158,11 @@ exports[`should not have balances computed 1`] = `
 [
   {
     "_id": "2675435331_3604660326_0",
-    "_rev": "1-f1d2238d944c68a08eff841cc9a892fd",
+    "_rev": "1-b89b11f7ba585b97f8e707cd52312710",
     "change": "0.036979259",
     "changeN": 0.036979259,
+    "importId": "2675435331",
+    "importIndex": 0,
     "integration": "coinmama",
     "operation": "Buy with Credit Card",
     "symbol": "BTC",
@@ -165,9 +171,11 @@ exports[`should not have balances computed 1`] = `
   },
   {
     "_id": "2675435331_1607323056_0",
-    "_rev": "1-524e4440eb9597f0f1719287db37e025",
+    "_rev": "1-0e78054d9e6bea889a8c53525e2496bd",
     "change": "0.035979259",
     "changeN": 0.035979259,
+    "importId": "2675435331",
+    "importIndex": 1,
     "integration": "coinmama",
     "operation": "Buy with Credit Card",
     "symbol": "BTC",

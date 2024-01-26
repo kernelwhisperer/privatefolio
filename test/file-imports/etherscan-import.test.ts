@@ -25,7 +25,7 @@ it("should add a file import", async () => {
   const fileImport = await addFileImport(file, undefined, accountName)
   const { docs: auditLogs } = await getAccount(accountName).auditLogsDB.find({
     selector: {
-      fileImportId: fileImport._id,
+      importId: fileImport._id,
     },
   })
   auditLogs.sort((a, b) => b.timestamp - a.timestamp)
@@ -68,7 +68,7 @@ it("should add an erc20 file import", async () => {
   })
   const { docs: auditLogs } = await getAccount(accountName).auditLogsDB.find({
     selector: {
-      fileImportId: fileImport._id,
+      importId: fileImport._id,
     },
   })
   auditLogs.sort((a, b) => b.timestamp - a.timestamp)

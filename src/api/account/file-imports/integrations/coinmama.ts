@@ -44,6 +44,8 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
 
   const tx: Transaction = {
     _id: txId,
+    importId: fileImportId,
+    importIndex: index,
     // fee,
     // feeN,
     // feeSymbol,
@@ -66,6 +68,8 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
       _id: `${txId}_0`,
       change: incoming,
       changeN: incomingN,
+      importId: fileImportId,
+      importIndex: index,
       integration,
       operation: transaction as AuditLogOperation,
       symbol,
