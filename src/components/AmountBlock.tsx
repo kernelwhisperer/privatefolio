@@ -3,7 +3,7 @@ import React from "react"
 import { MonoFont } from "src/theme"
 import { EMPTY_OBJECT } from "src/utils/utils"
 
-import { formatNumber } from "../utils/formatting-utils"
+import { formatNumber, getDecimalPrecision } from "../utils/formatting-utils"
 
 type AmountBlockProps = {
   amount?: number
@@ -24,8 +24,14 @@ export function AmountBlock(props: AmountBlockProps) {
     formatOpts = EMPTY_OBJECT,
   } = props
 
-  const minimumFractionDigits = significantDigits
   const maximumFractionDigits = significantDigits || 99
+
+  let minimumFractionDigits = significantDigits
+  if (minimumFractionDigits === undefined && typeof amount === "number") {
+    if (amount > 10_000 || amount < -10_000) minimumFractionDigits = 0
+    else if (amount < 1 && amount > -1)
+      minimumFractionDigits = Math.min(getDecimalPrecision(amount), 6)
+  }
 
   return (
     <Tooltip

@@ -3,6 +3,17 @@ import { Timestamp } from "src/interfaces"
 
 const locale = typeof window !== "undefined" ? window.navigator.language : "en-US"
 
+export function getDecimalPrecision(num: number) {
+  if (!isFinite(num)) return 0
+  let e = 1
+  let p = 0
+  while (Math.round(num * e) / e !== num) {
+    e *= 10
+    p++
+  }
+  return p
+}
+
 export function formatNumber(number: number, opts: Intl.NumberFormatOptions = {}) {
   return new Intl.NumberFormat(locale, {
     notation: "standard",

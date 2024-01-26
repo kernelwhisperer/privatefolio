@@ -13,6 +13,7 @@ import React, {
   useMemo,
   useState,
 } from "react"
+import { $debugMode } from "src/stores/app-store"
 
 import { TableFooter } from "../../components/TableFooter"
 import { FILTER_LABEL_MAP, getFilterValueLabel } from "../../stores/metadata-store"
@@ -158,7 +159,7 @@ export function MemoryTable<T extends BaseType>(props: MemoryTableProps<T>) {
     [rows, order, orderBy, page, rowsPerPage, valueSelectors, activeFilters]
   )
 
-  const [relativeTime, setRelativeTime] = useState(true)
+  const [relativeTime, setRelativeTime] = useState(!$debugMode.get())
 
   const handleRelativeTime = useCallback((_event: MouseEvent<unknown>) => {
     setRelativeTime((prev) => !prev)

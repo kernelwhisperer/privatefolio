@@ -54,7 +54,7 @@ export function BalancesChart() {
   const tooltipOptions: TooltipOpts = useMemo(
     () => ({
       currencySymbol: currency.symbol,
-      significantDigits: currency.significantDigits,
+      significantDigits: isMobile ? currency.significantDigits : currency.maxDigits,
       tooltip: {
         compact: isMobile,
         dateSecondary: true,

@@ -13,6 +13,7 @@ import React, {
   useEffect,
   useState,
 } from "react"
+import { $debugMode } from "src/stores/app-store"
 
 import { FILTER_LABEL_MAP, getFilterValueLabel } from "../../stores/metadata-store"
 import { stringToColor } from "../../utils/color-utils"
@@ -62,7 +63,7 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
   const [rowsPerPage, setRowsPerPage] = useState(defaultRowsPerPage)
 
   // TODO turn into setting
-  const [relativeTime, setRelativeTime] = useState(true)
+  const [relativeTime, setRelativeTime] = useState(!$debugMode.get())
 
   const handleRelativeTime = useCallback((_event: MouseEvent<unknown>) => {
     setRelativeTime((prev) => !prev)

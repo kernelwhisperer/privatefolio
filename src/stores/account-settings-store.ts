@@ -8,6 +8,7 @@ export const DEFAULT_SIGNIFICANT_DIGITS = 2
 
 export interface Currency {
   logo?: string
+  maxDigits: number
   name: string
   significantDigits: number
   symbol: string
@@ -15,21 +16,25 @@ export interface Currency {
 
 export const DEFAULT_CURRENCIES: Currency[] = [
   {
+    maxDigits: 2,
     name: "USD",
     significantDigits: 0,
     symbol: "$",
   },
   {
+    maxDigits: 2,
     name: "EUR",
     significantDigits: 0,
     symbol: "€",
   },
   {
+    maxDigits: 8,
     name: "BTC",
     significantDigits: 5,
     symbol: "₿", // ฿
   },
   {
+    maxDigits: 6,
     name: "ETH",
     significantDigits: 3,
     symbol: "Ξ",

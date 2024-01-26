@@ -74,6 +74,7 @@ export function BalanceTableRow(props: TableRowComponentProps<Balance>) {
                   amount={price?.value}
                   currencySymbol={currency.symbol}
                   currencyName={currency.name}
+                  significantDigits={currency.maxDigits}
                 />
               </Typography>
             </Stack>
@@ -108,6 +109,7 @@ export function BalanceTableRow(props: TableRowComponentProps<Balance>) {
           amount={price?.value}
           currencySymbol={currency.symbol}
           currencyName={currency.name}
+          significantDigits={currency.maxDigits}
         />
       </TableCell>
       <TableCell align="right" sx={{ maxWidth: 220, minWidth: 220, width: 220 }}>
@@ -115,7 +117,7 @@ export function BalanceTableRow(props: TableRowComponentProps<Balance>) {
           amount={value}
           currencySymbol={currency.symbol}
           currencyName={currency.name}
-          significantDigits={currency.significantDigits}
+          significantDigits={currency.maxDigits}
         />
       </TableCell>
     </TableRow>
