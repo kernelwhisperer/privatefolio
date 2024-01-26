@@ -11,11 +11,6 @@ export function formatNumber(number: number, opts: Intl.NumberFormatOptions = {}
   }).format(number)
 }
 
-/**
- * @deprecated  this is broken, use `asUTC` instead
- */
-export const TZ_OFFSET = new Date().getTimezoneOffset() * 60 * 1000
-
 export function asUTC(date: Date): Timestamp {
   return Date.UTC(
     date.getFullYear(),

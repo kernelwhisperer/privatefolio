@@ -16,7 +16,7 @@ export type BigNumber = Decimal
  * Timestamp in milliseconds
  *
  * @example 1612137600000
- * @example Date.now() - TZ_OFFSET
+ * @example asUTC(Date.now())
  */
 export type Timestamp = number // Nominal<number, "Timestamp">
 
@@ -24,7 +24,7 @@ export type Timestamp = number // Nominal<number, "Timestamp">
  * Timestamp in seconds
  *
  * @example 161213760
- * @example Date.now() - TZ_OFFSET / 1000
+ * @example asUTC(Date.now()) / 1000
  */
 export type Time = UTCTimestamp
 

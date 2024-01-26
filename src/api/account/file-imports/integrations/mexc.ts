@@ -6,7 +6,7 @@ import {
   TransactionSide,
 } from "src/interfaces"
 import { Integration, ParserId } from "src/settings"
-import { TZ_OFFSET } from "src/utils/formatting-utils"
+import { asUTC } from "src/utils/formatting-utils"
 import { hashString } from "src/utils/utils"
 
 export const Identifier: ParserId = "mexc"
@@ -20,7 +20,7 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
   const marketPair = columns[0]
   const symbol = marketPair.split("_")[0]
   const quoteSymbol = marketPair.split("_")[1]
-  const timestamp = new Date(columns[1]).getTime() - TZ_OFFSET
+  const timestamp = asUTC(new Date(columns[1]))
   //
   const side = columns[2] as TransactionSide
   const price = columns[3]

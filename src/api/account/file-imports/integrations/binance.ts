@@ -1,6 +1,6 @@
 import { AuditLogOperation, BinanceAuditLog, ParserResult } from "src/interfaces"
 import { Integration, ParserId } from "src/settings"
-import { TZ_OFFSET } from "src/utils/formatting-utils"
+import { asUTC } from "src/utils/formatting-utils"
 import { hashString } from "src/utils/utils"
 
 export const Identifier: ParserId = "binance"
@@ -27,7 +27,7 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
   //
   const hash = hashString(`${index}_${csvRow}`)
   const _id = `${fileImportId}_${hash}`
-  const timestamp = new Date(utcTime).getTime() - TZ_OFFSET
+  const timestamp = asUTC(new Date(utcTime))
   const changeN = parseFloat(change)
   const symbol = coin
   const wallet = account
