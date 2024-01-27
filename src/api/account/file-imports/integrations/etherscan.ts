@@ -36,6 +36,9 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
   const errorCode = columns[14]
   const method = columns[15].trim()
 
+  // TODO statuses like Error(1) means only some internal txns failed
+  const hasError = status === "Error(0)" || undefined
+
   const txMeta = {
     blockNumber,
     contractAddress,
@@ -43,6 +46,7 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
     ethCurrentValue,
     ethHistoricalPrice,
     from,
+    hasError,
     method,
     status,
     to,
@@ -60,7 +64,6 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
   const symbol = "ETH"
   const wallet = "Spot"
 
-  const hasError = errorCode !== ""
   //
   const logs: EtherscanAuditLog[] = []
   let type: TransactionType

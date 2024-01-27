@@ -104,7 +104,8 @@ export type IntegrationMetadata = Exchange | Blockchain
 
 export interface AuditLog {
   _id: string
-  balance?: number
+  balance?: string
+  balanceN?: number
   change: string
   changeN: number
   importId: string
@@ -147,15 +148,19 @@ export interface FileImport {
 
 export interface Balance {
   _id: string // `${timestamp}_${x.symbol}`
-  balance: number
+  balance: string
+  balanceN: number
   price?: ChartData
   symbol: string
   value?: number
 }
 
 export interface BalanceMap {
-  // _id: string // Timestamp as string
-  [symbol: string]: number
+  _id: string // Timestamp as string
+  /**
+   * always a string, only timestamp is a number
+   */
+  [symbol: string]: string | number
   timestamp: Timestamp
 }
 

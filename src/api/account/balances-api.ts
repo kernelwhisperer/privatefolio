@@ -41,10 +41,12 @@ export async function getBalancesAt(
         const price = prices.length > 0 ? prices[0] : undefined
 
         return {
-          _id: `${timestamp}_${x.symbol}`,
-          ...x,
+          _id: `${_id}_${x.symbol}`,
+          balance: x.balance as string,
+          balanceN: Number(x.balance),
           price,
-          value: price ? price.value * x.balance : undefined,
+          symbol: x.symbol,
+          value: price ? price.value * Number(x.balance) : undefined,
         }
       })
     )
@@ -144,13 +146,13 @@ export async function computeBalances(
 
   let recordsLength = 0
   let latestBalances: BalanceMap = {
-    _id: 0,
+    _id: "0",
     timestamp: 0,
   }
   if (since !== 0) {
     try {
       const latestBalancesDoc = await account.balancesDB.get(String(since - 86400000))
-      const { _id, _rev, ...latestBalancesMap } = latestBalancesDoc
+      const { _rev, ...latestBalancesMap } = latestBalancesDoc
       latestBalances = latestBalancesMap
     } catch {
       // ignore
@@ -179,7 +181,7 @@ export async function computeBalances(
 
     // progress([(i * 100) / count, `Processing logs ${firstIndex} to ${lastIndex} - fetch complete`])
     for (const log of logs) {
-      const { symbol, changeN, timestamp } = log
+      const { symbol, change, timestamp } = log
 
       const nextDay: Timestamp = timestamp - (timestamp % 86400000)
 
@@ -196,24 +198,27 @@ export async function computeBalances(
 
       // update balance
       if (!latestBalances[symbol]) {
-        latestBalances[symbol] = changeN
+        latestBalances[symbol] = change
       } else {
-        latestBalances[symbol] = new Decimal(latestBalances[symbol]).plus(changeN).toNumber()
+        latestBalances[symbol] = new Decimal(latestBalances[symbol])
+          .plus(new Decimal(change))
+          .toString()
       }
       latestBalances.timestamp = nextDay
 
       // update audit log
-      log.balance = latestBalances[symbol]
+      log.balance = latestBalances[symbol] as string
+      log.balanceN = Number(latestBalances[symbol])
 
       // remove zero balances
-      if (latestBalances[symbol] === 0) {
+      if (latestBalances[symbol] === "0") {
         delete latestBalances[symbol]
       }
 
       // update historical balances
       if (!historicalBalances[nextDay]) {
         historicalBalances[nextDay] = Object.assign({}, latestBalances)
-      } else if (latestBalances[symbol] !== 0) {
+      } else if (latestBalances[symbol] !== "0") {
         historicalBalances[nextDay][symbol] = latestBalances[symbol]
       }
 

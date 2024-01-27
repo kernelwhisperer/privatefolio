@@ -16,15 +16,15 @@ export function BalancesChart() {
     console.log("📜 LOG > query > docs:", docs)
 
     const balances = await Promise.all(
-      docs.map(async ({ _id, _rev, timestamp, ...symbols }) => {
-        const prices = await clancy.getAssetPriceMap(timestamp)
+      docs.map(async ({ _id, _rev, ...symbols }) => {
+        const prices = await clancy.getAssetPriceMap(Number(_id))
         console.log("📜 LOG > docs.map > prices:", prices)
 
         const assetValues = Object.entries(symbols)
           .map(([symbol, balance]) => {
             const price = prices[symbol]
             return {
-              assetValue: price ? Math.round(price.value * balance * 100) / 100 : 0,
+              assetValue: price ? Math.round(price.value * Number(balance) * 100) / 100 : 0,
               symbol,
             }
           })
@@ -38,7 +38,7 @@ export function BalancesChart() {
           // ...x,
           // price,
           // value: price ? price.value * x.balance : undefined,
-          time: (timestamp / 1000) as Time,
+          time: (Number(_id) / 1000) as Time,
           values: assetValues.map((x) => x.assetValue).slice(0, 5),
         }
       })

@@ -101,7 +101,7 @@ export async function computeNetworth(
 
       if (!price || !balance) return acc
 
-      return acc + Math.round(price.value * balance * 100) / 100
+      return acc + Math.round(price.value * Number(balance) * 100) / 100
     }, 0)
 
     docIds.push({ id: _id })

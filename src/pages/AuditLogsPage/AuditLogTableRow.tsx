@@ -34,7 +34,7 @@ const OPERATION_ICONS: Partial<Record<AuditLogOperation, SvgIconComponent>> = {
 
 export function AuditLogTableRow(props: TableRowComponentProps<AuditLog>) {
   const { row, relativeTime, headCells, isMobile: _isMobile, isTablet: _isTablet, ...rest } = props
-  const { symbol, changeN, operation, timestamp, integration, wallet, balance } = row
+  const { symbol, changeN, balanceN, operation, timestamp, integration, wallet, balance } = row
 
   const assetMap = useStore($assetMap)
   const integrationMap = useStore($integrationMap)
@@ -130,7 +130,7 @@ export function AuditLogTableRow(props: TableRowComponentProps<AuditLog>) {
         )}
         <TableCell align="right">
           <AmountBlock
-            amount={balance}
+            amount={balanceN}
             tooltipMessage="Use the 'Compute balances' action to compute these values."
           />
         </TableCell>

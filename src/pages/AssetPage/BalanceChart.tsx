@@ -18,7 +18,7 @@ export function BalanceChart(props: BalanceChartProps) {
     const records = docs.map((item) => ({
       color: !item[symbol] ? "gray" : undefined,
       time: (item.timestamp / 1000) as UTCTimestamp,
-      value: item[symbol] || 0,
+      value: Number(item[symbol]) || 0,
     }))
 
     // TODO

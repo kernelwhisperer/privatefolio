@@ -20,7 +20,7 @@ export function BalanceTableRow(props: TableRowComponentProps<Balance>) {
     relativeTime: _relativeTime,
     ...rest
   } = props
-  const { symbol, balance, price, value } = row
+  const { symbol, balanceN, price, value } = row
 
   const navigate = useNavigate()
   const assetMap = useStore($assetMap)
@@ -51,7 +51,7 @@ export function BalanceTableRow(props: TableRowComponentProps<Balance>) {
                   fontWeight={300}
                   letterSpacing={0.5}
                 >
-                  <AmountBlock amount={balance} />
+                  <AmountBlock amount={balanceN} />
                 </Typography>
               </Stack>
             </Stack>
@@ -102,7 +102,7 @@ export function BalanceTableRow(props: TableRowComponentProps<Balance>) {
         </Stack>
       </TableCell>
       <TableCell align="right" sx={{ maxWidth: 220, minWidth: 220, width: 220 }}>
-        <AmountBlock amount={balance} />
+        <AmountBlock amount={balanceN} />
       </TableCell>
       <TableCell align="right" sx={{ maxWidth: 220, minWidth: 220, width: 220 }}>
         <AmountBlock

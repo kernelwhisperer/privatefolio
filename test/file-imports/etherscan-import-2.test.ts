@@ -35,7 +35,7 @@ it("should add a file import", async () => {
       "_id": "186018469",
       "metadata": {
         "integration": "ethereum",
-        "logs": 542,
+        "logs": 545,
         "operations": [
           "Deposit",
           "Fee",
@@ -52,7 +52,7 @@ it("should add a file import", async () => {
       },
     }
   `)
-  expect(auditLogs.length).toMatchInlineSnapshot(`542`)
+  expect(auditLogs.length).toMatchInlineSnapshot(`545`)
   expect(auditLogs).toMatchSnapshot()
 })
 
@@ -106,8 +106,8 @@ it.sequential("should compute balances", async () => {
   const transactions = await findTransactions({}, accountName)
   // assert
   expect(updates.join("\n")).toMatchInlineSnapshot(`
-    "0,Computing balances for 590 audit logs
-    0,Processing logs 1 to 590
+    "0,Computing balances for 593 audit logs
+    0,Processing logs 1 to 593
     90,Processed 1971 daily balances
     95,Setting networth cursor to Dec 31, 1969
     96,Filling balances to reach today
@@ -115,7 +115,7 @@ it.sequential("should compute balances", async () => {
   `)
   expect(balances.length).toMatchInlineSnapshot(`1971`)
   expect(balances).toMatchSnapshot()
-  expect(auditLogs.length).toMatchInlineSnapshot(`590`)
+  expect(auditLogs.length).toMatchInlineSnapshot(`593`)
   expect(auditLogs).toMatchSnapshot()
   expect(transactions.length).toMatchInlineSnapshot(`530`)
   expect(transactions).toMatchSnapshot()
