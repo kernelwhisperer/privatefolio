@@ -68,3 +68,16 @@ export const isServerSide = typeof window === "undefined"
 export const isProduction = isServerSide
   ? false
   : Boolean(window.location.toString().includes(SITE_DOMAIN))
+
+export function getExplorerLink(networkIndex: number, addr: string, type: string) {
+  if (networkIndex === 0) return `https://etherscan.io/${type}/${addr}`
+  if (networkIndex === 1) return `https://arbiscan.io/${type}/${addr}`
+  if (networkIndex === 2) return `https://polygonscan.com/${type}/${addr}`
+  if (networkIndex === 3) return `https://basescan.org/${type}/${addr}`
+
+  return ""
+}
+
+export function formatHex(addr: string) {
+  return `${addr.slice(0, 5)}...${addr.slice(-3)}`
+}

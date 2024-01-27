@@ -1,7 +1,9 @@
 import { ArrowRightAltRounded, CloseRounded } from "@mui/icons-material"
 import {
+  Avatar,
   Box,
   Button,
+  Chip,
   Drawer,
   DrawerProps,
   IconButton,
@@ -13,13 +15,19 @@ import { useStore } from "@nanostores/react"
 import React, { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { AmountBlock } from "src/components/AmountBlock"
+import { ExternalLink } from "src/components/ExternalLink"
 import { SectionTitle } from "src/components/SectionTitle"
 import { StaggeredList } from "src/components/StaggeredList"
 import { TimestampBlock } from "src/components/TimestampBlock"
+import { Truncate } from "src/components/Truncate"
 import { Transaction } from "src/interfaces"
+import { INTEGRATIONS } from "src/settings"
 import { $activeAccount, $activeIndex } from "src/stores/account-store"
 import { PopoverToggleProps } from "src/stores/app-store"
+import { $integrationMap } from "src/stores/metadata-store"
+import { MonoFont } from "src/theme"
 import { greenColor, redColor } from "src/utils/chart-utils"
+import { formatHex, getExplorerLink } from "src/utils/utils"
 import { clancy } from "src/workers/remotes"
 
 type TransactionDrawerProps = DrawerProps &
@@ -31,6 +39,7 @@ type TransactionDrawerProps = DrawerProps &
 export function TransactionDrawer(props: TransactionDrawerProps) {
   const { open, toggleOpen, tx, relativeTime, ...rest } = props
   const activeIndex = useStore($activeIndex)
+  const integrationMap = useStore($integrationMap)
 
   const {
     incomingN,
@@ -45,6 +54,8 @@ export function TransactionDrawer(props: TransactionDrawerProps) {
     feeN,
     feeSymbol,
     _id,
+    txHash,
+    ...txMeta
   } = tx
 
   const [logsNumber, setLogsNumber] = useState<number | null>(null)
@@ -63,12 +74,12 @@ export function TransactionDrawer(props: TransactionDrawerProps) {
       <StaggeredList
         paddingX={2}
         paddingY={1}
-        gap={4}
+        gap={2}
         show={open}
         secondary
         sx={(theme) => ({ minWidth: 358, overflowX: "hidden", ...theme.typography.body2 })}
       >
-        <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <Stack marginBottom={2} direction="row" justifyContent="space-between" alignItems="center">
           <Typography variant="subtitle1" letterSpacing="0.025rem">
             Transaction details
           </Typography>
@@ -76,6 +87,38 @@ export function TransactionDrawer(props: TransactionDrawerProps) {
             <CloseRounded fontSize="small" />
           </IconButton>
         </Stack>
+        <div>
+          <SectionTitle>Integration</SectionTitle>
+          <Stack direction="row" gap={0.5} alignItems="center" component="div">
+            <Avatar
+              src={integrationMap[integration]?.image}
+              sx={{
+                borderRadius: "2px",
+                height: 16,
+                width: 16,
+              }}
+              alt={INTEGRATIONS[integration]}
+            />
+            <span>{INTEGRATIONS[integration]}</span>
+          </Stack>
+        </div>
+        <div>
+          <SectionTitle>Wallet</SectionTitle>
+          {wallet}
+        </div>
+        <div>
+          <SectionTitle>Type</SectionTitle>
+          <Chip
+            size="small"
+            // sx={{ background: alpha(color, 0.075) }}
+            label={
+              <Stack direction="row" gap={0.5} alignItems="center" paddingRight={0.5}>
+                {/* {TypeIconComponent && <TypeIconComponent sx={{ color, fontSize: "inherit" }} />} */}
+                <Truncate>{type}</Truncate>
+              </Stack>
+            }
+          />
+        </div>
         <div>
           <SectionTitle>Timestamp</SectionTitle>
           <TimestampBlock timestamp={timestamp} relative={relativeTime} />
@@ -132,9 +175,15 @@ export function TransactionDrawer(props: TransactionDrawerProps) {
             </>
           )}
         </div>
-        {/* type */}
-        {/* wallet */}
-        {/* integration */}
+        {txHash && (
+          <div>
+            <SectionTitle>Blockchain Tx</SectionTitle>
+            <ExternalLink href={getExplorerLink(0, txHash, "tx")} fontFamily={MonoFont}>
+              <span>{formatHex(txHash)}</span>
+            </ExternalLink>
+          </div>
+        )}
+        {/* <pre>{JSON.stringify(txMeta, null, 2)}</pre> */}
         {/* <pre>{JSON.stringify(tx, null, 2)}</pre> */}
       </StaggeredList>
     </Drawer>

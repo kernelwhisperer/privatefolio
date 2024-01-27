@@ -9,11 +9,13 @@ import { Integration, ParserId } from "src/settings"
 import { asUTC } from "src/utils/formatting-utils"
 import { hashString } from "src/utils/utils"
 
-export const Identifier: ParserId = "etherscan"
+export const Identifier: ParserId = "etherscan-internal"
 export const integration: Integration = "ethereum"
 
-export const HEADER =
+export const HEADER2 =
   '"Txhash","Blockno","UnixTimestamp","DateTime (UTC)","From","To","ContractAddress","Value_IN(ETH)","Value_OUT(ETH)","CurrentValue","TxnFee(ETH)","TxnFee(USD)","Historical $Price/Eth","Status","ErrCode","Method"'
+export const HEADER =
+  '"Txhash","Blockno","UnixTimestamp","DateTime (UTC)","ParentTxFrom","ParentTxTo","ParentTxETH_Value","From","TxTo","ContractAddress","Value_IN(ETH)","Value_OUT(ETH)","CurrentValue","Historical $Price/Eth","Status","ErrCode","Type"'
 
 export function parser(csvRow: string, index: number, fileImportId: string): ParserResult {
   const row = csvRow.replaceAll('"', "")
@@ -23,18 +25,19 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
   const blockNumber = columns[1]
   // const unixTimestamp = columns[2]
   const datetimeUtc = columns[3]
-  const from = columns[4]
-  const to = columns[5]
-  const contractAddress = columns[6]
-  const valueIn = columns[7]
-  const valueOut = columns[8]
-  const ethCurrentValue = columns[9]
-  const txnFee = columns[10]
-  const txnFeeUsd = columns[11]
-  const ethHistoricalPrice = columns[12]
-  const status = columns[13]
-  const errorCode = columns[14]
-  const method = columns[15].trim()
+  const parentTxFrom = columns[4]
+  const parentTxTo = columns[5]
+  const parentTxEthValue = columns[6]
+  const from = columns[7]
+  const txTo = columns[8]
+  const contractAddress = columns[9]
+  const valueIn = columns[10]
+  const valueOut = columns[11]
+  const ethCurrentValue = columns[12]
+  const ethHistoricalPrice = columns[13]
+  const status = columns[14]
+  const errorCode = columns[15]
+  const txType = columns[17].trim()
 
   const txMeta = {
     blockNumber,
@@ -43,12 +46,13 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
     ethCurrentValue,
     ethHistoricalPrice,
     from,
-    method,
+    parentTxEthValue,
+    parentTxFrom,
+    parentTxTo,
     status,
-    to,
     txHash,
-    txnFee,
-    txnFeeUsd,
+    txTo,
+    txType,
     valueIn,
     valueOut,
   }
@@ -57,11 +61,10 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
   const hash = hashString(`${index}_${csvRow}`)
   const txId = `${fileImportId}_${hash}`
   const timestamp = asUTC(new Date(datetimeUtc))
+
   const symbol = "ETH"
   const wallet = "Spot"
 
-  const hasError = errorCode !== ""
-  //
   const logs: EtherscanAuditLog[] = []
   let type: TransactionType
   const operation: AuditLogOperation =
@@ -75,46 +78,44 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
     type = "Unknown"
   } else {
     type = operation
-    if (!hasError) {
-      const change = operation === "Deposit" ? valueIn : `-${valueOut}`
-      const changeN = parseFloat(change)
-
-      logs.push({
-        _id: `${txId}_0`,
-        change,
-        changeN,
-        importId: fileImportId,
-        importIndex: index,
-        integration,
-        operation,
-        symbol,
-        timestamp,
-        txId,
-        wallet,
-      })
-    }
-  }
-
-  let fee: string | undefined, feeN: number | undefined
-
-  if (txnFee !== "0" && valueIn === "0") {
-    fee = `-${txnFee}`
-    feeN = parseFloat(fee)
+    const change = operation === "Deposit" ? valueIn : `-${valueOut}`
+    const changeN = parseFloat(change)
 
     logs.push({
-      _id: `${txId}_1`,
-      change: fee,
-      changeN: feeN,
+      _id: `${txId}_0`,
+      change,
+      changeN,
       importId: fileImportId,
-      importIndex: index + 0.1,
+      importIndex: index,
       integration,
-      operation: "Fee",
+      operation,
       symbol,
       timestamp,
       txId,
       wallet,
     })
   }
+
+  let fee: string | undefined, feeN: number | undefined
+
+  // if (txnFee !== "0" && valueIn === "0") {
+  //   fee = `-${txnFee}`
+  //   feeN = parseFloat(fee)
+
+  //   logs.push({
+  //     _id: `${txId}_1`,
+  //     change: fee,
+  //     changeN: feeN,
+  //     importId: fileImportId,
+  //     importIndex: index + 0.1,
+  //     integration,
+  //     operation: "Fee",
+  //     symbol,
+  //     timestamp,
+  //     txId,
+  //     wallet,
+  //   })
+  // }
 
   const tx: Transaction = {
     _id: txId,
@@ -123,13 +124,13 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
     feeSymbol: symbol,
     importId: fileImportId,
     importIndex: index,
-    incoming: hasError ? undefined : valueIn,
-    incomingN: hasError ? undefined : parseFloat(valueIn),
-    incomingSymbol: hasError ? undefined : symbol,
+    incoming: valueIn,
+    incomingN: parseFloat(valueIn),
+    incomingSymbol: symbol,
     integration,
-    outgoing: hasError ? undefined : valueOut,
-    outgoingN: hasError ? undefined : parseFloat(valueOut),
-    outgoingSymbol: hasError ? undefined : symbol,
+    outgoing: valueOut,
+    outgoingN: parseFloat(valueOut),
+    outgoingSymbol: symbol,
     // price,
     // priceN,
     // role,

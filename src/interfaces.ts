@@ -46,6 +46,7 @@ export interface Transaction {
   priceN?: number
   role?: TransactionRole
   timestamp: Timestamp
+  txHash?: string
   type: TransactionType
   wallet: string
 }

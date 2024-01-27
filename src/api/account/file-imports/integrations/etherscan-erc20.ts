@@ -31,8 +31,8 @@ export function parser(
   //
   const txHash = columns[0]
   const blockNumber = columns[1]
-  const unixTimestamp = columns[2]
-  // const datetimeUtc = columns[3]
+  // const unixTimestamp = columns[2]
+  const datetimeUtc = columns[3]
   const from = columns[4]
   const to = columns[5]
   const tokenValue = columns[6]
@@ -56,7 +56,7 @@ export function parser(
   //
   const hash = hashString(`${index}_${csvRow}`)
   const _id = `${fileImportId}_${hash}`
-  const timestamp = asUTC(new Date(Number(unixTimestamp) * 1000))
+  const timestamp = asUTC(new Date(datetimeUtc))
 
   const operation: AuditLogOperation =
     to.toLowerCase() === userAddress.toLowerCase() ? "Deposit" : "Withdraw"

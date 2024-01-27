@@ -3,7 +3,13 @@ import { keepMount, map } from "nanostores"
 
 import { findAssets } from "../api/core/assets-api"
 import { findIntegrations } from "../api/core/integrations-api"
-import { Asset, AuditLogOperation, Integration, IntegrationMetadata } from "../interfaces"
+import {
+  Asset,
+  AuditLogOperation,
+  Integration,
+  IntegrationMetadata,
+  TransactionType,
+} from "../interfaces"
 import { DEFAULT_DEBOUNCE_DURATION, INTEGRATIONS } from "../settings"
 import { clancy } from "../workers/remotes"
 import { $activeAccount } from "./account-store"
@@ -76,13 +82,15 @@ async function computeFilterMap() {
 
   const symbolOptions = [...symbols].sort()
 
+  const type: TransactionType[] = ["Sell", "Buy", "Swap", "Deposit", "Withdraw", "Unknown"]
+
   const map: FilterOptionsMap = {
     incomingSymbol: symbolOptions,
     integration: [...integrations].sort(),
     operation: [...operations].sort(),
     outgoingSymbol: symbolOptions,
     symbol: symbolOptions,
-    type: ["Sell", "Buy", "Swap"],
+    type,
     wallet: [...wallets].sort(),
   }
 
