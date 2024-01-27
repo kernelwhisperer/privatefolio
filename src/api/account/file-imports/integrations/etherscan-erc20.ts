@@ -26,8 +26,10 @@ export function parser(
     throw new Error("'userAddress' is not valid.")
   }
 
-  const row = csvRow.replaceAll('"', "")
-  const columns = row.split(",")
+  const columns = csvRow
+    .split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/)
+    .map((column) => column.replaceAll('"', ""))
+
   //
   const txHash = columns[0]
   const blockNumber = columns[1]
@@ -35,7 +37,7 @@ export function parser(
   const datetimeUtc = columns[3]
   const from = columns[4]
   const to = columns[5]
-  const tokenValue = columns[6]
+  const tokenValue = columns[6].replaceAll(",", "")
   const tokenValueHistorical = columns[7]
   const contractAddress = columns[8]
   const tokenName = columns[9]
@@ -80,22 +82,6 @@ export function parser(
       ...txMeta,
     },
   ]
-
-  // TODO get the txnFee ??
-  // if (txnFee !== "0") {
-  //   logs.push({
-  //     _id: `${fileImportId}_${hash}_fee`,
-  //     change: txnFee,
-  //     changeN: parseFloat(txnFee),
-  //     integration: Identifier,
-  //     operation: "Fee",
-  //     symbol,
-  //     fileImportId,
-  //     timestamp,
-  //     wallet,
-  //     ...txMeta,
-  //   })
-  // }
 
   return { logs }
 }

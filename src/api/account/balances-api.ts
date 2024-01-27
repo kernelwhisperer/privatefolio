@@ -171,7 +171,7 @@ export async function computeBalances(
     const firstIndex = i + 1
     const lastIndex = Math.min(i + pageSize, count)
 
-    progress([(i * 90) / count, `Processing logs ${firstIndex} to ${lastIndex}`])
+    progress([Math.floor((i * 90) / count), `Processing logs ${firstIndex} to ${lastIndex}`])
     const { docs: logs } = await account.auditLogsDB.find({
       limit: pageSize,
       selector: { timestamp: { $gte: since } },
@@ -254,7 +254,7 @@ export async function computeBalances(
 
     await setValue("balancesCursor", latestDay, accountName)
     progress([
-      ((i + pageSize) * 90) / Math.max(count, pageSize),
+      Math.floor((Math.min(i + pageSize, count) * 90) / Math.max(count, pageSize)),
       `Processed ${balances.length} daily balances`,
     ])
 

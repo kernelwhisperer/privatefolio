@@ -95,6 +95,110 @@ it("should add an internal file import", async () => {
   expect(auditLogs).toMatchSnapshot()
 })
 
+it.skip("should add an erc20 file import", async () => {
+  // arrange
+  const fileName = "etherscan2-erc20.csv"
+  const filePath = join("test/files", fileName)
+  const buffer = await fs.promises.readFile(filePath, "utf8")
+  const file = new File([buffer], fileName, { lastModified: 0, type: "text/csv" })
+  // act
+  const fileImport = await addFileImport(file, undefined, accountName, async () => ({
+    userAddress: "0x003dC32fE920a4aAeeD12dC87E145F030aa753f3",
+  }))
+  const { docs: auditLogs } = await getAccount(accountName).auditLogsDB.find({
+    selector: {
+      importId: fileImport._id,
+    },
+  })
+  auditLogs.sort((a, b) => b.timestamp - a.timestamp)
+  // assert
+  expect(fileImport).toMatchInlineSnapshot(`
+    {
+      "_id": "1155767893",
+      "metadata": {
+        "integration": "ethereum",
+        "logs": 428,
+        "operations": [
+          "Deposit",
+          "Withdraw",
+        ],
+        "rows": 428,
+        "symbols": [
+          "VIU",
+          "INSP",
+          "DNT",
+          "MANA",
+          "SPANK",
+          "ANT",
+          "GNT",
+          "SWT",
+          "INT",
+          "BOOTY",
+          "SAI",
+          "WETH",
+          "MESH",
+          "ERC-20 TOKEN*",
+          "SAFE",
+          "cSAI",
+          "cETH",
+          "DAI",
+          "KICK",
+          "cDAI",
+          "DMS",
+          "TKN",
+          "USDC",
+          "ANJ",
+          "FREE",
+          "KTH",
+          "ETHRSIAPY",
+          "ETHBTCRSI7030",
+          "aDAI",
+          "aUSDC",
+          "yDAI+yUSDC+yUSDT+yTUSD",
+          "CHI",
+          "REP",
+          "MKR",
+          "LRC",
+          "GEN",
+          "UNI",
+          "YFI",
+          "yYFI",
+          "UNI-V2",
+          "CRV",
+          "cUNI",
+          "aMKR",
+          "COMP",
+          "oETH $500 Call 11/20/20",
+          "yveCRV-DAO",
+          "WBTC",
+          "cWBTC",
+          "PICKLE",
+          "COVER",
+          "SLP",
+          "MYST",
+          "ADAO",
+          "BADGER",
+          "bUNI-V2",
+          "USDT",
+          "1INCH",
+          "SUSHI",
+          "DIGG",
+          "3Crv",
+          "GTC",
+          "GLM",
+          "yvYFI",
+        ],
+        "transactions": 0,
+        "wallets": [
+          "Spot",
+        ],
+      },
+    }
+  `)
+  expect(auditLogs.length).toMatchInlineSnapshot(`428`)
+  expect(auditLogs).toMatchFileSnapshot("./__snapshots__/etherscan-import-2-erc20.test.ts.snap")
+})
+
 it.sequential("should compute balances", async () => {
   // arrange
   const until = Date.UTC(2021, 0, 0, 0, 0, 0, 0) // 1 Jan 2021
@@ -114,9 +218,13 @@ it.sequential("should compute balances", async () => {
     100,Saved 1971 records to disk"
   `)
   expect(balances.length).toMatchInlineSnapshot(`1971`)
-  expect(balances).toMatchSnapshot()
+  expect(balances).toMatchFileSnapshot("./__snapshots__/etherscan-import-2-balances.test.ts.snap")
   expect(auditLogs.length).toMatchInlineSnapshot(`593`)
-  expect(auditLogs).toMatchSnapshot()
+  expect(auditLogs).toMatchFileSnapshot(
+    "./__snapshots__/etherscan-import-2-audit-logs.test.ts.snap"
+  )
   expect(transactions.length).toMatchInlineSnapshot(`530`)
-  expect(transactions).toMatchSnapshot()
+  expect(transactions).toMatchFileSnapshot(
+    "./__snapshots__/etherscan-import-2-transactions.test.ts.snap"
+  )
 })

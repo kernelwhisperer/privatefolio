@@ -16,8 +16,9 @@ export const HEADER =
   '"Txhash","Blockno","UnixTimestamp","DateTime (UTC)","From","To","ContractAddress","Value_IN(ETH)","Value_OUT(ETH)","CurrentValue","TxnFee(ETH)","TxnFee(USD)","Historical $Price/Eth","Status","ErrCode","Method"'
 
 export function parser(csvRow: string, index: number, fileImportId: string): ParserResult {
-  const row = csvRow.replaceAll('"', "")
-  const columns = row.split(",")
+  const columns = csvRow
+    .split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/)
+    .map((column) => column.replaceAll('"', ""))
   //
   const txHash = columns[0]
   const blockNumber = columns[1]
@@ -26,10 +27,10 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
   const from = columns[4]
   const to = columns[5]
   const contractAddress = columns[6]
-  const valueIn = columns[7]
-  const valueOut = columns[8]
+  const valueIn = columns[7].replaceAll(",", "")
+  const valueOut = columns[8].replaceAll(",", "")
   const ethCurrentValue = columns[9]
-  const txnFee = columns[10]
+  const txnFee = columns[10].replaceAll(",", "")
   const txnFeeUsd = columns[11]
   const ethHistoricalPrice = columns[12]
   const status = columns[13]
