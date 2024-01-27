@@ -1,4 +1,3 @@
-import type Decimal from "decimal.js"
 import { OhlcData, SingleValueData, UTCTimestamp } from "lightweight-charts"
 
 import { Erc20Transaction, NativeTransaction } from "./api/account/connections/etherscan-rpc"
@@ -9,8 +8,6 @@ export type TransactionRole = "Maker" | "Taker"
 export type TransactionSide = "BUY" | "SELL"
 export type TransactionType = "Buy" | "Sell" | "Swap" | "Deposit" | "Withdraw" | "Unknown"
 // type ExchangeId = "mexc" | "binance"
-
-export type BigNumber = Decimal
 
 /**
  * Timestamp in milliseconds

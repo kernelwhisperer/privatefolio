@@ -55,6 +55,10 @@ export function parser(
     txHash,
   }
 
+  if (tokenValue === "0") {
+    return { logs: [] }
+  }
+
   //
   const hash = hashString(`${index}_${csvRow}`)
   const _id = `${fileImportId}_${hash}`
@@ -63,8 +67,9 @@ export function parser(
   const operation: AuditLogOperation =
     to.toLowerCase() === userAddress.toLowerCase() ? "Deposit" : "Withdraw"
 
-  const change = tokenValue
+  const change = operation === "Deposit" ? tokenValue : `-${tokenValue}`
   const changeN = parseFloat(change)
+
   const wallet = "Spot"
 
   const logs: EtherscanAuditLog[] = [

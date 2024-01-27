@@ -1,4 +1,4 @@
-import Decimal from "decimal.js"
+import Big from "big.js"
 import { formatDate } from "src/utils/formatting-utils"
 import { noop } from "src/utils/utils"
 
@@ -200,9 +200,7 @@ export async function computeBalances(
       if (!latestBalances[symbol]) {
         latestBalances[symbol] = change
       } else {
-        latestBalances[symbol] = new Decimal(latestBalances[symbol])
-          .plus(new Decimal(change))
-          .toString()
+        latestBalances[symbol] = new Big(latestBalances[symbol]).plus(new Big(change)).toString()
       }
       latestBalances.timestamp = nextDay
 

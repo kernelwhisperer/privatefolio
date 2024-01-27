@@ -73,7 +73,7 @@ export default function BalancesPage({ show }: { show: boolean }) {
         sortable: true,
       },
       {
-        key: "balance",
+        key: "balanceN",
         label: "Balance",
         numeric: true,
         sortable: true,

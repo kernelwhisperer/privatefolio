@@ -2189,6 +2189,11 @@
   dependencies:
     "@babel/types" "^7.20.7"
 
+"@types/big.js@^6.2.2":
+  version "6.2.2"
+  resolved "https://registry.yarnpkg.com/@types/big.js/-/big.js-6.2.2.tgz#69422ec9ef59df1330ccfde2106d9e1159a083c3"
+  integrity sha512-e2cOW9YlVzFY2iScnGBBkplKsrn2CsObHQ2Hiw4V1sSyiGbgWL8IyqE3zFi1Pt5o1pdAtYkDAIsF3KKUPjdzaA==
+
 "@types/debug@*":
   version "4.1.12"
   resolved "https://registry.yarnpkg.com/@types/debug/-/debug-4.1.12.tgz#a155f21690871953410df4b6b6f53187f0500917"
@@ -2976,6 +2981,11 @@ basic-authorization-header@^0.2.7:
   integrity sha512-ULWccPPIijGiKcT0l7i9lo7q97DNmGVQ3MmFTa6GSfMI8NaDf+lUjI9wCVffaR7Nzt52QgtVgpPwVWMph8rAfw==
   dependencies:
     basic-auth-token "^0.4.2"
+
+big.js@^6.2.1:
+  version "6.2.1"
+  resolved "https://registry.yarnpkg.com/big.js/-/big.js-6.2.1.tgz#7205ce763efb17c2e41f26f121c420c6a7c2744f"
+  integrity sha512-bCtHMwL9LeDIozFn+oNhhFoq+yQ3BNdnsLSASUxLciOb1vgvpHsIO1dsENiGMgbb4SkP5TrzWzRiLddn8ahVOQ==
 
 bluebird@^3.4.7:
   version "3.7.2"
