@@ -95,7 +95,7 @@ it("should add an internal file import", async () => {
   expect(auditLogs).toMatchSnapshot()
 })
 
-it.skip("should add an erc20 file import", async () => {
+it("should add an erc20 file import", async () => {
   // arrange
   const fileName = "etherscan2-erc20.csv"
   const filePath = join("test/files", fileName)
@@ -117,7 +117,7 @@ it.skip("should add an erc20 file import", async () => {
       "_id": "1155767893",
       "metadata": {
         "integration": "ethereum",
-        "logs": 428,
+        "logs": 419,
         "operations": [
           "Deposit",
           "Withdraw",
@@ -155,7 +155,6 @@ it.skip("should add an erc20 file import", async () => {
           "aDAI",
           "aUSDC",
           "yDAI+yUSDC+yUSDT+yTUSD",
-          "CHI",
           "REP",
           "MKR",
           "LRC",
@@ -195,7 +194,7 @@ it.skip("should add an erc20 file import", async () => {
       },
     }
   `)
-  expect(auditLogs.length).toMatchInlineSnapshot(`428`)
+  expect(auditLogs.length).toMatchInlineSnapshot(`419`)
   expect(auditLogs).toMatchFileSnapshot("./__snapshots__/etherscan-import-2-erc20.test.ts.snap")
 })
 
@@ -210,16 +209,18 @@ it.sequential("should compute balances", async () => {
   const transactions = await findTransactions({}, accountName)
   // assert
   expect(updates.join("\n")).toMatchInlineSnapshot(`
-    "0,Computing balances for 593 audit logs
-    0,Processing logs 1 to 593
-    90,Processed 1971 daily balances
+    "0,Computing balances for 1012 audit logs
+    0,Processing logs 1 to 1000
+    88,Processed 1762 daily balances
+    88,Processing logs 1001 to 1012
+    90,Processed 210 daily balances
     95,Setting networth cursor to Dec 31, 1969
     96,Filling balances to reach today
-    100,Saved 1971 records to disk"
+    100,Saved 1972 records to disk"
   `)
   expect(balances.length).toMatchInlineSnapshot(`1971`)
   expect(balances).toMatchFileSnapshot("./__snapshots__/etherscan-import-2-balances.test.ts.snap")
-  expect(auditLogs.length).toMatchInlineSnapshot(`593`)
+  expect(auditLogs.length).toMatchInlineSnapshot(`1012`)
   expect(auditLogs).toMatchFileSnapshot(
     "./__snapshots__/etherscan-import-2-audit-logs.test.ts.snap"
   )
