@@ -38,13 +38,13 @@ const OPERATION_ICONS: Partial<Record<TransactionType, SvgIconComponent>> = {
 export function TransactionTableRow(props: TableRowComponentProps<Transaction>) {
   const { relativeTime, isMobile: _isMobile, isTablet: _isTablet, row } = props
   const {
-    incomingN,
+    incoming,
     incomingSymbol,
     type,
     timestamp,
     integration,
     wallet,
-    outgoingN,
+    outgoing,
     outgoingSymbol,
   } = row
 
@@ -102,7 +102,7 @@ export function TransactionTableRow(props: TableRowComponentProps<Transaction>) 
           }}
         >
           <AmountBlock
-            amount={outgoingN ? outgoingN * -1 : outgoingN}
+            amount={outgoing ? `-${outgoing}` : outgoing}
             formatOpts={{ signDisplay: "always" }}
           />
         </TableCell>
@@ -128,7 +128,7 @@ export function TransactionTableRow(props: TableRowComponentProps<Transaction>) 
             width: 120,
           }}
         >
-          <AmountBlock amount={incomingN} formatOpts={{ signDisplay: "always" }} />
+          <AmountBlock amount={incoming} formatOpts={{ signDisplay: "always" }} />
         </TableCell>
         <TableCell sx={{ maxWidth: 120, minWidth: 120, width: 120 }}>
           {incomingSymbol && (

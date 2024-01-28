@@ -6,7 +6,7 @@ import { EMPTY_OBJECT } from "src/utils/utils"
 import { formatNumber, getDecimalPrecision } from "../utils/formatting-utils"
 
 type AmountBlockProps = {
-  amount?: number
+  amount?: string
   currencyName?: string
   currencySymbol?: string
   formatOpts?: Intl.NumberFormatOptions
@@ -24,26 +24,21 @@ export function AmountBlock(props: AmountBlockProps) {
     formatOpts = EMPTY_OBJECT,
   } = props
 
-  const maximumFractionDigits = significantDigits || 99
+  const amountN = amount ? Number(amount) : undefined
 
   let minimumFractionDigits = significantDigits
-  if (minimumFractionDigits === undefined && typeof amount === "number") {
-    if (amount > 10_000 || amount < -10_000) minimumFractionDigits = 0
-    else if (amount < 1 && amount > -1)
-      minimumFractionDigits = Math.min(getDecimalPrecision(amount), 6)
+  if (minimumFractionDigits === undefined && typeof amountN === "number") {
+    if (amountN > 10_000 || amountN < -10_000) minimumFractionDigits = 0
+    else if (amountN < 1 && amountN > -1)
+      minimumFractionDigits = Math.min(getDecimalPrecision(amountN), 6)
   }
 
   return (
     <Tooltip
       title={
-        typeof amount === "number" ? (
+        typeof amountN === "number" ? (
           <Box sx={{ fontFamily: MonoFont }}>
-            {formatNumber(amount, {
-              maximumFractionDigits,
-              minimumFractionDigits,
-              ...formatOpts,
-            })}{" "}
-            {currencyName}
+            {amount} {currencyName}
           </Box>
         ) : (
           tooltipMessage
@@ -58,17 +53,11 @@ export function AmountBlock(props: AmountBlockProps) {
         onClick={() => {
           if (!amount) return
 
-          navigator.clipboard.writeText(
-            formatNumber(amount, {
-              maximumFractionDigits,
-              minimumFractionDigits,
-              ...formatOpts,
-            })
-          )
+          navigator.clipboard.writeText(amount)
         }}
       >
-        {typeof amount === "number" ? (
-          `${currencySymbol}${formatNumber(amount, {
+        {typeof amountN === "number" ? (
+          `${currencySymbol}${formatNumber(amountN, {
             maximumFractionDigits: minimumFractionDigits,
             minimumFractionDigits,
             // notation: "compact",

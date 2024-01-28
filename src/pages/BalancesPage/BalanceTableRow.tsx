@@ -20,7 +20,7 @@ export function BalanceTableRow(props: TableRowComponentProps<Balance>) {
     relativeTime: _relativeTime,
     ...rest
   } = props
-  const { symbol, balanceN, price, value } = row
+  const { symbol, balance, price, value } = row
 
   const navigate = useNavigate()
   const assetMap = useStore($assetMap)
@@ -51,14 +51,14 @@ export function BalanceTableRow(props: TableRowComponentProps<Balance>) {
                   fontWeight={300}
                   letterSpacing={0.5}
                 >
-                  <AmountBlock amount={balanceN} />
+                  <AmountBlock amount={balance} />
                 </Typography>
               </Stack>
             </Stack>
             <Stack alignItems="flex-end">
               <Typography variant="body1">
                 <AmountBlock
-                  amount={value}
+                  amount={String(value)}
                   currencySymbol={currency.symbol}
                   currencyName={currency.name}
                   significantDigits={currency.significantDigits}
@@ -71,7 +71,7 @@ export function BalanceTableRow(props: TableRowComponentProps<Balance>) {
                 letterSpacing={0.5}
               >
                 <AmountBlock
-                  amount={price?.value}
+                  amount={String(price?.value)}
                   currencySymbol={currency.symbol}
                   currencyName={currency.name}
                   significantDigits={currency.maxDigits}
@@ -102,11 +102,11 @@ export function BalanceTableRow(props: TableRowComponentProps<Balance>) {
         </Stack>
       </TableCell>
       <TableCell align="right" sx={{ maxWidth: 220, minWidth: 220, width: 220 }}>
-        <AmountBlock amount={balanceN} />
+        <AmountBlock amount={balance} />
       </TableCell>
       <TableCell align="right" sx={{ maxWidth: 220, minWidth: 220, width: 220 }}>
         <AmountBlock
-          amount={price?.value}
+          amount={String(price?.value)}
           currencySymbol={currency.symbol}
           currencyName={currency.name}
           significantDigits={currency.maxDigits}
@@ -114,7 +114,7 @@ export function BalanceTableRow(props: TableRowComponentProps<Balance>) {
       </TableCell>
       <TableCell align="right" sx={{ maxWidth: 220, minWidth: 220, width: 220 }}>
         <AmountBlock
-          amount={value}
+          amount={String(value)}
           currencySymbol={currency.symbol}
           currencyName={currency.name}
           significantDigits={currency.maxDigits}

@@ -42,16 +42,16 @@ export function TransactionDrawer(props: TransactionDrawerProps) {
   const integrationMap = useStore($integrationMap)
 
   const {
-    incomingN,
+    incoming,
     incomingSymbol,
     type,
     timestamp,
     integration,
     wallet,
-    priceN,
-    outgoingN,
+    price,
+    outgoing,
     outgoingSymbol,
-    feeN,
+    fee,
     feeSymbol,
     _id,
     txHash,
@@ -126,7 +126,7 @@ export function TransactionDrawer(props: TransactionDrawerProps) {
         <div>
           <SectionTitle>Fee</SectionTitle>
           <Box sx={{ color: redColor }}>
-            <AmountBlock amount={feeN ? feeN * -1 : feeN} formatOpts={{ signDisplay: "always" }} />{" "}
+            <AmountBlock amount={fee} formatOpts={{ signDisplay: "always" }} />{" "}
             <span>{feeSymbol}</span>
           </Box>
         </div>
@@ -134,23 +134,25 @@ export function TransactionDrawer(props: TransactionDrawerProps) {
           <SectionTitle>Cost</SectionTitle>
           <Box sx={{ color: redColor }}>
             <AmountBlock
-              amount={outgoingN ? outgoingN * -1 : outgoingN}
+              amount={outgoing ? `-${outgoing}` : outgoing}
               formatOpts={{ signDisplay: "always" }}
             />{" "}
             <span>{outgoingSymbol}</span>
           </Box>
         </div>
-        <div>
-          <SectionTitle>Price</SectionTitle>
-          <AmountBlock amount={priceN} />{" "}
-          <span>
-            {outgoingSymbol}/{incomingSymbol}
-          </span>
-        </div>
+        {price && (
+          <div>
+            <SectionTitle>Price</SectionTitle>
+            <AmountBlock amount={price} />{" "}
+            <span>
+              {outgoingSymbol}/{incomingSymbol}
+            </span>
+          </div>
+        )}
         <div>
           <SectionTitle>Received</SectionTitle>
           <Box sx={{ color: greenColor }}>
-            <AmountBlock amount={incomingN} formatOpts={{ signDisplay: "always" }} />{" "}
+            <AmountBlock amount={incoming} formatOpts={{ signDisplay: "always" }} />{" "}
             <span>{incomingSymbol}</span>
           </Box>
         </div>
