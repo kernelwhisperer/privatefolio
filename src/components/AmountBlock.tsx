@@ -6,7 +6,7 @@ import { EMPTY_OBJECT } from "src/utils/utils"
 import { formatNumber, getDecimalPrecision } from "../utils/formatting-utils"
 
 type AmountBlockProps = {
-  amount?: string
+  amount?: string | number
   currencyName?: string
   currencySymbol?: string
   formatOpts?: Intl.NumberFormatOptions
@@ -53,7 +53,7 @@ export function AmountBlock(props: AmountBlockProps) {
         onClick={() => {
           if (!amount) return
 
-          navigator.clipboard.writeText(amount)
+          navigator.clipboard.writeText(String(amount))
         }}
       >
         {typeof amountN === "number" ? (
