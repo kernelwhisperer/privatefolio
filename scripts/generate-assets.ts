@@ -3,6 +3,7 @@ import { join } from "path"
 
 import { Asset } from "../src/interfaces"
 import { ASSET_FILES_LOCATION, ASSET_PAGES } from "../src/settings"
+import { wait } from "../src/utils/utils"
 
 const COINGECKO_BASE_API = "https://api.coingecko.com/api/v3"
 const ENDPOINT = "coins/markets"
@@ -25,54 +26,63 @@ async function main() {
 
   await Promise.all(
     URLs.map(async (url, index) => {
-      const res = await fetch(url)
-      const list = await res.json()
+      // if (index < 30 || index >= 40) return
 
-      if (list?.status?.error_message) {
-        throw new Error(list.status.error_message)
-      }
+      try {
+        // await wait(1500 * (index % 10))
+        await wait(500 * index)
 
-      // "id": "bitcoin",
-      // "symbol": "btc",
-      // "name": "Bitcoin",
-      // "image": "https://assets.coingecko.com/coins/images/1/large/bitcoin.png?1696501400",
-      // "current_price": 36295,
-      // "market_cap": 708951941289,
-      // "market_cap_rank": 1,
-      // "fully_diluted_valuation": 761843156368,
-      // "total_volume": 16970655279,
-      // "high_24h": 36989,
-      // "low_24h": 36223,
-      // "price_change_24h": -626.6685457503772,
-      // "price_change_percentage_24h": -1.69731,
-      // "market_cap_change_24h": -11020124835.994995,
-      // "market_cap_change_percentage_24h": -1.53063,
-      // "circulating_supply": 19542068,
-      // "total_supply": 21000000,
-      // "max_supply": 21000000,
-      // "ath": 69045,
-      // "ath_change_percentage": -47.45403,
-      // "ath_date": "2021-11-10T14:24:11.849Z",
-      // "atl": 67.81,
-      // "atl_change_percentage": 53403.58354,
-      // "atl_date": "2013-07-06T00:00:00.000Z",
-      // "roi": null,
-      // "last_updated": "2023-11-14T12:46:54.888Z"
-      const assets: Asset[] = list.map((x) => {
-        const symbol = x.symbol.toUpperCase()
+        const res = await fetch(url)
+        const list = await res.json()
 
-        return {
-          coingeckoId: x.id,
-          image: x.image,
-          isStablecoin: ["USD", "EUR", "USDT", "USDC"].includes(symbol),
-          name: x.name,
-          symbol,
+        if (list?.status?.error_message) {
+          throw new Error(list.status.error_message)
         }
-      })
 
-      await writeFile(`${destination}/page-${index + 1}.json`, JSON.stringify(assets, null, 2))
+        // "id": "bitcoin",
+        // "symbol": "btc",
+        // "name": "Bitcoin",
+        // "image": "https://assets.coingecko.com/coins/images/1/large/bitcoin.png?1696501400",
+        // "current_price": 36295,
+        // "market_cap": 708951941289,
+        // "market_cap_rank": 1,
+        // "fully_diluted_valuation": 761843156368,
+        // "total_volume": 16970655279,
+        // "high_24h": 36989,
+        // "low_24h": 36223,
+        // "price_change_24h": -626.6685457503772,
+        // "price_change_percentage_24h": -1.69731,
+        // "market_cap_change_24h": -11020124835.994995,
+        // "market_cap_change_percentage_24h": -1.53063,
+        // "circulating_supply": 19542068,
+        // "total_supply": 21000000,
+        // "max_supply": 21000000,
+        // "ath": 69045,
+        // "ath_change_percentage": -47.45403,
+        // "ath_date": "2021-11-10T14:24:11.849Z",
+        // "atl": 67.81,
+        // "atl_change_percentage": 53403.58354,
+        // "atl_date": "2013-07-06T00:00:00.000Z",
+        // "roi": null,
+        // "last_updated": "2023-11-14T12:46:54.888Z"
+        const assets: Asset[] = list.map((x) => {
+          const symbol = x.symbol.toUpperCase()
 
-      console.log(`Page ${index + 1} written`)
+          return {
+            coingeckoId: x.id,
+            image: x.image,
+            isStablecoin: ["USD", "EUR", "USDT", "USDC"].includes(symbol),
+            name: x.name,
+            symbol,
+          }
+        })
+
+        await writeFile(`${destination}/page-${index + 1}.json`, JSON.stringify(assets, null, 2))
+
+        console.log(`Page ${index + 1} written`)
+      } catch (error) {
+        console.error(`Page ${index + 1} failed: ${String(error)}`)
+      }
     })
   )
 

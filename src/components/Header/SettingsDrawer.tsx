@@ -1,7 +1,7 @@
 import { Settings as SettingsIcon } from "@mui/icons-material"
 import { Drawer, IconButton, Tooltip } from "@mui/material"
 import React from "react"
-import { APP_VERSION, GIT_HASH } from "src/settings"
+import { APP_VERSION, GIT_HASH } from "src/env"
 
 import { useBoolean } from "../../hooks/useBoolean"
 import { SettingsDrawerContents } from "./SettingsDrawerContents"

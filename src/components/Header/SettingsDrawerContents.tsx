@@ -10,7 +10,7 @@ import {
 } from "@mui/material"
 import { useStore } from "@nanostores/react"
 import React from "react"
-import { GIT_DATE } from "src/settings"
+import { GIT_DATE } from "src/env"
 import { formatDate, formatHour } from "src/utils/formatting-utils"
 
 import { $debugMode, $telemetry, AppVerProps, PopoverToggleProps } from "../../stores/app-store"

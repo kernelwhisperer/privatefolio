@@ -1,5 +1,5 @@
 import { UTCTimestamp } from "lightweight-charts"
-import { DISALLOW_BINANCE_PRICE_API } from "src/settings"
+import { DISALLOW_BINANCE_PRICE_API } from "src/env"
 
 import {
   BinanceKline,

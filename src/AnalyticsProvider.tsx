@@ -1,6 +1,6 @@
 import React, { PropsWithChildren, useEffect } from "react"
 
-import { POSTHOG_KEY } from "./settings"
+import { POSTHOG_KEY } from "./env"
 import { $telemetry } from "./stores/app-store"
 import { isProduction } from "./utils/utils"
 
