@@ -34,6 +34,9 @@ it("should add a file import", async () => {
     {
       "_id": "32174469",
       "metadata": {
+        "assetIds": [
+          "ETH",
+        ],
         "integration": "ethereum",
         "logs": 16,
         "operations": [
@@ -42,9 +45,6 @@ it("should add a file import", async () => {
           "Fee",
         ],
         "rows": 9,
-        "symbols": [
-          "ETH",
-        ],
         "transactions": 9,
         "wallets": [
           "Spot",
@@ -77,22 +77,22 @@ it("should add an erc20 file import", async () => {
     {
       "_id": "3090763006",
       "metadata": {
+        "assetIds": [
+          "ethereum:0xab95e915c123fded5bdfb6325e35ef5515f1ea69:XNN",
+          "ethereum:0x0cf0ee63788a0849fe5297f3407f701e122cc023:XDATA",
+          "ethereum:0x519475b31653e46d20cd09f9fdcf3b12bdacb4f5:VIU",
+          "ethereum:0x52903256dd18d85c2dc4a6c999907c9793ea61e3:INSP",
+          "ethereum:0x1d462414fe14cf489c7a21cac78509f4bf8cd7c0:CAN",
+          "ethereum:0xa4e8c3ec456107ea67d3075bf9e3df3a75823db0:LOOM",
+          "ethereum:0x7b2f9706cd8473b4f5b7758b0171a9933fc6c4d6:HEALP",
+          "ethereum:0x58b6a8a3302369daec383334672404ee733ab239:LPT",
+        ],
         "integration": "ethereum",
         "logs": 8,
         "operations": [
           "Deposit",
         ],
         "rows": 8,
-        "symbols": [
-          "XNN",
-          "XDATA",
-          "VIU",
-          "INSP",
-          "CAN",
-          "LOOM",
-          "HEALP",
-          "LPT",
-        ],
         "transactions": 0,
         "wallets": [
           "Spot",

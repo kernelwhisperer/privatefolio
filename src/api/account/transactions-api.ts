@@ -1,14 +1,15 @@
 // /* eslint-disable sort-keys-fix/sort-keys-fix */
 import { proxy } from "comlink"
+import { noop } from "src/utils/utils"
 
 import { Transaction } from "../../interfaces"
 import { ProgressCallback } from "../../stores/task-store"
 import { getAccount } from "../database"
 
-const _filterOrder = ["integration", "wallet", "type", "outgoingSymbol", "incomingSymbol"]
+const _filterOrder = ["integration", "wallet", "type", "outgoingAsset", "incomingAsset"]
 const _filterOrderBySpecificity = [
-  "outgoingSymbol",
-  "incomingSymbol",
+  "outgoingAsset",
+  "incomingAsset",
   "type",
   "wallet",
   "integration",
@@ -28,36 +29,36 @@ export async function indexTransactions(progress: ProgressCallback, accountName:
   progress([75, "Transactions: updating index for 'integration'"])
   await account.transactionsDB.createIndex({
     index: {
-      fields: ["integration", "timestamp", "wallet", "type", "outgoingSymbol", "incomingSymbol"], // MUST respect the order in _filterOrder
+      fields: ["integration", "timestamp", "wallet", "type", "outgoingAsset", "incomingAsset"], // MUST respect the order in _filterOrder
       name: "integration",
     },
   })
   progress([80, "Transactions: updating index for 'wallet'"])
   await account.transactionsDB.createIndex({
     index: {
-      fields: ["wallet", "timestamp", "integration", "type", "outgoingSymbol", "incomingSymbol"], // MUST respect the order in _filterOrder
+      fields: ["wallet", "timestamp", "integration", "type", "outgoingAsset", "incomingAsset"], // MUST respect the order in _filterOrder
       name: "wallet",
     },
   })
   progress([85, "Transactions: updating index for 'type'"])
   await account.transactionsDB.createIndex({
     index: {
-      fields: ["type", "timestamp", "integration", "wallet", "outgoingSymbol", "incomingSymbol"], // MUST respect the order in _filterOrder
+      fields: ["type", "timestamp", "integration", "wallet", "outgoingAsset", "incomingAsset"], // MUST respect the order in _filterOrder
       name: "type",
     },
   })
-  progress([90, "Transactions: updating index for 'outgoingSymbol'"])
+  progress([90, "Transactions: updating index for 'outgoingAsset'"])
   await account.transactionsDB.createIndex({
     index: {
-      fields: ["outgoingSymbol", "timestamp", "integration", "wallet", "type", "incomingSymbol"], // MUST respect the order in _filterOrder
-      name: "outgoingSymbol",
+      fields: ["outgoingAsset", "timestamp", "integration", "wallet", "type", "incomingAsset"], // MUST respect the order in _filterOrder
+      name: "outgoingAsset",
     },
   })
-  progress([95, "Transactions: updating index for 'incomingSymbol'"])
+  progress([95, "Transactions: updating index for 'incomingAsset'"])
   await account.transactionsDB.createIndex({
     index: {
-      fields: ["incomingSymbol", "timestamp", "integration", "wallet", "type", "outgoingSymbol"], // MUST respect the order in _filterOrder
-      name: "incomingSymbol",
+      fields: ["incomingAsset", "timestamp", "integration", "wallet", "type", "outgoingAsset"], // MUST respect the order in _filterOrder
+      name: "incomingAsset",
     },
   })
 }
@@ -80,7 +81,8 @@ export async function findTransactions(request: FindTransactionsRequest = {}, ac
   const account = getAccount(accountName)
   const { indexes } = await account.transactionsDB.getIndexes()
   if (indexes.length === 1) {
-    await indexTransactions(console.log, accountName)
+    // await indexTransactions(console.log, accountName)
+    await indexTransactions(noop, accountName)
   }
 
   const { filters = {}, limit, skip, order = "desc", fields, selectorOverrides = {} } = request

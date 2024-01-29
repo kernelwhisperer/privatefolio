@@ -43,23 +43,23 @@ export function extractTransactions(logs: AuditLog[], fileImportId: string): Tra
       const _id = `${fileImportId}_${hash}`
       // Incoming
       const buyLogs = group.filter((log) => log.operation === "Buy")
-      const incomingSymbol: string | undefined = buyLogs[0]?.symbol
-      const incomingN = incomingSymbol
+      const incomingAsset: string | undefined = buyLogs[0]?.assetId
+      const incomingN = incomingAsset
         ? buyLogs.reduce((acc, log) => acc + log.changeN, 0)
         : undefined
-      const incoming = incomingSymbol ? String(incomingN) : undefined
+      const incoming = incomingAsset ? String(incomingN) : undefined
       // Outgoing
       const sellLogs = group.filter((log) => log.operation === "Sell")
-      const outgoingSymbol: string | undefined = sellLogs[0]?.symbol
-      const outgoingN = outgoingSymbol
+      const outgoingAsset: string | undefined = sellLogs[0]?.assetId
+      const outgoingN = outgoingAsset
         ? Math.abs(sellLogs.reduce((acc, log) => acc + log.changeN, 0))
         : undefined
-      const outgoing = outgoingSymbol ? String(outgoingN) : undefined
+      const outgoing = outgoingAsset ? String(outgoingN) : undefined
       // Fee
       const feeLogs = group.filter((log) => log.operation === "Fee")
       const feeN = Math.abs(feeLogs.reduce((acc, log) => acc + log.changeN, 0))
       const fee = String(feeN)
-      const feeSymbol = feeLogs[0]?.symbol
+      const feeAsset = feeLogs[0]?.assetId
       // Price
       const priceN =
         typeof incomingN === "number" && typeof outgoingN === "number"
@@ -72,17 +72,17 @@ export function extractTransactions(logs: AuditLog[], fileImportId: string): Tra
       transactions.push({
         _id,
         fee,
+        feeAsset,
         feeN,
-        feeSymbol,
         importId: fileImportId,
         importIndex: parseInt(i),
         incoming,
+        incomingAsset,
         incomingN,
-        incomingSymbol,
         integration,
         outgoing,
+        outgoingAsset,
         outgoingN,
-        outgoingSymbol,
         price,
         priceN,
         timestamp,

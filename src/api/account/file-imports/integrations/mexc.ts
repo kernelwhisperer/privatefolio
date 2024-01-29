@@ -18,8 +18,8 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
   const columns = csvRow.split(",")
   //
   const marketPair = columns[0]
-  const symbol = marketPair.split("_")[0]
-  const quoteSymbol = marketPair.split("_")[1]
+  const assetId = marketPair.split("_")[0]
+  const quoteAssetId = marketPair.split("_")[1]
   const timestamp = asUTC(new Date(columns[1]))
   //
   const side = columns[2] as TransactionSide
@@ -35,7 +35,7 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
   const priceN = parseFloat(price)
   const feeN = parseFloat(fee)
   const totalN = parseFloat(total)
-  const feeSymbol = quoteSymbol // ?
+  const feeAssetId = quoteAssetId // ?
   //
   const wallet = "Spot"
 
@@ -47,17 +47,17 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
     txns.push({
       _id: txId,
       fee,
+      feeAsset: feeAssetId,
       feeN,
-      feeSymbol,
       importId: fileImportId,
       importIndex: index,
       incoming: amount,
+      incomingAsset: assetId,
       incomingN: amountN,
-      incomingSymbol: symbol,
       integration,
       outgoing: total,
+      outgoingAsset: quoteAssetId,
       outgoingN: totalN,
-      outgoingSymbol: quoteSymbol,
       price,
       priceN,
       role,
@@ -67,25 +67,25 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
     })
     logs.push({
       _id: `${txId}_0`,
+      assetId: quoteAssetId,
       change: `-${total}`,
       changeN: parseFloat(`-${total}`),
       importId: fileImportId,
       importIndex: index,
       integration,
       operation: "Sell",
-      symbol: quoteSymbol,
       timestamp,
       wallet,
     })
     logs.push({
       _id: `${txId}_1`,
+      assetId,
       change: amount,
       changeN: parseFloat(amount),
       importId: fileImportId,
       importIndex: index + 0.1,
       integration,
       operation: "Buy",
-      symbol,
       timestamp,
       wallet,
     })
@@ -94,17 +94,17 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
     txns.push({
       _id: txId,
       fee,
+      feeAsset: feeAssetId,
       feeN,
-      feeSymbol,
       importId: fileImportId,
       importIndex: index,
       incoming: total,
+      incomingAsset: quoteAssetId,
       incomingN: totalN,
-      incomingSymbol: quoteSymbol,
       integration,
       outgoing: amount,
+      outgoingAsset: assetId,
       outgoingN: amountN,
-      outgoingSymbol: symbol,
       price,
       priceN,
       role,
@@ -114,25 +114,25 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
     })
     logs.push({
       _id: `${txId}_0`,
+      assetId,
       change: `-${amount}`,
       changeN: parseFloat(`-${amount}`),
       importId: fileImportId,
       importIndex: index,
       integration,
       operation: "Sell",
-      symbol,
       timestamp,
       wallet,
     })
     logs.push({
       _id: `${txId}_1`,
+      assetId: quoteAssetId,
       change: total,
       changeN: parseFloat(total),
       importId: fileImportId,
       importIndex: index + 0.1,
       integration,
       operation: "Buy",
-      symbol: quoteSymbol,
       timestamp,
       wallet,
     })
@@ -140,13 +140,13 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
 
   logs.push({
     _id: `${txId}_2`,
+    assetId: quoteAssetId,
     change: `-${fee}`,
     changeN: parseFloat(`-${fee}`),
     importId: fileImportId,
     importIndex: index + 0.2,
     integration,
     operation: "Fee",
-    symbol: quoteSymbol,
     timestamp,
     wallet,
   })

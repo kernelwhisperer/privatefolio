@@ -37,7 +37,7 @@ export async function parseCsv(
 
   const logs: AuditLog[] = []
   let transactions: Transaction[] = []
-  const symbolMap: Record<string, boolean> = {}
+  const assetMap: Record<string, boolean> = {}
   const walletMap: Record<string, boolean> = {}
   const operationMap: Partial<Record<AuditLogOperation, boolean>> = {}
 
@@ -52,7 +52,7 @@ export async function parseCsv(
 
       for (const log of newLogs) {
         logs.push(log)
-        symbolMap[log.symbol] = true
+        assetMap[log.assetId] = true
         walletMap[log.wallet] = true
         operationMap[log.operation] = true
       }
@@ -72,11 +72,11 @@ export async function parseCsv(
   }
 
   const metadata: FileImport["meta"] = {
+    assetIds: Object.keys(assetMap),
     integration,
     logs: logs.length,
     operations: Object.keys(operationMap) as AuditLogOperation[],
     rows: rows.length - 1,
-    symbols: Object.keys(symbolMap),
     transactions: transactions.length,
     wallets: Object.keys(walletMap),
   }

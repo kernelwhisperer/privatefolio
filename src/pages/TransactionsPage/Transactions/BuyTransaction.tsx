@@ -24,7 +24,7 @@
 
 // export function BuyTransaction(props: TransactionCardProps) {
 //   const { tx, assetMap } = props
-//   const { symbol, type, amountN, totalN, feeN, quoteSymbol, feeSymbol, timestamp } = tx
+//   const { symbol, type, amountN, totalN, feeN, quoteSymbol, feeAsset, timestamp } = tx
 
 //   return (
 //     <>
@@ -88,9 +88,9 @@
 //                 <AssetChange
 //                   label="Fee"
 //                   amount={formatNumber(feeN)}
-//                   symbol={feeSymbol as string}
+//                   symbol={feeAsset as string}
 //                   valueAmount={"0.1"}
-//                   imageSrc={assetMap[feeSymbol as string]?.image}
+//                   imageSrc={assetMap[feeAsset as string]?.image}
 //                   negative
 //                 />
 //               </Grid>

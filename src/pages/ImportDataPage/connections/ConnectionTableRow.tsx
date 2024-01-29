@@ -21,7 +21,7 @@ import { useConfirm } from "src/hooks/useConfirm"
 import { Connection } from "src/interfaces"
 import { INTEGRATIONS } from "src/settings"
 import { $activeAccount } from "src/stores/account-store"
-import { $integrationMap } from "src/stores/metadata-store"
+import { $integrationMetaMap } from "src/stores/metadata-store"
 import { enqueueTask, TaskPriority } from "src/stores/task-store"
 import { MonoFont } from "src/theme"
 import { enqueueSyncConnection, handleAuditLogChange } from "src/utils/common-tasks"
@@ -40,7 +40,7 @@ export function ConnectionTableRow(props: TableRowComponentProps<Connection>) {
   } = props
   const { address, timestamp, syncedAt, integration, label, meta } = row
 
-  const integrationMap = useStore($integrationMap)
+  const integrationMap = useStore($integrationMetaMap)
 
   const confirm = useConfirm()
 

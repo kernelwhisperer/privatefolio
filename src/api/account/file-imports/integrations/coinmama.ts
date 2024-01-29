@@ -33,11 +33,11 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
   }
   const incoming = type.split(" ")[0]
   const incomingN = parseFloat(incoming)
-  const incomingSymbol = type.split(" ")[1]
+  const incomingAsset = type.split(" ")[1]
   const outgoing = amount.split(" ")[0]
   const outgoingN = parseFloat(outgoing)
-  const outgoingSymbol = amount.split(" ")[1]
-  const symbol = type.split(" ")[1]
+  const outgoingAsset = amount.split(" ")[1]
+  const assetId = type.split(" ")[1]
   const wallet = "Spot"
   const priceN = outgoingN / incomingN
   const price = String(priceN)
@@ -48,14 +48,14 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
     importIndex: index,
     // fee,
     // feeN,
-    // feeSymbol,
+    // feeAsset,
     incoming,
+    incomingAsset,
     incomingN,
-    incomingSymbol,
     integration,
     outgoing,
+    outgoingAsset,
     outgoingN,
-    outgoingSymbol,
     price,
     priceN,
     timestamp,
@@ -66,13 +66,13 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
   const logs: AuditLog[] = [
     {
       _id: `${txId}_0`,
+      assetId,
       change: incoming,
       changeN: incomingN,
       importId: fileImportId,
       importIndex: index,
       integration,
       operation: transaction as AuditLogOperation,
-      symbol,
       timestamp,
       wallet,
     },

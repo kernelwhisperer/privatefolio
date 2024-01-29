@@ -9,8 +9,8 @@ import {
 
 export const Identifier: PriceApiId = "coinbase"
 
-export function getPair(symbol: string) {
-  return `${symbol}-USD`
+export function getPair(assetId: string) {
+  return `${assetId}-USD`
 }
 
 // Coinbase only allows 300 records per request

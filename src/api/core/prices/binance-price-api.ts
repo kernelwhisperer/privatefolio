@@ -11,8 +11,8 @@ import {
 
 export const Identifier: PriceApiId = "binance"
 
-export function getPair(symbol: string) {
-  return `${symbol}USDT`
+export function getPair(assetId: string) {
+  return `${assetId}USDT`
 }
 
 // https://binance-docs.github.io/apidocs/spot/en/#general-api-information

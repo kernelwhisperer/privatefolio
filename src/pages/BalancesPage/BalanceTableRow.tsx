@@ -4,10 +4,11 @@ import React from "react"
 import { useNavigate } from "react-router-dom"
 import { AmountBlock } from "src/components/AmountBlock"
 import { $baseCurrency } from "src/stores/account-settings-store"
+import { getAssetSymbol } from "src/utils/asset-utils"
 
 import { AssetAvatar } from "../../components/AssetAvatar"
 import { Balance } from "../../interfaces"
-import { $assetMap } from "../../stores/metadata-store"
+import { $assetMetaMap } from "../../stores/metadata-store"
 import { TableRowComponentProps } from "../../utils/table-utils"
 
 export function BalanceTableRow(props: TableRowComponentProps<Balance>) {
@@ -20,10 +21,10 @@ export function BalanceTableRow(props: TableRowComponentProps<Balance>) {
     relativeTime: _relativeTime,
     ...rest
   } = props
-  const { symbol, balance, price, value } = row
+  const { assetId, balance, price, value } = row
 
   const navigate = useNavigate()
-  const assetMap = useStore($assetMap)
+  const assetMap = useStore($assetMetaMap)
 
   const currency = useStore($baseCurrency)
 
@@ -32,7 +33,7 @@ export function BalanceTableRow(props: TableRowComponentProps<Balance>) {
       <TableRow
         hover
         onClick={() => {
-          navigate(`./asset/${symbol}`)
+          navigate(`./asset/${assetId}`)
         }}
         sx={{ cursor: "pointer" }}
         {...rest}
@@ -40,10 +41,10 @@ export function BalanceTableRow(props: TableRowComponentProps<Balance>) {
         <TableCell sx={{ width: "100%" }}>
           <Stack direction="row" justifyContent="space-between" alignItems="center">
             <Stack direction="row" gap={1} alignItems="center" component="div">
-              <AssetAvatar size="medium" src={assetMap[symbol]?.image} alt={symbol} />
+              <AssetAvatar size="medium" src={assetMap[assetId]?.image} alt={assetId} />
               <Stack>
                 <Typography variant="body1">
-                  <span>{symbol}</span>
+                  <span>{getAssetSymbol(assetId)}</span>
                 </Typography>
                 <Typography
                   color="text.secondary"
@@ -88,16 +89,16 @@ export function BalanceTableRow(props: TableRowComponentProps<Balance>) {
     <TableRow
       hover
       onClick={() => {
-        navigate(`./asset/${symbol}`)
+        navigate(`./asset/${assetId}`)
       }}
       sx={{ cursor: "pointer" }}
       {...rest}
     >
       <TableCell sx={{ maxWidth: 380, minWidth: 160, width: 380 }}>
         <Stack direction="row" gap={1} alignItems="center" component="div">
-          <AssetAvatar src={assetMap[symbol]?.image} alt={symbol} size="small" />
+          <AssetAvatar src={assetMap[assetId]?.image} alt={assetId} size="small" />
           <Stack>
-            <span>{symbol}</span>
+            <span>{getAssetSymbol(assetId)}</span>
           </Stack>
         </Stack>
       </TableCell>

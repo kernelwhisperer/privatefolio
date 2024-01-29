@@ -95,8 +95,8 @@ export function enqueueFetchPrices() {
       await computeMetadata()
       await clancy.fetchDailyPrices(
         {
+          assetIds: $filterOptionsMap.get().assetId,
           priceApiId: $priceApi.get(),
-          symbols: $filterOptionsMap.get().symbol,
         },
         progress,
         signal

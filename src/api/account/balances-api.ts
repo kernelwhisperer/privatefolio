@@ -33,19 +33,19 @@ export async function getBalancesAt(
   try {
     const balanceMap = await account.balancesDB.get(String(balancesCursor))
     const { _id, _rev, timestamp, ...map } = balanceMap
-    const balanceDocs = Object.keys(map).map((x) => ({ balance: map[x], symbol: x }))
+    const balanceDocs = Object.keys(map).map((x) => ({ assetId: x, balance: map[x] }))
 
     const balances = await Promise.all(
       balanceDocs.map(async (x) => {
-        const prices = await getPricesForAsset(x.symbol, priceApiId, timestamp)
+        const prices = await getPricesForAsset(x.assetId, priceApiId, timestamp)
         const price = prices.length > 0 ? prices[0] : undefined
 
         return {
-          _id: `${_id}_${x.symbol}`,
+          _id: `${_id}_${x.assetId}`,
+          assetId: x.assetId,
           balance: x.balance as string,
           balanceN: Number(x.balance),
           price,
-          symbol: x.symbol,
           value: price ? price.value * Number(x.balance) : undefined,
         }
       })
@@ -181,7 +181,7 @@ export async function computeBalances(
 
     // progress([(i * 100) / count, `Processing logs ${firstIndex} to ${lastIndex} - fetch complete`])
     for (const log of logs) {
-      const { symbol, change, timestamp } = log
+      const { assetId, change, timestamp } = log
 
       const nextDay: Timestamp = timestamp - (timestamp % 86400000)
 
@@ -197,27 +197,27 @@ export async function computeBalances(
       }
 
       // update balance
-      if (!latestBalances[symbol]) {
-        latestBalances[symbol] = change
+      if (!latestBalances[assetId]) {
+        latestBalances[assetId] = change
       } else {
-        latestBalances[symbol] = new Big(latestBalances[symbol]).plus(new Big(change)).toString()
+        latestBalances[assetId] = new Big(latestBalances[assetId]).plus(new Big(change)).toString()
       }
       latestBalances.timestamp = nextDay
 
       // update audit log
-      log.balance = latestBalances[symbol] as string
-      log.balanceN = Number(latestBalances[symbol])
+      log.balance = latestBalances[assetId] as string
+      log.balanceN = Number(latestBalances[assetId])
 
       // remove zero balances
-      if (latestBalances[symbol] === "0") {
-        delete latestBalances[symbol]
+      if (latestBalances[assetId] === "0") {
+        delete latestBalances[assetId]
       }
 
       // update historical balances
       if (!historicalBalances[nextDay]) {
         historicalBalances[nextDay] = Object.assign({}, latestBalances)
-      } else if (latestBalances[symbol] !== "0") {
-        historicalBalances[nextDay][symbol] = latestBalances[symbol]
+      } else if (latestBalances[assetId] !== "0") {
+        historicalBalances[nextDay][assetId] = latestBalances[assetId]
       }
 
       latestDay = nextDay

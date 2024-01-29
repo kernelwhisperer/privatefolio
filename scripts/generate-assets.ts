@@ -1,7 +1,7 @@
 import { mkdir, writeFile } from "fs/promises"
 import { join } from "path"
 
-import { Asset } from "../src/interfaces"
+import { AssetMetadata } from "../src/interfaces"
 import { ASSET_FILES_LOCATION, ASSET_PAGES } from "../src/settings"
 import { wait } from "../src/utils/utils"
 
@@ -65,7 +65,7 @@ async function main() {
         // "atl_date": "2013-07-06T00:00:00.000Z",
         // "roi": null,
         // "last_updated": "2023-11-14T12:46:54.888Z"
-        const assets: Asset[] = list.map((x) => {
+        const assets: AssetMetadata[] = list.map((x) => {
           const symbol = x.symbol.toUpperCase()
 
           return {

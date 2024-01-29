@@ -68,7 +68,7 @@ export default function BalancesPage({ show }: { show: boolean }) {
     () => [
       {
         filterable: true,
-        key: "symbol",
+        key: "assetId",
         label: "Asset",
         sortable: true,
       },

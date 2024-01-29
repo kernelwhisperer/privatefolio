@@ -43,6 +43,10 @@ export function parser(
   const tokenName = columns[9]
   const symbol = columns[10].trim()
 
+  if (tokenValue === "0") {
+    return { logs: [] }
+  }
+
   const txMeta = {
     blockNumber,
     contractAddress,
@@ -53,10 +57,6 @@ export function parser(
     tokenValue,
     tokenValueHistorical,
     txHash,
-  }
-
-  if (tokenValue === "0") {
-    return { logs: [] }
   }
 
   //
@@ -75,13 +75,13 @@ export function parser(
   const logs: EtherscanAuditLog[] = [
     {
       _id,
+      assetId: `ethereum:${contractAddress}:${symbol}`,
       change,
       changeN,
       importId: fileImportId,
       importIndex: index,
       integration,
       operation,
-      symbol,
       timestamp,
       wallet,
       ...txMeta,

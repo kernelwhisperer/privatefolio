@@ -74,7 +74,8 @@ export async function findAuditLogs(request: FindAuditLogsRequest = {}, accountN
   const account = getAccount(accountName)
   const { indexes } = await account.auditLogsDB.getIndexes()
   if (indexes.length === 1) {
-    await indexAuditLogs(console.log, accountName)
+    // await indexAuditLogs(console.log, accountName)
+    await indexAuditLogs(undefined, accountName)
   }
 
   const { filters = {}, limit, skip, order = "desc", fields } = request
@@ -121,7 +122,8 @@ export async function findAuditLogsForTxId(txId: string, accountName: string) {
   const account = getAccount(accountName)
   const { indexes } = await account.auditLogsDB.getIndexes()
   if (indexes.length === 1) {
-    await indexAuditLogs(console.log, accountName)
+    // await indexAuditLogs(console.log, accountName)
+    await indexAuditLogs(undefined, accountName)
   }
 
   const _req: PouchDB.Find.FindRequest<AuditLog> = {

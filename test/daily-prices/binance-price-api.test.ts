@@ -1,4 +1,4 @@
-import { mapToChartData, queryPrices } from "src/api/core/prices/binance-price-api"
+import { getPair, mapToChartData, queryPrices } from "src/api/core/prices/binance-price-api"
 import { DISALLOW_BINANCE_PRICE_API } from "src/env"
 import { ResolutionString } from "src/interfaces"
 import { expect, it } from "vitest"
@@ -10,7 +10,7 @@ it("should fetch BTC prices within a range", async (test) => {
   // act
   const result = await queryPrices({
     limit: 3,
-    pair: "BTCUSDT",
+    pair: getPair("BTC"),
     since: 1502928000000,
     timeInterval: "1d" as ResolutionString,
     until: 1503100800000,
@@ -62,4 +62,50 @@ it("should throw an error", async (test) => {
   })
   // assert
   await expect(promise).rejects.toMatchInlineSnapshot(`[Error: Binance: Invalid symbol. (-1121)]`)
+})
+
+it("should fetch ETH prices within a range", async (test) => {
+  if (DISALLOW_BINANCE_PRICE_API) {
+    test.skip()
+  }
+  // act
+  const result = await queryPrices({
+    limit: 3,
+    pair: getPair("ETH"),
+    since: 1518566400000,
+    timeInterval: "1d" as ResolutionString,
+    until: 1518739200000,
+  })
+  // assert
+  expect(result.map(mapToChartData)).toMatchInlineSnapshot(`
+    [
+      {
+        "close": 919.09,
+        "high": 924.99,
+        "low": 841.3,
+        "open": 841.57,
+        "time": 1518566400,
+        "value": 919.09,
+        "volume": 150342.85558,
+      },
+      {
+        "close": 924.55,
+        "high": 946.66,
+        "low": 895.59,
+        "open": 919.09,
+        "time": 1518652800,
+        "value": 924.55,
+        "volume": 155637.78524,
+      },
+      {
+        "close": 938.67,
+        "high": 948.48,
+        "low": 901.36,
+        "open": 924.55,
+        "time": 1518739200,
+        "value": 938.67,
+        "volume": 115540.16349,
+      },
+    ]
+  `)
 })

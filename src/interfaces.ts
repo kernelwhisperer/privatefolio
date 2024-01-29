@@ -28,17 +28,17 @@ export type Time = UTCTimestamp
 export interface Transaction {
   _id: string
   fee?: string
+  feeAsset?: string
   feeN?: number
-  feeSymbol?: string
   importId: string
   importIndex: number
   incoming?: string
+  incomingAsset?: string
   incomingN?: number
-  incomingSymbol?: string
   integration: Integration
   outgoing?: string
+  outgoingAsset?: string
   outgoingN?: number
-  outgoingSymbol?: string
   price?: string
   priceN?: number
   role?: TransactionRole
@@ -61,9 +61,9 @@ export type AuditLogOperation =
   | "Transfer"
   | "Smart Contract Interaction"
 
-export type PriceApiId = "coinbase" | "binance"
+export type PriceApiId = "coinbase" | "binance" | "defi-llama"
 
-export interface Asset {
+export interface AssetMetadata {
   coingeckoId?: string
   image: string
   isStablecoin: boolean
@@ -101,6 +101,7 @@ export type IntegrationMetadata = Exchange | Blockchain
 
 export interface AuditLog {
   _id: string
+  assetId: string
   balance?: string
   balanceN?: number
   change: string
@@ -109,7 +110,6 @@ export interface AuditLog {
   importIndex: number
   integration: Integration
   operation: AuditLogOperation
-  symbol: string
   timestamp: Timestamp
   txId?: string
   wallet: string
@@ -130,11 +130,11 @@ export interface FileImport {
   _rev: string
   lastModified: number
   meta?: {
+    assetIds: string[]
     integration: Integration
     logs: number
     operations: AuditLogOperation[]
     rows: number
-    symbols: string[]
     transactions: number
     wallets: string[]
   }
@@ -144,11 +144,11 @@ export interface FileImport {
 }
 
 export interface Balance {
-  _id: string // `${timestamp}_${x.symbol}`
+  _id: string // `${timestamp}_${x.assetId}`
+  assetId: string
   balance: string
   balanceN: number
   price?: ChartData
-  symbol: string
   value?: number
 }
 
@@ -157,7 +157,7 @@ export interface BalanceMap {
   /**
    * always a string, only timestamp is a number
    */
-  [symbol: string]: string | number
+  [assetId: string]: string | number
   timestamp: Timestamp
 }
 
@@ -176,10 +176,10 @@ export type ChartData = SingleValueData &
 
 export interface SavedPrice {
   _id: string
+  assetId: string
   pair: string
   price: ChartData
   source: PriceApiId
-  symbol: string
   timestamp: number
 }
 
@@ -261,12 +261,17 @@ export type CoinbaseBucket = [
   number // volume
 ]
 
+export type LlamaPrice = {
+  price: number
+  timestamp: Time
+}
+
 export type QueryRequest = {
   /**
    * @default 900 (PRICE_API_PAGINATION)
    */
   limit?: number
-  pair?: string
+  pair: string
   /**
    * @warning If `until` is undefined, this is ignored too
    */
@@ -286,10 +291,10 @@ export interface Connection {
   integration: Integration
   label: string
   meta?: {
+    assetIds: string[]
     logs: number
     operations: AuditLogOperation[]
     rows: number
-    symbols: string[]
     transactions: number
     wallets: string[]
   }

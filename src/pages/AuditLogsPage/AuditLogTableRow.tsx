@@ -4,13 +4,14 @@ import { green, grey, red } from "@mui/material/colors"
 import { useStore } from "@nanostores/react"
 import React from "react"
 import { AmountBlock } from "src/components/AmountBlock"
+import { getAssetSymbol } from "src/utils/asset-utils"
 
 import { AssetAvatar } from "../../components/AssetAvatar"
 import { TimestampBlock } from "../../components/TimestampBlock"
 import { Truncate } from "../../components/Truncate"
 import { AuditLog, AuditLogOperation } from "../../interfaces"
 import { INTEGRATIONS } from "../../settings"
-import { $assetMap, $integrationMap } from "../../stores/metadata-store"
+import { $assetMetaMap, $integrationMetaMap } from "../../stores/metadata-store"
 import { TableRowComponentProps } from "../../utils/table-utils"
 
 const redColor = red[400]
@@ -34,10 +35,10 @@ const OPERATION_ICONS: Partial<Record<AuditLogOperation, SvgIconComponent>> = {
 
 export function AuditLogTableRow(props: TableRowComponentProps<AuditLog>) {
   const { row, relativeTime, headCells, isMobile: _isMobile, isTablet: _isTablet, ...rest } = props
-  const { symbol, change, changeN, balance, operation, timestamp, integration, wallet } = row
+  const { assetId, change, changeN, balance, operation, timestamp, integration, wallet } = row
 
-  const assetMap = useStore($assetMap)
-  const integrationMap = useStore($integrationMap)
+  const assetMap = useStore($assetMetaMap)
+  const integrationMap = useStore($integrationMetaMap)
 
   const changeColor = changeN < 0 ? redColor : greenColor
 
@@ -123,8 +124,8 @@ export function AuditLogTableRow(props: TableRowComponentProps<AuditLog>) {
               component="div"
               // justifyContent="flex-end"
             >
-              <AssetAvatar size="small" src={assetMap[symbol]?.image} alt={symbol} />
-              <span>{symbol}</span>
+              <AssetAvatar size="small" src={assetMap[assetId]?.image} alt={assetId} />
+              <span>{getAssetSymbol(assetId)}</span>
             </Stack>
           </TableCell>
         )}

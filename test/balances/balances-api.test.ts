@@ -102,7 +102,7 @@ it.sequential("should fetch latest balances without price data", async () => {
 
 it.sequential("should fetch latest balances with price data", async () => {
   // arrange
-  await fetchDailyPrices({ priceApiId: "coinbase", symbols: ["BTC"] })
+  await fetchDailyPrices({ assetIds: ["BTC"], priceApiId: "coinbase" })
   // act
   const balances = await getBalancesAt(undefined, "coinbase", accountName)
   // assert

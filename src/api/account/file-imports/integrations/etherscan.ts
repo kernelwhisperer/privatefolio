@@ -62,7 +62,7 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
   const hash = hashString(`${index}_${csvRow}`)
   const txId = `${fileImportId}_${hash}`
   const timestamp = asUTC(new Date(datetimeUtc))
-  const symbol = "ETH"
+  const assetId = "ETH"
   const wallet = "Spot"
 
   //
@@ -85,13 +85,13 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
 
       logs.push({
         _id: `${txId}_0`,
+        assetId,
         change,
         changeN,
         importId: fileImportId,
         importIndex: index,
         integration,
         operation,
-        symbol,
         timestamp,
         txId,
         wallet,
@@ -107,13 +107,13 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
 
     logs.push({
       _id: `${txId}_1`,
+      assetId,
       change: fee,
       changeN: feeN,
       importId: fileImportId,
       importIndex: index + 0.1,
       integration,
       operation: "Fee",
-      symbol,
       timestamp,
       txId,
       wallet,
@@ -123,17 +123,17 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
   const tx: Transaction = {
     _id: txId,
     fee,
+    feeAsset: assetId,
     feeN,
-    feeSymbol: symbol,
     importId: fileImportId,
     importIndex: index,
     incoming: hasError ? undefined : valueIn,
+    incomingAsset: hasError ? undefined : assetId,
     incomingN: hasError ? undefined : parseFloat(valueIn),
-    incomingSymbol: hasError ? undefined : symbol,
     integration,
     outgoing: hasError ? undefined : valueOut,
+    outgoingAsset: hasError ? undefined : assetId,
     outgoingN: hasError ? undefined : parseFloat(valueOut),
-    outgoingSymbol: hasError ? undefined : symbol,
     // price,
     // priceN,
     // role,

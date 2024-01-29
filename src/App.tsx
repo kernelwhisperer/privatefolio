@@ -81,7 +81,7 @@ export default function App() {
                     element={<PnLPage show={key === pathname && appPath === "pnl"} />}
                   />
                   <Route
-                    path="asset/:symbol"
+                    path="asset/:assetId"
                     element={<AssetPage show={key === pathname && appPath.includes("asset")} />}
                   />
                   <Route

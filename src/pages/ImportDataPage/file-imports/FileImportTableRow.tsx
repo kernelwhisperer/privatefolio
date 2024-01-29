@@ -16,7 +16,7 @@ import { Truncate } from "src/components/Truncate"
 import { FileImport } from "src/interfaces"
 import { INTEGRATIONS } from "src/settings"
 import { $activeAccount } from "src/stores/account-store"
-import { $integrationMap } from "src/stores/metadata-store"
+import { $integrationMetaMap } from "src/stores/metadata-store"
 import { enqueueTask } from "src/stores/task-store"
 import { MonoFont } from "src/theme"
 import { handleAuditLogChange } from "src/utils/common-tasks"
@@ -29,7 +29,7 @@ export function FileImportTableRow(props: TableRowComponentProps<FileImport>) {
   const { name, meta, timestamp, lastModified, size } = row
   const integration = meta?.integration
 
-  const integrationMap = useStore($integrationMap)
+  const integrationMap = useStore($integrationMetaMap)
 
   const [loading, setLoading] = useState(false)
 

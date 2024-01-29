@@ -115,7 +115,7 @@ export async function syncConnection(
 
   const logMap: Record<string, AuditLog> = {}
   const txMap: Record<string, Transaction> = {}
-  const symbolMap: Record<string, boolean> = {}
+  const assetMap: Record<string, boolean> = {}
   const walletMap: Record<string, boolean> = {}
   const operationMap: Partial<Record<AuditLogOperation, boolean>> = {}
 
@@ -136,7 +136,7 @@ export async function syncConnection(
 
       for (const log of logs) {
         logMap[log._id] = log
-        symbolMap[log.symbol] = true
+        assetMap[log.assetId] = true
         walletMap[log.wallet] = true
         operationMap[log.operation] = true
       }
@@ -165,7 +165,7 @@ export async function syncConnection(
 
       for (const log of logs) {
         logMap[log._id] = log
-        symbolMap[log.symbol] = true
+        assetMap[log.assetId] = true
         walletMap[log.wallet] = true
         operationMap[log.operation] = true
       }
@@ -194,7 +194,7 @@ export async function syncConnection(
 
       for (const log of logs) {
         logMap[log._id] = log
-        symbolMap[log.symbol] = true
+        assetMap[log.assetId] = true
         walletMap[log.wallet] = true
         operationMap[log.operation] = true
       }
@@ -243,10 +243,10 @@ export async function syncConnection(
 
   // save metadata
   const metadata: Connection["meta"] = {
+    assetIds: Object.keys(assetMap),
     logs: logIds.length,
     operations: Object.keys(operationMap) as AuditLogOperation[],
     rows: normal.length + internal.length + erc20.length,
-    symbols: Object.keys(symbolMap),
     transactions: txIds.length,
     wallets: Object.keys(walletMap),
   }
@@ -261,10 +261,10 @@ export async function syncConnection(
 
   if (connection.meta && since !== 0) {
     connection.meta = {
+      assetIds: [...new Set(connection.meta.assetIds.concat(metadata.assetIds))],
       logs: connection.meta.logs + metadata.logs,
       operations: [...new Set(connection.meta.operations.concat(metadata.operations))],
       rows: connection.meta.rows + metadata.rows,
-      symbols: [...new Set(connection.meta.symbols.concat(metadata.symbols))],
       transactions: connection.meta.transactions + metadata.transactions,
       wallets: [...new Set(connection.meta.wallets.concat(metadata.wallets))],
     }

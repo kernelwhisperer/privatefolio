@@ -25,14 +25,18 @@ export async function indexDailyPrices() {
   })
   await core.dailyPricesDB.createIndex({
     index: {
-      fields: ["symbol", "source", "timestamp"],
-      name: "symbol",
+      fields: ["assetId", "source", "timestamp"],
+      name: "assetId",
     },
   })
 }
 
-export async function getPricesForAsset(symbol: string, source: PriceApiId, timestamp?: Timestamp) {
-  if (symbol === "USDT" && !!timestamp) {
+export async function getPricesForAsset(
+  assetId: string,
+  source: PriceApiId,
+  timestamp?: Timestamp
+) {
+  if (assetId === "USDT" && !!timestamp) {
     return [{ time: timestamp / 1000, value: 1 }] as ChartData[]
   }
 
@@ -40,7 +44,7 @@ export async function getPricesForAsset(symbol: string, source: PriceApiId, time
 
   const _req: PouchDB.Find.FindRequest<SavedPrice> = {
     selector: {
-      symbol,
+      assetId,
       // eslint-disable-next-line sort-keys-fix/sort-keys-fix
       source,
       timestamp: timestamp || { $exists: true },
@@ -48,7 +52,7 @@ export async function getPricesForAsset(symbol: string, source: PriceApiId, time
     sort: [
       {
         //
-        symbol: "asc",
+        assetId: "asc",
         // eslint-disable-next-line sort-keys-fix/sort-keys-fix
         source: "asc",
         timestamp: "asc",
@@ -69,7 +73,7 @@ export async function getAssetPriceMap(timestamp: Timestamp) {
   await indexDailyPrices()
 
   const _req: PouchDB.Find.FindRequest<SavedPrice> = {
-    fields: ["symbol", "price", "source"],
+    fields: ["assetId", "price", "source"],
     selector: { timestamp },
   }
 
@@ -81,7 +85,7 @@ export async function getAssetPriceMap(timestamp: Timestamp) {
 
   return prices.docs.reduce(
     (map, x) => {
-      map[x.symbol] = x.price
+      map[x.assetId] = x.price
       return map
     },
     {
@@ -91,20 +95,20 @@ export async function getAssetPriceMap(timestamp: Timestamp) {
 }
 
 export async function getPriceCursor(
-  symbol: string,
+  assetId: string,
   source: PriceApiId
 ): Promise<Timestamp | undefined> {
   const prices = await core.dailyPricesDB.find({
     limit: 1,
     selector: {
-      symbol,
+      assetId,
       // eslint-disable-next-line sort-keys-fix/sort-keys-fix
       source,
       timestamp: { $exists: true },
     },
     sort: [
       {
-        symbol: "desc",
+        assetId: "desc",
         // eslint-disable-next-line sort-keys-fix/sort-keys-fix
         source: "desc",
         timestamp: "desc",
@@ -120,8 +124,8 @@ export async function getPriceCursor(
 }
 
 type FetchDailyPricesRequest = {
+  assetIds?: string[]
   priceApiId: PriceApiId
-  symbols?: string[]
 }
 
 export async function fetchDailyPrices(
@@ -129,13 +133,13 @@ export async function fetchDailyPrices(
   progress: ProgressCallback = noop,
   signal?: AbortSignal
 ) {
-  const { symbols, priceApiId } = request
+  const { assetIds, priceApiId } = request
 
-  if (!symbols) {
-    throw new Error("No symbols provided") // TODO prevent this
+  if (!assetIds) {
+    throw new Error("No assetIds provided") // TODO prevent this
   }
 
-  progress([0, `Fetching asset prices for ${symbols.length} symbols`])
+  progress([0, `Fetching asset prices for ${assetIds.length} assets`])
   await indexDailyPrices()
 
   const now = Date.now()
@@ -149,21 +153,21 @@ export async function fetchDailyPrices(
     throw new Error(`Price api ${priceApiId} is not supported`)
   }
 
-  for (let i = 1; i <= symbols.length; i++) {
-    const symbol = symbols[i - 1]
+  for (let i = 1; i <= assetIds.length; i++) {
+    const assetId = assetIds[i - 1]
 
     if (signal?.aborted) {
       throw new Error(signal.reason)
     }
 
     try {
-      let since: Timestamp | undefined = await getPriceCursor(symbol, priceApiId)
+      let since: Timestamp | undefined = await getPriceCursor(assetId, priceApiId)
       let until: Timestamp | undefined = today
 
       if (!since) since = today - 86400000 * PRICE_API_PAGINATION
 
       while (true) {
-        const pair = pairMapper(symbol)
+        const pair = pairMapper(assetId)
         const source = priceApiId
 
         const results = await priceApi({
@@ -175,7 +179,7 @@ export async function fetchDailyPrices(
         })
 
         if (results.length === 0) {
-          progress([(i * 100) / symbols.length, `Skipped ${symbol}: no results`])
+          progress([(i * 100) / assetIds.length, `Skipped ${assetId}: no results`])
           break
         }
 
@@ -188,10 +192,10 @@ export async function fetchDailyPrices(
 
           acc[_id] = {
             _id,
+            assetId,
             pair,
             price,
             source,
-            symbol,
             timestamp,
           }
 
@@ -213,8 +217,8 @@ export async function fetchDailyPrices(
         const end = (priceMapper(results[results.length - 1]).time as number) * 1000
 
         progress([
-          (i * 100) / symbols.length,
-          `Fetched ${symbol} from ${formatDate(start)} to ${formatDate(end)}`,
+          (i * 100) / assetIds.length,
+          `Fetched ${assetId} from ${formatDate(start)} to ${formatDate(end)}`,
         ])
 
         if (results.length !== PRICE_API_PAGINATION) {
@@ -226,7 +230,7 @@ export async function fetchDailyPrices(
         since = start - 86400000 * PRICE_API_PAGINATION
       }
     } catch (error) {
-      progress([(i * 100) / symbols.length, `Skipped ${symbol}: ${error}`])
+      progress([(i * 100) / assetIds.length, `Skipped ${assetId}: ${error}`])
     }
   }
 }

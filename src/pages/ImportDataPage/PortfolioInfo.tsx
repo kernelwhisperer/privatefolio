@@ -67,11 +67,11 @@ export function PortfolioInfo() {
       <Stack sx={{ paddingX: 2, paddingY: 1 }} gap={1}>
         <Stack direction="row" justifyContent="space-between">
           <SectionTitle>Unique assets</SectionTitle>
-          {filterMap.symbol === undefined ? (
+          {filterMap.assetId === undefined ? (
             <Skeleton height={20} width={80}></Skeleton>
           ) : (
             <Typography fontFamily={MonoFont} variant="body2">
-              <span>{formatNumber(filterMap.symbol.length)}</span>
+              <span>{formatNumber(filterMap.assetId.length)}</span>
             </Typography>
           )}
         </Stack>

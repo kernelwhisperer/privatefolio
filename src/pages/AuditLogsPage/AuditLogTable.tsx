@@ -15,12 +15,12 @@ import { clancy } from "../../workers/remotes"
 import { AuditLogTableRow } from "./AuditLogTableRow"
 
 interface AuditLogsTableProps extends Pick<RemoteTableProps<AuditLog>, "defaultRowsPerPage"> {
-  symbol?: string
+  assetId?: string
   txId?: string
 }
 
 export function AuditLogTable(props: AuditLogsTableProps) {
-  const { symbol, txId, ...rest } = props
+  const { assetId, txId, ...rest } = props
 
   const queryFn: QueryFunction<AuditLog> = useCallback(
     async (filters, rowsPerPage, page, order) => {
@@ -32,7 +32,7 @@ export function AuditLogTable(props: AuditLogsTableProps) {
 
       const auditLogs = await clancy.findAuditLogs(
         {
-          filters: { symbol, ...filters },
+          filters: { assetId, ...filters },
           limit: rowsPerPage,
           order,
           skip: page * rowsPerPage,
@@ -47,14 +47,14 @@ export function AuditLogTable(props: AuditLogsTableProps) {
             .findAuditLogs(
               {
                 fields: [],
-                filters: { symbol, ...filters },
+                filters: { assetId, ...filters },
               },
               $activeAccount.get()
             )
             .then((logs) => logs.length),
       ]
     },
-    [symbol, txId]
+    [assetId, txId]
   )
 
   const headCells = useMemo<HeadCell<AuditLog>[]>(
@@ -84,11 +84,11 @@ export function AuditLogTable(props: AuditLogsTableProps) {
         label: "Change",
         numeric: true,
       },
-      ...(!symbol
+      ...(!assetId
         ? ([
             {
               filterable: !txId,
-              key: "symbol",
+              key: "assetId",
               label: "Asset",
             },
           ] as const)
@@ -99,7 +99,7 @@ export function AuditLogTable(props: AuditLogsTableProps) {
         numeric: true,
       },
     ],
-    [symbol, txId]
+    [assetId, txId]
   )
 
   // TODO this should me a separate component using memory table

@@ -25,9 +25,9 @@ beforeAll(async () => {
 it("should fetch no prices", async () => {
   // act
   const updates: ProgressUpdate[] = []
-  await fetchDailyPrices({ priceApiId: "coinbase", symbols: [] }, (state) => updates.push(state))
+  await fetchDailyPrices({ assetIds: [], priceApiId: "coinbase" }, (state) => updates.push(state))
   // assert
-  expect(updates.join("\n")).toMatchInlineSnapshot(`"0,Fetching asset prices for 0 symbols"`)
+  expect(updates.join("\n")).toMatchInlineSnapshot(`"0,Fetching asset prices for 0 assets"`)
 })
 
 it("should fetch BTC prices using Binance", async (test) => {
@@ -37,13 +37,10 @@ it("should fetch BTC prices using Binance", async (test) => {
   // arrange
   const updates: ProgressUpdate[] = []
   // act
-  await fetchDailyPrices({ priceApiId: "binance", symbols: ["BTC"] }, (state) =>
+  await fetchDailyPrices({ assetIds: ["BTC"], priceApiId: "binance" }, (state) =>
     updates.push(state)
   )
   const records = await getPricesForAsset("BTC", "binance")
-  await fetchDailyPrices({ priceApiId: "binance", symbols: ["BTC"] }, (state) =>
-    updates.push(state)
-  )
   // assert
   // console.log(updates.join("\n"))
   let prevRecord
@@ -92,20 +89,17 @@ it("should fetch BTC prices using Coinbase", async () => {
   // arrange
   const updates: ProgressUpdate[] = []
   // act
-  await fetchDailyPrices({ priceApiId: "coinbase", symbols: ["BTC"] }, (state) =>
+  await fetchDailyPrices({ assetIds: ["BTC"], priceApiId: "coinbase" }, (state) =>
     updates.push(state)
   )
   const records = await getPricesForAsset("BTC", "coinbase")
-  await fetchDailyPrices({ priceApiId: "coinbase", symbols: ["BTC"] }, (state) =>
-    updates.push(state)
-  )
   // assert
   // console.log(updates.join("\n"))
   let prevRecord
   for (const record of records) {
     if (prevRecord && Number(record.time) !== Number(prevRecord.time) + 86400) {
       console.log(prevRecord, record)
-      // throw new Error("Inconsistency error")
+      throw new Error("Inconsistency error")
     }
 
     prevRecord = record
@@ -142,4 +136,31 @@ it("should fetch BTC prices using Coinbase", async () => {
       },
     ]
   `)
+})
+
+it("should fetch WBTC prices using DefiLlama", async () => {
+  // arrange
+  const updates: ProgressUpdate[] = []
+  // act
+  await fetchDailyPrices(
+    { assetIds: ["ethereum:0x2260fac5e5542a773aa44fbcfedf7c193bc2c599"], priceApiId: "defi-llama" },
+    (state) => updates.push(state)
+  )
+  const records = await getPricesForAsset(
+    "ethereum:0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",
+    "defi-llama"
+  )
+  // assert
+  // console.log(updates.join("\n"))
+  let prevRecord
+  for (const record of records) {
+    if (prevRecord && Number(record.time) !== Number(prevRecord.time) + 86400) {
+      console.log(prevRecord, record)
+      throw new Error("Inconsistency error")
+    }
+
+    prevRecord = record
+  }
+  expect(records.slice(0, 1800)).toMatchSnapshot()
+  expect(formatDate((records[0].time as number) * 1000)).toMatchInlineSnapshot(`"Jan 31, 2019"`)
 })

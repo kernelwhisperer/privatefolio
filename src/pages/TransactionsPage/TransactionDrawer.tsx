@@ -24,7 +24,7 @@ import { Transaction } from "src/interfaces"
 import { INTEGRATIONS } from "src/settings"
 import { $activeAccount, $activeIndex } from "src/stores/account-store"
 import { PopoverToggleProps } from "src/stores/app-store"
-import { $integrationMap } from "src/stores/metadata-store"
+import { $integrationMetaMap } from "src/stores/metadata-store"
 import { MonoFont } from "src/theme"
 import { greenColor, redColor } from "src/utils/chart-utils"
 import { formatHex, getExplorerLink } from "src/utils/utils"
@@ -39,20 +39,20 @@ type TransactionDrawerProps = DrawerProps &
 export function TransactionDrawer(props: TransactionDrawerProps) {
   const { open, toggleOpen, tx, relativeTime, ...rest } = props
   const activeIndex = useStore($activeIndex)
-  const integrationMap = useStore($integrationMap)
+  const integrationMap = useStore($integrationMetaMap)
 
   const {
     incoming,
-    incomingSymbol,
+    incomingAsset,
     type,
     timestamp,
     integration,
     wallet,
     price,
     outgoing,
-    outgoingSymbol,
+    outgoingAsset,
     fee,
-    feeSymbol,
+    feeAsset,
     _id,
     txHash,
     ...txMeta
@@ -127,7 +127,7 @@ export function TransactionDrawer(props: TransactionDrawerProps) {
           <SectionTitle>Fee</SectionTitle>
           <Box sx={{ color: redColor }}>
             <AmountBlock amount={fee} formatOpts={{ signDisplay: "always" }} />{" "}
-            <span>{feeSymbol}</span>
+            <span>{feeAsset}</span>
           </Box>
         </div>
         <div>
@@ -137,7 +137,7 @@ export function TransactionDrawer(props: TransactionDrawerProps) {
               amount={outgoing ? `-${outgoing}` : outgoing}
               formatOpts={{ signDisplay: "always" }}
             />{" "}
-            <span>{outgoingSymbol}</span>
+            <span>{outgoingAsset}</span>
           </Box>
         </div>
         {price && (
@@ -145,7 +145,7 @@ export function TransactionDrawer(props: TransactionDrawerProps) {
             <SectionTitle>Price</SectionTitle>
             <AmountBlock amount={price} />{" "}
             <span>
-              {outgoingSymbol}/{incomingSymbol}
+              {outgoingAsset}/{incomingAsset}
             </span>
           </div>
         )}
@@ -153,7 +153,7 @@ export function TransactionDrawer(props: TransactionDrawerProps) {
           <SectionTitle>Received</SectionTitle>
           <Box sx={{ color: greenColor }}>
             <AmountBlock amount={incoming} formatOpts={{ signDisplay: "always" }} />{" "}
-            <span>{incomingSymbol}</span>
+            <span>{incomingAsset}</span>
           </Box>
         </div>
         <div>

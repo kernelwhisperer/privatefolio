@@ -4,7 +4,7 @@ import { keepMount, map } from "nanostores"
 import { findAssets } from "../api/core/assets-api"
 import { findIntegrations } from "../api/core/integrations-api"
 import {
-  Asset,
+  AssetMetadata,
   AuditLogOperation,
   Integration,
   IntegrationMetadata,
@@ -15,11 +15,11 @@ import { clancy } from "../workers/remotes"
 import { $activeAccount } from "./account-store"
 
 export type FilterOptionsMap = {
-  incomingSymbol: string[]
+  assetId: string[]
+  incomingAsset: string[]
   integration: string[]
   operation: AuditLogOperation[]
-  outgoingSymbol: string[]
-  symbol: string[]
+  outgoingAsset: string[]
   type: string[]
   wallet: string[]
 }
@@ -29,11 +29,11 @@ export type FilterKey = keyof FilterOptionsMap
 export const $filterOptionsMap = map<FilterOptionsMap>()
 
 export const FILTER_LABEL_MAP: Record<FilterKey, string> = {
-  incomingSymbol: "Incoming Asset",
+  assetId: "Asset",
+  incomingAsset: "Incoming Asset",
   integration: "Integration",
   operation: "Operation",
-  outgoingSymbol: "Outgoing Asset",
-  symbol: "Asset",
+  outgoingAsset: "Outgoing Asset",
   type: "Type",
   wallet: "Wallet",
 }
@@ -48,7 +48,7 @@ export function getFilterValueLabel(value: string) {
 
 async function computeFilterMap() {
   const integrations = new Set<string>()
-  const symbols = new Set<string>()
+  const assetIds = new Set<string>()
   const wallets = new Set<string>()
   const operations = new Set<AuditLogOperation>()
 
@@ -61,7 +61,7 @@ async function computeFilterMap() {
     }
 
     integrations.add(meta.integration)
-    meta.symbols.forEach((x) => symbols.add(x))
+    meta.assetIds.forEach((x) => assetIds.add(x))
     meta.wallets.forEach((x) => wallets.add(x))
     meta.operations.forEach((x) => operations.add(x))
   }
@@ -75,21 +75,21 @@ async function computeFilterMap() {
     }
 
     integrations.add(integration)
-    meta.symbols.forEach((x) => symbols.add(x))
+    meta.assetIds.forEach((x) => assetIds.add(x))
     meta.wallets.forEach((x) => wallets.add(x))
     meta.operations.forEach((x) => operations.add(x))
   }
 
-  const symbolOptions = [...symbols].sort()
+  const assetIdOptions = [...assetIds].sort()
 
   const type: TransactionType[] = ["Sell", "Buy", "Swap", "Deposit", "Withdraw", "Unknown"]
 
   const map: FilterOptionsMap = {
-    incomingSymbol: symbolOptions,
+    assetId: assetIdOptions,
+    incomingAsset: assetIdOptions,
     integration: [...integrations].sort(),
     operation: [...operations].sort(),
-    outgoingSymbol: symbolOptions,
-    symbol: symbolOptions,
+    outgoingAsset: assetIdOptions,
     type,
     wallet: [...wallets].sort(),
   }
@@ -98,23 +98,23 @@ async function computeFilterMap() {
   return map
 }
 
-export type AssetMap = Record<string, Asset>
-export const $assetMap = map<AssetMap>({})
+export type AssetMap = Record<string, AssetMetadata>
+export const $assetMetaMap = map<AssetMap>({})
 
 export type IntegrationMap = Partial<Record<Integration, IntegrationMetadata>>
-export const $integrationMap = map<IntegrationMap>({})
+export const $integrationMetaMap = map<IntegrationMap>({})
 
-keepMount($assetMap)
+keepMount($assetMetaMap)
 keepMount($filterOptionsMap)
-keepMount($integrationMap)
+keepMount($integrationMetaMap)
 
 // logAtoms({ $assetMap, $filterMap: $filterOptionsMap, $integrationMap })
 
 export async function computeMetadata() {
   const filterMap = await computeFilterMap()
 
-  const symbolMap = filterMap.symbol.reduce((map, symbol) => {
-    map[symbol] = true
+  const assetIdMap = filterMap.assetId.reduce((map, assetId) => {
+    map[assetId] = true
     return map
   }, {} as Record<string, boolean>)
 
@@ -124,8 +124,8 @@ export async function computeMetadata() {
   }, {} as Record<string, boolean>)
 
   await Promise.all([
-    findAssets(symbolMap).then($assetMap.set),
-    findIntegrations(integrationMap).then($integrationMap.set),
+    findAssets(assetIdMap).then($assetMetaMap.set),
+    findIntegrations(integrationMap).then($integrationMetaMap.set),
   ])
 }
 export const computeMetadataDebounced = debounce(computeMetadata, DEFAULT_DEBOUNCE_DURATION)

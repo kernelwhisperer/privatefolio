@@ -24,15 +24,15 @@ it("should add a file import", async () => {
     {
       "_id": "2675435331",
       "metadata": {
+        "assetIds": [
+          "BTC",
+        ],
         "integration": "coinmama",
         "logs": 2,
         "operations": [
           "Buy with Credit Card",
         ],
         "rows": 5,
-        "symbols": [
-          "BTC",
-        ],
         "transactions": 2,
         "wallets": [
           "Spot",

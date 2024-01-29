@@ -33,13 +33,13 @@ export function parser(
   const logs: AuditLog[] = [
     {
       _id,
+      assetId: "ETH",
       change,
       changeN,
       importId: connection._id,
       importIndex: index,
       integration,
       operation,
-      symbol: "ETH",
       timestamp,
       wallet: "Spot",
     },
@@ -51,13 +51,13 @@ export function parser(
 
     logs.push({
       _id: `${connection._id}_${row.hash}_${index}_fee`,
+      assetId: "ETH",
       change,
       changeN,
       importId: connection._id,
       importIndex: index + 0.1,
       integration,
       operation: "Fee",
-      symbol: "ETH",
       timestamp,
       wallet: "Spot",
     })
@@ -94,13 +94,13 @@ export function erc20Parser(
   const logs: AuditLog[] = [
     {
       _id,
+      assetId: row.tokenSymbol,
       change,
       changeN,
       importId: connection._id,
       importIndex: index,
       integration,
       operation,
-      symbol: row.tokenSymbol,
       timestamp,
       wallet: "Spot",
     },

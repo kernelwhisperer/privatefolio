@@ -63,7 +63,7 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
   const txId = `${fileImportId}_${hash}`
   const timestamp = asUTC(new Date(datetimeUtc))
 
-  const symbol = "ETH"
+  const assetId = "ETH"
   const wallet = "Spot"
 
   const logs: EtherscanAuditLog[] = []
@@ -84,13 +84,13 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
 
     logs.push({
       _id: `${txId}_0`,
+      assetId,
       change,
       changeN,
       importId: fileImportId,
       importIndex: index,
       integration,
       operation,
-      symbol,
       timestamp,
       txId,
       wallet,
@@ -121,17 +121,17 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
   const tx: Transaction = {
     _id: txId,
     fee,
+    feeAsset: assetId,
     feeN,
-    feeSymbol: symbol,
     importId: fileImportId,
     importIndex: index,
     incoming: valueIn,
+    incomingAsset: assetId,
     incomingN: parseFloat(valueIn),
-    incomingSymbol: symbol,
     integration,
     outgoing: valueOut,
+    outgoingAsset: assetId,
     outgoingN: parseFloat(valueOut),
-    outgoingSymbol: symbol,
     // price,
     // priceN,
     // role,

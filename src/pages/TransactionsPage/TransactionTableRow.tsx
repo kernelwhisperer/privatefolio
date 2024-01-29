@@ -17,7 +17,7 @@ import { TimestampBlock } from "../../components/TimestampBlock"
 import { Truncate } from "../../components/Truncate"
 import { Transaction, TransactionType } from "../../interfaces"
 import { INTEGRATIONS } from "../../settings"
-import { $assetMap, $integrationMap } from "../../stores/metadata-store"
+import { $assetMetaMap, $integrationMetaMap } from "../../stores/metadata-store"
 import { TableRowComponentProps } from "../../utils/table-utils"
 import { TransactionDrawer } from "./TransactionDrawer"
 
@@ -37,19 +37,11 @@ const OPERATION_ICONS: Partial<Record<TransactionType, SvgIconComponent>> = {
 
 export function TransactionTableRow(props: TableRowComponentProps<Transaction>) {
   const { relativeTime, isMobile: _isMobile, isTablet: _isTablet, row } = props
-  const {
-    incoming,
-    incomingSymbol,
-    type,
-    timestamp,
-    integration,
-    wallet,
-    outgoing,
-    outgoingSymbol,
-  } = row
+  const { incoming, incomingAsset, type, timestamp, integration, wallet, outgoing, outgoingAsset } =
+    row
 
-  const assetMap = useStore($assetMap)
-  const integrationMap = useStore($integrationMap)
+  const assetMap = useStore($assetMetaMap)
+  const integrationMap = useStore($integrationMetaMap)
 
   const color = OPERATION_COLORS[type] || grey[500]
   const TypeIconComponent = OPERATION_ICONS[type]
@@ -107,14 +99,10 @@ export function TransactionTableRow(props: TableRowComponentProps<Transaction>) 
           />
         </TableCell>
         <TableCell sx={{ maxWidth: 140, minWidth: 140, width: 140 }}>
-          {outgoingSymbol && (
+          {outgoingAsset && (
             <Stack direction="row" gap={0.5} alignItems="center" component="div">
-              <AssetAvatar
-                size="small"
-                src={assetMap[outgoingSymbol]?.image}
-                alt={outgoingSymbol}
-              />
-              <span>{outgoingSymbol}</span>
+              <AssetAvatar size="small" src={assetMap[outgoingAsset]?.image} alt={outgoingAsset} />
+              <span>{outgoingAsset}</span>
             </Stack>
           )}
         </TableCell>
@@ -131,14 +119,10 @@ export function TransactionTableRow(props: TableRowComponentProps<Transaction>) 
           <AmountBlock amount={incoming} formatOpts={{ signDisplay: "always" }} />
         </TableCell>
         <TableCell sx={{ maxWidth: 120, minWidth: 120, width: 120 }}>
-          {incomingSymbol && (
+          {incomingAsset && (
             <Stack direction="row" gap={0.5} alignItems="center" component="div">
-              <AssetAvatar
-                size="small"
-                src={assetMap[incomingSymbol]?.image}
-                alt={incomingSymbol}
-              />
-              <span>{incomingSymbol}</span>
+              <AssetAvatar size="small" src={assetMap[incomingAsset]?.image} alt={incomingAsset} />
+              <span>{incomingAsset}</span>
             </Stack>
           )}
         </TableCell>
