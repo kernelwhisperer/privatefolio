@@ -30,6 +30,25 @@ it("should fetch WETH prices within a range", async () => {
   `)
 })
 
+it("should fetch WETH prices within a small range", async () => {
+  // act
+  const result = await queryPrices({
+    pair: getPair("ethereum:0x0000000000000000000000000000000000000000:ETH"),
+    since: 1706572800000,
+    timeInterval: "1d" as ResolutionString,
+    until: 1706572800000,
+  })
+  // assert
+  expect(result.map(mapToChartData)).toMatchInlineSnapshot(`
+    [
+      {
+        "time": 1706572800,
+        "value": 2316.96,
+      },
+    ]
+  `)
+})
+
 it("should return 0 for non-supported", async () => {
   // act
   const results = await queryPrices({

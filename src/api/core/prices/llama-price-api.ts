@@ -24,8 +24,9 @@ export async function queryPrices(request: QueryRequest) {
   let apiUrl = `https://coins.llama.fi/chart/${pair}?period=${timeInterval}&span=${limit}`
 
   if (since && until) {
-    // apiUrl = `${apiUrl}&start=${Math.floor(since / 1000)}` // llama throws if both flags are provided
-    apiUrl = `${apiUrl}&end=${until / 1000}`
+    apiUrl = `${apiUrl}&start=${Math.floor(since / 1000)}`
+    // llama throws if both flags are provided
+    // apiUrl = `${apiUrl}&end=${until / 1000}`
   }
 
   const res = await fetch(apiUrl)
