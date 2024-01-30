@@ -9,7 +9,7 @@ import {
   AuditLogOperation,
   Integration,
   IntegrationMetadata,
-  TransactionType,
+  TRANSACTIONS_TYPES,
 } from "../interfaces"
 import { DEFAULT_DEBOUNCE_DURATION, INTEGRATIONS } from "../settings"
 import { clancy } from "../workers/remotes"
@@ -44,7 +44,11 @@ export function getFilterValueLabel(value: string) {
     return INTEGRATIONS[value as Integration]
   }
 
-  return getAssetSymbol(value)
+  if (value.includes(":")) {
+    return getAssetSymbol(value)
+  }
+
+  return value
 }
 
 async function computeFilterMap() {
@@ -83,15 +87,13 @@ async function computeFilterMap() {
 
   const assetIdOptions = [...assetIds].sort()
 
-  const type: TransactionType[] = ["Sell", "Buy", "Swap", "Deposit", "Withdraw", "Unknown"]
-
   const map: FilterOptionsMap = {
     assetId: assetIdOptions,
     incomingAsset: assetIdOptions,
     integration: [...integrations].sort(),
     operation: [...operations].sort(),
     outgoingAsset: assetIdOptions,
-    type,
+    type: TRANSACTIONS_TYPES,
     wallet: [...wallets].sort(),
   }
 

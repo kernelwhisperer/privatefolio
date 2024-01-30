@@ -6,7 +6,17 @@ export type { Integration } from "./settings"
 
 export type TransactionRole = "Maker" | "Taker"
 export type TransactionSide = "BUY" | "SELL"
-export type TransactionType = "Buy" | "Sell" | "Swap" | "Deposit" | "Withdraw" | "Unknown"
+export const TRANSACTIONS_TYPES = [
+  "Buy",
+  "Sell",
+  "Swap",
+  "Deposit",
+  "Withdraw",
+  "Unknown",
+  "Unwrap",
+]
+export type TransactionType = (typeof TRANSACTIONS_TYPES)[number]
+
 // type ExchangeId = "mexc" | "binance"
 
 /**

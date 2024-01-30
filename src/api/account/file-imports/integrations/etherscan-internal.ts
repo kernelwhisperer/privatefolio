@@ -101,8 +101,8 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
       logs.push({
         _id: `${txId}_1`,
         assetId: "ethereum:0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2:WETH",
-        change: `-${change}`,
-        changeN: -parseFloat(change),
+        change: `-${valueIn}`,
+        changeN: parseFloat(`-${valueIn}`),
         importId: fileImportId,
         importIndex: index + 0.1,
         integration,
@@ -115,25 +115,6 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
   }
 
   let fee: string | undefined, feeN: number | undefined
-
-  // if (txnFee !== "0" && valueIn === "0") {
-  //   fee = `-${txnFee}`
-  //   feeN = parseFloat(fee)
-
-  //   logs.push({
-  //     _id: `${txId}_1`,
-  //     change: fee,
-  //     changeN: feeN,
-  //     importId: fileImportId,
-  //     importIndex: index + 0.1,
-  //     integration,
-  //     operation: "Fee",
-  //     symbol,
-  //     timestamp,
-  //     txId,
-  //     wallet,
-  //   })
-  // }
 
   const tx: Transaction = {
     _id: txId,
@@ -156,6 +137,14 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
     type,
     wallet,
     ...txMeta,
+  }
+
+  // WETH
+  if (logs.length === 2) {
+    tx.type = "Unwrap"
+    tx.outgoingAsset = logs[1].assetId
+    tx.outgoing = valueIn
+    tx.outgoingN = parseFloat(valueIn)
   }
 
   return { logs, txns: [tx] }
