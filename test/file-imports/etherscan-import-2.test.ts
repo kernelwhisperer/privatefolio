@@ -8,7 +8,7 @@ import { getAccount, resetAccount } from "src/api/database"
 import { ProgressUpdate } from "src/stores/task-store"
 import { beforeAll, expect, it } from "vitest"
 
-const accountName = "azure"
+const accountName = "turquoise"
 
 beforeAll(async () => {
   //

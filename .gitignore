@@ -18,6 +18,11 @@ node_modules/
 # production
 /build
 
+# test data
+test/files/binance-private/
+test/file-imports/__snapshots__/binance-import/
+test/file-imports/binance-import.test.ts
+
 # misc
 .DS_Store
 *.pem
