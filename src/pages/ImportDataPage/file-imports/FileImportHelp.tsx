@@ -21,7 +21,7 @@ import { EtherscanHelp } from "./help/EtherscanHelp"
 export function FileImportHelp() {
   const { value: modalOpen, toggle: toggleModalOpen } = useBoolean(false)
 
-  const [tab, setTab] = useState("binance")
+  const [tab, setTab] = useState("etherscan")
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
     setTab(newValue)

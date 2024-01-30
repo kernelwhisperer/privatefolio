@@ -33,8 +33,7 @@ const steps = [
   {
     description: (
       <>
-        Input the address of your wallet, select the time range (or block range) and click on{" "}
-        <u>Download</u>
+        Input the address of your wallet, select a broad time range and click on <u>Download</u>
         .
         <br />
         <br />
@@ -48,7 +47,47 @@ const steps = [
         </a>
       </>
     ),
-    label: "Fill the form & download",
+    label: "Export normal transactions",
+  },
+  {
+    description: (
+      <>
+        Change export type to <i>Internal Transactions</i>, input the address of your wallet, select
+        a broad time range and click on <u>Download</u>
+        .
+        <br />
+        <br />
+        <a href="/app-images/help/etherscan/step3.png" target="_blank" rel="noreferrer">
+          <img
+            height={249}
+            width={433}
+            src="/app-images/help/etherscan/step3.png"
+            alt="Step visualization"
+          />
+        </a>
+      </>
+    ),
+    label: "Export internal transactions",
+  },
+  {
+    description: (
+      <>
+        Change export type to <i>ERC20 Transactions</i>, input the address of your wallet, select a
+        broad time range and click on <u>Download</u>
+        .
+        <br />
+        <br />
+        <a href="/app-images/help/etherscan/step4.png" target="_blank" rel="noreferrer">
+          <img
+            height={249}
+            width={433}
+            src="/app-images/help/etherscan/step4.png"
+            alt="Step visualization"
+          />
+        </a>
+      </>
+    ),
+    label: "Export ERC20 transactions",
   },
 ]
 

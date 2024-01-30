@@ -7,7 +7,7 @@ export const EXCHANGE_FILES_LOCATION = "app-images/exchanges"
 export const BLOCKCHAIN_PAGES = 1
 export const BLOCKCHAIN_FILES_LOCATION = "app-images/blockchains"
 
-export const PARSER_IDS = ["binance", "mexc", "coinmama", "etherscan", "etherscan-erc20"]
+export const PARSER_IDS = ["etherscan", "binance", "mexc", "coinmama", "etherscan-erc20"]
 
 export const PARSERS: Record<ParserId, string> = {
   binance: "Binance",
