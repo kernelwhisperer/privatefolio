@@ -5,11 +5,7 @@ import { proxy } from "comlink"
 import { debounce } from "lodash-es"
 import React, { useEffect, useMemo, useState } from "react"
 import { DEFAULT_DEBOUNCE_DURATION } from "src/settings"
-import {
-  $hideSmallBalances,
-  $hideSmallBalancesMap,
-  $priceApi,
-} from "src/stores/account-settings-store"
+import { $hideSmallBalances, $hideSmallBalancesMap } from "src/stores/account-settings-store"
 import { $activeAccount } from "src/stores/account-store"
 import { $inspectTime } from "src/stores/pages/balances-store"
 import { refreshNetworth } from "src/utils/common-tasks"
@@ -32,7 +28,6 @@ export default function BalancesPage({ show }: { show: boolean }) {
   const hideSmallBalances = useStore($hideSmallBalances)
   const inspectTime = useStore($inspectTime)
   const activeAccount = useStore($activeAccount)
-  const priceApi = useStore($priceApi)
 
   useEffect(() => {
     function fetchData() {
@@ -60,7 +55,7 @@ export default function BalancesPage({ show }: { show: boolean }) {
         unsubscribe()
       })
     }
-  }, [inspectTime, priceApi, activeAccount, hideSmallBalances])
+  }, [inspectTime, activeAccount, hideSmallBalances])
 
   const headCells = useMemo<HeadCell<Balance>[]>(
     () => [

@@ -17,7 +17,6 @@ import { $debugMode, $telemetry, AppVerProps, PopoverToggleProps } from "../../s
 import { MonoFont } from "../../theme"
 import { SectionTitle } from "../SectionTitle"
 import { StaggeredList } from "../StaggeredList"
-import { PriceAPI } from "./PriceAPI"
 import { ReducedMotion } from "./ReducedMotion"
 import { ThemeMode } from "./ThemeMode"
 
@@ -82,10 +81,6 @@ export const SettingsDrawerContents = ({
       <div>
         <SectionTitle>Animations</SectionTitle>
         <ReducedMotion />
-      </div>
-      <div>
-        <SectionTitle>Price API</SectionTitle>
-        <PriceAPI />
       </div>
       <div role="list" aria-labelledby="social-links">
         <SectionTitle id="social-links" role="listitem">

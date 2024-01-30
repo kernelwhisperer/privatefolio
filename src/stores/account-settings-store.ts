@@ -1,6 +1,5 @@
 import { persistentMap } from "@nanostores/persistent"
 import { atom, computed } from "nanostores"
-import { PlatformId } from "src/interfaces"
 
 import { $activeAccount } from "./account-store"
 
@@ -42,23 +41,6 @@ export const DEFAULT_CURRENCIES: Currency[] = [
 ]
 
 export const $baseCurrency = atom<Currency>(DEFAULT_CURRENCIES[0])
-
-export const defaultApiPreference: PlatformId = "coinbase"
-export const $priceApiPreferences = persistentMap<Record<string, PlatformId | undefined>>(
-  "privatefolio-price-api-pref",
-  {}
-)
-
-export const $priceApiPref = computed(
-  [$activeAccount, $priceApiPreferences],
-  (activeAccount, priceApiPreferences) => {
-    return priceApiPreferences[activeAccount]
-  }
-)
-
-export const $priceApi = computed($priceApiPref, (priceApiPref) => {
-  return priceApiPref || defaultApiPreference
-})
 
 export const $hideSmallBalancesMap = persistentMap<Record<string, string | undefined>>(
   "privatefolio-small-balances",
