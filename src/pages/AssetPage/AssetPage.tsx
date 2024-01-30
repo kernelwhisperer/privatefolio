@@ -17,12 +17,13 @@ import { PriceChart } from "./PriceChart"
 
 export default function AssetPage({ show }: { show: boolean }) {
   const params = useParams()
-  const assetId = params.assetId?.toLocaleUpperCase()
+  const assetId = params.assetId // ?.toLocaleUpperCase()
   const [searchParams] = useSearchParams()
   const tab = searchParams.get("tab") || ""
   const assetMap = useStore($assetMetaMap)
 
   const filterMap = useStore($filterOptionsMap)
+  console.log("📜 LOG > AssetPage > assetMap:", filterMap.assetId, assetId)
 
   if (!assetId || (filterMap.assetId && !filterMap.assetId.includes(assetId))) {
     return <Navigate to=".." replace={true} />

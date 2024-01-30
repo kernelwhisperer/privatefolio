@@ -35,7 +35,7 @@ it("should add a file import", async () => {
       "_id": "32174469",
       "metadata": {
         "assetIds": [
-          "ETH",
+          "ethereum:0x0000000000000000000000000000000000000000:ETH",
         ],
         "integration": "ethereum",
         "logs": 16,
@@ -53,7 +53,9 @@ it("should add a file import", async () => {
     }
   `)
   expect(auditLogs.length).toMatchInlineSnapshot(`16`)
-  expect(auditLogs).toMatchSnapshot()
+  expect(auditLogs).toMatchFileSnapshot(
+    "./__snapshots__/etherscan-import/audit-logs-normal.test.ts.snap"
+  )
 })
 
 it("should add an erc20 file import", async () => {
@@ -101,7 +103,9 @@ it("should add an erc20 file import", async () => {
     }
   `)
   expect(auditLogs.length).toMatchInlineSnapshot(`8`)
-  expect(auditLogs).toMatchSnapshot()
+  expect(auditLogs).toMatchFileSnapshot(
+    "./__snapshots__/etherscan-import/audit-logs-erc20.test.ts.snap"
+  )
 })
 
 it.sequential("should compute balances", async () => {
@@ -123,9 +127,17 @@ it.sequential("should compute balances", async () => {
     100,Saved 1210 records to disk"
   `)
   expect(balances.length).toMatchInlineSnapshot(`1210`)
-  expect(balances).toMatchSnapshot()
+  for (let i = 0; i < balances.length; i += 100) {
+    expect(balances.slice(i, i + 100)).toMatchFileSnapshot(
+      `./__snapshots__/etherscan-import/balances-${i}.test.ts.snap`
+    )
+  }
   expect(auditLogs.length).toMatchInlineSnapshot(`24`)
-  expect(auditLogs).toMatchSnapshot()
+  expect(auditLogs).toMatchFileSnapshot(
+    "./__snapshots__/etherscan-import/audit-logs-all.test.ts.snap"
+  )
   expect(transactions.length).toMatchInlineSnapshot(`9`)
-  expect(transactions).toMatchSnapshot()
+  expect(transactions).toMatchFileSnapshot(
+    "./__snapshots__/etherscan-import/transactions-all.test.ts.snap"
+  )
 })

@@ -35,7 +35,7 @@ it("should add a file import", async () => {
       "_id": "186018469",
       "metadata": {
         "assetIds": [
-          "ETH",
+          "ethereum:0x0000000000000000000000000000000000000000:ETH",
         ],
         "integration": "ethereum",
         "logs": 545,
@@ -53,7 +53,11 @@ it("should add a file import", async () => {
     }
   `)
   expect(auditLogs.length).toMatchInlineSnapshot(`545`)
-  expect(auditLogs).toMatchSnapshot()
+  for (let i = 0; i < auditLogs.length; i += 100) {
+    expect(auditLogs.slice(i, i + 100)).toMatchFileSnapshot(
+      `./__snapshots__/etherscan-import-2/audit-logs-normal-${i}.test.ts.snap`
+    )
+  }
 })
 
 it("should add an internal file import", async () => {
@@ -76,7 +80,7 @@ it("should add an internal file import", async () => {
       "_id": "3141079563",
       "metadata": {
         "assetIds": [
-          "ETH",
+          "ethereum:0x0000000000000000000000000000000000000000:ETH",
         ],
         "integration": "ethereum",
         "logs": 48,
@@ -92,7 +96,11 @@ it("should add an internal file import", async () => {
     }
   `)
   expect(auditLogs.length).toMatchInlineSnapshot(`48`)
-  expect(auditLogs).toMatchSnapshot()
+  for (let i = 0; i < auditLogs.length; i += 100) {
+    expect(auditLogs.slice(i, i + 100)).toMatchFileSnapshot(
+      `./__snapshots__/etherscan-import-2/audit-logs-internal-${i}.test.ts.snap`
+    )
+  }
 })
 
 it("should add an erc20 file import", async () => {
@@ -201,12 +209,16 @@ it("should add an erc20 file import", async () => {
     }
   `)
   expect(auditLogs.length).toMatchInlineSnapshot(`419`)
-  expect(auditLogs).toMatchFileSnapshot("./__snapshots__/etherscan-import-2-erc20.test.ts.snap")
+  for (let i = 0; i < auditLogs.length; i += 100) {
+    expect(auditLogs.slice(i, i + 100)).toMatchFileSnapshot(
+      `./__snapshots__/etherscan-import-2/audit-logs-erc20-${i}.test.ts.snap`
+    )
+  }
 })
 
 it.sequential("should compute balances", async () => {
   // arrange
-  const until = Date.UTC(2021, 0, 0, 0, 0, 0, 0) // 1 Jan 2021
+  const until = Date.UTC(2000, 0, 0, 0, 0, 0, 0) // 1 Jan 2000
   // act
   const updates: ProgressUpdate[] = []
   await computeBalances(accountName, { until }, (state) => updates.push(state))
@@ -225,13 +237,21 @@ it.sequential("should compute balances", async () => {
     100,Saved 1972 records to disk"
   `)
   expect(balances.length).toMatchInlineSnapshot(`1971`)
-  expect(balances).toMatchFileSnapshot("./__snapshots__/etherscan-import-2-balances.test.ts.snap")
+  for (let i = 0; i < balances.length; i += 100) {
+    expect(balances.slice(i, i + 100)).toMatchFileSnapshot(
+      `./__snapshots__/etherscan-import-2/balances-${i}.test.ts.snap`
+    )
+  }
   expect(auditLogs.length).toMatchInlineSnapshot(`1012`)
-  expect(auditLogs).toMatchFileSnapshot(
-    "./__snapshots__/etherscan-import-2-audit-logs.test.ts.snap"
-  )
+  for (let i = 0; i < auditLogs.length; i += 100) {
+    expect(auditLogs.slice(i, i + 100)).toMatchFileSnapshot(
+      `./__snapshots__/etherscan-import-2/audit-logs-all-${i}.test.ts.snap`
+    )
+  }
   expect(transactions.length).toMatchInlineSnapshot(`530`)
-  expect(transactions).toMatchFileSnapshot(
-    "./__snapshots__/etherscan-import-2-transactions.test.ts.snap"
-  )
+  for (let i = 0; i < auditLogs.length; i += 100) {
+    expect(transactions.slice(i, i + 100)).toMatchFileSnapshot(
+      `./__snapshots__/etherscan-import-2/transactions-all-${i}.test.ts.snap`
+    )
+  }
 })

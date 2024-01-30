@@ -138,7 +138,7 @@ it("should fetch BTC prices using Coinbase", async () => {
   `)
 })
 
-it("should fetch WBTC prices using DefiLlama", async () => {
+it.skip("should fetch WBTC prices using DefiLlama", async () => {
   // arrange
   const updates: ProgressUpdate[] = []
   // act

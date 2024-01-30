@@ -41,7 +41,11 @@ export function BalanceTableRow(props: TableRowComponentProps<Balance>) {
         <TableCell sx={{ width: "100%" }}>
           <Stack direction="row" justifyContent="space-between" alignItems="center">
             <Stack direction="row" gap={1} alignItems="center" component="div">
-              <AssetAvatar size="medium" src={assetMap[assetId]?.image} alt={assetId} />
+              <AssetAvatar
+                size="medium"
+                src={assetMap[assetId]?.image}
+                alt={getAssetSymbol(assetId)}
+              />
               <Stack>
                 <Typography variant="body1">
                   <span>{getAssetSymbol(assetId)}</span>
@@ -96,7 +100,7 @@ export function BalanceTableRow(props: TableRowComponentProps<Balance>) {
     >
       <TableCell sx={{ maxWidth: 380, minWidth: 160, width: 380 }}>
         <Stack direction="row" gap={1} alignItems="center" component="div">
-          <AssetAvatar src={assetMap[assetId]?.image} alt={assetId} size="small" />
+          <AssetAvatar src={assetMap[assetId]?.image} alt={getAssetSymbol(assetId)} size="small" />
           <Stack>
             <span>{getAssetSymbol(assetId)}</span>
           </Stack>

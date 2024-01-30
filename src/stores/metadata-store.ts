@@ -1,5 +1,6 @@
 import { debounce } from "lodash-es"
 import { keepMount, map } from "nanostores"
+import { getAssetSymbol } from "src/utils/asset-utils"
 
 import { findAssets } from "../api/core/assets-api"
 import { findIntegrations } from "../api/core/integrations-api"
@@ -43,7 +44,7 @@ export function getFilterValueLabel(value: string) {
     return INTEGRATIONS[value as Integration]
   }
 
-  return value
+  return getAssetSymbol(value)
 }
 
 async function computeFilterMap() {

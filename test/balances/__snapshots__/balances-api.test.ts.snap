@@ -93,6 +93,7 @@ exports[`should fetch latest balances with price data 1`] = `
 [
   {
     "_id": "1505347200000_BTC",
+    "assetId": "BTC",
     "balance": "0.072958518",
     "balanceN": 0.072958518,
     "price": {
@@ -104,7 +105,6 @@ exports[`should fetch latest balances with price data 1`] = `
       "value": 3250.4,
       "volume": 36363.92501211,
     },
-    "symbol": "BTC",
     "value": 237.1443669072,
   },
 ]
@@ -114,10 +114,10 @@ exports[`should fetch latest balances without price data 1`] = `
 [
   {
     "_id": "1505347200000_BTC",
+    "assetId": "BTC",
     "balance": "0.072958518",
     "balanceN": 0.072958518,
     "price": undefined,
-    "symbol": "BTC",
     "value": undefined,
   },
 ]
