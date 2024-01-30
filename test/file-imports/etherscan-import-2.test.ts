@@ -81,11 +81,13 @@ it("should add an internal file import", async () => {
       "metadata": {
         "assetIds": [
           "ethereum:0x0000000000000000000000000000000000000000:ETH",
+          "ethereum:0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2:WETH",
         ],
         "integration": "ethereum",
-        "logs": 48,
+        "logs": 61,
         "operations": [
           "Deposit",
+          "Withdraw",
         ],
         "rows": 48,
         "transactions": 48,
@@ -95,7 +97,7 @@ it("should add an internal file import", async () => {
       },
     }
   `)
-  expect(auditLogs.length).toMatchInlineSnapshot(`48`)
+  expect(auditLogs.length).toMatchInlineSnapshot(`61`)
   for (let i = 0; i < auditLogs.length; i += 100) {
     expect(auditLogs.slice(i, i + 100)).toMatchFileSnapshot(
       `./__snapshots__/etherscan-import-2/audit-logs-internal-${i}.test.ts.snap`
@@ -227,11 +229,11 @@ it.sequential("should compute balances", async () => {
   const transactions = await findTransactions({}, accountName)
   // assert
   expect(updates.join("\n")).toMatchInlineSnapshot(`
-    "0,Computing balances for 1012 audit logs
+    "0,Computing balances for 1025 audit logs
     0,Processing logs 1 to 1000
-    88,Processed 1762 daily balances
-    88,Processing logs 1001 to 1012
-    90,Processed 210 daily balances
+    87,Processed 1350 daily balances
+    87,Processing logs 1001 to 1025
+    90,Processed 622 daily balances
     95,Setting networth cursor to Dec 31, 1969
     96,Filling balances to reach today
     100,Saved 1972 records to disk"
@@ -242,7 +244,7 @@ it.sequential("should compute balances", async () => {
       `./__snapshots__/etherscan-import-2/balances-${i}.test.ts.snap`
     )
   }
-  expect(auditLogs.length).toMatchInlineSnapshot(`1012`)
+  expect(auditLogs.length).toMatchInlineSnapshot(`1025`)
   for (let i = 0; i < auditLogs.length; i += 100) {
     expect(auditLogs.slice(i, i + 100)).toMatchFileSnapshot(
       `./__snapshots__/etherscan-import-2/audit-logs-all-${i}.test.ts.snap`

@@ -68,7 +68,7 @@ export async function parseCsv(
   progress([50, `Extracting transactions`])
   if (transactions.length === 0) {
     // warn: this fn mutates logs
-    transactions = extractTransactions(logs, _fileImportId)
+    transactions = extractTransactions(logs, _fileImportId, parserId)
   }
 
   const metadata: FileImport["meta"] = {

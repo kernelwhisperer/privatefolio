@@ -1,4 +1,5 @@
 import { groupBy } from "lodash-es"
+import { ParserId } from "src/settings"
 
 import { AuditLog, Transaction } from "../interfaces"
 import { hashString } from "./utils"
@@ -26,8 +27,16 @@ function validGrouping(logs: AuditLog[]) {
 /**
  * @warn This function mutates the logs param
  */
-export function extractTransactions(logs: AuditLog[], fileImportId: string): Transaction[] {
+export function extractTransactions(
+  logs: AuditLog[],
+  fileImportId: string,
+  parserId: ParserId
+): Transaction[] {
   const transactions: Transaction[] = []
+
+  if (parserId !== "binance") {
+    return transactions
+  }
 
   const timestampGroups = groupBy(logs, "timestamp")
 
