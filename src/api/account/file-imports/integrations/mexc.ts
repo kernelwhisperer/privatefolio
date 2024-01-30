@@ -37,7 +37,7 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
   const totalN = parseFloat(total)
   const feeAssetId = quoteAssetId // ?
   //
-  const wallet = "Spot"
+  const wallet = "MEXC Spot"
 
   const txns: Transaction[] = []
 

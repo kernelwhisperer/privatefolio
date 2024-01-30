@@ -35,7 +35,7 @@ it("should add a file import", async () => {
         "rows": 5,
         "transactions": 2,
         "wallets": [
-          "Spot",
+          "Coinmama Spot",
         ],
       },
     }

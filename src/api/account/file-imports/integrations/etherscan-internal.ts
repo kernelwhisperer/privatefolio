@@ -64,7 +64,7 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
   const timestamp = asUTC(new Date(datetimeUtc))
 
   const assetId = "ethereum:0x0000000000000000000000000000000000000000:ETH"
-  const wallet = "Spot"
+  const wallet = valueIn === "0" ? parentTxFrom : txTo
 
   const logs: EtherscanAuditLog[] = []
   let type: TransactionType

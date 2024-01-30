@@ -127,7 +127,7 @@ exports[`should have balances computed 1`] = `
 [
   {
     "_id": "2675435331_3604660326_0",
-    "_rev": "3-a7b26030231ffd6b0765289cefb9db65",
+    "_rev": "3-032b56a414faee58eb34327ac6446cf8",
     "assetId": "coinmama:BTC",
     "balance": "0.072958518",
     "balanceN": 0.072958518,
@@ -138,11 +138,11 @@ exports[`should have balances computed 1`] = `
     "integration": "coinmama",
     "operation": "Buy with Credit Card",
     "timestamp": 1504789876000,
-    "wallet": "Spot",
+    "wallet": "Coinmama Spot",
   },
   {
     "_id": "2675435331_1607323056_0",
-    "_rev": "2-f84429fc46941fbb3c4e92e9111ac31b",
+    "_rev": "2-d00a502ab3714f426eaf0cfb7ffaae87",
     "assetId": "coinmama:BTC",
     "balance": "0.035979259",
     "balanceN": 0.035979259,
@@ -153,7 +153,7 @@ exports[`should have balances computed 1`] = `
     "integration": "coinmama",
     "operation": "Buy with Credit Card",
     "timestamp": 1504267876000,
-    "wallet": "Spot",
+    "wallet": "Coinmama Spot",
   },
 ]
 `;
@@ -162,7 +162,7 @@ exports[`should not have balances computed 1`] = `
 [
   {
     "_id": "2675435331_3604660326_0",
-    "_rev": "1-5684714159a930b1a6c3ecee7d63bdc6",
+    "_rev": "1-bb729489410e2b1eaeb13ea0dce56de2",
     "assetId": "coinmama:BTC",
     "change": "0.036979259",
     "changeN": 0.036979259,
@@ -171,11 +171,11 @@ exports[`should not have balances computed 1`] = `
     "integration": "coinmama",
     "operation": "Buy with Credit Card",
     "timestamp": 1504789876000,
-    "wallet": "Spot",
+    "wallet": "Coinmama Spot",
   },
   {
     "_id": "2675435331_1607323056_0",
-    "_rev": "1-27503f1a13e3e72b5ac341a56cc2a478",
+    "_rev": "1-ddac1c3a5760c7c24cdded4f411964a6",
     "assetId": "coinmama:BTC",
     "change": "0.035979259",
     "changeN": 0.035979259,
@@ -184,7 +184,7 @@ exports[`should not have balances computed 1`] = `
     "integration": "coinmama",
     "operation": "Buy with Credit Card",
     "timestamp": 1504267876000,
-    "wallet": "Spot",
+    "wallet": "Coinmama Spot",
   },
 ]
 `;

@@ -6,7 +6,7 @@ import { ParserContextFn } from "src/interfaces"
 import { $activeAccount } from "src/stores/account-store"
 import { formatCamelCase } from "src/utils/utils"
 
-import { enqueueTask } from "../stores/task-store"
+import { enqueueTask, TaskPriority } from "../stores/task-store"
 import { handleAuditLogChange } from "../utils/common-tasks"
 import { clancy } from "../workers/remotes"
 import { AddressInputUncontrolled } from "./AddressInput"
@@ -58,7 +58,7 @@ export function FileDrop(props: PaperProps & { defaultBg?: string }) {
         }
       },
       name: `Import file`,
-      priority: 8,
+      priority: TaskPriority.VeryHigh,
     })
   }
 

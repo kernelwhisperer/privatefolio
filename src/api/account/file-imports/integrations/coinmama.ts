@@ -38,7 +38,7 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
   const outgoing = amount.split(" ")[0]
   const outgoingN = parseFloat(outgoing)
   const outgoingAsset = `coinmama:${amount.split(" ")[1]}`
-  const wallet = "Spot"
+  const wallet = "Coinmama Spot"
   const priceN = outgoingN / incomingN
   const price = String(priceN)
 

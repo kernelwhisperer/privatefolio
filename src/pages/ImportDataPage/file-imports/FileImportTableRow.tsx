@@ -17,7 +17,7 @@ import { FileImport } from "src/interfaces"
 import { INTEGRATIONS } from "src/settings"
 import { $activeAccount } from "src/stores/account-store"
 import { $integrationMetaMap } from "src/stores/metadata-store"
-import { enqueueTask } from "src/stores/task-store"
+import { enqueueTask, TaskPriority } from "src/stores/task-store"
 import { MonoFont } from "src/theme"
 import { handleAuditLogChange } from "src/utils/common-tasks"
 import { formatFileSize, formatNumber } from "src/utils/formatting-utils"
@@ -50,7 +50,7 @@ export function FileImportTableRow(props: TableRowComponentProps<FileImport>) {
         }
       },
       name: `Remove file import`,
-      priority: 8,
+      priority: TaskPriority.VeryHigh,
     })
   }
 

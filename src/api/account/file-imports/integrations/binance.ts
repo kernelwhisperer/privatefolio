@@ -46,7 +46,7 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
   const timestamp = asUTC(new Date(utcTime))
   const changeN = parseFloat(change)
   const assetId = `binance:${coin}`
-  const wallet = account
+  const wallet = `Binance ${account}`
 
   const log: BinanceAuditLog = {
     _id,

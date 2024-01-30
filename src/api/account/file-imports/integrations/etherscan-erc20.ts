@@ -70,7 +70,7 @@ export function parser(
   const change = operation === "Deposit" ? tokenValue : `-${tokenValue}`
   const changeN = parseFloat(change)
 
-  const wallet = "Spot"
+  const wallet = operation === "Deposit" ? to : from
 
   const logs: EtherscanAuditLog[] = [
     {

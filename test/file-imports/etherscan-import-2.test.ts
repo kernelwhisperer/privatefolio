@@ -47,7 +47,7 @@ it("should add a file import", async () => {
         "rows": 482,
         "transactions": 482,
         "wallets": [
-          "Spot",
+          "0x003dc32fe920a4aaeed12dc87e145f030aa753f3",
         ],
       },
     }
@@ -92,7 +92,7 @@ it("should add an internal file import", async () => {
         "rows": 48,
         "transactions": 48,
         "wallets": [
-          "Spot",
+          "0x003dc32fe920a4aaeed12dc87e145f030aa753f3",
         ],
       },
     }
@@ -205,7 +205,7 @@ it("should add an erc20 file import", async () => {
         "rows": 428,
         "transactions": 0,
         "wallets": [
-          "Spot",
+          "0x003dc32fe920a4aaeed12dc87e145f030aa753f3",
         ],
       },
     }
