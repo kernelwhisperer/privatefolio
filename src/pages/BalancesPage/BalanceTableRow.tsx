@@ -4,7 +4,7 @@ import React from "react"
 import { useNavigate } from "react-router-dom"
 import { AmountBlock } from "src/components/AmountBlock"
 import { $baseCurrency } from "src/stores/account-settings-store"
-import { getAssetSymbol } from "src/utils/asset-utils"
+import { getAssetSymbol } from "src/utils/assets-utils"
 
 import { AssetAvatar } from "../../components/AssetAvatar"
 import { Balance } from "../../interfaces"

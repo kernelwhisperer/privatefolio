@@ -25,7 +25,7 @@ beforeAll(async () => {
 it("should fetch no prices", async () => {
   // act
   const updates: ProgressUpdate[] = []
-  await fetchDailyPrices({ assetIds: [], priceApiId: "coinbase" }, (state) => updates.push(state))
+  await fetchDailyPrices({ assetIds: [] }, (state) => updates.push(state))
   // assert
   expect(updates.join("\n")).toMatchInlineSnapshot(`"0,Fetching asset prices for 0 assets"`)
 })
@@ -37,10 +37,8 @@ it("should fetch BTC prices using Binance", async (test) => {
   // arrange
   const updates: ProgressUpdate[] = []
   // act
-  await fetchDailyPrices({ assetIds: ["BTC"], priceApiId: "binance" }, (state) =>
-    updates.push(state)
-  )
-  const records = await getPricesForAsset("BTC", "binance")
+  await fetchDailyPrices({ assetIds: ["binance:BTC"] }, (state) => updates.push(state))
+  const records = await getPricesForAsset("binance:BTC")
   // assert
   // console.log(updates.join("\n"))
   let prevRecord
@@ -89,10 +87,8 @@ it("should fetch BTC prices using Coinbase", async () => {
   // arrange
   const updates: ProgressUpdate[] = []
   // act
-  await fetchDailyPrices({ assetIds: ["BTC"], priceApiId: "coinbase" }, (state) =>
-    updates.push(state)
-  )
-  const records = await getPricesForAsset("BTC", "coinbase")
+  await fetchDailyPrices({ assetIds: ["coinbase:BTC"] }, (state) => updates.push(state))
+  const records = await getPricesForAsset("coinbase:BTC")
   // assert
   // console.log(updates.join("\n"))
   let prevRecord
@@ -143,12 +139,11 @@ it.skip("should fetch WBTC prices using DefiLlama", async () => {
   const updates: ProgressUpdate[] = []
   // act
   await fetchDailyPrices(
-    { assetIds: ["ethereum:0x2260fac5e5542a773aa44fbcfedf7c193bc2c599"], priceApiId: "defi-llama" },
+    { assetIds: ["ethereum:0x2260fac5e5542a773aa44fbcfedf7c193bc2c599:WBTC"] },
     (state) => updates.push(state)
   )
   const records = await getPricesForAsset(
-    "ethereum:0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",
-    "defi-llama"
+    "ethereum:0x2260fac5e5542a773aa44fbcfedf7c193bc2c599:WBTC"
   )
   // assert
   // console.log(updates.join("\n"))

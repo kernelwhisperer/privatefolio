@@ -25,7 +25,7 @@ it("should add a file import", async () => {
       "_id": "2675435331",
       "metadata": {
         "assetIds": [
-          "BTC",
+          "coinmama:BTC",
         ],
         "integration": "coinmama",
         "logs": 2,

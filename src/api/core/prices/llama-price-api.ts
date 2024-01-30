@@ -1,11 +1,12 @@
 import { DISALLOW_BINANCE_PRICE_API } from "src/env"
 
-import { ChartData, LlamaPrice, PriceApiId, QueryRequest, Time } from "../../../interfaces"
+import { ChartData, LlamaPrice, PlatformId, QueryRequest, Time } from "../../../interfaces"
 
-export const Identifier: PriceApiId = "defi-llama"
+export const Identifier: PlatformId = "ethereum"
 
 export function getPair(assetId: string) {
-  return assetId
+  const parts = assetId.split(":")
+  return parts.slice(0, 2).join(":")
 }
 
 function approximateTimestamp(timestamp: Time) {

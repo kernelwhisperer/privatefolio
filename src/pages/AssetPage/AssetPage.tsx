@@ -4,6 +4,7 @@ import React from "react"
 import { Navigate, useParams, useSearchParams } from "react-router-dom"
 import { NavTab } from "src/components/NavTab"
 import { Tabs } from "src/components/Tabs"
+import { getAssetSymbol } from "src/utils/assets-utils"
 
 import { AssetAvatar } from "../../components/AssetAvatar"
 import { BackButton } from "../../components/BackButton"
@@ -23,7 +24,6 @@ export default function AssetPage({ show }: { show: boolean }) {
   const assetMap = useStore($assetMetaMap)
 
   const filterMap = useStore($filterOptionsMap)
-  console.log("📜 LOG > AssetPage > assetMap:", filterMap.assetId, assetId)
 
   if (!assetId || (filterMap.assetId && !filterMap.assetId.includes(assetId))) {
     return <Navigate to=".." replace={true} />
@@ -35,10 +35,10 @@ export default function AssetPage({ show }: { show: boolean }) {
         Home
       </BackButton>
       <Stack direction="row" gap={1} alignItems="center" component="div" sx={{ marginX: 2 }}>
-        <AssetAvatar size="large" src={assetMap[assetId]?.image} alt={assetId} />
+        <AssetAvatar size="large" src={assetMap[assetId]?.image} alt={getAssetSymbol(assetId)} />
         <Stack>
           <Typography variant="h6" fontFamily={SerifFont} sx={{ marginBottom: -0.5 }}>
-            <span>{assetId}</span>
+            <span>{getAssetSymbol(assetId)}</span>
           </Typography>
           <Typography
             color="text.secondary"

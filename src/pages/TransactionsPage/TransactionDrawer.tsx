@@ -26,6 +26,7 @@ import { $activeAccount, $activeIndex } from "src/stores/account-store"
 import { PopoverToggleProps } from "src/stores/app-store"
 import { $integrationMetaMap } from "src/stores/metadata-store"
 import { MonoFont } from "src/theme"
+import { getAssetSymbol } from "src/utils/assets-utils"
 import { greenColor, redColor } from "src/utils/chart-utils"
 import { formatHex, getExplorerLink } from "src/utils/utils"
 import { clancy } from "src/workers/remotes"
@@ -64,7 +65,6 @@ export function TransactionDrawer(props: TransactionDrawerProps) {
     if (!open) return
 
     clancy.findAuditLogsForTxId(_id, $activeAccount.get()).then((logs) => {
-      console.log("📜 LOG > clancy.findAuditLogsForTxId > logs:", logs)
       setLogsNumber(logs.length)
     })
   }, [_id, open])
@@ -127,7 +127,7 @@ export function TransactionDrawer(props: TransactionDrawerProps) {
           <SectionTitle>Fee</SectionTitle>
           <Box sx={{ color: redColor }}>
             <AmountBlock amount={fee} formatOpts={{ signDisplay: "always" }} />{" "}
-            <span>{feeAsset}</span>
+            <span>{getAssetSymbol(feeAsset)}</span>
           </Box>
         </div>
         <div>
@@ -137,7 +137,7 @@ export function TransactionDrawer(props: TransactionDrawerProps) {
               amount={outgoing ? `-${outgoing}` : outgoing}
               formatOpts={{ signDisplay: "always" }}
             />{" "}
-            <span>{outgoingAsset}</span>
+            <span>{getAssetSymbol(outgoingAsset)}</span>
           </Box>
         </div>
         {price && (
@@ -145,7 +145,7 @@ export function TransactionDrawer(props: TransactionDrawerProps) {
             <SectionTitle>Price</SectionTitle>
             <AmountBlock amount={price} />{" "}
             <span>
-              {outgoingAsset}/{incomingAsset}
+              {getAssetSymbol(outgoingAsset)}/{getAssetSymbol(incomingAsset)}
             </span>
           </div>
         )}
@@ -153,7 +153,7 @@ export function TransactionDrawer(props: TransactionDrawerProps) {
           <SectionTitle>Received</SectionTitle>
           <Box sx={{ color: greenColor }}>
             <AmountBlock amount={incoming} formatOpts={{ signDisplay: "always" }} />{" "}
-            <span>{incomingAsset}</span>
+            <span>{getAssetSymbol(incomingAsset)}</span>
           </Box>
         </div>
         <div>

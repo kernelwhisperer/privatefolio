@@ -81,3 +81,10 @@ export function getExplorerLink(networkIndex: number, addr: string, type: string
 export function formatHex(addr: string) {
   return `${addr.slice(0, 5)}...${addr.slice(-3)}`
 }
+
+export function formatCamelCase(str: string) {
+  return str
+    .replace(/([A-Z])/g, " $1")
+    .replace(/^./, (str) => str.toUpperCase())
+    .trim()
+}

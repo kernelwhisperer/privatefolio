@@ -1,7 +1,7 @@
 import { Tab, Tabs, tabsClasses } from "@mui/material"
 import { useStore } from "@nanostores/react"
 import React from "react"
-import { PriceApiId } from "src/interfaces"
+import { PlatformId } from "src/interfaces"
 import { $priceApiPref, $priceApiPreferences } from "src/stores/account-settings-store"
 import { $activeAccount } from "src/stores/account-store"
 
@@ -11,7 +11,7 @@ export function PriceAPI() {
   const priceApiPref = useStore($priceApiPref)
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
-    const newApiPreference: PriceApiId | undefined =
+    const newApiPreference: PlatformId | undefined =
       newValue === 0 ? "coinbase" : newValue === 1 ? "binance" : undefined
 
     $priceApiPreferences.setKey($activeAccount.get(), newApiPreference)

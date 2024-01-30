@@ -10,7 +10,7 @@ it("should fetch BTC prices within a range", async (test) => {
   // act
   const result = await queryPrices({
     limit: 3,
-    pair: getPair("BTC"),
+    pair: getPair("binance:BTC"),
     since: 1502928000000,
     timeInterval: "1d" as ResolutionString,
     until: 1503100800000,
@@ -55,7 +55,7 @@ it("should throw an error", async (test) => {
   }
   // act
   const promise = queryPrices({
-    pair: "EFJAUSDT",
+    pair: getPair("binance:EFJA"),
     since: 0,
     timeInterval: "1d" as ResolutionString,
     // until: 0,
@@ -71,7 +71,7 @@ it("should fetch ETH prices within a range", async (test) => {
   // act
   const result = await queryPrices({
     limit: 3,
-    pair: getPair("ETH"),
+    pair: getPair("binance:ETH"),
     since: 1518566400000,
     timeInterval: "1d" as ResolutionString,
     until: 1518739200000,

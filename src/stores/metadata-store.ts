@@ -1,6 +1,6 @@
 import { debounce } from "lodash-es"
 import { keepMount, map } from "nanostores"
-import { getAssetSymbol } from "src/utils/asset-utils"
+import { getAssetSymbol } from "src/utils/assets-utils"
 
 import { findAssets } from "../api/core/assets-api"
 import { findIntegrations } from "../api/core/integrations-api"
@@ -114,18 +114,13 @@ keepMount($integrationMetaMap)
 export async function computeMetadata() {
   const filterMap = await computeFilterMap()
 
-  const assetIdMap = filterMap.assetId.reduce((map, assetId) => {
-    map[assetId] = true
-    return map
-  }, {} as Record<string, boolean>)
-
   const integrationMap = filterMap.integration.reduce((map, integration) => {
     map[integration] = true
     return map
   }, {} as Record<string, boolean>)
 
   await Promise.all([
-    findAssets(assetIdMap).then($assetMetaMap.set),
+    findAssets(filterMap.assetId).then($assetMetaMap.set),
     findIntegrations(integrationMap).then($integrationMetaMap.set),
   ])
 }

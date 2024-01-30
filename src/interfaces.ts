@@ -61,12 +61,12 @@ export type AuditLogOperation =
   | "Transfer"
   | "Smart Contract Interaction"
 
-export type PriceApiId = "coinbase" | "binance" | "defi-llama"
+export type PlatformId = "ethereum" | "binance" | "coinbase" | "coinmama"
 
 export interface AssetMetadata {
   coingeckoId?: string
   image: string
-  isStablecoin: boolean
+  isStablecoin?: boolean
   name: string
   symbol: string
 }
@@ -179,7 +179,6 @@ export interface SavedPrice {
   assetId: string
   pair: string
   price: ChartData
-  source: PriceApiId
   timestamp: number
 }
 

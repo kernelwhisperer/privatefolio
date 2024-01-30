@@ -95,16 +95,16 @@ it.sequential("should have balances computed", async () => {
 it.sequential("should fetch latest balances without price data", async () => {
   // arrange
   // act
-  const balances = await getBalancesAt(undefined, "coinbase", accountName)
+  const balances = await getBalancesAt(undefined, accountName)
   // assert
   expect(balances).toMatchSnapshot()
 })
 
 it.sequential("should fetch latest balances with price data", async () => {
   // arrange
-  await fetchDailyPrices({ assetIds: ["BTC"], priceApiId: "coinbase" })
+  await fetchDailyPrices({ assetIds: ["coinmama:BTC"] })
   // act
-  const balances = await getBalancesAt(undefined, "coinbase", accountName)
+  const balances = await getBalancesAt(undefined, accountName)
   // assert
   expect(balances).toMatchSnapshot()
 })

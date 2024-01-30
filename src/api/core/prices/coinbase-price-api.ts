@@ -2,15 +2,16 @@ import { UTCTimestamp } from "lightweight-charts"
 import {
   ChartData,
   CoinbaseBucket,
-  PriceApiId,
+  PlatformId,
   QueryRequest,
   ResolutionString,
 } from "src/interfaces"
+import { getAssetSymbol } from "src/utils/assets-utils"
 
-export const Identifier: PriceApiId = "coinbase"
+export const Identifier: PlatformId = "coinbase"
 
 export function getPair(assetId: string) {
-  return `${assetId}-USD`
+  return `${getAssetSymbol(assetId)}-USD`
 }
 
 // Coinbase only allows 300 records per request

@@ -37,14 +37,12 @@ export default function BalancesPage({ show }: { show: boolean }) {
   useEffect(() => {
     function fetchData() {
       const start = Date.now()
-      clancy
-        .getBalancesAt(inspectTime, priceApi, activeAccount, hideSmallBalances)
-        .then((balances) => {
-          // fetch no longer accurate
-          if (activeAccount !== $activeAccount.get()) return
-          setQueryTime(Date.now() - start)
-          setRows(balances)
-        })
+      clancy.getBalancesAt(inspectTime, activeAccount, hideSmallBalances).then((balances) => {
+        // fetch no longer accurate
+        if (activeAccount !== $activeAccount.get()) return
+        setQueryTime(Date.now() - start)
+        setRows(balances)
+      })
     }
 
     fetchData()

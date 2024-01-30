@@ -11,6 +11,7 @@ import { useStore } from "@nanostores/react"
 import React from "react"
 import { AmountBlock } from "src/components/AmountBlock"
 import { useBoolean } from "src/hooks/useBoolean"
+import { getAssetSymbol } from "src/utils/assets-utils"
 
 import { AssetAvatar } from "../../components/AssetAvatar"
 import { TimestampBlock } from "../../components/TimestampBlock"
@@ -101,8 +102,12 @@ export function TransactionTableRow(props: TableRowComponentProps<Transaction>) 
         <TableCell sx={{ maxWidth: 140, minWidth: 140, width: 140 }}>
           {outgoingAsset && (
             <Stack direction="row" gap={0.5} alignItems="center" component="div">
-              <AssetAvatar size="small" src={assetMap[outgoingAsset]?.image} alt={outgoingAsset} />
-              <span>{outgoingAsset}</span>
+              <AssetAvatar
+                size="small"
+                src={assetMap[outgoingAsset]?.image}
+                alt={getAssetSymbol(outgoingAsset)}
+              />
+              <span>{getAssetSymbol(outgoingAsset)}</span>
             </Stack>
           )}
         </TableCell>
@@ -121,8 +126,12 @@ export function TransactionTableRow(props: TableRowComponentProps<Transaction>) 
         <TableCell sx={{ maxWidth: 120, minWidth: 120, width: 120 }}>
           {incomingAsset && (
             <Stack direction="row" gap={0.5} alignItems="center" component="div">
-              <AssetAvatar size="small" src={assetMap[incomingAsset]?.image} alt={incomingAsset} />
-              <span>{incomingAsset}</span>
+              <AssetAvatar
+                size="small"
+                src={assetMap[incomingAsset]?.image}
+                alt={getAssetSymbol(incomingAsset)}
+              />
+              <span>{getAssetSymbol(incomingAsset)}</span>
             </Stack>
           )}
         </TableCell>

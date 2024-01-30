@@ -4,7 +4,7 @@ import { green, grey, red } from "@mui/material/colors"
 import { useStore } from "@nanostores/react"
 import React from "react"
 import { AmountBlock } from "src/components/AmountBlock"
-import { getAssetSymbol } from "src/utils/asset-utils"
+import { getAssetSymbol } from "src/utils/assets-utils"
 
 import { AssetAvatar } from "../../components/AssetAvatar"
 import { TimestampBlock } from "../../components/TimestampBlock"

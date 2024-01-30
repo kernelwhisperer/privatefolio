@@ -1,13 +1,20 @@
+import { getAssetSymbol } from "src/utils/assets-utils"
+
 import { AssetMetadata } from "../../interfaces"
 import { ASSET_FILES_LOCATION, ASSET_PAGES } from "../../settings"
 import { AssetMap } from "../../stores/metadata-store"
 
-export async function findAssets(symbolMap: Record<string, boolean>) {
+export async function findAssets(assetIds: string[]) {
   const map: AssetMap = {}
 
-  if (Object.keys(symbolMap).length === 0) {
+  if (assetIds.length === 0) {
     return map
   }
+
+  const assetSymbolMap = assetIds.reduce((map, assetId) => {
+    map[getAssetSymbol(assetId)] = assetId
+    return map
+  }, {} as Record<string, string>)
 
   for (let page = 1; page <= ASSET_PAGES; page++) {
     try {
@@ -16,8 +23,10 @@ export async function findAssets(symbolMap: Record<string, boolean>) {
       const assets: AssetMetadata[] = await response.json()
 
       for (const asset of assets) {
-        if (symbolMap[asset.symbol] && !map[asset.symbol]) {
-          map[asset.symbol] = asset
+        if (assetSymbolMap[asset.symbol]) {
+          const assetId = assetSymbolMap[asset.symbol]
+          if (map[assetId]) continue
+          map[assetId] = asset
         }
       }
       // console.log(
@@ -26,18 +35,23 @@ export async function findAssets(symbolMap: Record<string, boolean>) {
       //   }`
       // )
 
-      if (Object.keys(map).length === Object.keys(symbolMap).length) {
+      if (Object.keys(map).length === Object.keys(assetSymbolMap).length) {
         break
       }
     } catch (error) {}
   }
 
   // overrides
-  map.EUR = {
+  map["binance:EUR"] = {
     image: `/${ASSET_FILES_LOCATION}/overrides/EUR.png`,
     isStablecoin: true,
     name: "Euro",
     symbol: "EUR",
+  }
+  map["ethereum:0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2:WETH"] = {
+    image: `https://assets.coingecko.com/coins/images/2518/standard/weth.png`,
+    name: "Wrapped ETH",
+    symbol: "WETH",
   }
 
   if (map.BUSD) map.BUSD.image = `/${ASSET_FILES_LOCATION}/overrides/BUSD.svg`

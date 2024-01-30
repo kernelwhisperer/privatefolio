@@ -1,14 +1,8 @@
 import { proxy } from "comlink"
-import {
-  ChartData,
-  PriceApiId,
-  ResolutionString,
-  SavedPrice,
-  Time,
-  Timestamp,
-} from "src/interfaces"
+import { ChartData, ResolutionString, SavedPrice, Time, Timestamp } from "src/interfaces"
 import { PRICE_API_PAGINATION } from "src/settings"
 import { ProgressCallback } from "src/stores/task-store"
+import { getAssetPlatform, getAssetSymbol } from "src/utils/assets-utils"
 import { formatDate } from "src/utils/formatting-utils"
 import { noop } from "src/utils/utils"
 
@@ -25,17 +19,13 @@ export async function indexDailyPrices() {
   })
   await core.dailyPricesDB.createIndex({
     index: {
-      fields: ["assetId", "source", "timestamp"],
+      fields: ["assetId", "timestamp"],
       name: "assetId",
     },
   })
 }
 
-export async function getPricesForAsset(
-  assetId: string,
-  source: PriceApiId,
-  timestamp?: Timestamp
-) {
+export async function getPricesForAsset(assetId: string, timestamp?: Timestamp) {
   if (assetId === "USDT" && !!timestamp) {
     return [{ time: timestamp / 1000, value: 1 }] as ChartData[]
   }
@@ -45,8 +35,6 @@ export async function getPricesForAsset(
   const _req: PouchDB.Find.FindRequest<SavedPrice> = {
     selector: {
       assetId,
-      // eslint-disable-next-line sort-keys-fix/sort-keys-fix
-      source,
       timestamp: timestamp || { $exists: true },
     },
     sort: [
@@ -54,7 +42,6 @@ export async function getPricesForAsset(
         //
         assetId: "asc",
         // eslint-disable-next-line sort-keys-fix/sort-keys-fix
-        source: "asc",
         timestamp: "asc",
       },
     ],
@@ -94,23 +81,16 @@ export async function getAssetPriceMap(timestamp: Timestamp) {
   )
 }
 
-export async function getPriceCursor(
-  assetId: string,
-  source: PriceApiId
-): Promise<Timestamp | undefined> {
+export async function getPriceCursor(assetId: string): Promise<Timestamp | undefined> {
   const prices = await core.dailyPricesDB.find({
     limit: 1,
     selector: {
       assetId,
-      // eslint-disable-next-line sort-keys-fix/sort-keys-fix
-      source,
       timestamp: { $exists: true },
     },
     sort: [
       {
         assetId: "desc",
-        // eslint-disable-next-line sort-keys-fix/sort-keys-fix
-        source: "desc",
         timestamp: "desc",
       },
     ],
@@ -125,7 +105,6 @@ export async function getPriceCursor(
 
 type FetchDailyPricesRequest = {
   assetIds?: string[]
-  priceApiId: PriceApiId
 }
 
 export async function fetchDailyPrices(
@@ -133,7 +112,7 @@ export async function fetchDailyPrices(
   progress: ProgressCallback = noop,
   signal?: AbortSignal
 ) {
-  const { assetIds, priceApiId } = request
+  const { assetIds } = request
 
   if (!assetIds) {
     throw new Error("No assetIds provided") // TODO prevent this
@@ -145,14 +124,6 @@ export async function fetchDailyPrices(
   const now = Date.now()
   const today: Timestamp = now - (now % 86400000)
 
-  const priceApi = PRICE_APIS[priceApiId]
-  const priceMapper = PRICE_MAPPER[priceApiId]
-  const pairMapper = PAIR_MAPPER[priceApiId]
-
-  if (!priceApi || !priceMapper || !pairMapper) {
-    throw new Error(`Price api ${priceApiId} is not supported`)
-  }
-
   for (let i = 1; i <= assetIds.length; i++) {
     const assetId = assetIds[i - 1]
 
@@ -160,15 +131,24 @@ export async function fetchDailyPrices(
       throw new Error(signal.reason)
     }
 
+    const platformId = getAssetPlatform(assetId)
+
+    const priceApi = PRICE_APIS[platformId]
+    const priceMapper = PRICE_MAPPER[platformId]
+    const pairMapper = PAIR_MAPPER[platformId]
+
+    if (!priceApi || !priceMapper || !pairMapper) {
+      throw new Error(`Price API "${platformId}" is not supported`)
+    }
+
     try {
-      let since: Timestamp | undefined = await getPriceCursor(assetId, priceApiId)
+      let since: Timestamp | undefined = await getPriceCursor(assetId)
       let until: Timestamp | undefined = today
 
       if (!since) since = today - 86400000 * PRICE_API_PAGINATION
 
       while (true) {
         const pair = pairMapper(assetId)
-        const source = priceApiId
 
         const results = await priceApi({
           limit: PRICE_API_PAGINATION,
@@ -179,7 +159,7 @@ export async function fetchDailyPrices(
         })
 
         if (results.length === 0) {
-          progress([(i * 100) / assetIds.length, `Skipped ${assetId}: no results`])
+          progress([(i * 100) / assetIds.length, `Skipped ${getAssetSymbol(assetId)}: no results`])
           break
         }
 
@@ -188,14 +168,13 @@ export async function fetchDailyPrices(
         const documentMap = results.reduce((acc, result) => {
           const price = priceMapper(result)
           const timestamp = (price.time as number) * 1000
-          const _id = `${pair}-${source}-${timestamp}`
+          const _id = `${assetId}-${timestamp}`
 
           acc[_id] = {
             _id,
             assetId,
             pair,
             price,
-            source,
             timestamp,
           }
 
@@ -218,7 +197,7 @@ export async function fetchDailyPrices(
 
         progress([
           (i * 100) / assetIds.length,
-          `Fetched ${assetId} from ${formatDate(start)} to ${formatDate(end)}`,
+          `Fetched ${getAssetSymbol(assetId)} from ${formatDate(start)} to ${formatDate(end)}`,
         ])
 
         if (results.length !== PRICE_API_PAGINATION) {
@@ -230,7 +209,7 @@ export async function fetchDailyPrices(
         since = start - 86400000 * PRICE_API_PAGINATION
       }
     } catch (error) {
-      progress([(i * 100) / assetIds.length, `Skipped ${assetId}: ${error}`])
+      progress([(i * 100) / assetIds.length, `Skipped ${getAssetSymbol(assetId)}: ${error}`])
     }
   }
 }

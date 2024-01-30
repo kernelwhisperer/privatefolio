@@ -4,6 +4,7 @@ import React, { useRef, useState } from "react"
 import { ConfirmDialogContextType, useConfirm } from "src/hooks/useConfirm"
 import { ParserContextFn } from "src/interfaces"
 import { $activeAccount } from "src/stores/account-store"
+import { formatCamelCase } from "src/utils/utils"
 
 import { enqueueTask } from "../stores/task-store"
 import { handleAuditLogChange } from "../utils/common-tasks"
@@ -50,7 +51,7 @@ export function FileDrop(props: PaperProps & { defaultBg?: string }) {
           clone,
           progress,
           $activeAccount.get(),
-          proxy(createParserContextFn(confirm))
+          proxy(createParserContextFn(confirm, file))
         )
         if (metadata.logs > 0) {
           handleAuditLogChange()
@@ -123,7 +124,9 @@ export function FileDrop(props: PaperProps & { defaultBg?: string }) {
   )
 }
 
-function createParserContextFn(confirm: ConfirmDialogContextType["confirm"]) {
+function createParserContextFn(confirm: ConfirmDialogContextType["confirm"], file: File) {
+  const possibleUserAddress = file.name.match(/0x[a-fA-F0-9]{40}/)?.[0]
+
   return async function getParserContext(requirements: string[]) {
     const { confirmed, event } = await confirm({
       content: (
@@ -134,10 +137,11 @@ function createParserContextFn(confirm: ConfirmDialogContextType["confirm"]) {
           {requirements.map((requirement, index) => {
             return (
               <div key={index}>
-                <SectionTitle>{requirement}</SectionTitle>
+                <SectionTitle>{formatCamelCase(requirement)}</SectionTitle>
                 <AddressInputUncontrolled
                   variant="outlined"
                   fullWidth
+                  initialValue={possibleUserAddress}
                   size="small"
                   required
                   name={requirement}
