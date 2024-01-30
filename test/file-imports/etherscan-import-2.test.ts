@@ -251,7 +251,7 @@ it.sequential("should compute balances", async () => {
     )
   }
   expect(transactions.length).toMatchInlineSnapshot(`530`)
-  for (let i = 0; i < auditLogs.length; i += 100) {
+  for (let i = 0; i < transactions.length; i += 100) {
     expect(transactions.slice(i, i + 100)).toMatchFileSnapshot(
       `./__snapshots__/etherscan-import-2/transactions-all-${i}.test.ts.snap`
     )

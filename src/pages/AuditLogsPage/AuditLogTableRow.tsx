@@ -88,7 +88,11 @@ export function AuditLogTableRow(props: TableRowComponentProps<AuditLog>) {
             <span>{INTEGRATIONS[integration]}</span>
           </Stack>
         </TableCell>
-        <TableCell sx={{ maxWidth: 140, minWidth: 140, width: 140 }}>{wallet}</TableCell>
+        <TableCell sx={{ maxWidth: 140, minWidth: 140, width: 140 }}>
+          <Tooltip title={wallet}>
+            <Truncate>{wallet}</Truncate>
+          </Tooltip>
+        </TableCell>
         <TableCell sx={{ maxWidth: 220, minWidth: 220, width: 220 }}>
           <Tooltip title={operation}>
             <Chip

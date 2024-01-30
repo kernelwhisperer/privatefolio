@@ -69,7 +69,11 @@ export function TransactionTableRow(props: TableRowComponentProps<Transaction>) 
             <span>{INTEGRATIONS[integration]}</span>
           </Stack>
         </TableCell>
-        <TableCell sx={{ maxWidth: 140, minWidth: 140, width: 140 }}>{wallet}</TableCell>
+        <TableCell sx={{ maxWidth: 140, minWidth: 140, width: 140 }}>
+          <Tooltip title={wallet}>
+            <Truncate>{wallet}</Truncate>
+          </Tooltip>
+        </TableCell>
         <TableCell sx={{ maxWidth: 120, minWidth: 120, width: 120 }}>
           <Tooltip title={type}>
             <Chip
