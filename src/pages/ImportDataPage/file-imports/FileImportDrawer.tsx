@@ -22,7 +22,7 @@ import { TimestampBlock } from "src/components/TimestampBlock"
 import { useConfirm } from "src/hooks/useConfirm"
 import { FileImport } from "src/interfaces"
 import { PARSERS_META, PLATFORMS_META } from "src/settings"
-import { $activeAccount, $activeIndex } from "src/stores/account-store"
+import { $activeAccount } from "src/stores/account-store"
 import { PopoverToggleProps } from "src/stores/app-store"
 import { $platformMetaMap } from "src/stores/metadata-store"
 import { enqueueTask, TaskPriority } from "src/stores/task-store"
@@ -38,7 +38,7 @@ type FileImportDrawerProps = DrawerProps &
 export function FileImportDrawer(props: FileImportDrawerProps) {
   const { open, toggleOpen, fileImport, relativeTime, ...rest } = props
 
-  const activeIndex = useStore($activeIndex)
+  // const activeIndex = useStore($activeIndex)
   const platformMetaMap = useStore($platformMetaMap)
 
   const { _id, timestamp, meta, name, lastModified, size } = fileImport

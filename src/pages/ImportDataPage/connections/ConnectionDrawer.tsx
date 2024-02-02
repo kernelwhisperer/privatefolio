@@ -90,7 +90,7 @@ export function ConnectionDrawer({ open, toggleOpen, ...rest }: DrawerProps & Po
             >
               {Object.keys(CONNECTIONS).map((x) => (
                 <MenuItem key={x} value={x}>
-                  <ListItemText primary={PLATFORMS_META[x]} />
+                  <ListItemText primary={PLATFORMS_META[x].name} />
                 </MenuItem>
               ))}
             </Select>

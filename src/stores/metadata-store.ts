@@ -40,6 +40,8 @@ export const FILTER_LABEL_MAP: Record<FilterKey, string> = {
 }
 
 export function getFilterValueLabel(value: string) {
+  if (value === undefined) return
+
   if (value in PLATFORMS_META) {
     return PLATFORMS_META[value as Platform].name
   }
