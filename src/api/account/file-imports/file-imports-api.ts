@@ -66,6 +66,7 @@ export async function addFileImport(
 
     // save metadata
     const fileImport = await account.fileImportsDB.get(_id)
+    // fileImport.timestamp = new Date().getTime() TODO
     fileImport.meta = metadata
     await account.fileImportsDB.put<FileImport>(fileImport)
 

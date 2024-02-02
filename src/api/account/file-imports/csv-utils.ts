@@ -73,10 +73,10 @@ export async function parseCsv(
 
   const metadata: FileImport["meta"] = {
     assetIds: Object.keys(assetMap),
+    integration: parserId,
     logs: logs.length,
     operations: Object.keys(operationMap) as AuditLogOperation[],
     platform,
-    // integration: parserId,
     rows: rows.length - 1,
     transactions: transactions.length,
     wallets: Object.keys(walletMap),

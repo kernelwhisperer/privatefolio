@@ -1,7 +1,7 @@
 import { OhlcData, SingleValueData, UTCTimestamp } from "lightweight-charts"
 
 import { Erc20Transaction, NativeTransaction } from "./api/account/connections/etherscan-rpc"
-import { Platform } from "./settings"
+import { ParserId, Platform } from "./settings"
 export type { Platform } from "./settings"
 
 export type TransactionRole = "Maker" | "Taker"
@@ -141,6 +141,7 @@ export interface FileImport {
   lastModified: number
   meta?: {
     assetIds: string[]
+    integration: ParserId
     logs: number
     operations: AuditLogOperation[]
     platform: Platform

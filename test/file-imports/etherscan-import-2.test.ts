@@ -37,6 +37,7 @@ it("should add a file import", async () => {
         "assetIds": [
           "ethereum:0x0000000000000000000000000000000000000000:ETH",
         ],
+        "integration": "etherscan",
         "logs": 545,
         "operations": [
           "Deposit",
@@ -83,6 +84,7 @@ it("should add an internal file import", async () => {
           "ethereum:0x0000000000000000000000000000000000000000:ETH",
           "ethereum:0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2:WETH",
         ],
+        "integration": "etherscan-internal",
         "logs": 61,
         "operations": [
           "Deposit",
@@ -196,6 +198,7 @@ it("should add an erc20 file import", async () => {
           "ethereum:0x7dd9c5cba05e151c895fde1cf355c9a1d5da6429:GLM",
           "ethereum:0xdb25ca703181e7484a155dd612b06f57e12be5f0:yvYFI",
         ],
+        "integration": "etherscan-erc20",
         "logs": 419,
         "operations": [
           "Deposit",

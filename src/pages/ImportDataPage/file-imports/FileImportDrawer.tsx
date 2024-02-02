@@ -15,11 +15,13 @@ import React, { MouseEvent, useState } from "react"
 import { AmountBlock } from "src/components/AmountBlock"
 import { FileSizeBlock } from "src/components/FileSizeBlock"
 import { IdentifierBlock } from "src/components/IdentifierBlock"
+import { PlatformAvatar } from "src/components/PlatformAvatar"
 import { SectionTitle } from "src/components/SectionTitle"
 import { StaggeredList } from "src/components/StaggeredList"
 import { TimestampBlock } from "src/components/TimestampBlock"
+import { useConfirm } from "src/hooks/useConfirm"
 import { FileImport } from "src/interfaces"
-import { PLATFORMS_META } from "src/settings"
+import { PARSERS_META, PLATFORMS_META } from "src/settings"
 import { $activeAccount, $activeIndex } from "src/stores/account-store"
 import { PopoverToggleProps } from "src/stores/app-store"
 import { $platformMetaMap } from "src/stores/metadata-store"
@@ -41,6 +43,8 @@ export function FileImportDrawer(props: FileImportDrawerProps) {
 
   const { _id, timestamp, meta, name, lastModified, size } = fileImport
 
+  const parserId = meta?.integration
+
   // const [logsNumber, setLogsNumber] = useState<number | null>(null)
 
   // useEffect(() => {
@@ -51,10 +55,25 @@ export function FileImportDrawer(props: FileImportDrawerProps) {
   //   })
   // }, [_id, open])
 
+  const confirm = useConfirm()
   const [loading, setLoading] = useState(false)
 
-  function handleRemove(event: MouseEvent<HTMLButtonElement>) {
+  async function handleRemove(event: MouseEvent<HTMLButtonElement>) {
     event.preventDefault()
+
+    const { confirmed } = await confirm({
+      content: (
+        <>
+          All audit logs and transactions linked to this file import will be deleted.
+          <br /> This action is permanent. Are you sure you wish to continue?
+        </>
+      ),
+      title: "Remove file import",
+      variant: "warning",
+    })
+
+    if (!confirmed) return
+
     setLoading(true)
     enqueueTask({
       description: `Remove "${fileImport.name}", alongside its audit logs and transactions.`,
@@ -110,6 +129,23 @@ export function FileImportDrawer(props: FileImportDrawerProps) {
               <FileSizeBlock size={size} />
             </Typography>
           </Stack>
+        </div>
+        <div>
+          <SectionTitle>Integration</SectionTitle>
+          {!parserId ? (
+            <Skeleton height={20} width={80} />
+          ) : (
+            <>
+              <Stack direction="row" alignItems={"center"} gap={0.5}>
+                <PlatformAvatar
+                  size="small"
+                  src={`/app-images/integrations/${parserId.split("-")[0].toLowerCase()}.svg`}
+                  alt={parserId}
+                />
+                {PARSERS_META[parserId].name}
+              </Stack>
+            </>
+          )}
         </div>
         <div>
           <SectionTitle>Imported</SectionTitle>
@@ -169,7 +205,7 @@ export function FileImportDrawer(props: FileImportDrawerProps) {
         {/* integration */}
 
         {/* <pre>{JSON.stringify(txMeta, null, 2)}</pre> */}
-        <pre>{JSON.stringify(fileImport, null, 2)}</pre>
+        {/* <pre>{JSON.stringify(fileImport, null, 2)}</pre> */}
       </StaggeredList>
     </Drawer>
   )
