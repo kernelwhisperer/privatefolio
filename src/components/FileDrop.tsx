@@ -1,6 +1,6 @@
-import { Paper, PaperProps, Stack, Typography, useTheme } from "@mui/material"
+import { CircularProgress, Paper, PaperProps, Stack, Typography, useTheme } from "@mui/material"
 import { proxy } from "comlink"
-import React, { useRef, useState } from "react"
+import React, { useCallback, useRef, useState } from "react"
 import { ConfirmDialogContextType, useConfirm } from "src/hooks/useConfirm"
 import { ParserContextFn } from "src/interfaces"
 import { $activeAccount } from "src/stores/account-store"
@@ -17,6 +17,7 @@ export function FileDrop(props: PaperProps & { defaultBg?: string }) {
 
   const { children, defaultBg = theme.palette.background.paper, sx, ...rest } = props
 
+  const [cloning, setCloning] = useState(false)
   const [dragOver, setDragOver] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -32,50 +33,84 @@ export function FileDrop(props: PaperProps & { defaultBg?: string }) {
 
   const confirm = useConfirm()
 
-  const handleFileUpload = async (file: File) => {
-    // TODO now the UI "freezes" until the file is imported
+  const handleFileUpload = useCallback(
+    async (file: File) => {
+      enqueueTask({
+        description: `Importing "${file.name}".`,
+        determinate: true,
+        function: async (progress) => {
+          const { metadata } = await clancy.addFileImport(
+            file,
+            progress,
+            $activeAccount.get(),
+            proxy(createParserContextFn(confirm, file))
+          )
+          if (metadata.logs > 0) {
+            handleAuditLogChange()
+          }
+        },
+        name: `Import file`,
+        priority: TaskPriority.VeryHigh,
+      })
+    },
+    [confirm]
+  )
 
-    // must clone the file, otherwise multiple upload doesn't work on mobile
-    // https://github.com/GoogleChrome/developer.chrome.com/issues/2563#issuecomment-1464499084
-    const buffer = await file.arrayBuffer()
-    const clone = new File([buffer], file.name, {
-      lastModified: file.lastModified,
-      type: file.type,
-    })
+  // ProTip: this callback cannot be async because it doesn't work on mobile
+  const handleDrop = useCallback(
+    (event: React.DragEvent) => {
+      event.preventDefault()
+      setDragOver(false)
+      const { files } = event.dataTransfer
 
-    enqueueTask({
-      description: `Importing "${file.name}".`,
-      determinate: true,
-      function: async (progress) => {
-        const { metadata } = await clancy.addFileImport(
-          clone,
-          progress,
-          $activeAccount.get(),
-          proxy(createParserContextFn(confirm, file))
-        )
-        if (metadata.logs > 0) {
-          handleAuditLogChange()
-        }
-      },
-      name: `Import file`,
-      priority: TaskPriority.VeryHigh,
-    })
-  }
+      if (files) {
+        setCloning(true)
+        // must clone the file, otherwise multiple upload doesn't work on mobile
+        // https://github.com/GoogleChrome/developer.chrome.com/issues/2563#issuecomment-1464499084
 
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault()
-    setDragOver(false)
-    if (e.dataTransfer.files) {
-      Array.from(e.dataTransfer.files).forEach(handleFileUpload)
-    }
-  }
+        Promise.all(
+          Array.from(files).map(async (file) => {
+            const buffer = await file.arrayBuffer()
+            return new File([buffer], file.name, {
+              lastModified: file.lastModified,
+              type: file.type,
+            })
+          })
+        ).then((clones) => {
+          setCloning(false)
+          clones.forEach(handleFileUpload)
+        })
+      }
+    },
+    [handleFileUpload]
+  )
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files
-    if (files) {
-      Array.from(files).forEach(handleFileUpload)
-    }
-  }
+  // ProTip: this callback cannot be async because it doesn't work on mobile
+  const handleFileSelect = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const { files } = event.target
+
+      if (files) {
+        setCloning(true)
+        // must clone the file, otherwise multiple upload doesn't work on mobile
+        // https://github.com/GoogleChrome/developer.chrome.com/issues/2563#issuecomment-1464499084
+
+        Promise.all(
+          Array.from(files).map(async (file) => {
+            const buffer = await file.arrayBuffer()
+            return new File([buffer], file.name, {
+              lastModified: file.lastModified,
+              type: file.type,
+            })
+          })
+        ).then((clones) => {
+          setCloning(false)
+          clones.forEach(handleFileUpload)
+        })
+      }
+    },
+    [handleFileUpload]
+  )
 
   return (
     <Paper
@@ -104,13 +139,26 @@ export function FileDrop(props: PaperProps & { defaultBg?: string }) {
       {...rest}
     >
       <Typography color="text.secondary" variant="body2" component="div">
-        <Stack alignItems="center" gap={4}>
-          {children}
-          <span>
-            Drag and drop your <code>.csv</code> files here or <u>browse files</u> from your
-            computer.
-          </span>
-        </Stack>
+        {cloning ? (
+          <Stack alignItems="center" gap={4}>
+            <span>
+              <CircularProgress
+                size={12}
+                color="inherit"
+                sx={{ marginBottom: "-1px", marginRight: 1 }}
+              />
+              Uploading files...
+            </span>
+          </Stack>
+        ) : (
+          <Stack alignItems="center" gap={4}>
+            {children}
+            <span>
+              Drag and drop your <code>.csv</code> files here or <u>browse files</u> from your
+              computer.
+            </span>
+          </Stack>
+        )}
       </Typography>
       <input
         type="file"

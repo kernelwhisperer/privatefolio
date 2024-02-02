@@ -22,7 +22,6 @@ export async function addFileImport(
     throw new Error("Error reading file: not .csv")
   }
 
-  const timestamp = new Date().getTime()
   // FIXME Looks like on mobile, lastModified is set to Date.now()
   // const _id = hashString(`fi_${name}_${size}_${lastModified}`)
   const _id = hashString(`fi_${name}_${size}`)
@@ -32,7 +31,6 @@ export async function addFileImport(
     lastModified,
     name,
     size,
-    timestamp,
   } as unknown as FileImport)
 
   // parse file
@@ -66,7 +64,7 @@ export async function addFileImport(
 
     // save metadata
     const fileImport = await account.fileImportsDB.get(_id)
-    // fileImport.timestamp = new Date().getTime() TODO
+    fileImport.timestamp = new Date().getTime()
     fileImport.meta = metadata
     await account.fileImportsDB.put<FileImport>(fileImport)
 

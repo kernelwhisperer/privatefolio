@@ -121,7 +121,7 @@ export function FileImportDrawer(props: FileImportDrawerProps) {
         </div>
         <div>
           <SectionTitle>File</SectionTitle>
-          <Stack gap={0.5}>
+          <Stack gap={0.5} alignItems="flex-start">
             <IdentifierBlock id={name} />
             <Typography variant="caption">
               <TimestampBlock timestamp={lastModified} relative={false} hideTime />
@@ -149,7 +149,11 @@ export function FileImportDrawer(props: FileImportDrawerProps) {
         </div>
         <div>
           <SectionTitle>Imported</SectionTitle>
-          <TimestampBlock timestamp={timestamp} relative={relativeTime} />
+          {timestamp ? (
+            <TimestampBlock timestamp={timestamp} relative={relativeTime} />
+          ) : (
+            <Skeleton height={20} width={80} />
+          )}
         </div>
         <div>
           <SectionTitle>Platform</SectionTitle>

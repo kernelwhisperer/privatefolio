@@ -38,7 +38,7 @@ export function FileImportTableRow(props: TableRowComponentProps<FileImport>) {
                     alt={PLATFORMS_META[platform].name}
                   />
                 ) : (
-                  <Skeleton></Skeleton>
+                  <Skeleton height={20} width={80} />
                 )}
                 <Tooltip title={name}>
                   <Truncate>{name}</Truncate>
@@ -51,7 +51,11 @@ export function FileImportTableRow(props: TableRowComponentProps<FileImport>) {
                 component="div"
                 sx={{ color: "text.secondary", fontSize: "0.75rem" }}
               >
-                <TimestampBlock timestamp={timestamp} relative={relativeTime} />
+                {timestamp ? (
+                  <TimestampBlock timestamp={timestamp} relative={relativeTime} />
+                ) : (
+                  <Skeleton height={20} width={80} />
+                )}
                 {" • "}
                 <Tooltip
                   title={
@@ -69,7 +73,7 @@ export function FileImportTableRow(props: TableRowComponentProps<FileImport>) {
             </Stack>
             <Stack gap={0.5} alignItems={"flex-end"} sx={{ fontSize: "0.75rem" }}>
               {!meta ? (
-                <Skeleton></Skeleton>
+                <Skeleton height={20} width={80} />
               ) : (
                 <>
                   {meta.logs === meta.rows ? (
@@ -86,7 +90,7 @@ export function FileImportTableRow(props: TableRowComponentProps<FileImport>) {
                 </>
               )}
               {!meta ? (
-                <Skeleton></Skeleton>
+                <Skeleton height={20} width={80} />
               ) : (
                 <>
                   <Tooltip
@@ -109,7 +113,11 @@ export function FileImportTableRow(props: TableRowComponentProps<FileImport>) {
     <>
       <TableRow hover {...rest}>
         <TableCell sx={{ maxWidth: 180, minWidth: 180, width: 180 }}>
-          <TimestampBlock timestamp={timestamp} relative={relativeTime} />
+          {timestamp ? (
+            <TimestampBlock timestamp={timestamp} relative={relativeTime} />
+          ) : (
+            <Skeleton></Skeleton>
+          )}
         </TableCell>
         <TableCell sx={{ maxWidth: 160, minWidth: 160, width: 140 }}>
           {platform ? (

@@ -54,6 +54,7 @@ export function FileImportsTable() {
         key: "timestamp",
         label: "Imported",
         sortable: true,
+        valueSelector: (row) => row.timestamp || Infinity,
       },
       {
         filterable: true,

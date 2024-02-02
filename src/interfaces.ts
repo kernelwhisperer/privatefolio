@@ -151,7 +151,7 @@ export interface FileImport {
   }
   name: string
   size: number
-  timestamp: Timestamp
+  timestamp?: Timestamp
 }
 
 export interface Balance {
