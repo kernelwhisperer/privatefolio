@@ -201,6 +201,9 @@ export const theme: CssVarsThemeOptions = {
         root: {
           borderRadius: 2,
         },
+        sizeMedium: {
+          fontSize: "0.875rem",
+        },
       },
     },
     MuiDialog: {

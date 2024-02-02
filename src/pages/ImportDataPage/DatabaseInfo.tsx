@@ -98,7 +98,7 @@ export function DatabaseInfo() {
         <Stack direction="row" justifyContent="space-between">
           <SectionTitle>Disk Usage</SectionTitle>
           {storageUsage === null ? (
-            <Skeleton height={20} width={80}></Skeleton>
+            <Skeleton height={20} width={80} />
           ) : storageUsage === 0 ? (
             <Typography color="text.secondary" component="span" variant="body2">
               Unknown
@@ -126,7 +126,7 @@ export function DatabaseInfo() {
         <Stack direction="row" justifyContent="space-between">
           <SectionTitle>Audit logs</SectionTitle>
           {auditLogs === null ? (
-            <Skeleton height={20} width={80}></Skeleton>
+            <Skeleton height={20} width={80} />
           ) : (
             <Typography fontFamily={MonoFont} variant="body2">
               <span>{formatNumber(auditLogs)}</span>
@@ -136,7 +136,7 @@ export function DatabaseInfo() {
         <Stack direction="row" justifyContent="space-between">
           <SectionTitle>Transactions</SectionTitle>
           {transactions === null ? (
-            <Skeleton height={20} width={80}></Skeleton>
+            <Skeleton height={20} width={80} />
           ) : (
             <Typography fontFamily={MonoFont} variant="body2">
               <span>{formatNumber(transactions)}</span>

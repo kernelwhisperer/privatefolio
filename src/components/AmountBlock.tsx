@@ -1,4 +1,4 @@
-import { Box, Tooltip, Typography } from "@mui/material"
+import { Box, Stack, Tooltip, Typography } from "@mui/material"
 import React from "react"
 import { MonoFont } from "src/theme"
 import { EMPTY_OBJECT } from "src/utils/utils"
@@ -24,7 +24,8 @@ export function AmountBlock(props: AmountBlockProps) {
     formatOpts = EMPTY_OBJECT,
   } = props
 
-  const amountN = amount ? Number(amount) : undefined
+  const hasValue = amount !== undefined
+  const amountN = hasValue ? Number(amount) : undefined
 
   let minimumFractionDigits = significantDigits
   if (minimumFractionDigits === undefined && typeof amountN === "number") {
@@ -37,9 +38,12 @@ export function AmountBlock(props: AmountBlockProps) {
     <Tooltip
       title={
         typeof amountN === "number" ? (
-          <Box sx={{ fontFamily: MonoFont }}>
-            {amount} {currencyName}
-          </Box>
+          <Stack alignItems="center">
+            <Box sx={{ fontFamily: MonoFont }}>
+              {amount} {currencyName}
+            </Box>
+            <span className="secondary">(copy to clipboard)</span>
+          </Stack>
         ) : (
           tooltipMessage
         )
@@ -49,9 +53,9 @@ export function AmountBlock(props: AmountBlockProps) {
         fontFamily={MonoFont}
         variant="inherit"
         component="span"
-        sx={{ cursor: amount ? "pointer" : undefined }}
+        sx={{ cursor: hasValue ? "pointer" : undefined }}
         onClick={() => {
-          if (!amount) return
+          if (!hasValue) return
 
           navigator.clipboard.writeText(String(amount))
         }}

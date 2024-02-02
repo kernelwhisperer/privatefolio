@@ -68,7 +68,7 @@ export function PortfolioInfo() {
         <Stack direction="row" justifyContent="space-between">
           <SectionTitle>Unique assets</SectionTitle>
           {filterMap.assetId === undefined ? (
-            <Skeleton height={20} width={80}></Skeleton>
+            <Skeleton height={20} width={80} />
           ) : (
             <Typography fontFamily={MonoFont} variant="body2">
               <span>{formatNumber(filterMap.assetId.length)}</span>
@@ -78,7 +78,7 @@ export function PortfolioInfo() {
         <Stack direction="row" justifyContent="space-between">
           <SectionTitle>Portfolio genesis</SectionTitle>
           {genesis === null ? (
-            <Skeleton height={20} width={80}></Skeleton>
+            <Skeleton height={20} width={80} />
           ) : (
             <Typography fontFamily={MonoFont} variant="body2">
               {genesis === 0 ? (
@@ -94,7 +94,7 @@ export function PortfolioInfo() {
         <Stack direction="row" justifyContent="space-between">
           <SectionTitle>Last transaction</SectionTitle>
           {lastTx === null ? (
-            <Skeleton height={20} width={80}></Skeleton>
+            <Skeleton height={20} width={80} />
           ) : (
             <Typography fontFamily={MonoFont} variant="body2">
               {lastTx === 0 ? (

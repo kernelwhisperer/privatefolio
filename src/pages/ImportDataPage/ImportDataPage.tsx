@@ -30,8 +30,8 @@ export default function ImportDataPage({ show }: { show: boolean }) {
       </div>
       <Stack>
         <Tabs value={tab}>
-          <NavTab value="" to={""} label="File imports" replace />
-          <NavTab value="connections" to={`?tab=connections`} label="Connections" replace />
+          <NavTab value="" to={""} label="File imports" />
+          <NavTab value="connections" to={`?tab=connections`} label="Connections" />
         </Tabs>
         {tab === "" && <FileImportsTable />}
         {tab === "connections" && <ConnectionsTable />}

@@ -7,9 +7,7 @@ export const EXCHANGE_FILES_LOCATION = "app-images/exchanges"
 export const BLOCKCHAIN_PAGES = 1
 export const BLOCKCHAIN_FILES_LOCATION = "app-images/blockchains"
 
-export const PARSER_IDS = ["etherscan", "binance", "mexc", "coinmama", "etherscan-erc20"]
-
-export const PARSERS: Record<ParserId, string> = {
+export const PARSERS_META = {
   binance: "Binance",
   // binance: "Binance Tax Report",
   // "binance-trades": "Binance Trade History", // TODO
@@ -17,10 +15,13 @@ export const PARSERS: Record<ParserId, string> = {
   coinmama: "Coinmama",
   etherscan: "Etherscan",
   "etherscan-erc20": "Etherscan ERC-20",
+  "etherscan-internal": "Etherscan Internal",
   mexc: "Mexc",
-}
+} as const
 
-export type ParserId = (typeof PARSER_IDS)[number]
+export type ParserId = keyof typeof PARSERS_META
+
+export const PARSER_IDS = Object.keys(PARSERS_META) as ParserId[]
 
 export const INTEGRATION_IDS = [
   "arbitrum",

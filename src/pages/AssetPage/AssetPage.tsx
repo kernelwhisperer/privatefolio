@@ -52,11 +52,11 @@ export default function AssetPage({ show }: { show: boolean }) {
       </Stack>
       <Stack>
         <Tabs value={tab}>
-          <NavTab value="" to="" label="Price history" replace />
-          <NavTab value="balance" to={`?tab=balance`} label="Balance history" replace />
-          {/* <NavTab value="pnl" to={`?tab=pnl`} label="Profit & Loss" replace /> */}
-          <NavTab value="transactions" to={`?tab=transactions`} label="Transactions" replace />
-          <NavTab value="audit-logs" to={`?tab=audit-logs`} label="Audit logs" replace />
+          <NavTab value="" to="" label="Price history" />
+          <NavTab value="balance" to={`?tab=balance`} label="Balance history" />
+          {/* <NavTab value="pnl" to={`?tab=pnl`} label="Profit & Loss"  /> */}
+          <NavTab value="transactions" to={`?tab=transactions`} label="Transactions" />
+          <NavTab value="audit-logs" to={`?tab=audit-logs`} label="Audit logs" />
         </Tabs>
         {tab === "" && <PriceChart symbol={assetId} />}
         {tab === "balance" && <BalanceChart symbol={assetId} />}

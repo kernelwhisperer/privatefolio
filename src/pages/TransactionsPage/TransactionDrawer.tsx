@@ -159,7 +159,7 @@ export function TransactionDrawer(props: TransactionDrawerProps) {
         <div>
           <SectionTitle>Audit logs</SectionTitle>
           {logsNumber === null ? (
-            <Skeleton height={20} width={80}></Skeleton>
+            <Skeleton height={20} width={80} />
           ) : (
             <>
               {logsNumber}

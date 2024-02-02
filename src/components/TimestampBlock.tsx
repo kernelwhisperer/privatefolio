@@ -12,31 +12,31 @@ import {
 } from "../utils/formatting-utils"
 
 type TimestampBlockProps = {
+  hideTime?: boolean
   relative?: boolean
   timestamp: Timestamp
 }
 
 export function TimestampBlock(props: TimestampBlockProps) {
-  const { timestamp, relative } = props
+  const { timestamp, hideTime = false, relative } = props
 
   const debugMode = useStore($debugMode)
 
   return (
     <Tooltip
       title={
-        <Stack>
+        <Stack alignItems="center">
           <span>
             {formatDateWithHour(timestamp, {
               fractionalSecondDigits: debugMode ? 3 : undefined,
-              second: "numeric",
+              second: debugMode ? "numeric" : undefined,
               timeZoneName: "short",
             })}{" "}
-            <span className="secondary">local</span>
           </span>
-          <span>
+          <span className="secondary">
             {formatDateWithHour(timestamp, {
               fractionalSecondDigits: debugMode ? 3 : undefined,
-              second: "numeric",
+              second: debugMode ? "numeric" : undefined,
               timeZone: "UTC",
               timeZoneName: "short",
             })}
@@ -55,9 +55,11 @@ export function TimestampBlock(props: TimestampBlockProps) {
         ) : (
           <>
             <span>{formatDate(timestamp)}</span>{" "}
-            <Typography component="span" color="text.secondary" variant="inherit">
-              at {formatHour(timestamp)}
-            </Typography>
+            {!hideTime && (
+              <Typography component="span" color="text.secondary" variant="inherit">
+                at {formatHour(timestamp)}
+              </Typography>
+            )}
           </>
         )}
       </span>

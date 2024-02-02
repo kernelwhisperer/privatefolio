@@ -140,7 +140,7 @@ export function TransactionTableRow(props: TableRowComponentProps<Transaction>) 
           )}
         </TableCell>
         <TableCell sx={{ maxWidth: 40, minWidth: 40, width: 40 }}>
-          <Tooltip title="Inspect transaction">
+          <Tooltip title="Inspect">
             <IconButton
               size="small"
               color="secondary"

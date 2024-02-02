@@ -13,7 +13,7 @@ import React, { useState } from "react"
 import { IntegrationAvatar } from "src/components/IntegrationAvatar"
 import { Tabs } from "src/components/Tabs"
 import { useBoolean } from "src/hooks/useBoolean"
-import { PARSER_IDS, PARSERS } from "src/settings"
+import { PARSERS_META } from "src/settings"
 
 import { BinanceHelp } from "./help/BinanceHelp"
 import { EtherscanHelp } from "./help/EtherscanHelp"
@@ -56,9 +56,7 @@ export function FileImportHelp() {
           <div>
             {/* <SectionTitle>Name *</SectionTitle> */}
             <Tabs value={tab} onChange={handleTabChange}>
-              {PARSER_IDS.filter(
-                (x) => x !== "coinmama" && x !== "mexc" && x !== "etherscan-erc20"
-              ).map((parserId) => (
+              {["etherscan", "binance"].map((parserId) => (
                 <Tab
                   sx={{ textTransform: "none" }}
                   key={parserId}
@@ -70,7 +68,7 @@ export function FileImportHelp() {
                         src={`/app-images/integrations/${parserId.split("-")[0].toLowerCase()}.svg`}
                         alt={parserId}
                       />
-                      {PARSERS[parserId]}
+                      {PARSERS_META[parserId]}
                     </Stack>
                   }
                 />
