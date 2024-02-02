@@ -5,12 +5,12 @@ import {
   TransactionRole,
   TransactionSide,
 } from "src/interfaces"
-import { Integration, ParserId } from "src/settings"
+import { Platform } from "src/settings"
 import { asUTC } from "src/utils/formatting-utils"
 import { hashString } from "src/utils/utils"
 
-export const Identifier: ParserId = "mexc"
-export const integration: Integration = "mexc"
+export const Identifier = "mexc"
+export const platform: Platform = "mexc"
 
 export const HEADER = "Pairs,Time,Side,Filled Price,Executed Amount,Total,Fee,Role"
 
@@ -54,10 +54,10 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
       incoming: amount,
       incomingAsset: assetId,
       incomingN: amountN,
-      integration,
       outgoing: total,
       outgoingAsset: quoteAssetId,
       outgoingN: totalN,
+      platform,
       price,
       priceN,
       role,
@@ -72,8 +72,8 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
       changeN: parseFloat(`-${total}`),
       importId: fileImportId,
       importIndex: index,
-      integration,
       operation: "Sell",
+      platform,
       timestamp,
       wallet,
     })
@@ -84,8 +84,8 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
       changeN: parseFloat(amount),
       importId: fileImportId,
       importIndex: index + 0.1,
-      integration,
       operation: "Buy",
+      platform,
       timestamp,
       wallet,
     })
@@ -101,10 +101,10 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
       incoming: total,
       incomingAsset: quoteAssetId,
       incomingN: totalN,
-      integration,
       outgoing: amount,
       outgoingAsset: assetId,
       outgoingN: amountN,
+      platform,
       price,
       priceN,
       role,
@@ -119,8 +119,8 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
       changeN: parseFloat(`-${amount}`),
       importId: fileImportId,
       importIndex: index,
-      integration,
       operation: "Sell",
+      platform,
       timestamp,
       wallet,
     })
@@ -131,8 +131,8 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
       changeN: parseFloat(total),
       importId: fileImportId,
       importIndex: index + 0.1,
-      integration,
       operation: "Buy",
+      platform,
       timestamp,
       wallet,
     })
@@ -145,8 +145,8 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
     changeN: parseFloat(`-${fee}`),
     importId: fileImportId,
     importIndex: index + 0.2,
-    integration,
     operation: "Fee",
+    platform,
     timestamp,
     wallet,
   })

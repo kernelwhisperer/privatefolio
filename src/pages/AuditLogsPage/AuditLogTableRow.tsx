@@ -10,8 +10,8 @@ import { AssetAvatar } from "../../components/AssetAvatar"
 import { TimestampBlock } from "../../components/TimestampBlock"
 import { Truncate } from "../../components/Truncate"
 import { AuditLog, AuditLogOperation } from "../../interfaces"
-import { INTEGRATIONS } from "../../settings"
-import { $assetMetaMap, $integrationMetaMap } from "../../stores/metadata-store"
+import { PLATFORMS_META } from "../../settings"
+import { $assetMetaMap, $platformMetaMap } from "../../stores/metadata-store"
 import { TableRowComponentProps } from "../../utils/table-utils"
 
 const redColor = red[400]
@@ -35,10 +35,10 @@ const OPERATION_ICONS: Partial<Record<AuditLogOperation, SvgIconComponent>> = {
 
 export function AuditLogTableRow(props: TableRowComponentProps<AuditLog>) {
   const { row, relativeTime, headCells, isMobile: _isMobile, isTablet: _isTablet, ...rest } = props
-  const { assetId, change, changeN, balance, operation, timestamp, integration, wallet } = row
+  const { assetId, change, changeN, balance, operation, timestamp, platform, wallet } = row
 
   const assetMap = useStore($assetMetaMap)
-  const integrationMap = useStore($integrationMetaMap)
+  const platformMetaMap = useStore($platformMetaMap)
 
   const changeColor = changeN < 0 ? redColor : greenColor
 
@@ -77,15 +77,15 @@ export function AuditLogTableRow(props: TableRowComponentProps<AuditLog>) {
         <TableCell sx={{ maxWidth: 160, minWidth: 160, width: 140 }}>
           <Stack direction="row" gap={0.5} alignItems="center" component="div">
             <Avatar
-              src={integrationMap[integration]?.image}
+              src={platformMetaMap[platform]?.image}
               sx={{
                 borderRadius: "2px",
                 height: 16,
                 width: 16,
               }}
-              alt={INTEGRATIONS[integration]}
+              alt={PLATFORMS_META[platform].name}
             />
-            <span>{INTEGRATIONS[integration]}</span>
+            <span>{PLATFORMS_META[platform].name}</span>
           </Stack>
         </TableCell>
         <TableCell sx={{ maxWidth: 140, minWidth: 140, width: 140 }}>

@@ -4,7 +4,7 @@ import { AssetMetadata } from "../../interfaces"
 import { ASSET_FILES_LOCATION, ASSET_PAGES } from "../../settings"
 import { AssetMap } from "../../stores/metadata-store"
 
-export async function findAssets(assetIds: string[]) {
+export async function findAssetsMeta(assetIds: string[]) {
   const map: AssetMap = {}
 
   if (assetIds.length === 0) {

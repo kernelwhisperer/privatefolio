@@ -8,7 +8,7 @@ import {
 import { ProgressCallback } from "src/stores/task-store"
 import { extractTransactions } from "src/utils/extract-utils"
 
-import { HEADER_MATCHER, INTEGRATION_MATCHER, PARSER_MATCHER } from "./integrations"
+import { HEADER_MATCHER, PARSER_MATCHER, PLATFORM_MATCHER } from "./integrations"
 
 export async function parseCsv(
   text: string,
@@ -26,7 +26,7 @@ export async function parseCsv(
 
   const parserId = HEADER_MATCHER[header]
   const parser = PARSER_MATCHER[parserId]
-  const integration = INTEGRATION_MATCHER[parserId]
+  const platform = PLATFORM_MATCHER[parserId]
 
   if (!parser) {
     throw new Error(`File import unsupported, unknown header: ${header}`)
@@ -73,9 +73,10 @@ export async function parseCsv(
 
   const metadata: FileImport["meta"] = {
     assetIds: Object.keys(assetMap),
-    integration,
     logs: logs.length,
     operations: Object.keys(operationMap) as AuditLogOperation[],
+    platform,
+    // integration: parserId,
     rows: rows.length - 1,
     transactions: transactions.length,
     wallets: Object.keys(walletMap),

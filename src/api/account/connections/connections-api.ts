@@ -14,13 +14,13 @@ export async function addConnection(
   connection: Omit<Connection, "_id" | "_rev" | "timestamp" | "syncedAt">,
   accountName: string
 ) {
-  let { address, integration, label } = connection
+  let { address, platform, label } = connection
 
   address = getAddress(address)
   const account = getAccount(accountName)
 
   const timestamp = new Date().getTime()
-  const _id = hashString(`con_${integration}_${address}_${label}`)
+  const _id = hashString(`con_${platform}_${address}_${label}`)
 
   await account.connectionsDB.put<Connection>({
     ...connection,

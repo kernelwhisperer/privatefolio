@@ -1,11 +1,11 @@
 import { isAddress } from "ethers"
 import { AuditLogOperation, EtherscanAuditLog, ParserResult } from "src/interfaces"
-import { Integration, ParserId } from "src/settings"
+import { Platform } from "src/settings"
 import { asUTC } from "src/utils/formatting-utils"
 import { hashString } from "src/utils/utils"
 
-export const Identifier: ParserId = "etherscan-erc20"
-export const integration: Integration = "ethereum"
+export const Identifier = "etherscan-erc20"
+export const platform: Platform = "ethereum"
 
 export const HEADER =
   '"Txhash","Blockno","UnixTimestamp","DateTime (UTC)","From","To","TokenValue","USDValueDayOfTx","ContractAddress","TokenName","TokenSymbol"'
@@ -80,8 +80,8 @@ export function parser(
       changeN,
       importId: fileImportId,
       importIndex: index,
-      integration,
       operation,
+      platform,
       timestamp,
       wallet,
       ...txMeta,

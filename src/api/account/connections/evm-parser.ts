@@ -15,7 +15,7 @@ export function parser(
     }
   }
 
-  const { integration } = connection
+  const { platform } = connection
   //
   const operation: AuditLogOperation =
     row.to?.toLowerCase() === connection.address.toLowerCase() ? "Deposit" : "Withdraw"
@@ -38,8 +38,8 @@ export function parser(
       changeN,
       importId: connection._id,
       importIndex: index,
-      integration,
       operation,
+      platform,
       timestamp,
       wallet: "Spot",
     },
@@ -56,8 +56,8 @@ export function parser(
       changeN,
       importId: connection._id,
       importIndex: index + 0.1,
-      integration,
       operation: "Fee",
+      platform,
       timestamp,
       wallet: "Spot",
     })
@@ -74,7 +74,7 @@ export function erc20Parser(
   index: number,
   connection: Connection
 ): ParserResult {
-  const { integration } = connection
+  const { platform } = connection
   //
   const operation: AuditLogOperation =
     row.to?.toLowerCase() === connection.address.toLowerCase() ? "Deposit" : "Withdraw"
@@ -99,8 +99,8 @@ export function erc20Parser(
       changeN,
       importId: connection._id,
       importIndex: index,
-      integration,
       operation,
+      platform,
       timestamp,
       wallet: "Spot",
     },

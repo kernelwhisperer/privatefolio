@@ -19,10 +19,10 @@ import { SectionTitle } from "src/components/SectionTitle"
 import { StaggeredList } from "src/components/StaggeredList"
 import { TimestampBlock } from "src/components/TimestampBlock"
 import { FileImport } from "src/interfaces"
-import { INTEGRATIONS } from "src/settings"
+import { PLATFORMS_META } from "src/settings"
 import { $activeAccount, $activeIndex } from "src/stores/account-store"
 import { PopoverToggleProps } from "src/stores/app-store"
-import { $integrationMetaMap } from "src/stores/metadata-store"
+import { $platformMetaMap } from "src/stores/metadata-store"
 import { enqueueTask, TaskPriority } from "src/stores/task-store"
 import { handleAuditLogChange } from "src/utils/common-tasks"
 import { clancy } from "src/workers/remotes"
@@ -37,7 +37,7 @@ export function FileImportDrawer(props: FileImportDrawerProps) {
   const { open, toggleOpen, fileImport, relativeTime, ...rest } = props
 
   const activeIndex = useStore($activeIndex)
-  const integrationMap = useStore($integrationMetaMap)
+  const platformMetaMap = useStore($platformMetaMap)
 
   const { _id, timestamp, meta, name, lastModified, size } = fileImport
 
@@ -122,15 +122,15 @@ export function FileImportDrawer(props: FileImportDrawerProps) {
           ) : (
             <Stack direction="row" gap={0.5} alignItems="center" component="div">
               <Avatar
-                src={integrationMap[meta.integration]?.image}
+                src={platformMetaMap[meta.platform]?.image}
                 sx={{
                   borderRadius: "2px",
                   height: 16,
                   width: 16,
                 }}
-                alt={INTEGRATIONS[meta.integration]}
+                alt={PLATFORMS_META[meta.platform].name}
               />
-              <span>{INTEGRATIONS[meta.integration]}</span>
+              <span>{PLATFORMS_META[meta.platform].name}</span>
             </Stack>
           )}
         </div>
@@ -169,7 +169,7 @@ export function FileImportDrawer(props: FileImportDrawerProps) {
         {/* integration */}
 
         {/* <pre>{JSON.stringify(txMeta, null, 2)}</pre> */}
-        {/* <pre>{JSON.stringify(fileImport, null, 2)}</pre> */}
+        <pre>{JSON.stringify(fileImport, null, 2)}</pre>
       </StaggeredList>
     </Drawer>
   )

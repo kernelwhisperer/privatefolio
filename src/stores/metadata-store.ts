@@ -2,25 +2,25 @@ import { debounce } from "lodash-es"
 import { keepMount, map } from "nanostores"
 import { getAssetSymbol } from "src/utils/assets-utils"
 
-import { findAssets } from "../api/core/assets-api"
-import { findIntegrations } from "../api/core/integrations-api"
+import { findAssetsMeta } from "../api/core/assets-meta-api"
+import { findPlatformsMeta } from "../api/core/platforms-meta-api"
 import {
   AssetMetadata,
   AuditLogOperation,
-  Integration,
-  IntegrationMetadata,
+  Platform,
+  PlatformMetadata,
   TRANSACTIONS_TYPES,
 } from "../interfaces"
-import { DEFAULT_DEBOUNCE_DURATION, INTEGRATIONS } from "../settings"
+import { DEFAULT_DEBOUNCE_DURATION, PLATFORMS_META } from "../settings"
 import { clancy } from "../workers/remotes"
 import { $activeAccount } from "./account-store"
 
 export type FilterOptionsMap = {
   assetId: string[]
   incomingAsset: string[]
-  integration: string[]
   operation: AuditLogOperation[]
   outgoingAsset: string[]
+  platform: string[]
   type: string[]
   wallet: string[]
 }
@@ -32,16 +32,16 @@ export const $filterOptionsMap = map<FilterOptionsMap>()
 export const FILTER_LABEL_MAP: Record<FilterKey, string> = {
   assetId: "Asset",
   incomingAsset: "Incoming Asset",
-  integration: "Integration",
   operation: "Operation",
   outgoingAsset: "Outgoing Asset",
+  platform: "Platform",
   type: "Type",
   wallet: "Wallet",
 }
 
 export function getFilterValueLabel(value: string) {
-  if (value in INTEGRATIONS) {
-    return INTEGRATIONS[value as Integration]
+  if (value in PLATFORMS_META) {
+    return PLATFORMS_META[value as Platform].name
   }
 
   if (value.includes(":")) {
@@ -52,7 +52,7 @@ export function getFilterValueLabel(value: string) {
 }
 
 async function computeFilterMap() {
-  const integrations = new Set<string>()
+  const platforms = new Set<string>()
   const assetIds = new Set<string>()
   const wallets = new Set<string>()
   const operations = new Set<AuditLogOperation>()
@@ -65,7 +65,7 @@ async function computeFilterMap() {
       continue
     }
 
-    integrations.add(meta.integration)
+    platforms.add(meta.platform)
     meta.assetIds.forEach((x) => assetIds.add(x))
     meta.wallets.forEach((x) => wallets.add(x))
     meta.operations.forEach((x) => operations.add(x))
@@ -73,13 +73,13 @@ async function computeFilterMap() {
 
   const connections = await clancy.getConnections($activeAccount.get())
   for (const connection of connections) {
-    const { integration, meta } = connection
+    const { platform, meta } = connection
 
     if (!meta) {
       continue
     }
 
-    integrations.add(integration)
+    platforms.add(platform)
     meta.assetIds.forEach((x) => assetIds.add(x))
     meta.wallets.forEach((x) => wallets.add(x))
     meta.operations.forEach((x) => operations.add(x))
@@ -90,9 +90,9 @@ async function computeFilterMap() {
   const map: FilterOptionsMap = {
     assetId: assetIdOptions,
     incomingAsset: assetIdOptions,
-    integration: [...integrations].sort(),
     operation: [...operations].sort(),
     outgoingAsset: assetIdOptions,
+    platform: [...platforms].sort(),
     type: TRANSACTIONS_TYPES,
     wallet: [...wallets].sort(),
   }
@@ -104,26 +104,26 @@ async function computeFilterMap() {
 export type AssetMap = Record<string, AssetMetadata>
 export const $assetMetaMap = map<AssetMap>({})
 
-export type IntegrationMap = Partial<Record<Integration, IntegrationMetadata>>
-export const $integrationMetaMap = map<IntegrationMap>({})
+export type PlatformMap = Partial<Record<Platform, PlatformMetadata>>
+export const $platformMetaMap = map<PlatformMap>({})
 
 keepMount($assetMetaMap)
 keepMount($filterOptionsMap)
-keepMount($integrationMetaMap)
+keepMount($platformMetaMap)
 
-// logAtoms({ $assetMap, $filterMap: $filterOptionsMap, $integrationMap })
+// logAtoms({ $assetMap, $filterMap: $filterOptionsMap, $platformMetaMap })
 
 export async function computeMetadata() {
   const filterMap = await computeFilterMap()
 
-  const integrationMap = filterMap.integration.reduce((map, integration) => {
-    map[integration] = true
+  const platformMap = filterMap.platform.reduce((map, platform) => {
+    map[platform] = true
     return map
   }, {} as Record<string, boolean>)
 
   await Promise.all([
-    findAssets(filterMap.assetId).then($assetMetaMap.set),
-    findIntegrations(integrationMap).then($integrationMetaMap.set),
+    findAssetsMeta(filterMap.assetId).then($assetMetaMap.set),
+    findPlatformsMeta(platformMap).then($platformMetaMap.set),
   ])
 }
 export const computeMetadataDebounced = debounce(computeMetadata, DEFAULT_DEBOUNCE_DURATION)

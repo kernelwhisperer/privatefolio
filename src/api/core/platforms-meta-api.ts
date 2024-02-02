@@ -5,10 +5,10 @@ import {
   EXCHANGE_FILES_LOCATION,
   EXCHANGE_PAGES,
 } from "../../settings"
-import { IntegrationMap } from "../../stores/metadata-store"
+import { PlatformMap } from "../../stores/metadata-store"
 
-export async function findIntegrations(nameMap: Record<string, boolean>) {
-  const map: IntegrationMap = {}
+export async function findPlatformsMeta(nameMap: Record<string, boolean>) {
+  const map: PlatformMap = {}
 
   if (Object.keys(nameMap).length === 0) {
     return map

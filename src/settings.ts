@@ -7,44 +7,57 @@ export const EXCHANGE_FILES_LOCATION = "app-images/exchanges"
 export const BLOCKCHAIN_PAGES = 1
 export const BLOCKCHAIN_FILES_LOCATION = "app-images/blockchains"
 
-export const PARSERS_META = {
-  binance: "Binance",
-  // binance: "Binance Tax Report",
-  // "binance-trades": "Binance Trade History", // TODO
-  // "binance-futures": "Binance Futures History", // TODO
-  coinmama: "Coinmama",
-  etherscan: "Etherscan",
-  "etherscan-erc20": "Etherscan ERC-20",
-  "etherscan-internal": "Etherscan Internal",
-  mexc: "Mexc",
-} as const
+export const PARSER_IDS = [
+  "binance-account-statement",
+  "coinmama",
+  "etherscan",
+  "etherscan-erc20",
+  "etherscan-internal",
+  "mexc",
+] as const
 
-export type ParserId = keyof typeof PARSERS_META
+export type ParserId = (typeof PARSER_IDS)[number]
 
-export const PARSER_IDS = Object.keys(PARSERS_META) as ParserId[]
+export type ParserMeta = {
+  name: string
+  // platformImage: string
+}
 
-export const INTEGRATION_IDS = [
-  "arbitrum",
+export const PARSERS_META: Record<ParserId, ParserMeta> = {
+  "binance-account-statement": {
+    name: "Binance Account Statement",
+  },
+  // "binance-trades": "Binance Trade History",
+  // "binance-futures": "Binance Futures History",
+  coinmama: { name: "Coinmama" },
+  etherscan: { name: "Etherscan" },
+  "etherscan-erc20": { name: "Etherscan ERC-20" },
+  "etherscan-internal": { name: "Etherscan Internal" },
+  mexc: { name: "Mexc" },
+}
+
+export const PLATFORM_IDS = [
+  // "arbitrum",
   "binance",
   "coinmama",
   "ethereum",
-  "evm",
+  // "evm",
   "mexc",
-  "op",
-  "polygon",
+  // "op",
+  // "polygon",
 ] as const
 
-export type Integration = (typeof INTEGRATION_IDS)[number]
+export type Platform = (typeof PLATFORM_IDS)[number]
 
-export const INTEGRATIONS: Record<Integration, string> = {
-  arbitrum: "Arbitrum",
-  binance: "Binance",
-  coinmama: "Coinmama",
-  ethereum: "Ethereum",
-  evm: "EVM network",
-  mexc: "MEXC",
-  op: "Optimism",
-  polygon: "Polygon",
+export type PlatformMeta = {
+  name: string
+}
+
+export const PLATFORMS_META: Record<Platform, PlatformMeta> = {
+  binance: { name: "Binance" },
+  coinmama: { name: "Coinmama" },
+  ethereum: { name: "Ethereum" },
+  mexc: { name: "MEXC Global" },
 }
 
 export const CONNECTIONS = {

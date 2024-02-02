@@ -1,8 +1,8 @@
 import { OhlcData, SingleValueData, UTCTimestamp } from "lightweight-charts"
 
 import { Erc20Transaction, NativeTransaction } from "./api/account/connections/etherscan-rpc"
-import { Integration } from "./settings"
-export type { Integration } from "./settings"
+import { Platform } from "./settings"
+export type { Platform } from "./settings"
 
 export type TransactionRole = "Maker" | "Taker"
 export type TransactionSide = "BUY" | "SELL"
@@ -45,10 +45,10 @@ export interface Transaction {
   incoming?: string
   incomingAsset?: string
   incomingN?: number
-  integration: Integration
   outgoing?: string
   outgoingAsset?: string
   outgoingN?: number
+  platform: Platform
   price?: string
   priceN?: number
   role?: TransactionRole
@@ -107,7 +107,7 @@ export interface Blockchain {
   shortName: string
 }
 
-export type IntegrationMetadata = Exchange | Blockchain
+export type PlatformMetadata = Exchange | Blockchain
 
 export interface AuditLog {
   _id: string
@@ -118,8 +118,8 @@ export interface AuditLog {
   changeN: number
   importId: string
   importIndex: number
-  integration: Integration
   operation: AuditLogOperation
+  platform: Platform
   timestamp: Timestamp
   txId?: string
   wallet: string
@@ -141,9 +141,9 @@ export interface FileImport {
   lastModified: number
   meta?: {
     assetIds: string[]
-    integration: Integration
     logs: number
     operations: AuditLogOperation[]
+    platform: Platform
     rows: number
     transactions: number
     wallets: string[]
@@ -297,7 +297,6 @@ export interface Connection {
   _id: string
   _rev: string
   address: string
-  integration: Integration
   label: string
   meta?: {
     assetIds: string[]
@@ -307,6 +306,7 @@ export interface Connection {
     transactions: number
     wallets: string[]
   }
+  platform: Platform
   syncedAt?: number
   /**
    * createdAt

@@ -34,7 +34,7 @@ export function extractTransactions(
 ): Transaction[] {
   const transactions: Transaction[] = []
 
-  if (parserId !== "binance") {
+  if (parserId !== "binance-account-statement") {
     return transactions
   }
 
@@ -45,7 +45,7 @@ export function extractTransactions(
 
     if (validGrouping(group)) {
       const wallet = group[0].wallet
-      const integration = group[0].integration
+      const platform = group[0].platform
       const timestamp = group[0].timestamp
       //
       const hash = hashString(`${timestamp}`)
@@ -88,10 +88,10 @@ export function extractTransactions(
         incoming,
         incomingAsset,
         incomingN,
-        integration,
         outgoing,
         outgoingAsset,
         outgoingN,
+        platform,
         price,
         priceN,
         timestamp,

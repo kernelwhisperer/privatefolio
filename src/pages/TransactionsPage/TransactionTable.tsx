@@ -68,8 +68,8 @@ export function TransactionTable(props: TransactionsTableProps) {
       },
       {
         filterable: true,
-        key: "integration",
-        label: "Integration",
+        key: "platform",
+        label: "Platform",
       },
       {
         filterable: true,

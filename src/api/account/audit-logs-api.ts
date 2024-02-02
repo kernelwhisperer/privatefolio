@@ -6,8 +6,8 @@ import { AuditLog } from "../../interfaces"
 import { ProgressCallback } from "../../stores/task-store"
 import { getAccount } from "../database"
 
-const _filterOrder = ["integration", "wallet", "operation", "assetId"]
-const _filterOrderBySpecificity = ["assetId", "operation", "wallet", "integration"]
+const _filterOrder: (keyof AuditLog)[] = ["platform", "wallet", "operation", "assetId"]
+const _filterOrderBySpecificity: (keyof AuditLog)[] = ["assetId", "operation", "wallet", "platform"]
 
 export async function indexAuditLogs(progress: ProgressCallback = noop, accountName: string) {
   const account = getAccount(accountName)
@@ -20,31 +20,31 @@ export async function indexAuditLogs(progress: ProgressCallback = noop, accountN
       name: "timestamp",
     },
   })
-  progress([20, "Audit logs: updating index for 'integration'"])
+  progress([20, "Audit logs: updating index for 'platform'"])
   await account.auditLogsDB.createIndex({
     index: {
-      fields: ["integration", "timestamp", "wallet", "operation", "assetId"], // MUST respect the order in _filterOrder
-      name: "integration",
+      fields: ["platform", "timestamp", "wallet", "operation", "assetId"], // MUST respect the order in _filterOrder
+      name: "platform",
     },
   })
   progress([30, "Audit logs: updating index for 'wallet'"])
   await account.auditLogsDB.createIndex({
     index: {
-      fields: ["wallet", "timestamp", "integration", "operation", "assetId"], // MUST respect the order in _filterOrder
+      fields: ["wallet", "timestamp", "platform", "operation", "assetId"], // MUST respect the order in _filterOrder
       name: "wallet",
     },
   })
   progress([40, "Audit logs: updating index for 'operation'"])
   await account.auditLogsDB.createIndex({
     index: {
-      fields: ["operation", "timestamp", "integration", "wallet", "assetId"], // MUST respect the order in _filterOrder
+      fields: ["operation", "timestamp", "platform", "wallet", "assetId"], // MUST respect the order in _filterOrder
       name: "operation",
     },
   })
   progress([45, "Audit logs: updating index for 'assetId'"])
   await account.auditLogsDB.createIndex({
     index: {
-      fields: ["assetId", "timestamp", "integration", "wallet", "operation"], // MUST respect the order in _filterOrder
+      fields: ["assetId", "timestamp", "platform", "wallet", "operation"], // MUST respect the order in _filterOrder
       name: "assetId",
     },
   })

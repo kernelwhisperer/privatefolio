@@ -5,12 +5,12 @@ import {
   Transaction,
   TransactionType,
 } from "src/interfaces"
-import { Integration, ParserId } from "src/settings"
+import { Platform } from "src/settings"
 import { asUTC } from "src/utils/formatting-utils"
 import { hashString } from "src/utils/utils"
 
-export const Identifier: ParserId = "etherscan-internal"
-export const integration: Integration = "ethereum"
+export const Identifier = "etherscan-internal"
+export const platform: Platform = "ethereum"
 
 export const HEADER2 =
   '"Txhash","Blockno","UnixTimestamp","DateTime (UTC)","From","To","ContractAddress","Value_IN(ETH)","Value_OUT(ETH)","CurrentValue","TxnFee(ETH)","TxnFee(USD)","Historical $Price/Eth","Status","ErrCode","Method"'
@@ -89,8 +89,8 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
       changeN,
       importId: fileImportId,
       importIndex: index,
-      integration,
       operation,
+      platform,
       timestamp,
       txId,
       wallet,
@@ -105,8 +105,8 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
         changeN: parseFloat(`-${valueIn}`),
         importId: fileImportId,
         importIndex: index + 0.1,
-        integration,
         operation: "Withdraw",
+        platform,
         timestamp,
         txId,
         wallet,
@@ -126,10 +126,10 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
     incoming: valueIn,
     incomingAsset: assetId,
     incomingN: parseFloat(valueIn),
-    integration,
     outgoing: valueOut,
     outgoingAsset: assetId,
     outgoingN: parseFloat(valueOut),
+    platform,
     // price,
     // priceN,
     // role,

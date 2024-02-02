@@ -57,10 +57,10 @@ export function FileImportsTable() {
       },
       {
         filterable: true,
-        key: "integration" as keyof FileImport,
-        label: "Integration",
+        key: "platform" as keyof FileImport,
+        label: "Platform",
         sortable: true,
-        valueSelector: (row) => row.meta?.integration,
+        valueSelector: (row) => row.meta?.platform,
       },
       {
         key: "name",

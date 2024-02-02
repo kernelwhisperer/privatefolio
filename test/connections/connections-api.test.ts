@@ -18,8 +18,8 @@ it.sequential("should add connection", async () => {
   connection = await addConnection(
     {
       address,
-      integration: "ethereum",
       label: "",
+      platform: "ethereum",
     },
     accountName
   )

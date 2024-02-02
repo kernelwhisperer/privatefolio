@@ -14,14 +14,14 @@ import {
 } from "@mui/material"
 import { useStore } from "@nanostores/react"
 import React, { useState } from "react"
-import { IntegrationAvatar } from "src/components/IntegrationAvatar"
+import { PlatformAvatar } from "src/components/PlatformAvatar"
 import { TimestampBlock } from "src/components/TimestampBlock"
 import { Truncate } from "src/components/Truncate"
 import { useConfirm } from "src/hooks/useConfirm"
 import { Connection } from "src/interfaces"
-import { INTEGRATIONS } from "src/settings"
+import { PLATFORMS_META } from "src/settings"
 import { $activeAccount } from "src/stores/account-store"
-import { $integrationMetaMap } from "src/stores/metadata-store"
+import { $platformMetaMap } from "src/stores/metadata-store"
 import { enqueueTask, TaskPriority } from "src/stores/task-store"
 import { MonoFont } from "src/theme"
 import { enqueueSyncConnection, handleAuditLogChange } from "src/utils/common-tasks"
@@ -38,9 +38,9 @@ export function ConnectionTableRow(props: TableRowComponentProps<Connection>) {
     isTablet: _isTablet,
     ...rest
   } = props
-  const { address, timestamp, syncedAt, integration, label, meta } = row
+  const { address, timestamp, syncedAt, platform, label, meta } = row
 
-  const integrationMap = useStore($integrationMetaMap)
+  const platformMetaMap = useStore($platformMetaMap)
 
   const confirm = useConfirm()
 
@@ -69,12 +69,12 @@ export function ConnectionTableRow(props: TableRowComponentProps<Connection>) {
       </TableCell>
       <TableCell sx={{ fontFamily: MonoFont, maxWidth: 420, minWidth: 300, width: 420 }}>
         <Stack spacing={1} direction="row">
-          {integration ? (
+          {platform ? (
             <Stack direction="row" gap={0.5} alignItems="center" component="div">
-              <IntegrationAvatar
+              <PlatformAvatar
                 size="small"
-                src={integrationMap[integration]?.image}
-                alt={INTEGRATIONS[integration]}
+                src={platformMetaMap[platform]?.image}
+                alt={PLATFORMS_META[platform].name}
               />
             </Stack>
           ) : (

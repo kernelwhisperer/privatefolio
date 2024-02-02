@@ -62,8 +62,8 @@ export function ConnectionsTable() {
       // {
       //   filterable: true,
       //   hideLabel: true,
-      //   key: "integration",
-      //   label: "Integration",
+      //   key: "platform",
+      //   label: "Platform",
       // },
       {
         key: "address",

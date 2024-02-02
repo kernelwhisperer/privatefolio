@@ -20,8 +20,8 @@ import { clancy } from "src/workers/remotes"
 import { AddressInput } from "../../../components/AddressInput"
 import { SectionTitle } from "../../../components/SectionTitle"
 import { StaggeredList } from "../../../components/StaggeredList"
-import { Integration } from "../../../interfaces"
-import { CONNECTIONS, INTEGRATIONS } from "../../../settings"
+import { Platform } from "../../../interfaces"
+import { CONNECTIONS, PLATFORMS_META } from "../../../settings"
 import { PopoverToggleProps } from "../../../stores/app-store"
 
 export function ConnectionDrawer({ open, toggleOpen, ...rest }: DrawerProps & PopoverToggleProps) {
@@ -29,12 +29,12 @@ export function ConnectionDrawer({ open, toggleOpen, ...rest }: DrawerProps & Po
 
   const [label, setLabel] = useState("")
   const [address, setAddress] = useState("")
-  const [integration, setIntegration] = useState<Integration>("ethereum")
+  const [platform, setPlatform] = useState<Platform>("ethereum")
 
   useEffect(() => {
     setLoading(false)
     setAddress("")
-    setIntegration("ethereum")
+    setPlatform("ethereum")
   }, [open])
 
   const handleSubmit = useCallback(
@@ -47,7 +47,7 @@ export function ConnectionDrawer({ open, toggleOpen, ...rest }: DrawerProps & Po
       setLoading(true)
 
       clancy
-        .addConnection({ address, integration, label }, $activeAccount.get())
+        .addConnection({ address, label, platform }, $activeAccount.get())
         .then((connection) => {
           toggleOpen()
           enqueueSyncConnection(connection)
@@ -57,7 +57,7 @@ export function ConnectionDrawer({ open, toggleOpen, ...rest }: DrawerProps & Po
           setLoading(false)
         })
     },
-    [address, integration, label, toggleOpen]
+    [address, platform, label, toggleOpen]
   )
 
   return (
@@ -80,17 +80,17 @@ export function ConnectionDrawer({ open, toggleOpen, ...rest }: DrawerProps & Po
             </IconButton>
           </Stack>
           <div>
-            <SectionTitle>Integration</SectionTitle>
+            <SectionTitle>Platform</SectionTitle>
             <Select
               variant="outlined"
               fullWidth
               size="small"
-              value={integration}
-              onChange={(event) => setIntegration(event.target.value as Integration)}
+              value={platform}
+              onChange={(event) => setPlatform(event.target.value as Platform)}
             >
               {Object.keys(CONNECTIONS).map((x) => (
                 <MenuItem key={x} value={x}>
-                  <ListItemText primary={INTEGRATIONS[x]} />
+                  <ListItemText primary={PLATFORMS_META[x]} />
                 </MenuItem>
               ))}
             </Select>

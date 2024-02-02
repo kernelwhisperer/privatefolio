@@ -1,5 +1,5 @@
 import { CsvParser } from "src/interfaces"
-import { Integration, ParserId } from "src/settings"
+import { ParserId, Platform } from "src/settings"
 
 import * as binance from "./binance"
 import * as coinmama from "./coinmama"
@@ -27,11 +27,11 @@ export const PARSER_MATCHER: Record<ParserId, CsvParser> = {
   [etherscanErc20.Identifier]: etherscanErc20.parser,
 }
 
-export const INTEGRATION_MATCHER: Record<ParserId, Integration> = {
-  [binance.Identifier]: binance.integration,
-  [mexc.Identifier]: mexc.integration,
-  [coinmama.Identifier]: coinmama.integration,
-  [etherscan.Identifier]: etherscan.integration,
-  [etherscanInternal.Identifier]: etherscanInternal.integration,
-  [etherscanErc20.Identifier]: etherscanErc20.integration,
+export const PLATFORM_MATCHER: Record<ParserId, Platform> = {
+  [binance.Identifier]: binance.platform,
+  [mexc.Identifier]: mexc.platform,
+  [coinmama.Identifier]: coinmama.platform,
+  [etherscan.Identifier]: etherscan.platform,
+  [etherscanInternal.Identifier]: etherscanInternal.platform,
+  [etherscanErc20.Identifier]: etherscanErc20.platform,
 }

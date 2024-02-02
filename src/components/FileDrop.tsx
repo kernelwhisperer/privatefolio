@@ -107,8 +107,8 @@ export function FileDrop(props: PaperProps & { defaultBg?: string }) {
         <Stack alignItems="center" gap={4}>
           {children}
           <span>
-            Drag and drop your <code>.csv</code> files here or{" "}
-            <u>browse files from your computer</u>.
+            Drag and drop your <code>.csv</code> files here or <u>browse files</u> from your
+            computer.
           </span>
         </Stack>
       </Typography>

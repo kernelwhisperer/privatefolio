@@ -1,10 +1,10 @@
 import { AuditLogOperation, BinanceAuditLog, ParserResult } from "src/interfaces"
-import { Integration, ParserId } from "src/settings"
+import { Platform } from "src/settings"
 import { asUTC } from "src/utils/formatting-utils"
 import { hashString } from "src/utils/utils"
 
-export const Identifier: ParserId = "binance"
-export const integration: Integration = "binance"
+export const Identifier = "binance-account-statement"
+export const platform: Platform = "binance"
 
 export const HEADERS = [
   '"User_ID","UTC_Time","Account","Operation","Coin","Change","Remark"',
@@ -57,8 +57,8 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
     coin,
     importId: fileImportId,
     importIndex: index,
-    integration,
     operation,
+    platform,
     remark,
     timestamp,
     userId,

@@ -27,11 +27,11 @@ it("should add a file import", async () => {
         "assetIds": [
           "coinmama:BTC",
         ],
-        "integration": "coinmama",
         "logs": 2,
         "operations": [
           "Buy with Credit Card",
         ],
+        "platform": "coinmama",
         "rows": 5,
         "transactions": 2,
         "wallets": [

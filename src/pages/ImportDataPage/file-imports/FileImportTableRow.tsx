@@ -2,13 +2,13 @@ import { Visibility } from "@mui/icons-material"
 import { IconButton, Skeleton, Stack, TableCell, TableRow, Tooltip } from "@mui/material"
 import { useStore } from "@nanostores/react"
 import React from "react"
-import { IntegrationAvatar } from "src/components/IntegrationAvatar"
+import { PlatformAvatar } from "src/components/PlatformAvatar"
 import { TimestampBlock } from "src/components/TimestampBlock"
 import { Truncate } from "src/components/Truncate"
 import { useBoolean } from "src/hooks/useBoolean"
 import { FileImport } from "src/interfaces"
-import { INTEGRATIONS } from "src/settings"
-import { $integrationMetaMap } from "src/stores/metadata-store"
+import { PLATFORMS_META } from "src/settings"
+import { $platformMetaMap } from "src/stores/metadata-store"
 import { MonoFont } from "src/theme"
 import { formatFileSize, formatNumber } from "src/utils/formatting-utils"
 import { TableRowComponentProps } from "src/utils/table-utils"
@@ -18,9 +18,9 @@ import { FileImportDrawer } from "./FileImportDrawer"
 export function FileImportTableRow(props: TableRowComponentProps<FileImport>) {
   const { row, relativeTime, headCells: _headCells, isMobile: _isMobile, isTablet, ...rest } = props
   const { name, meta, timestamp, lastModified, size } = row
-  const integration = meta?.integration
+  const platform = meta?.platform
 
-  const integrationMap = useStore($integrationMetaMap)
+  const platformMetaMap = useStore($platformMetaMap)
 
   const { value: open, toggle: toggleOpen } = useBoolean(false)
 
@@ -31,11 +31,11 @@ export function FileImportTableRow(props: TableRowComponentProps<FileImport>) {
           <Stack direction="row" justifyContent="space-between" alignItems="center">
             <Stack gap={0.5}>
               <Stack direction="row" gap={1} alignItems="center" component="div">
-                {integration ? (
-                  <IntegrationAvatar
+                {platform ? (
+                  <PlatformAvatar
                     size="small"
-                    src={integrationMap[integration]?.image}
-                    alt={INTEGRATIONS[integration]}
+                    src={platformMetaMap[platform]?.image}
+                    alt={PLATFORMS_META[platform].name}
                   />
                 ) : (
                   <Skeleton></Skeleton>
@@ -112,14 +112,14 @@ export function FileImportTableRow(props: TableRowComponentProps<FileImport>) {
           <TimestampBlock timestamp={timestamp} relative={relativeTime} />
         </TableCell>
         <TableCell sx={{ maxWidth: 160, minWidth: 160, width: 140 }}>
-          {integration ? (
+          {platform ? (
             <Stack direction="row" gap={0.5} alignItems="center" component="div">
-              <IntegrationAvatar
+              <PlatformAvatar
                 size="small"
-                src={integrationMap[integration]?.image}
-                alt={INTEGRATIONS[integration]}
+                src={platformMetaMap[platform]?.image}
+                alt={PLATFORMS_META[platform].name}
               />
-              <span>{INTEGRATIONS[integration]}</span>
+              <span>{PLATFORMS_META[platform].name}</span>
             </Stack>
           ) : (
             <Skeleton></Skeleton>
@@ -210,13 +210,15 @@ export function FileImportTableRow(props: TableRowComponentProps<FileImport>) {
           </Tooltip>
         </TableCell>
       </TableRow>
-      <FileImportDrawer
-        key={row._id}
-        open={open}
-        toggleOpen={toggleOpen}
-        fileImport={row}
-        relativeTime={relativeTime}
-      />
+      {open && (
+        <FileImportDrawer
+          key={row._id}
+          open={open}
+          toggleOpen={toggleOpen}
+          fileImport={row}
+          relativeTime={relativeTime}
+        />
+      )}
     </>
   )
 }

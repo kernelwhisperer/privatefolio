@@ -66,8 +66,8 @@ export function AuditLogTable(props: AuditLogsTableProps) {
       },
       {
         filterable: !txId,
-        key: "integration",
-        label: "Integration",
+        key: "platform",
+        label: "Platform",
       },
       {
         filterable: !txId,

@@ -33,6 +33,7 @@ it("should fetch WETH prices within a range", async () => {
 it("should fetch WETH prices within a small range", async () => {
   // act
   const result = await queryPrices({
+    limit: 1,
     pair: getPair("ethereum:0x0000000000000000000000000000000000000000:ETH"),
     since: 1706572800000,
     timeInterval: "1d" as ResolutionString,

@@ -21,10 +21,10 @@ import { StaggeredList } from "src/components/StaggeredList"
 import { TimestampBlock } from "src/components/TimestampBlock"
 import { Truncate } from "src/components/Truncate"
 import { Transaction } from "src/interfaces"
-import { INTEGRATIONS } from "src/settings"
+import { PLATFORMS_META } from "src/settings"
 import { $activeAccount, $activeIndex } from "src/stores/account-store"
 import { PopoverToggleProps } from "src/stores/app-store"
-import { $integrationMetaMap } from "src/stores/metadata-store"
+import { $platformMetaMap } from "src/stores/metadata-store"
 import { MonoFont } from "src/theme"
 import { getAssetSymbol } from "src/utils/assets-utils"
 import { greenColor, redColor } from "src/utils/chart-utils"
@@ -40,14 +40,14 @@ type TransactionDrawerProps = DrawerProps &
 export function TransactionDrawer(props: TransactionDrawerProps) {
   const { open, toggleOpen, tx, relativeTime, ...rest } = props
   const activeIndex = useStore($activeIndex)
-  const integrationMap = useStore($integrationMetaMap)
+  const platformMetaMap = useStore($platformMetaMap)
 
   const {
     incoming,
     incomingAsset,
     type,
     timestamp,
-    integration,
+    platform,
     wallet,
     price,
     outgoing,
@@ -88,18 +88,18 @@ export function TransactionDrawer(props: TransactionDrawerProps) {
           </IconButton>
         </Stack>
         <div>
-          <SectionTitle>Integration</SectionTitle>
+          <SectionTitle>Platform</SectionTitle>
           <Stack direction="row" gap={0.5} alignItems="center" component="div">
             <Avatar
-              src={integrationMap[integration]?.image}
+              src={platformMetaMap[platform]?.image}
               sx={{
                 borderRadius: "2px",
                 height: 16,
                 width: 16,
               }}
-              alt={INTEGRATIONS[integration]}
+              alt={PLATFORMS_META[platform].name}
             />
-            <span>{INTEGRATIONS[integration]}</span>
+            <span>{PLATFORMS_META[platform].name}</span>
           </Stack>
         </div>
         <div>
