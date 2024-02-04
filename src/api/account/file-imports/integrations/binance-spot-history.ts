@@ -1,44 +1,41 @@
-import {
-  AuditLog,
-  ParserResult,
-  Transaction,
-  TransactionRole,
-  TransactionSide,
-} from "src/interfaces"
+import { AuditLog, ParserResult, Transaction, TransactionSide } from "src/interfaces"
 import { Platform } from "src/settings"
 import { asUTC } from "src/utils/formatting-utils"
 import { hashString } from "src/utils/utils"
 
-export const Identifier = "mexc"
-export const platform: Platform = "mexc"
+export const Identifier = "binance-spot-history"
+export const platform: Platform = "binance"
 
-export const HEADER = "Pairs,Time,Side,Filled Price,Executed Amount,Total,Fee,Role"
+export const HEADER = '"Date(UTC)","Pair","Side","Price","Executed","Amount","Fee"'
 
 export function parser(csvRow: string, index: number, fileImportId: string): ParserResult {
-  const columns = csvRow.split(",")
+  const row = csvRow.replaceAll('"', "")
+  const columns = row.split(",")
   //
-  const marketPair = columns[0]
-  const assetId = `mexc:${marketPair.split("_")[0]}`
-  const quoteAssetId = `mexc:${marketPair.split("_")[1]}`
-  const timestamp = asUTC(new Date(columns[1]))
-  //
+  const utcTime = columns[0]
+  // const pair = columns[1]
   const side = columns[2] as TransactionSide
   const price = columns[3]
-  const amount = columns[4]
-  const total = columns[5]
-  const fee = columns[6]
-  const role = columns[7] as TransactionRole
+  const executedWithSymbol = columns[4]
+  const amountWithSymbol = columns[5]
+  const feeWithSymbol = columns[6]
   //
   const hash = hashString(`${index}_${csvRow}`)
   const txId = `${fileImportId}_${hash}`
-  const amountN = parseFloat(amount)
-  const priceN = parseFloat(price)
-  const feeN = parseFloat(fee)
-  const totalN = parseFloat(total)
-  const feeAssetId = quoteAssetId // ?
+  const timestamp = asUTC(new Date(utcTime))
+  const wallet = `Binance Spot`
   //
-  const wallet = "MEXC Spot"
-
+  const [, executed, executedSymbol] = executedWithSymbol.match(/([0-9.]+)([A-Za-z]+)/) || []
+  const [, amount, amountSymbol] = amountWithSymbol.match(/([0-9.]+)([A-Za-z]+)/) || []
+  const [, fee, feeSymbol] = feeWithSymbol.match(/([0-9.]+)([A-Za-z]+)/) || []
+  const feeN = parseFloat(fee)
+  const amountN = parseFloat(amount)
+  const executedN = parseFloat(executed)
+  const priceN = parseFloat(price)
+  const feeAssetId = `binance:${feeSymbol}`
+  const assetId = `binance:${executedSymbol}`
+  const quoteAssetId = `binance:${amountSymbol}`
+  //
   const txns: Transaction[] = []
   const logs: AuditLog[] = []
 
@@ -50,25 +47,24 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
       feeN,
       importId: fileImportId,
       importIndex: index,
-      incoming: amount,
+      incoming: executed,
       incomingAsset: assetId,
-      incomingN: amountN,
-      outgoing: total,
+      incomingN: executedN,
+      outgoing: amount,
       outgoingAsset: quoteAssetId,
-      outgoingN: totalN,
+      outgoingN: amountN,
       platform,
       price,
       priceN,
-      role,
       timestamp,
-      type: "Buy",
+      type: "Swap",
       wallet,
     })
     logs.push({
       _id: `${txId}_0`,
       assetId: quoteAssetId,
-      change: `-${total}`,
-      changeN: parseFloat(`-${total}`),
+      change: `-${amount}`,
+      changeN: parseFloat(`-${amount}`),
       importId: fileImportId,
       importIndex: index,
       operation: "Sell",
@@ -79,8 +75,8 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
     logs.push({
       _id: `${txId}_1`,
       assetId,
-      change: amount,
-      changeN: parseFloat(amount),
+      change: executed,
+      changeN: parseFloat(executed),
       importId: fileImportId,
       importIndex: index + 0.1,
       operation: "Buy",
@@ -97,25 +93,24 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
       feeN,
       importId: fileImportId,
       importIndex: index,
-      incoming: total,
+      incoming: amount,
       incomingAsset: quoteAssetId,
-      incomingN: totalN,
-      outgoing: amount,
+      incomingN: amountN,
+      outgoing: executed,
       outgoingAsset: assetId,
-      outgoingN: amountN,
+      outgoingN: executedN,
       platform,
       price,
       priceN,
-      role,
       timestamp,
-      type: "Sell",
+      type: "Swap",
       wallet,
     })
     logs.push({
       _id: `${txId}_0`,
       assetId,
-      change: `-${amount}`,
-      changeN: parseFloat(`-${amount}`),
+      change: `-${executed}`,
+      changeN: parseFloat(`-${executed}`),
       importId: fileImportId,
       importIndex: index,
       operation: "Sell",
@@ -126,8 +121,8 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
     logs.push({
       _id: `${txId}_1`,
       assetId: quoteAssetId,
-      change: total,
-      changeN: parseFloat(total),
+      change: amount,
+      changeN: parseFloat(amount),
       importId: fileImportId,
       importIndex: index + 0.1,
       operation: "Buy",
@@ -139,7 +134,7 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
 
   logs.push({
     _id: `${txId}_2`,
-    assetId: quoteAssetId,
+    assetId: feeAssetId,
     change: `-${fee}`,
     changeN: parseFloat(`-${fee}`),
     importId: fileImportId,

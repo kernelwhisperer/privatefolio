@@ -16,9 +16,14 @@ import { useBoolean } from "src/hooks/useBoolean"
 import { ParserId, PARSERS_META } from "src/settings"
 
 import { BinanceHelp } from "./help/BinanceHelp"
+import { BinanceSpotHelp } from "./help/BinanceSpotHelp"
 import { EtherscanHelp } from "./help/EtherscanHelp"
 
-const DOCUMENTED_PARSERS: ParserId[] = ["etherscan", "binance-account-statement"]
+const DOCUMENTED_PARSERS: ParserId[] = [
+  "etherscan",
+  "binance-account-statement",
+  "binance-spot-history",
+]
 
 export function FileImportHelp() {
   const { value: modalOpen, toggle: toggleModalOpen } = useBoolean(false)
@@ -76,6 +81,7 @@ export function FileImportHelp() {
               ))}
             </Tabs>
             {tab === "binance-account-statement" && <BinanceHelp />}
+            {tab === "binance-spot-history" && <BinanceSpotHelp />}
             {tab === "etherscan" && <EtherscanHelp />}
           </div>
         </DialogContent>
