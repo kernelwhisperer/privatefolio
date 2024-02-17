@@ -1,6 +1,5 @@
 import { MenuRounded } from "@mui/icons-material"
 import { Box, IconButton, InputBase, Select, tabsClasses, Tooltip } from "@mui/material"
-import { grey } from "@mui/material/colors"
 import React from "react"
 import { useLocation } from "react-router-dom"
 import { useBoolean } from "src/hooks/useBoolean"
@@ -58,7 +57,7 @@ export function NavigationMenu() {
           height: 48,
           marginX: 0, // TODO why is this needed?
           [`& .${tabsClasses.indicator}`]: {
-            background: grey[600],
+            background: "var(--mui-palette-secondary-main)",
             //
             borderRadius: 2,
             bottom: 8,

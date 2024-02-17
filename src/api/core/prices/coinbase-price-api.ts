@@ -6,12 +6,12 @@ import {
   QueryRequest,
   ResolutionString,
 } from "src/interfaces"
-import { getAssetSymbol } from "src/utils/assets-utils"
+import { getAssetTicker } from "src/utils/assets-utils"
 
 export const Identifier: PlatformId = "coinbase"
 
 export function getPair(assetId: string) {
-  return `${getAssetSymbol(assetId)}-USD`
+  return `${getAssetTicker(assetId)}-USD`
 }
 
 // Coinbase only allows 300 records per request

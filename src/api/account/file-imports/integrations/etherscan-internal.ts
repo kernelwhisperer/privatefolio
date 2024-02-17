@@ -83,7 +83,7 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
     const changeN = parseFloat(change)
 
     logs.push({
-      _id: `${txId}_0`,
+      _id: `${txId}_VALUE_${index}`,
       assetId,
       change,
       changeN,
@@ -99,7 +99,7 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
     // Fix for WETH: withdrawals do not appear in the erc20 export
     if (from === "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2") {
       logs.push({
-        _id: `${txId}_1`,
+        _id: `${txId}_ERC20_${index}`,
         assetId: "ethereum:0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2:WETH",
         change: `-${valueIn}`,
         changeN: parseFloat(`-${valueIn}`),

@@ -1,6 +1,6 @@
 import { UTCTimestamp } from "lightweight-charts"
 import { DISALLOW_BINANCE_PRICE_API } from "src/env"
-import { getAssetSymbol } from "src/utils/assets-utils"
+import { getAssetTicker } from "src/utils/assets-utils"
 
 import {
   BinanceKline,
@@ -13,7 +13,7 @@ import {
 export const Identifier: PlatformId = "binance"
 
 export function getPair(assetId: string) {
-  return `${getAssetSymbol(assetId)}USDT`
+  return `${getAssetTicker(assetId)}USDT`
 }
 
 // https://binance-docs.github.io/apidocs/spot/en/#general-api-information

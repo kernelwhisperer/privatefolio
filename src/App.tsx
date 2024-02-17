@@ -1,3 +1,4 @@
+import { Box } from "@mui/material"
 import Container from "@mui/material/Container"
 import { a, useTransition } from "@react-spring/web"
 import React, { useEffect } from "react"
@@ -53,14 +54,32 @@ export default function App() {
 
   return (
     <>
+      <Box
+        sx={{
+          "html[data-mui-color-scheme='dark'] &": {
+            background: `radial-gradient(
+              max(50vw, 400px) min(500px, 50vw) at 50% 0px,
+              rgba(var(--mui-palette-accent-mainChannel) / 0.25), #fff0
+            )`,
+            height: "100%",
+            left: 0,
+            pointerEvents: "none",
+            position: "absolute",
+            right: 0,
+            top: 0,
+            width: "100%",
+            zIndex: -1,
+          },
+        }}
+      />
       {pathname !== "/" ? <Header /> : <LandingPageHeader />}
-      <Container disableGutters maxWidth="lg" sx={{ paddingTop: 2, paddingX: { xs: 2 } }}>
+      <Container disableGutters maxWidth="xl" sx={{ paddingTop: 2, paddingX: { xs: 2 } }}>
         {transitions((styles, item, { key }) => (
           <a.div
             style={
               {
                 ...styles,
-                maxWidth: 1200 - 32,
+                maxWidth: 1536 - 32,
                 paddingBottom: 24,
                 position: "absolute",
                 width: "calc(100% - 32px)",

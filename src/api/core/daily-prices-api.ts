@@ -2,7 +2,7 @@ import { proxy } from "comlink"
 import { ChartData, ResolutionString, SavedPrice, Time, Timestamp } from "src/interfaces"
 import { PRICE_API_PAGINATION } from "src/settings"
 import { ProgressCallback } from "src/stores/task-store"
-import { getAssetPlatform, getAssetSymbol } from "src/utils/assets-utils"
+import { getAssetPlatform, getAssetTicker } from "src/utils/assets-utils"
 import { formatDate } from "src/utils/formatting-utils"
 import { noop } from "src/utils/utils"
 
@@ -159,7 +159,7 @@ export async function fetchDailyPrices(
         })
 
         if (results.length === 0) {
-          progress([(i * 100) / assetIds.length, `Skipped ${getAssetSymbol(assetId)}: no results`])
+          progress([(i * 100) / assetIds.length, `Skipped ${getAssetTicker(assetId)}: no results`])
           break
         }
 
@@ -197,7 +197,7 @@ export async function fetchDailyPrices(
 
         progress([
           (i * 100) / assetIds.length,
-          `Fetched ${getAssetSymbol(assetId)} from ${formatDate(start)} to ${formatDate(end)}`,
+          `Fetched ${getAssetTicker(assetId)} from ${formatDate(start)} to ${formatDate(end)}`,
         ])
 
         if (results.length !== PRICE_API_PAGINATION) {
@@ -209,7 +209,7 @@ export async function fetchDailyPrices(
         since = start - 86400000 * PRICE_API_PAGINATION
       }
     } catch (error) {
-      progress([(i * 100) / assetIds.length, `Skipped ${getAssetSymbol(assetId)}: ${error}`])
+      progress([(i * 100) / assetIds.length, `Skipped ${getAssetTicker(assetId)}: ${error}`])
     }
   }
 }

@@ -10,10 +10,11 @@ import { TablePaginationActions } from "./TableActions"
 
 type TableFooterProps = TablePaginationProps & {
   queryTime?: number | null
+  stickyVersion?: boolean
 }
 
 export function TableFooter(props: TableFooterProps) {
-  const { queryTime, count, ...rest } = props
+  const { queryTime, count, stickyVersion, ...rest } = props
 
   const isTablet = useMediaQuery("(max-width: 899px)")
 
@@ -21,11 +22,13 @@ export function TableFooter(props: TableFooterProps) {
     <Stack
       direction="row"
       sx={{
-        background: "var(--mui-palette-background-paper)",
+        background: stickyVersion ? "var(--mui-palette-background-paperSolid)" : undefined,
+        borderBottomLeftRadius: 8,
+        borderBottomRightRadius: 8,
         borderTop: "1px solid var(--mui-palette-TableCell-border)",
         bottom: 0,
         paddingX: 1.5,
-        position: "sticky",
+        position: stickyVersion ? "sticky" : undefined,
       }}
       justifyContent="space-between"
       alignItems="center"

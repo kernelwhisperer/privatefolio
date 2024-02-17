@@ -4,7 +4,7 @@ import React from "react"
 import { useNavigate } from "react-router-dom"
 import { AmountBlock } from "src/components/AmountBlock"
 import { $baseCurrency } from "src/stores/account-settings-store"
-import { getAssetSymbol } from "src/utils/assets-utils"
+import { getAssetTicker } from "src/utils/assets-utils"
 
 import { AssetAvatar } from "../../components/AssetAvatar"
 import { Balance } from "../../interfaces"
@@ -17,7 +17,6 @@ export function BalanceTableRow(props: TableRowComponentProps<Balance>) {
     isTablet,
     headCells: _headCells,
     isMobile: _isMobile,
-    isTablet: _isTablet,
     relativeTime: _relativeTime,
     ...rest
   } = props
@@ -44,11 +43,11 @@ export function BalanceTableRow(props: TableRowComponentProps<Balance>) {
               <AssetAvatar
                 size="medium"
                 src={assetMap[assetId]?.image}
-                alt={getAssetSymbol(assetId)}
+                alt={getAssetTicker(assetId)}
               />
               <Stack>
                 <Typography variant="body1">
-                  <span>{getAssetSymbol(assetId)}</span>
+                  <span>{getAssetTicker(assetId)}</span>
                 </Typography>
                 <Typography
                   color="text.secondary"
@@ -65,7 +64,7 @@ export function BalanceTableRow(props: TableRowComponentProps<Balance>) {
                 <AmountBlock
                   amount={value}
                   currencySymbol={currency.symbol}
-                  currencyName={currency.name}
+                  currencyTicker={currency.name}
                   significantDigits={currency.significantDigits}
                 />
               </Typography>
@@ -78,7 +77,7 @@ export function BalanceTableRow(props: TableRowComponentProps<Balance>) {
                 <AmountBlock
                   amount={price?.value}
                   currencySymbol={currency.symbol}
-                  currencyName={currency.name}
+                  currencyTicker={currency.name}
                   significantDigits={currency.maxDigits}
                 />
               </Typography>
@@ -100,9 +99,9 @@ export function BalanceTableRow(props: TableRowComponentProps<Balance>) {
     >
       <TableCell sx={{ maxWidth: 380, minWidth: 160, width: 380 }}>
         <Stack direction="row" gap={1} alignItems="center" component="div">
-          <AssetAvatar src={assetMap[assetId]?.image} alt={getAssetSymbol(assetId)} size="small" />
+          <AssetAvatar src={assetMap[assetId]?.image} alt={getAssetTicker(assetId)} size="small" />
           <Stack>
-            <span>{getAssetSymbol(assetId)}</span>
+            <span>{getAssetTicker(assetId)}</span>
           </Stack>
         </Stack>
       </TableCell>
@@ -113,7 +112,7 @@ export function BalanceTableRow(props: TableRowComponentProps<Balance>) {
         <AmountBlock
           amount={price?.value}
           currencySymbol={currency.symbol}
-          currencyName={currency.name}
+          currencyTicker={currency.name}
           significantDigits={currency.maxDigits}
         />
       </TableCell>
@@ -121,7 +120,7 @@ export function BalanceTableRow(props: TableRowComponentProps<Balance>) {
         <AmountBlock
           amount={value}
           currencySymbol={currency.symbol}
-          currencyName={currency.name}
+          currencyTicker={currency.name}
           significantDigits={currency.maxDigits}
         />
       </TableCell>

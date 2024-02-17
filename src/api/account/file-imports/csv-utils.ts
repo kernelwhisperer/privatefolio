@@ -6,7 +6,7 @@ import {
   Transaction,
 } from "src/interfaces"
 import { ProgressCallback } from "src/stores/task-store"
-import { extractTransactions } from "src/utils/extract-utils"
+import { extractTransactions, groupTransactions } from "src/utils/extract-utils"
 
 import { HEADER_MATCHER, PARSER_MATCHER, PLATFORM_MATCHER } from "./integrations"
 
@@ -69,6 +69,8 @@ export async function parseCsv(
   if (transactions.length === 0) {
     // warn: this fn mutates logs
     transactions = extractTransactions(logs, _fileImportId, parserId)
+  } else {
+    transactions = groupTransactions(transactions, _fileImportId, parserId)
   }
 
   const metadata: FileImport["meta"] = {

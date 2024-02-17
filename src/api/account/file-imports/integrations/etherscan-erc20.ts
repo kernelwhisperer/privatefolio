@@ -2,7 +2,6 @@ import { isAddress } from "ethers"
 import { AuditLogOperation, EtherscanAuditLog, ParserResult } from "src/interfaces"
 import { Platform } from "src/settings"
 import { asUTC } from "src/utils/formatting-utils"
-import { hashString } from "src/utils/utils"
 
 export const Identifier = "etherscan-erc20"
 export const platform: Platform = "ethereum"
@@ -32,36 +31,22 @@ export function parser(
 
   //
   const txHash = columns[0]
-  const blockNumber = columns[1]
+  // const blockNumber = columns[1]
   // const unixTimestamp = columns[2]
   const datetimeUtc = columns[3]
   const from = columns[4]
   const to = columns[5]
   const tokenValue = columns[6].replaceAll(",", "")
-  const tokenValueHistorical = columns[7]
+  // const tokenValueHistorical = columns[7]
   const contractAddress = columns[8]
-  const tokenName = columns[9]
+  // const tokenName = columns[9]
   const symbol = columns[10].trim()
 
   if (tokenValue === "0") {
     return { logs: [] }
   }
-
-  const txMeta = {
-    blockNumber,
-    contractAddress,
-    from,
-    to,
-    tokenName,
-    tokenSymbol: symbol,
-    tokenValue,
-    tokenValueHistorical,
-    txHash,
-  }
-
   //
-  const hash = hashString(`${index}_${csvRow}`)
-  const _id = `${fileImportId}_${hash}`
+  const _id = `${fileImportId}_${txHash}_ERC20_${index}`
   const timestamp = asUTC(new Date(datetimeUtc))
 
   const operation: AuditLogOperation =
@@ -84,7 +69,6 @@ export function parser(
       platform,
       timestamp,
       wallet,
-      ...txMeta,
     },
   ]
 

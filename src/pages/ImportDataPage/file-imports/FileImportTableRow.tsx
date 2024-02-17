@@ -112,14 +112,14 @@ export function FileImportTableRow(props: TableRowComponentProps<FileImport>) {
   return (
     <>
       <TableRow hover {...rest}>
-        <TableCell sx={{ maxWidth: 180, minWidth: 180, width: 180 }}>
+        <TableCell>
           {timestamp ? (
             <TimestampBlock timestamp={timestamp} relative={relativeTime} />
           ) : (
             <Skeleton></Skeleton>
           )}
         </TableCell>
-        <TableCell sx={{ maxWidth: 160, minWidth: 160, width: 140 }}>
+        <TableCell>
           {platform ? (
             <Stack direction="row" gap={0.5} alignItems="center" component="div">
               <PlatformAvatar
@@ -127,21 +127,18 @@ export function FileImportTableRow(props: TableRowComponentProps<FileImport>) {
                 src={platformMetaMap[platform]?.image}
                 alt={PLATFORMS_META[platform].name}
               />
-              <span>{PLATFORMS_META[platform].name}</span>
+              {/* <span>{PLATFORMS_META[platform].name}</span> */}
             </Stack>
           ) : (
             <Skeleton></Skeleton>
           )}
         </TableCell>
-        <TableCell sx={{ maxWidth: 200, minWidth: 200, width: 200 }}>
+        <TableCell>
           <Tooltip title={name}>
             <Truncate>{name}</Truncate>
           </Tooltip>
         </TableCell>
-        <TableCell
-          sx={{ fontFamily: MonoFont, maxWidth: 120, minWidth: 120, width: 120 }}
-          align="right"
-        >
+        <TableCell sx={{ fontFamily: MonoFont }} align="right">
           <Tooltip
             title={
               <Stack>
@@ -155,13 +152,10 @@ export function FileImportTableRow(props: TableRowComponentProps<FileImport>) {
             <span>{formatFileSize(size)}</span>
           </Tooltip>
         </TableCell>
-        <TableCell sx={{ maxWidth: 180, minWidth: 180, width: 180 }}>
+        <TableCell>
           <TimestampBlock timestamp={lastModified} relative={relativeTime} />
         </TableCell>
-        <TableCell
-          sx={{ fontFamily: MonoFont, maxWidth: 128, minWidth: 128, width: 128 }}
-          align="right"
-        >
+        <TableCell sx={{ fontFamily: MonoFont }} align="right">
           {!meta ? (
             <Skeleton></Skeleton>
           ) : (
@@ -180,10 +174,7 @@ export function FileImportTableRow(props: TableRowComponentProps<FileImport>) {
             </>
           )}
         </TableCell>
-        <TableCell
-          sx={{ fontFamily: MonoFont, maxWidth: 120, minWidth: 120, width: 120 }}
-          align="right"
-        >
+        <TableCell sx={{ fontFamily: MonoFont }} align="right">
           {!meta ? (
             <Skeleton></Skeleton>
           ) : (
@@ -198,7 +189,7 @@ export function FileImportTableRow(props: TableRowComponentProps<FileImport>) {
             </>
           )}
         </TableCell>
-        <TableCell sx={{ maxWidth: 40, minWidth: 40, width: 40 }}>
+        <TableCell>
           <Tooltip title="Inspect">
             <IconButton
               size="small"
@@ -209,6 +200,7 @@ export function FileImportTableRow(props: TableRowComponentProps<FileImport>) {
                 },
                 height: 28,
                 marginLeft: -1,
+                marginY: -0.25,
                 visibility: "hidden",
               }}
               onClick={toggleOpen}
@@ -218,15 +210,13 @@ export function FileImportTableRow(props: TableRowComponentProps<FileImport>) {
           </Tooltip>
         </TableCell>
       </TableRow>
-      {open && (
-        <FileImportDrawer
-          key={row._id}
-          open={open}
-          toggleOpen={toggleOpen}
-          fileImport={row}
-          relativeTime={relativeTime}
-        />
-      )}
+      <FileImportDrawer
+        key={row._id}
+        open={open}
+        toggleOpen={toggleOpen}
+        fileImport={row}
+        relativeTime={relativeTime}
+      />
     </>
   )
 }

@@ -11,8 +11,10 @@ import React, {
   MouseEvent,
   useCallback,
   useEffect,
+  useMemo,
   useState,
 } from "react"
+import { useSearchParams } from "react-router-dom"
 import { $debugMode } from "src/stores/app-store"
 
 import { FILTER_LABEL_MAP, getFilterValueLabel } from "../../stores/metadata-store"
@@ -57,13 +59,40 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
   const [rowCount, setRowCount] = useState<number | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
   const [rows, setRows] = useState<T[]>([])
-  const [page, setPage] = useState(0)
-  const [order, setOrder] = useState<Order>("desc")
   const [orderBy, setOrderBy] = useState<keyof T>(initOrderBy)
-  const [rowsPerPage, setRowsPerPage] = useState(defaultRowsPerPage)
 
-  // TODO turn into setting
   const [relativeTime, setRelativeTime] = useState(!$debugMode.get())
+
+  const [searchParams, setSearchParams] = useSearchParams()
+
+  const rowsPerPage = searchParams.get("rowsPerPage")
+    ? Number(searchParams.get("rowsPerPage"))
+    : defaultRowsPerPage
+  const setRowsPerPage = useCallback(
+    (rowsPerPage: number) => {
+      searchParams.set("rowsPerPage", String(rowsPerPage))
+      setSearchParams(searchParams)
+    },
+    [searchParams, setSearchParams]
+  )
+
+  const page = searchParams.get("page") ? Number(searchParams.get("page")) : 0
+  const setPage = useCallback(
+    (page: number) => {
+      searchParams.set("page", String(page))
+      setSearchParams(searchParams)
+    },
+    [searchParams, setSearchParams]
+  )
+
+  const order = searchParams.get("order") ? (searchParams.get("order") as Order) : "desc"
+  const setOrder = useCallback(
+    (order: Order) => {
+      searchParams.set("order", order)
+      setSearchParams(searchParams)
+    },
+    [searchParams, setSearchParams]
+  )
 
   const handleRelativeTime = useCallback((_event: MouseEvent<unknown>) => {
     setRelativeTime((prev) => !prev)
@@ -81,10 +110,6 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
     setPage(0)
   }, [])
 
-  // Avoid a layout jump when reaching the last page with empty rows.
-  const emptyRows = page > 0 ? Math.max(0, rowsPerPage - rows.length) : 0
-  // TODO
-
   const handleSort = useCallback(
     (_event: MouseEvent<unknown>, property: keyof T) => {
       const isAsc = orderBy === property && order === "asc"
@@ -94,21 +119,32 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
     [orderBy, order]
   )
 
-  const [activeFilters, setActiveFilters] = useState<ActiveFilterMap<T>>({})
-
-  const setFilterKey = useCallback((key: keyof T, value: string | number | undefined) => {
-    setActiveFilters((previous) => {
-      const next = { ...previous }
-
-      if (value === undefined) {
-        delete next[key]
-      } else {
-        next[key] = value
+  const activeFilters: ActiveFilterMap<T> = useMemo(() => {
+    const activeFilters: ActiveFilterMap<T> = {}
+    for (const [key, value] of searchParams) {
+      if (key === "page" || key === "rowsPerPage" || key === "order") {
+        continue
       }
+      headCells.forEach((headCell) => {
+        if (headCell.filterable && headCell.key === key) {
+          activeFilters[key] = value
+        }
+      })
+    }
+    return activeFilters
+  }, [headCells, searchParams])
 
-      return next
-    })
-  }, [])
+  const setFilterKey = useCallback(
+    (key: keyof T, value: string | number | undefined) => {
+      if (value === undefined) {
+        searchParams.delete(String(key))
+      } else {
+        searchParams.set(String(key), String(value))
+      }
+      setSearchParams(searchParams)
+    },
+    [searchParams, setSearchParams]
+  )
 
   useEffect(() => {
     setQueryTime(null)
@@ -134,6 +170,8 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
     from: { opacity: 2 },
     leave: { opacity: 1 },
   })
+
+  const stickyVersion = rowsPerPage > 20
 
   return (
     <>
@@ -161,10 +199,16 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
               )}
               <Paper
                 variant="outlined"
-                sx={{ overflowX: { lg: "unset", xs: "auto" }, paddingY: 0.5 }}
+                sx={{
+                  background: stickyVersion
+                    ? "var(--mui-palette-background-paperSolid)"
+                    : undefined,
+                  overflowX: { lg: "unset", xs: "auto" },
+                  paddingY: 0,
+                }}
               >
                 <TableContainer sx={{ overflowX: "unset" }}>
-                  <Table size="small" stickyHeader>
+                  <Table size="small" stickyHeader={stickyVersion}>
                     <TableHead>
                       <TableRow>
                         {headCells.map((headCell, index) => (
@@ -172,6 +216,7 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
                             key={index}
                             padding="normal"
                             sortDirection={orderBy === headCell.key ? order : false}
+                            sx={headCell.sx}
                           >
                             <ConnectedTableHead<T>
                               activeFilters={activeFilters}
@@ -198,15 +243,11 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
                           row={row}
                         />
                       ))}
-                      {emptyRows > 0 && (
-                        <TableRow style={{ height: 37 * emptyRows }}>
-                          <TableCell colSpan={headCells.length} />
-                        </TableRow>
-                      )}
                     </TableBody>
                   </Table>
                 </TableContainer>
                 <TableFooter
+                  stickyVersion={stickyVersion}
                   queryTime={queryTime}
                   count={rowCount ?? -1}
                   rowsPerPage={rowsPerPage}

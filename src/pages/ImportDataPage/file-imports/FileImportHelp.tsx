@@ -22,7 +22,7 @@ import { EtherscanHelp } from "./help/EtherscanHelp"
 const DOCUMENTED_PARSERS: ParserId[] = [
   "etherscan",
   "binance-account-statement",
-  "binance-spot-history",
+  // "binance-spot-history",
 ]
 
 export function FileImportHelp() {

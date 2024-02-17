@@ -1,13 +1,12 @@
 import {
   AuditLogOperation,
   EtherscanAuditLog,
+  EtherscanTransaction,
   ParserResult,
-  Transaction,
   TransactionType,
 } from "src/interfaces"
 import { Platform } from "src/settings"
 import { asUTC } from "src/utils/formatting-utils"
-import { hashString } from "src/utils/utils"
 
 export const Identifier = "etherscan"
 export const platform: Platform = "ethereum"
@@ -21,57 +20,40 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
     .map((column) => column.replaceAll('"', ""))
   //
   const txHash = columns[0]
-  const blockNumber = columns[1]
+  // const blockNumber = columns[1]
   // const unixTimestamp = columns[2]
   const datetimeUtc = columns[3]
   const from = columns[4]
   const to = columns[5]
   const contractAddress = columns[6]
-  const valueIn = columns[7].replaceAll(",", "")
-  const valueOut = columns[8].replaceAll(",", "")
-  const ethCurrentValue = columns[9]
+  const incoming = columns[7].replaceAll(",", "") // valueIn
+  const outgoing = columns[8].replaceAll(",", "") // valueOut
+  // const ethCurrentValue = columns[9]
   const txnFee = columns[10].replaceAll(",", "")
-  const txnFeeUsd = columns[11]
-  const ethHistoricalPrice = columns[12]
+  // const txnFeeUsd = columns[11]
+  // const ethHistoricalPrice = columns[12]
   const status = columns[13]
-  const errorCode = columns[14]
+  // const errorCode = columns[14]
   const method = columns[15].trim()
 
   // TODO statuses like Error(1) means only some internal txns failed
   const hasError = status === "Error(0)" || undefined
-
-  const txMeta = {
-    blockNumber,
-    contractAddress,
-    errorCode,
-    ethCurrentValue,
-    ethHistoricalPrice,
-    from,
-    hasError,
-    method,
-    status,
-    to,
-    txHash,
-    txnFee,
-    txnFeeUsd,
-    valueIn,
-    valueOut,
-  }
-  // console.log(txMeta)
   //
-  const hash = hashString(`${index}_${csvRow}`)
-  const txId = `${fileImportId}_${hash}`
   const timestamp = asUTC(new Date(datetimeUtc))
+  if (isNaN(timestamp)) {
+    throw new Error(`Invalid timestamp: ${datetimeUtc}`)
+  }
+  // const hash = hashString(`${index}_${csvRow}`)
+  const txId = `${fileImportId}_${txHash}`
   const assetId = "ethereum:0x0000000000000000000000000000000000000000:ETH"
-  const wallet = valueIn === "0" ? from : to
-
+  const wallet = incoming === "0" ? from : to
   //
   const logs: EtherscanAuditLog[] = []
   let type: TransactionType
   const operation: AuditLogOperation =
-    valueOut === "0" && valueIn !== "0"
+    outgoing === "0" && incoming !== "0"
       ? "Deposit"
-      : valueIn === "0" && valueOut === "0"
+      : incoming === "0" && outgoing === "0"
       ? "Smart Contract Interaction"
       : "Withdraw"
 
@@ -80,11 +62,11 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
   } else {
     type = operation
     if (!hasError) {
-      const change = operation === "Deposit" ? valueIn : `-${valueOut}`
+      const change = operation === "Deposit" ? incoming : `-${outgoing}`
       const changeN = parseFloat(change)
 
       logs.push({
-        _id: `${txId}_0`,
+        _id: `${txId}_VALUE_0`,
         assetId,
         change,
         changeN,
@@ -99,14 +81,15 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
     }
   }
 
-  let fee: string | undefined, feeN: number | undefined
+  let fee: string | undefined, feeAsset: string | undefined, feeN: number | undefined
 
-  if (txnFee !== "0" && valueIn === "0") {
+  if (txnFee !== "0" && incoming === "0") {
     fee = `-${txnFee}`
     feeN = parseFloat(fee)
+    feeAsset = assetId
 
     logs.push({
-      _id: `${txId}_1`,
+      _id: `${txId}_FEE_0`,
       assetId,
       change: fee,
       changeN: feeN,
@@ -120,27 +103,30 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
     })
   }
 
-  const tx: Transaction = {
+  const tx: EtherscanTransaction = {
     _id: txId,
+    contractAddress: contractAddress || undefined,
     fee,
-    feeAsset: assetId,
+    feeAsset,
     feeN,
     importId: fileImportId,
     importIndex: index,
-    incoming: hasError ? undefined : valueIn,
-    incomingAsset: hasError ? undefined : assetId,
-    incomingN: hasError ? undefined : parseFloat(valueIn),
-    outgoing: hasError ? undefined : valueOut,
-    outgoingAsset: hasError ? undefined : assetId,
-    outgoingN: hasError ? undefined : parseFloat(valueOut),
+    incoming: hasError || incoming === "0" ? undefined : incoming,
+    incomingAsset: hasError || incoming === "0" ? undefined : assetId,
+    incomingN: hasError || incoming === "0" ? undefined : parseFloat(incoming),
+    method,
+    outgoing: hasError || outgoing === "0" ? undefined : outgoing,
+    outgoingAsset: hasError || outgoing === "0" ? undefined : assetId,
+    outgoingN: hasError || outgoing === "0" ? undefined : parseFloat(outgoing),
     platform,
+    status: status || undefined,
     // price,
     // priceN,
     // role,
     timestamp,
+    txHash,
     type,
     wallet,
-    ...txMeta,
   }
 
   return { logs, txns: [tx] }

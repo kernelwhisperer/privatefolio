@@ -17,7 +17,6 @@ import { FileSizeBlock } from "src/components/FileSizeBlock"
 import { IdentifierBlock } from "src/components/IdentifierBlock"
 import { PlatformAvatar } from "src/components/PlatformAvatar"
 import { SectionTitle } from "src/components/SectionTitle"
-import { StaggeredList } from "src/components/StaggeredList"
 import { TimestampBlock } from "src/components/TimestampBlock"
 import { useConfirm } from "src/hooks/useConfirm"
 import { FileImport } from "src/interfaces"
@@ -99,12 +98,12 @@ export function FileImportDrawer(props: FileImportDrawerProps) {
 
   return (
     <Drawer open={open} onClose={toggleOpen} {...rest}>
-      <StaggeredList
+      <Stack
         paddingX={2}
         paddingY={1}
         gap={2}
-        show={open}
-        secondary
+        // show={open}
+        // secondary
         sx={(theme) => ({ overflowX: "hidden", width: 359, ...theme.typography.body2 })}
       >
         <Stack marginBottom={2} direction="row" justifyContent="space-between" alignItems="center">
@@ -210,7 +209,7 @@ export function FileImportDrawer(props: FileImportDrawerProps) {
 
         {/* <pre>{JSON.stringify(txMeta, null, 2)}</pre> */}
         {/* <pre>{JSON.stringify(fileImport, null, 2)}</pre> */}
-      </StaggeredList>
+      </Stack>
     </Drawer>
   )
 }

@@ -110,9 +110,6 @@ export function MemoryTable<T extends BaseType>(props: MemoryTableProps<T>) {
     setPage(0)
   }, [])
 
-  // Avoid a layout jump when reaching the last page with empty rows.
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0
-
   const [activeFilters, setActiveFilters] = useState<ActiveFilterMap<T>>({})
 
   const setFilterKey = useCallback((key: keyof T, value: string | number | undefined) => {
@@ -176,6 +173,8 @@ export function MemoryTable<T extends BaseType>(props: MemoryTableProps<T>) {
   const isTablet = useMediaQuery("(max-width: 899px)")
   const isMobile = useMediaQuery("(max-width: 599px)")
 
+  const stickyVersion = rowsPerPage > 20
+
   return (
     <>
       {transitions((styles, isLoading) => (
@@ -200,10 +199,15 @@ export function MemoryTable<T extends BaseType>(props: MemoryTableProps<T>) {
               )}
               <Paper
                 variant="outlined"
-                sx={{ overflowX: { lg: "unset", xs: "auto" }, paddingY: 0.5 }}
+                sx={{
+                  background: stickyVersion
+                    ? "var(--mui-palette-background-paperSolid)"
+                    : undefined,
+                  overflowX: { lg: "unset", xs: "auto" },
+                }}
               >
                 <TableContainer sx={{ overflowX: "unset" }}>
-                  <Table size="small">
+                  <Table size="small" stickyHeader={stickyVersion}>
                     {isTablet ? null : (
                       <TableHead>
                         <TableRow>
@@ -212,6 +216,7 @@ export function MemoryTable<T extends BaseType>(props: MemoryTableProps<T>) {
                               key={index}
                               padding="normal"
                               sortDirection={orderBy === headCell.key ? order : false}
+                              sx={headCell.sx}
                             >
                               <ConnectedTableHead<T>
                                 activeFilters={activeFilters}
@@ -239,16 +244,11 @@ export function MemoryTable<T extends BaseType>(props: MemoryTableProps<T>) {
                           row={row}
                         />
                       ))}
-                      {emptyRows > 0 && (
-                        <TableRow style={{ height: 53 * emptyRows }}>
-                          {/* TODO */}
-                          <TableCell colSpan={headCells.length} />
-                        </TableRow>
-                      )}
                     </TableBody>
                   </Table>
                 </TableContainer>
                 <TableFooter
+                  stickyVersion={stickyVersion}
                   page={page}
                   queryTime={queryTime}
                   onPageChange={handleChangePage}

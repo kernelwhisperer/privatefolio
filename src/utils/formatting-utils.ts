@@ -17,6 +17,7 @@ export function getDecimalPrecision(num: number) {
 export function formatNumber(number: number, opts: Intl.NumberFormatOptions = {}) {
   return new Intl.NumberFormat(locale, {
     notation: "standard",
+    // roundingType: "significant", TODO
     // minimumIntegerDigits: 2,
     ...opts,
   }).format(number)

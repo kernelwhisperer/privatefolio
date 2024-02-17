@@ -72,6 +72,7 @@ export function TablePaginationActions(props: TablePaginationActionsProps) {
           sx={{
             width: 72,
             [`& .${inputBaseClasses.root}`]: {
+              // background: "var(--mui-palette-background-paper)",
               background: "var(--mui-palette-background-default)",
             },
             [`& .${inputBaseClasses.input}`]: {

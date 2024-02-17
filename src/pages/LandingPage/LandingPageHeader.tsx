@@ -26,7 +26,7 @@ export default function LandingPageHeader() {
         <Toolbar disableGutters>
           <Container
             disableGutters
-            maxWidth="lg"
+            maxWidth="xl"
             sx={{ marginTop: -0.5, paddingX: { xs: 2 }, paddingY: 0, position: "relative" }}
           >
             <Stack

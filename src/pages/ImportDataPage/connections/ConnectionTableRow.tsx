@@ -172,6 +172,7 @@ export function ConnectionTableRow(props: TableRowComponentProps<Connection>) {
                 description: `Reset "${row.address}"`,
                 determinate: true,
                 function: async (progress) => {
+                  await clancy.resetConnection(row, progress, $activeAccount.get())
                   await clancy.syncConnection(progress, row, $activeAccount.get(), 0)
                 },
                 name: `Reset connection`,

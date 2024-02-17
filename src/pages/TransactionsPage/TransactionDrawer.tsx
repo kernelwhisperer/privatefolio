@@ -1,7 +1,6 @@
 import { ArrowRightAltRounded, CloseRounded } from "@mui/icons-material"
 import {
   Avatar,
-  Box,
   Button,
   Chip,
   Drawer,
@@ -17,7 +16,6 @@ import { Link } from "react-router-dom"
 import { AmountBlock } from "src/components/AmountBlock"
 import { ExternalLink } from "src/components/ExternalLink"
 import { SectionTitle } from "src/components/SectionTitle"
-import { StaggeredList } from "src/components/StaggeredList"
 import { TimestampBlock } from "src/components/TimestampBlock"
 import { Truncate } from "src/components/Truncate"
 import { Transaction } from "src/interfaces"
@@ -26,8 +24,7 @@ import { $activeAccount, $activeIndex } from "src/stores/account-store"
 import { PopoverToggleProps } from "src/stores/app-store"
 import { $platformMetaMap } from "src/stores/metadata-store"
 import { MonoFont } from "src/theme"
-import { getAssetSymbol } from "src/utils/assets-utils"
-import { greenColor, redColor } from "src/utils/chart-utils"
+import { getAssetTicker } from "src/utils/assets-utils"
 import { formatHex, getExplorerLink } from "src/utils/utils"
 import { clancy } from "src/workers/remotes"
 
@@ -71,12 +68,12 @@ export function TransactionDrawer(props: TransactionDrawerProps) {
 
   return (
     <Drawer open={open} onClose={toggleOpen} {...rest}>
-      <StaggeredList
+      <Stack
+        // config={SPRING_CONFIGS.ultra}
         paddingX={2}
         paddingY={1}
         gap={2}
-        show={open}
-        secondary
+        // show={open}
         sx={(theme) => ({ minWidth: 358, overflowX: "hidden", ...theme.typography.body2 })}
       >
         <Stack marginBottom={2} direction="row" justifyContent="space-between" alignItems="center">
@@ -123,39 +120,52 @@ export function TransactionDrawer(props: TransactionDrawerProps) {
           <SectionTitle>Timestamp</SectionTitle>
           <TimestampBlock timestamp={timestamp} relative={relativeTime} />
         </div>
-        <div>
-          <SectionTitle>Fee</SectionTitle>
-          <Box sx={{ color: redColor }}>
-            <AmountBlock amount={fee} formatOpts={{ signDisplay: "always" }} />{" "}
-            <span>{getAssetSymbol(feeAsset)}</span>
-          </Box>
-        </div>
-        <div>
-          <SectionTitle>Cost</SectionTitle>
-          <Box sx={{ color: redColor }}>
+        {feeAsset && (
+          <div>
+            <SectionTitle>Fee</SectionTitle>
             <AmountBlock
+              colorized
+              amount={fee}
+              showTicker
+              showSign
+              currencyTicker={getAssetTicker(feeAsset)}
+            />
+          </div>
+        )}
+        {outgoingAsset && (
+          <div>
+            <SectionTitle>Outgoing</SectionTitle>
+            <AmountBlock
+              colorized
               amount={outgoing ? `-${outgoing}` : outgoing}
-              formatOpts={{ signDisplay: "always" }}
-            />{" "}
-            <span>{getAssetSymbol(outgoingAsset)}</span>
-          </Box>
-        </div>
+              showTicker
+              showSign
+              currencyTicker={getAssetTicker(outgoingAsset)}
+            />
+          </div>
+        )}
         {price && (
           <div>
             <SectionTitle>Price</SectionTitle>
-            <AmountBlock amount={price} />{" "}
-            <span>
-              {getAssetSymbol(outgoingAsset)}/{getAssetSymbol(incomingAsset)}
-            </span>
+            <AmountBlock
+              colorized
+              amount={price}
+              currencyTicker={`${getAssetTicker(outgoingAsset)}/${getAssetTicker(incomingAsset)}`}
+            />
           </div>
         )}
-        <div>
-          <SectionTitle>Received</SectionTitle>
-          <Box sx={{ color: greenColor }}>
-            <AmountBlock amount={incoming} formatOpts={{ signDisplay: "always" }} />{" "}
-            <span>{getAssetSymbol(incomingAsset)}</span>
-          </Box>
-        </div>
+        {incomingAsset && (
+          <div>
+            <SectionTitle>Incoming</SectionTitle>
+            <AmountBlock
+              colorized
+              amount={incoming}
+              showTicker
+              showSign
+              currencyTicker={getAssetTicker(incomingAsset)}
+            />
+          </div>
+        )}
         <div>
           <SectionTitle>Audit logs</SectionTitle>
           {logsNumber === null ? (
@@ -187,7 +197,7 @@ export function TransactionDrawer(props: TransactionDrawerProps) {
         )}
         {/* <pre>{JSON.stringify(txMeta, null, 2)}</pre> */}
         {/* <pre>{JSON.stringify(tx, null, 2)}</pre> */}
-      </StaggeredList>
+      </Stack>
     </Drawer>
   )
 }

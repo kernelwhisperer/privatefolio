@@ -1,5 +1,3 @@
-import { DISALLOW_BINANCE_PRICE_API } from "src/env"
-
 import { ChartData, LlamaPrice, PlatformId, QueryRequest, Time } from "../../../interfaces"
 
 export const Identifier: PlatformId = "ethereum"
@@ -15,10 +13,6 @@ function approximateTimestamp(timestamp: Time) {
 }
 
 export async function queryPrices(request: QueryRequest) {
-  if (DISALLOW_BINANCE_PRICE_API) {
-    throw new Error("Binance price API is disabled")
-  }
-
   const { timeInterval, since, until, limit = 900, pair } = request
 
   let apiUrl = `https://coins.llama.fi/chart/${pair}?period=${timeInterval}&span=${limit}`

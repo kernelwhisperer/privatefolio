@@ -1,10 +1,11 @@
+import Big from "big.js"
 import { groupBy } from "lodash-es"
 import { ParserId } from "src/settings"
 
 import { AuditLog, Transaction } from "../interfaces"
 import { hashString } from "./utils"
 
-function validGrouping(logs: AuditLog[]) {
+function validAuditLogGrouping(logs: AuditLog[]) {
   let hasBuy = false
   let hasSell = false
   //
@@ -43,7 +44,7 @@ export function extractTransactions(
   for (const i in timestampGroups) {
     const group = timestampGroups[i]
 
-    if (validGrouping(group)) {
+    if (validAuditLogGrouping(group)) {
       const wallet = group[0].wallet
       const platform = group[0].platform
       const timestamp = group[0].timestamp
@@ -106,4 +107,92 @@ export function extractTransactions(
     }
   }
   return transactions
+}
+
+function validTransactionGrouping(transactions: Transaction[]) {
+  for (let i = 0; i < transactions.length; i++) {
+    if (i === 0) {
+      continue
+    }
+
+    if (transactions[0].incomingAsset !== transactions[i].incomingAsset) {
+      return false
+    }
+
+    if (transactions[0].incoming === undefined && transactions[i].incoming !== undefined) {
+      return false
+    }
+
+    if (transactions[0].outgoingAsset !== transactions[i].outgoingAsset) {
+      return false
+    }
+
+    if (transactions[0].outgoing === undefined && transactions[i].outgoing !== undefined) {
+      return false
+    }
+
+    if (transactions[0].feeAsset !== transactions[i].feeAsset) {
+      return false
+    }
+
+    if (transactions[0].fee === undefined && transactions[i].fee !== undefined) {
+      return false
+    }
+  }
+
+  return true
+}
+
+export function groupTransactions(
+  transactions: Transaction[],
+  fileImportId: string,
+  parserId: ParserId
+): Transaction[] {
+  const grouped: Transaction[] = []
+
+  if (parserId !== "binance-spot-history") {
+    return transactions
+  }
+
+  const groups: Record<string, Transaction[]> = {}
+  for (const tx of transactions) {
+    const key = `${tx.timestamp}_${tx.incomingAsset}_${tx.outgoingAsset}_${tx.feeAsset}`
+    if (!groups[key]) {
+      groups[key] = [tx]
+    }
+    groups[key].push(tx)
+  }
+
+  for (const i in groups) {
+    const group = groups[i]
+    const validGrouping = validTransactionGrouping(group)
+
+    if (group.length > 1 && validGrouping) {
+      const tx = group[0]
+
+      if (tx.incoming) {
+        tx.incoming = group
+          .reduce((acc, tx) => acc.plus(new Big(tx.incoming as string)), new Big(0))
+          .toString()
+        tx.incomingN = parseFloat(tx.incoming)
+      }
+      if (tx.outgoing) {
+        tx.outgoing = group
+          .reduce((acc, tx) => acc.plus(new Big(tx.outgoing as string)), new Big(0))
+          .toString()
+        tx.outgoingN = parseFloat(tx.outgoing)
+      }
+      if (tx.fee) {
+        tx.fee = group
+          .reduce((acc, tx) => acc.plus(new Big(tx.fee as string)), new Big(0))
+          .toString()
+        tx.feeN = parseFloat(tx.fee)
+      }
+
+      grouped.push(tx)
+    } else {
+      grouped.push(...group)
+    }
+  }
+  return grouped
 }

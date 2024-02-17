@@ -1,6 +1,6 @@
 import { debounce } from "lodash-es"
 import { keepMount, map } from "nanostores"
-import { getAssetSymbol } from "src/utils/assets-utils"
+import { getAssetTicker } from "src/utils/assets-utils"
 
 import { findAssetsMeta } from "../api/core/assets-meta-api"
 import { findPlatformsMeta } from "../api/core/platforms-meta-api"
@@ -47,7 +47,7 @@ export function getFilterValueLabel(value: string) {
   }
 
   if (value.includes(":")) {
-    return getAssetSymbol(value)
+    return getAssetTicker(value)
   }
 
   return value

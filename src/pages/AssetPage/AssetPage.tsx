@@ -4,7 +4,7 @@ import React from "react"
 import { Navigate, useParams, useSearchParams } from "react-router-dom"
 import { NavTab } from "src/components/NavTab"
 import { Tabs } from "src/components/Tabs"
-import { getAssetSymbol } from "src/utils/assets-utils"
+import { getAssetTicker } from "src/utils/assets-utils"
 
 import { AssetAvatar } from "../../components/AssetAvatar"
 import { BackButton } from "../../components/BackButton"
@@ -35,10 +35,10 @@ export default function AssetPage({ show }: { show: boolean }) {
         Home
       </BackButton>
       <Stack direction="row" gap={1} alignItems="center" component="div" sx={{ marginX: 2 }}>
-        <AssetAvatar size="large" src={assetMap[assetId]?.image} alt={getAssetSymbol(assetId)} />
+        <AssetAvatar size="large" src={assetMap[assetId]?.image} alt={getAssetTicker(assetId)} />
         <Stack>
           <Typography variant="h6" fontFamily={SerifFont} sx={{ marginBottom: -0.5 }}>
-            <span>{getAssetSymbol(assetId)}</span>
+            <span>{getAssetTicker(assetId)}</span>
           </Typography>
           <Typography
             color="text.secondary"

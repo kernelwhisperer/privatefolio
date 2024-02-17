@@ -575,7 +575,7 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
                 sx={{
                   "& > *": {
                     alignItems: "center",
-                    background: "var(--mui-palette-background-paper)",
+                    background: "var(--mui-palette-background-paperSolid)",
                     display: "flex",
                     height: 28,
                     paddingX: 1.5,

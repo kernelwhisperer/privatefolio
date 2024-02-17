@@ -6,24 +6,22 @@ import {
   Visibility,
 } from "@mui/icons-material"
 import { alpha, Avatar, Chip, IconButton, Stack, TableCell, TableRow, Tooltip } from "@mui/material"
-import { green, grey, red } from "@mui/material/colors"
+import { grey } from "@mui/material/colors"
 import { useStore } from "@nanostores/react"
 import React from "react"
 import { AmountBlock } from "src/components/AmountBlock"
+import { AssetBlock } from "src/components/AssetBlock"
 import { useBoolean } from "src/hooks/useBoolean"
-import { getAssetSymbol } from "src/utils/assets-utils"
+import { PLATFORMS_META } from "src/settings"
+import { getAssetTicker } from "src/utils/assets-utils"
+import { greenColor, redColor } from "src/utils/color-utils"
 
-import { AssetAvatar } from "../../components/AssetAvatar"
 import { TimestampBlock } from "../../components/TimestampBlock"
 import { Truncate } from "../../components/Truncate"
 import { Transaction, TransactionType } from "../../interfaces"
-import { PLATFORMS_META } from "../../settings"
-import { $assetMetaMap, $platformMetaMap } from "../../stores/metadata-store"
+import { $platformMetaMap } from "../../stores/metadata-store"
 import { TableRowComponentProps } from "../../utils/table-utils"
 import { TransactionDrawer } from "./TransactionDrawer"
-
-const redColor = red[400]
-const greenColor = green[400]
 
 const OPERATION_COLORS: Partial<Record<TransactionType, string>> = {
   Buy: greenColor,
@@ -37,11 +35,28 @@ const OPERATION_ICONS: Partial<Record<TransactionType, SvgIconComponent>> = {
 }
 
 export function TransactionTableRow(props: TableRowComponentProps<Transaction>) {
-  const { relativeTime, isMobile: _isMobile, isTablet: _isTablet, row } = props
-  const { incoming, incomingAsset, type, timestamp, platform, wallet, outgoing, outgoingAsset } =
-    row
+  const {
+    row,
+    relativeTime,
+    headCells: _headCells,
+    isMobile: _isMobile,
+    isTablet: _isTablet,
+    ...rest
+  } = props
 
-  const assetMap = useStore($assetMetaMap)
+  const {
+    incoming,
+    incomingAsset,
+    type,
+    timestamp,
+    platform,
+    wallet,
+    outgoing,
+    outgoingAsset,
+    fee,
+    feeAsset,
+  } = row
+
   const platformMetaMap = useStore($platformMetaMap)
 
   const color = OPERATION_COLORS[type] || grey[500]
@@ -51,11 +66,11 @@ export function TransactionTableRow(props: TableRowComponentProps<Transaction>) 
 
   return (
     <>
-      <TableRow hover>
-        <TableCell sx={{ maxWidth: 200, minWidth: 200, width: 200 }}>
+      <TableRow hover {...rest}>
+        <TableCell>
           <TimestampBlock timestamp={timestamp} relative={relativeTime} />
         </TableCell>
-        <TableCell sx={{ maxWidth: 160, minWidth: 160, width: 140 }}>
+        <TableCell>
           <Stack direction="row" gap={0.5} alignItems="center" component="div">
             <Avatar
               src={platformMetaMap[platform]?.image}
@@ -66,15 +81,15 @@ export function TransactionTableRow(props: TableRowComponentProps<Transaction>) 
               }}
               alt={PLATFORMS_META[platform].name}
             />
-            <span>{PLATFORMS_META[platform].name}</span>
+            {/* <span>{PLATFORMS_META[platform].name}</span> */}
           </Stack>
         </TableCell>
-        <TableCell sx={{ maxWidth: 140, minWidth: 140, width: 140 }}>
+        <TableCell>
           <Tooltip title={wallet}>
             <Truncate>{wallet}</Truncate>
           </Tooltip>
         </TableCell>
-        <TableCell sx={{ maxWidth: 120, minWidth: 120, width: 120 }}>
+        <TableCell>
           <Tooltip title={type}>
             <Chip
               size="small"
@@ -88,58 +103,43 @@ export function TransactionTableRow(props: TableRowComponentProps<Transaction>) 
             />
           </Tooltip>
         </TableCell>
-        <TableCell
-          align="right"
-          sx={{
-            color: redColor,
-            //
-            maxWidth: 120,
-            minWidth: 120,
-            width: 120,
-          }}
-        >
+        <TableCell align="right">
           <AmountBlock
-            amount={outgoing ? `-${outgoing}` : outgoing}
-            formatOpts={{ signDisplay: "always" }}
+            colorized
+            placeholder=""
+            amount={outgoing ? `-${outgoing}` : 0}
+            showSign
+            currencyTicker={getAssetTicker(outgoingAsset || (incomingAsset as string))}
           />
         </TableCell>
-        <TableCell sx={{ maxWidth: 140, minWidth: 140, width: 140 }}>
-          {outgoingAsset && (
-            <Stack direction="row" gap={0.5} alignItems="center" component="div">
-              <AssetAvatar
-                size="small"
-                src={assetMap[outgoingAsset]?.image}
-                alt={getAssetSymbol(outgoingAsset)}
-              />
-              <span>{getAssetSymbol(outgoingAsset)}</span>
-            </Stack>
-          )}
+        <TableCell>
+          <AssetBlock asset={outgoingAsset || (incomingAsset as string)} />
         </TableCell>
-        <TableCell
-          align="right"
-          sx={{
-            color: greenColor,
-            //
-            maxWidth: 120,
-            minWidth: 120,
-            width: 120,
-          }}
-        >
-          <AmountBlock amount={incoming} formatOpts={{ signDisplay: "always" }} />
+        <TableCell align="right">
+          <AmountBlock
+            colorized
+            placeholder=""
+            amount={incoming || 0}
+            showSign
+            currencyTicker={getAssetTicker(incomingAsset || (outgoingAsset as string))}
+          />
         </TableCell>
-        <TableCell sx={{ maxWidth: 120, minWidth: 120, width: 120 }}>
-          {incomingAsset && (
-            <Stack direction="row" gap={0.5} alignItems="center" component="div">
-              <AssetAvatar
-                size="small"
-                src={assetMap[incomingAsset]?.image}
-                alt={getAssetSymbol(incomingAsset)}
-              />
-              <span>{getAssetSymbol(incomingAsset)}</span>
-            </Stack>
-          )}
+        <TableCell>
+          <AssetBlock asset={incomingAsset || (outgoingAsset as string)} />
         </TableCell>
-        <TableCell sx={{ maxWidth: 40, minWidth: 40, width: 40 }}>
+        <TableCell align="right">
+          <AmountBlock
+            colorized
+            placeholder=""
+            amount={fee || 0}
+            showSign
+            currencyTicker={getAssetTicker(feeAsset || incomingAsset || (outgoingAsset as string))}
+          />
+        </TableCell>
+        <TableCell>
+          <AssetBlock asset={feeAsset || incomingAsset || (outgoingAsset as string)} />
+        </TableCell>
+        <TableCell>
           <Tooltip title="Inspect">
             <IconButton
               size="small"
@@ -150,6 +150,7 @@ export function TransactionTableRow(props: TableRowComponentProps<Transaction>) 
                 },
                 height: 28,
                 marginLeft: -1,
+                marginY: -0.25,
                 visibility: "hidden",
               }}
               onClick={toggleOpen}

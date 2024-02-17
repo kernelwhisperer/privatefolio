@@ -41,6 +41,10 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
   const change = columns[5]
   const remark = columns[6]
   //
+  if (remark === "Duplicate") {
+    return { logs: [] }
+  }
+  //
   const hash = hashString(`${index}_${csvRow}`)
   const _id = `${fileImportId}_${hash}`
   const timestamp = asUTC(new Date(utcTime))

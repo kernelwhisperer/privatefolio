@@ -45,3 +45,6 @@ export const stringToColor = memoize(
     (colorIndex: number) => colorArray[colorIndex]
   )
 )
+
+export const redColor = colors.red[500]
+export const greenColor = colors.green[500]

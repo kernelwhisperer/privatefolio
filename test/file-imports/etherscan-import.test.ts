@@ -6,7 +6,8 @@ import { addFileImport } from "src/api/account/file-imports/file-imports-api"
 import { findTransactions } from "src/api/account/transactions-api"
 import { getAccount, resetAccount } from "src/api/database"
 import { ProgressUpdate } from "src/stores/task-store"
-import { beforeAll, expect, it } from "vitest"
+import { normalizeTransaction, sanitizeAuditLog, sanitizeBalance } from "test/utils"
+import { beforeAll, describe, expect, it } from "vitest"
 
 const accountName = "azure"
 
@@ -15,22 +16,23 @@ beforeAll(async () => {
   await resetAccount(accountName)
 })
 
-it("should add a file import", async () => {
-  // arrange
-  const fileName = "etherscan.csv"
-  const filePath = join("test/files", fileName)
-  const buffer = await fs.promises.readFile(filePath, "utf8")
-  const file = new File([buffer], fileName, { lastModified: 0, type: "text/csv" })
-  // act
-  const fileImport = await addFileImport(file, undefined, accountName)
-  const { docs: auditLogs } = await getAccount(accountName).auditLogsDB.find({
-    selector: {
-      importId: fileImport._id,
-    },
-  })
-  auditLogs.sort((a, b) => b.timestamp - a.timestamp)
-  // assert
-  expect(fileImport).toMatchInlineSnapshot(`
+describe("should import 0xf98 via files", () => {
+  it("should add a file import", async () => {
+    // arrange
+    const fileName = "etherscan.csv"
+    const filePath = join("test/files", fileName)
+    const buffer = await fs.promises.readFile(filePath, "utf8")
+    const file = new File([buffer], fileName, { lastModified: 0, type: "text/csv" })
+    // act
+    const fileImport = await addFileImport(file, undefined, accountName)
+    const { docs: auditLogs } = await getAccount(accountName).auditLogsDB.find({
+      selector: {
+        importId: fileImport._id,
+      },
+    })
+    auditLogs.sort((a, b) => b.timestamp - a.timestamp)
+    // assert
+    expect(fileImport).toMatchInlineSnapshot(`
     {
       "_id": "32174469",
       "metadata": {
@@ -53,30 +55,27 @@ it("should add a file import", async () => {
       },
     }
   `)
-  expect(auditLogs.length).toMatchInlineSnapshot(`16`)
-  expect(auditLogs).toMatchFileSnapshot(
-    "./__snapshots__/etherscan-import/audit-logs-normal.test.ts.snap"
-  )
-})
-
-it("should add an erc20 file import", async () => {
-  // arrange
-  const fileName = "etherscan-erc20.csv"
-  const filePath = join("test/files", fileName)
-  const buffer = await fs.promises.readFile(filePath, "utf8")
-  const file = new File([buffer], fileName, { lastModified: 0, type: "text/csv" })
-  // act
-  const fileImport = await addFileImport(file, undefined, accountName, async () => ({
-    userAddress: "0xf98c96b5d10faafc2324847c82305bd5fd7e5ad3",
-  }))
-  const { docs: auditLogs } = await getAccount(accountName).auditLogsDB.find({
-    selector: {
-      importId: fileImport._id,
-    },
+    expect(auditLogs.length).toMatchInlineSnapshot(`16`)
   })
-  auditLogs.sort((a, b) => b.timestamp - a.timestamp)
-  // assert
-  expect(fileImport).toMatchInlineSnapshot(`
+
+  it("should add an erc20 file import", async () => {
+    // arrange
+    const fileName = "etherscan-erc20.csv"
+    const filePath = join("test/files", fileName)
+    const buffer = await fs.promises.readFile(filePath, "utf8")
+    const file = new File([buffer], fileName, { lastModified: 0, type: "text/csv" })
+    // act
+    const fileImport = await addFileImport(file, undefined, accountName, async () => ({
+      userAddress: "0xf98c96b5d10faafc2324847c82305bd5fd7e5ad3",
+    }))
+    const { docs: auditLogs } = await getAccount(accountName).auditLogsDB.find({
+      selector: {
+        importId: fileImport._id,
+      },
+    })
+    auditLogs.sort((a, b) => b.timestamp - a.timestamp)
+    // assert
+    expect(fileImport).toMatchInlineSnapshot(`
     {
       "_id": "3090763006",
       "metadata": {
@@ -104,23 +103,17 @@ it("should add an erc20 file import", async () => {
       },
     }
   `)
-  expect(auditLogs.length).toMatchInlineSnapshot(`8`)
-  expect(auditLogs).toMatchFileSnapshot(
-    "./__snapshots__/etherscan-import/audit-logs-erc20.test.ts.snap"
-  )
-})
+    expect(auditLogs.length).toMatchInlineSnapshot(`8`)
+  })
 
-it.sequential("should compute balances", async () => {
-  // arrange
-  const until = Date.UTC(2021, 0, 0, 0, 0, 0, 0) // 1 Jan 2021
-  // act
-  const updates: ProgressUpdate[] = []
-  await computeBalances(accountName, { until }, (state) => updates.push(state))
-  const balances = await getHistoricalBalances(accountName)
-  const auditLogs = await findAuditLogs({}, accountName)
-  const transactions = await findTransactions({}, accountName)
-  // assert
-  expect(updates.join("\n")).toMatchInlineSnapshot(`
+  it.sequential("should compute balances", async () => {
+    // arrange
+    const until = Date.UTC(2021, 0, 0, 0, 0, 0, 0) // 1 Jan 2021
+    // act
+    const updates: ProgressUpdate[] = []
+    await computeBalances(accountName, { until }, (state) => updates.push(state))
+    // assert
+    expect(updates.join("\n")).toMatchInlineSnapshot(`
     "0,Computing balances for 24 audit logs
     0,Processing logs 1 to 24
     90,Processed 1153 daily balances
@@ -128,18 +121,27 @@ it.sequential("should compute balances", async () => {
     96,Filling balances to reach today
     100,Saved 1210 records to disk"
   `)
-  expect(balances.length).toMatchInlineSnapshot(`1210`)
-  for (let i = 0; i < balances.length; i += 100) {
-    expect(balances.slice(i, i + 100)).toMatchFileSnapshot(
-      `./__snapshots__/etherscan-import/balances-${i}.test.ts.snap`
+  })
+
+  it.sequential("should save the correct data", async () => {
+    // act
+    const auditLogs = await findAuditLogs({}, accountName)
+    const transactions = await findTransactions({}, accountName)
+    const balances = await getHistoricalBalances(accountName)
+    // assert
+    expect(transactions.length).toMatchInlineSnapshot(`9`)
+    expect(transactions.map(normalizeTransaction)).toMatchFileSnapshot(
+      "../__snapshots__/0xf98/transactions.ts.snap"
     )
-  }
-  expect(auditLogs.length).toMatchInlineSnapshot(`24`)
-  expect(auditLogs).toMatchFileSnapshot(
-    "./__snapshots__/etherscan-import/audit-logs-all.test.ts.snap"
-  )
-  expect(transactions.length).toMatchInlineSnapshot(`9`)
-  expect(transactions).toMatchFileSnapshot(
-    "./__snapshots__/etherscan-import/transactions-all.test.ts.snap"
-  )
+    expect(auditLogs.length).toMatchInlineSnapshot(`24`)
+    expect(auditLogs.map(sanitizeAuditLog)).toMatchFileSnapshot(
+      "../__snapshots__/0xf98/audit-logs.ts.snap"
+    )
+    expect(balances.length).toMatchInlineSnapshot(`1210`)
+    for (let i = 0; i < balances.length; i += 100) {
+      expect(balances.slice(i, i + 100).map(sanitizeBalance)).toMatchFileSnapshot(
+        `../__snapshots__/0xf98/balances-${i}.ts.snap`
+      )
+    }
+  })
 })

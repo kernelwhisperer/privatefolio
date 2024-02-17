@@ -1,4 +1,5 @@
-import { ReactNode } from "react"
+import type { SxProps, Theme } from "@mui/material"
+import type { ReactNode } from "react"
 
 export type Order = "asc" | "desc"
 
@@ -17,6 +18,7 @@ export interface HeadCell<T extends BaseType> {
   label: ReactNode
   numeric?: boolean
   sortable?: boolean
+  sx?: SxProps<Theme>
   valueSelector?: ValueSelector<T>
 }
 

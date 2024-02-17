@@ -173,9 +173,12 @@ export async function computeBalances(
     progress([Math.floor((i * 90) / count), `Processing logs ${firstIndex} to ${lastIndex}`])
     const { docs: logs } = await account.auditLogsDB.find({
       limit: pageSize,
-      selector: { timestamp: { $gte: since } },
+      selector: {
+        changeN: { $exists: true },
+        timestamp: { $gte: since },
+      },
       skip: i,
-      sort: [{ timestamp: "asc" }],
+      sort: ["timestamp", "changeN"],
     })
 
     // progress([(i * 100) / count, `Processing logs ${firstIndex} to ${lastIndex} - fetch complete`])

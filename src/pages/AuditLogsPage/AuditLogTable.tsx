@@ -63,26 +63,31 @@ export function AuditLogTable(props: AuditLogsTableProps) {
         key: "timestamp",
         label: "Timestamp",
         sortable: !txId,
+        sx: { maxWidth: 200, minWidth: 200, width: 200 },
       },
       {
         filterable: !txId,
         key: "platform",
-        label: "Platform",
+        label: "",
+        sx: { maxWidth: 0, minWidth: 0, width: 0 },
       },
       {
         filterable: !txId,
         key: "wallet",
         label: "Wallet",
+        sx: { maxWidth: 360, minWidth: 140, width: "66%" },
       },
       {
         filterable: !txId,
         key: "operation",
         label: "Operation",
+        sx: { maxWidth: 220, minWidth: 220, width: "66%" },
       },
       {
         key: "changeN",
         label: "Change",
         numeric: true,
+        sx: { maxWidth: 140, minWidth: 140, width: 140 },
       },
       ...(!assetId
         ? ([
@@ -90,6 +95,7 @@ export function AuditLogTable(props: AuditLogsTableProps) {
               filterable: !txId,
               key: "assetId",
               label: "Asset",
+              sx: { maxWidth: 140, minWidth: 140, width: 140 },
             },
           ] as const)
         : []),
@@ -97,15 +103,16 @@ export function AuditLogTable(props: AuditLogsTableProps) {
         key: "balance",
         label: "New balance",
         numeric: true,
+        sx: { maxWidth: 300, minWidth: 120, width: "50%" },
       },
     ],
     [assetId, txId]
   )
 
-  // TODO this should me a separate component using memory table
   return (
     <>
       {txId && (
+        // TODO this should me a separate component using memory table
         <Box
           sx={{
             marginBottom: 1,

@@ -70,6 +70,7 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
       operation: "Sell",
       platform,
       timestamp,
+      txId,
       wallet,
     })
     logs.push({
@@ -82,6 +83,7 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
       operation: "Buy",
       platform,
       timestamp,
+      txId,
       wallet,
     })
   } else {
@@ -116,6 +118,7 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
       operation: "Sell",
       platform,
       timestamp,
+      txId,
       wallet,
     })
     logs.push({
@@ -128,6 +131,7 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
       operation: "Buy",
       platform,
       timestamp,
+      txId,
       wallet,
     })
   }
@@ -142,6 +146,7 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
     operation: "Fee",
     platform,
     timestamp,
+    txId,
     wallet,
   })
 

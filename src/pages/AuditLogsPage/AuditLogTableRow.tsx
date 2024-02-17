@@ -4,9 +4,9 @@ import { green, grey, red } from "@mui/material/colors"
 import { useStore } from "@nanostores/react"
 import React from "react"
 import { AmountBlock } from "src/components/AmountBlock"
-import { getAssetSymbol } from "src/utils/assets-utils"
+import { AssetBlock } from "src/components/AssetBlock"
+import { getAssetTicker } from "src/utils/assets-utils"
 
-import { AssetAvatar } from "../../components/AssetAvatar"
 import { TimestampBlock } from "../../components/TimestampBlock"
 import { Truncate } from "../../components/Truncate"
 import { AuditLog, AuditLogOperation } from "../../interfaces"
@@ -71,10 +71,10 @@ export function AuditLogTableRow(props: TableRowComponentProps<AuditLog>) {
         // })}
         {...rest}
       >
-        <TableCell sx={{ maxWidth: 200, minWidth: 200, width: 200 }}>
+        <TableCell>
           <TimestampBlock timestamp={timestamp} relative={relativeTime} />
         </TableCell>
-        <TableCell sx={{ maxWidth: 160, minWidth: 160, width: 140 }}>
+        <TableCell>
           <Stack direction="row" gap={0.5} alignItems="center" component="div">
             <Avatar
               src={platformMetaMap[platform]?.image}
@@ -85,15 +85,15 @@ export function AuditLogTableRow(props: TableRowComponentProps<AuditLog>) {
               }}
               alt={PLATFORMS_META[platform].name}
             />
-            <span>{PLATFORMS_META[platform].name}</span>
+            {/* <span>{PLATFORMS_META[platform].name}</span> */}
           </Stack>
         </TableCell>
-        <TableCell sx={{ maxWidth: 140, minWidth: 140, width: 140 }}>
+        <TableCell>
           <Tooltip title={wallet}>
             <Truncate>{wallet}</Truncate>
           </Tooltip>
         </TableCell>
-        <TableCell sx={{ maxWidth: 220, minWidth: 220, width: 220 }}>
+        <TableCell>
           <Tooltip title={operation}>
             <Chip
               size="small"
@@ -107,38 +107,22 @@ export function AuditLogTableRow(props: TableRowComponentProps<AuditLog>) {
             />
           </Tooltip>
         </TableCell>
-        <TableCell
-          align="right"
-          sx={{
-            color: changeColor,
-            //
-            maxWidth: 140,
-            minWidth: 140,
-            width: 140,
-          }}
-        >
-          <AmountBlock amount={change} formatOpts={{ signDisplay: "always" }} />
+        <TableCell align="right">
+          <AmountBlock
+            amount={change}
+            showSign
+            colorized
+            currencyTicker={getAssetTicker(assetId)}
+          />
         </TableCell>
         {showAssetColumn && (
-          <TableCell sx={{ maxWidth: 140, minWidth: 140, width: 140 }}>
-            <Stack
-              direction="row"
-              gap={0.5}
-              alignItems="center"
-              component="div"
-              // justifyContent="flex-end"
-            >
-              <AssetAvatar
-                size="small"
-                src={assetMap[assetId]?.image}
-                alt={getAssetSymbol(assetId)}
-              />
-              <span>{getAssetSymbol(assetId)}</span>
-            </Stack>
+          <TableCell>
+            <AssetBlock asset={assetId} />
           </TableCell>
         )}
         <TableCell align="right">
           <AmountBlock
+            currencyTicker={getAssetTicker(assetId)}
             amount={balance}
             tooltipMessage="Use the 'Compute balances' action to compute these values."
           />

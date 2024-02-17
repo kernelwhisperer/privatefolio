@@ -2,7 +2,7 @@ import { PlatformId } from "src/interfaces"
 
 import { memoize } from "./fp-utils"
 
-export const getAssetSymbol = memoize((assetId: string) => {
+export const getAssetTicker = memoize((assetId: string) => {
   const parts = assetId.split(":")
   if (parts.length === 2) return parts[1]
   return parts[2]

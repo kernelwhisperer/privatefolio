@@ -1,4 +1,4 @@
-import { getAssetSymbol } from "src/utils/assets-utils"
+import { getAssetTicker } from "src/utils/assets-utils"
 
 import { AssetMetadata } from "../../interfaces"
 import { ASSET_FILES_LOCATION, ASSET_PAGES } from "../../settings"
@@ -12,7 +12,7 @@ export async function findAssetsMeta(assetIds: string[]) {
   }
 
   const assetSymbolMap = assetIds.reduce((map, assetId) => {
-    map[getAssetSymbol(assetId)] = assetId
+    map[getAssetTicker(assetId)] = assetId
     return map
   }, {} as Record<string, string>)
 

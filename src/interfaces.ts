@@ -37,6 +37,7 @@ export type Time = UTCTimestamp
 
 export interface Transaction {
   _id: string
+  _rev?: string
   fee?: string
   feeAsset?: string
   feeN?: number
@@ -56,6 +57,13 @@ export interface Transaction {
   txHash?: string
   type: TransactionType
   wallet: string
+}
+
+export interface EtherscanTransaction extends Transaction {
+  contractAddress?: string
+  method?: string
+  status?: string
+  txHash: string
 }
 
 export type AuditLogOperation =
@@ -111,6 +119,7 @@ export type PlatformMetadata = Exchange | Blockchain
 
 export interface AuditLog {
   _id: string
+  _rev?: string
   assetId: string
   balance?: string
   balanceN?: number

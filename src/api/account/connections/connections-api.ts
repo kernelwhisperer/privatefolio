@@ -80,6 +80,39 @@ export async function removeConnection(
   return res.ok
 }
 
+export async function resetConnection(
+  connection: Connection,
+  progress: ProgressCallback,
+  accountName: string
+) {
+  const account = getAccount(accountName)
+  // Remove audit logs
+  const logs = await account.auditLogsDB.allDocs({
+    // Prefix search
+    // https://pouchdb.com/api.html#batch_fetch
+    endkey: `${connection._id}\ufff0`,
+    startkey: connection._id,
+  } as PouchDB.Core.AllDocsWithinRangeOptions)
+  progress([50, `Removing ${logs.rows.length} audit logs`])
+  await account.auditLogsDB.bulkDocs(
+    logs.rows.map((row) => ({ _deleted: true, _id: row.id, _rev: row.value.rev } as never))
+  )
+
+  // Remove transactions
+  const txns = await account.transactionsDB.allDocs({
+    // Prefix search
+    // https://pouchdb.com/api.html#batch_fetch
+    endkey: `${connection._id}\ufff0`,
+    startkey: connection._id,
+  } as PouchDB.Core.AllDocsWithinRangeOptions)
+  progress([100, `Removing ${txns.rows.length} transactions`])
+  await account.transactionsDB.bulkDocs(
+    txns.rows.map((row) => ({ _deleted: true, _id: row.id, _rev: row.value.rev } as never))
+  )
+  //
+  await setValue(connection._id, 0, accountName)
+}
+
 export function subscribeToConnections(callback: () => void, accountName: string) {
   const account = getAccount(accountName)
   const changesSub = account.connectionsDB
@@ -121,7 +154,6 @@ export async function syncConnection(
 
   // normal transactions
   const normal = await rpcProvider.getTransactions(connection.address, since)
-  console.log("📜 LOG > normal:", normal)
 
   progress([0, `Fetching normal transactions`])
   progress([10, `Parsing ${normal.length} normal transactions`])
@@ -151,7 +183,6 @@ export async function syncConnection(
 
   // internal transactions
   const internal = await rpcProvider.getInternalTransactions(connection.address, since)
-  console.log("📜 LOG > internal:", internal)
 
   progress([25, `Fetching internal transactions`])
   progress([35, `Parsing ${internal.length} internal transactions`])
@@ -180,7 +211,6 @@ export async function syncConnection(
 
   // erc20 transactions
   const erc20 = await rpcProvider.getErc20Transactions(connection.address, since)
-  console.log("📜 LOG > erc20:", erc20)
 
   progress([50, `Fetching erc20 transactions`])
   progress([60, `Parsing ${erc20.length} erc20 transactions`])
@@ -206,7 +236,6 @@ export async function syncConnection(
       progress([0, `Error parsing row ${index + 1}: ${String(error)}`])
     }
   })
-  console.log("📜 LOG > erc20.forEach > logs:", logMap)
 
   // save logs
   const logIds = Object.keys(logMap).map((x) => ({ id: x }))

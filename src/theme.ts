@@ -29,6 +29,9 @@ declare module "@mui/material/Badge" {
 }
 
 declare module "@mui/material" {
+  interface TypeBackground {
+    paperSolid: string
+  }
   interface Palette {
     accent: Palette["primary"]
   }
@@ -70,7 +73,8 @@ export const theme: CssVarsThemeOptions = {
         },
         background: {
           default: "rgb(40, 40, 40)",
-          paper: "rgb(45, 45, 45)",
+          paper: "rgba(45, 45, 45, 0.5)",
+          paperSolid: "rgb(43 43 43)", // derived from default + paper
         },
         info: {
           main: blue[400],
@@ -102,7 +106,8 @@ export const theme: CssVarsThemeOptions = {
         },
         background: {
           default: bgColor,
-          paper: "rgb(255, 255, 255)",
+          paper: "rgba(255, 255, 255, 0.33)",
+          paperSolid: "rgb(246 246 248)", // derived from default + paper
         },
         info: {
           main: blue[600],
@@ -125,15 +130,6 @@ export const theme: CssVarsThemeOptions = {
   //   },
   // },
   components: {
-    MuiAppBar: {
-      styleOverrides: {
-        root: {
-          "@supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none))": {
-            backdropFilter: "blur(20px)",
-          },
-        },
-      },
-    },
     MuiBackdrop: {
       styleOverrides: {
         root: {
@@ -299,22 +295,17 @@ export const theme: CssVarsThemeOptions = {
       styleOverrides: {
         root: {
           "@supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none))": {
-            "html[data-mui-color-scheme='dark'] &": {
-              backdropFilter: "blur(12px)",
-            },
+            backdropFilter: "blur(12px)",
           },
           border: "1px solid var(--mui-palette-divider)",
           boxShadow: "unset",
-          // "html[data-mui-color-scheme='dark'] &": {
-          //   border: 0,
-          // },
         },
       },
       variants: [
         {
           props: { transparent: "true" } as PaperProps,
           style: {
-            backgroundColor: "rgb(255,255,255) !important",
+            backgroundColor: "rgba(255,255,255, 0.5) !important",
             "html[data-mui-color-scheme='dark'] &": {
               backgroundColor: "rgba(255,255,255, 0.025) !important",
             },
@@ -401,40 +392,50 @@ export const theme: CssVarsThemeOptions = {
         }),
       },
     },
-    // MuiTable: {
-    //   styleOverrides: {
-    //     root: {}
-    //   },
-    // },
+    MuiTable: {
+      styleOverrides: {
+        root: {
+          // https://stackoverflow.com/questions/33318207/max-width-not-working-for-table-cell
+          tableLayout: "fixed",
+        },
+      },
+    },
     MuiTableCell: {
       styleOverrides: {
         head: {
           padding: "4px 16px 6px 16px",
         },
         root: {
-          ".MuiTableRow-hover &:hover": {
-            outline: "1px dashed rgba(var(--mui-palette-secondary-mainChannel) / 0.5)",
-            outlineOffset: -1,
-          },
-          "html[data-mui-color-scheme='dark'] .MuiTableRow-hover &:hover": {
-            outline: "1px dashed rgba(var(--mui-palette-primary-mainChannel) / 0.33)",
-          },
+          // ".MuiTableRow-hover &:hover": {
+          //   outline: "1px dashed rgba(var(--mui-palette-secondary-mainChannel) / 0.5)",
+          //   outlineOffset: -1,
+          // },
+          // "html[data-mui-color-scheme='dark'] .MuiTableRow-hover &:hover": {
+          //   outline: "1px dashed rgba(var(--mui-palette-primary-mainChannel) / 0.33)",
+          // },
           "tbody tr:last-of-type &": {
             borderBottom: "none",
           },
         },
         stickyHeader: {
-          background: "var(--mui-palette-background-paper)",
+          "&:first-of-type": {
+            borderTopLeftRadius: 8,
+          },
+          "&:last-of-type": {
+            borderTopRightRadius: 8,
+          },
+          background: "var(--mui-palette-background-paperSolid)",
         },
       },
     },
-    MuiTableHead: {
-      styleOverrides: {
-        root: {
-          height: "10px !important",
-        },
-      },
-    },
+    // TESTME why was this needed?
+    // MuiTableHead: {
+    //   styleOverrides: {
+    //     root: {
+    //       height: "10px !important",
+    //     },
+    //   },
+    // },
     MuiTablePagination: {
       styleOverrides: {
         displayedRows: {
@@ -445,12 +446,15 @@ export const theme: CssVarsThemeOptions = {
         },
         toolbar: {
           minHeight: "38px !important",
-          paddingTop: "4px",
         },
       },
     },
     MuiTableRow: {
       styleOverrides: {
+        head: {
+          borderTopLeftRadius: 8,
+          borderTopRightRadius: 8,
+        },
         root: {
           "&.MuiTableRow-hover:hover": {
             background: "rgba(var(--mui-palette-secondary-mainChannel) / 0.075) !important",
