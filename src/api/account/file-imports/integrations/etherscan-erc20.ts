@@ -1,8 +1,8 @@
 import { isAddress } from "ethers"
-import { AuditLogOperation, EtherscanAuditLog, ParserResult } from "src/interfaces"
+import spamTokens from "src/config/spam-tokens.json"
+import { AuditLog, AuditLogOperation, ParserResult } from "src/interfaces"
 import { Platform } from "src/settings"
 import { asUTC } from "src/utils/formatting-utils"
-
 export const Identifier = "etherscan-erc20"
 export const platform: Platform = "ethereum"
 
@@ -45,6 +45,9 @@ export function parser(
   if (tokenValue === "0") {
     return { logs: [] }
   }
+  if (contractAddress in spamTokens) {
+    return { logs: [] }
+  }
   //
   const _id = `${fileImportId}_${txHash}_ERC20_${index}`
   const timestamp = asUTC(new Date(datetimeUtc))
@@ -57,7 +60,7 @@ export function parser(
 
   const wallet = operation === "Deposit" ? to : from
 
-  const logs: EtherscanAuditLog[] = [
+  const logs: AuditLog[] = [
     {
       _id,
       assetId: `ethereum:${contractAddress}:${symbol}`,

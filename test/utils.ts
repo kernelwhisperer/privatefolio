@@ -11,7 +11,10 @@ export function sanitizeAuditLog(auditLog: AuditLog): Partial<AuditLog> {
   } = auditLog
 
   const importId = "$importId"
-  const _id = `${importId}_${fullId.split("_").slice(1).join("_")}`
+  const _id = `${importId}_${fullId
+    .split("_")
+    .slice(1, auditLog.platform === "ethereum" ? -1 : undefined)
+    .join("_")}`
   const txId = fullTxId ? `${importId}_${fullTxId.split("_").slice(1).join("_")}` : undefined
 
   return {

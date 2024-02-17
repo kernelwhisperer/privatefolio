@@ -8,7 +8,9 @@ import { hashString, noop } from "../../../utils/utils"
 import { getAccount } from "../../database"
 import { getValue, setValue } from "../kv-api"
 import { FullEtherscanProvider } from "./etherscan-rpc"
-import { erc20Parser, parser } from "./evm-parser"
+import { parseNormal } from "./integrations/etherscan"
+import { parseERC20 } from "./integrations/etherscan-erc20"
+import { parseInternal } from "./integrations/etherscan-internal"
 
 export async function addConnection(
   connection: Omit<Connection, "_id" | "_rev" | "timestamp" | "syncedAt">,
@@ -162,9 +164,9 @@ export async function syncConnection(
       if (index !== 0 && (index + 1) % 1000 === 0) {
         progress([(index * 15) / normal.length, `Parsing row ${index + 1}`])
       }
-      const { logs, txns = [] } = parser(row, index, connection)
+      const { logs, txns = [] } = parseNormal(row, index, connection)
 
-      if (logs.length === 0) console.log("📜 LOG > logs.length === 0:", row)
+      // if (logs.length === 0) throw new Error(JSON.stringify(row, null, 2))
 
       for (const log of logs) {
         logMap[log._id] = log
@@ -180,7 +182,6 @@ export async function syncConnection(
       progress([0, `Error parsing row ${index + 1}: ${String(error)}`])
     }
   })
-
   // internal transactions
   const internal = await rpcProvider.getInternalTransactions(connection.address, since)
 
@@ -191,8 +192,9 @@ export async function syncConnection(
       if (index !== 0 && (index + 1) % 1000 === 0) {
         progress([35 + (index * 15) / internal.length, `Parsing row ${index + 1}`])
       }
-      const { logs, txns = [] } = parser(row, index, connection)
-      if (logs.length === 0) console.log("📜 LOG > logs.length === 0:", row)
+      const { logs, txns = [] } = parseInternal(row, index, connection)
+
+      // if (logs.length === 0) throw new Error(JSON.stringify(row, null, 2))
 
       for (const log of logs) {
         logMap[log._id] = log
@@ -219,8 +221,9 @@ export async function syncConnection(
       if (index !== 0 && (index + 1) % 1000 === 0) {
         progress([60 + (index * 15) / erc20.length, `Parsing row ${index + 1}`])
       }
-      const { logs, txns = [] } = erc20Parser(row, index, connection)
-      if (logs.length === 0) console.log("📜 LOG > logs.length === 0:", row)
+      const { logs, txns = [] } = parseERC20(row, index, connection)
+
+      // if (logs.length === 0) throw new Error(JSON.stringify(row, null, 2))
 
       for (const log of logs) {
         logMap[log._id] = log

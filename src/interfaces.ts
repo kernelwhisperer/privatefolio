@@ -1,6 +1,10 @@
 import { OhlcData, SingleValueData, UTCTimestamp } from "lightweight-charts"
 
-import { Erc20Transaction, NativeTransaction } from "./api/account/connections/etherscan-rpc"
+import {
+  Erc20Transaction,
+  InternalTransaction,
+  NormalTransaction,
+} from "./api/account/connections/etherscan-rpc"
 import { ParserId, Platform } from "./settings"
 export type { Platform } from "./settings"
 
@@ -61,8 +65,9 @@ export interface Transaction {
 
 export interface EtherscanTransaction extends Transaction {
   contractAddress?: string
+  failed?: boolean
+  from?: string // TODO
   method?: string
-  status?: string
   txHash: string
 }
 
@@ -77,7 +82,7 @@ export type AuditLogOperation =
   | "Funding Fee"
   | "Conversion"
   | "Transfer"
-  | "Smart Contract Interaction"
+  | "Smart Contract"
 
 export type PlatformId = "ethereum" | "binance" | "coinbase" | "coinmama"
 
@@ -141,8 +146,6 @@ export interface BinanceAuditLog extends AuditLog {
   userId: string
   utcTime: string
 }
-
-export type EtherscanAuditLog = AuditLog
 
 export interface FileImport {
   _id: string
@@ -332,7 +335,7 @@ export type CsvParser = (
   parserContext: Record<string, unknown>
 ) => ParserResult
 export type EvmParser = (
-  row: NativeTransaction | Erc20Transaction,
+  row: NormalTransaction | InternalTransaction | Erc20Transaction,
   index: number,
   connectionId: string
 ) => ParserResult

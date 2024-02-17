@@ -1,6 +1,6 @@
 import {
+  AuditLog,
   AuditLogOperation,
-  EtherscanAuditLog,
   EtherscanTransaction,
   ParserResult,
   TransactionType,
@@ -15,6 +15,7 @@ export const HEADER =
   '"Txhash","Blockno","UnixTimestamp","DateTime (UTC)","From","To","ContractAddress","Value_IN(ETH)","Value_OUT(ETH)","CurrentValue","TxnFee(ETH)","TxnFee(USD)","Historical $Price/Eth","Status","ErrCode","Method"'
 
 export function parser(csvRow: string, index: number, fileImportId: string): ParserResult {
+  // ----------------------------------------------------------------- Parse
   const columns = csvRow
     .split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/)
     .map((column) => column.replaceAll('"', ""))
@@ -35,29 +36,26 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
   const status = columns[13]
   // const errorCode = columns[14]
   const method = columns[15].trim()
-
-  // TODO statuses like Error(1) means only some internal txns failed
-  const hasError = status === "Error(0)" || undefined
-  //
+  // ----------------------------------------------------------------- Derive
   const timestamp = asUTC(new Date(datetimeUtc))
   if (isNaN(timestamp)) {
     throw new Error(`Invalid timestamp: ${datetimeUtc}`)
   }
-  // const hash = hashString(`${index}_${csvRow}`)
   const txId = `${fileImportId}_${txHash}`
   const assetId = "ethereum:0x0000000000000000000000000000000000000000:ETH"
   const wallet = incoming === "0" ? from : to
+  const hasError = status === "Error(0)" || undefined // TODO statuses like Error(1) means only some internal txns failed
   //
-  const logs: EtherscanAuditLog[] = []
+  const logs: AuditLog[] = []
   let type: TransactionType
   const operation: AuditLogOperation =
     outgoing === "0" && incoming !== "0"
       ? "Deposit"
       : incoming === "0" && outgoing === "0"
-      ? "Smart Contract Interaction"
+      ? "Smart Contract"
       : "Withdraw"
 
-  if (operation === "Smart Contract Interaction") {
+  if (operation === "Smart Contract") {
     type = "Unknown"
   } else {
     type = operation
@@ -106,6 +104,7 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
   const tx: EtherscanTransaction = {
     _id: txId,
     contractAddress: contractAddress || undefined,
+    failed: hasError || undefined,
     fee,
     feeAsset,
     feeN,
@@ -119,7 +118,6 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
     outgoingAsset: hasError || outgoing === "0" ? undefined : assetId,
     outgoingN: hasError || outgoing === "0" ? undefined : parseFloat(outgoing),
     platform,
-    status: status || undefined,
     // price,
     // priceN,
     // role,

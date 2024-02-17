@@ -402,7 +402,7 @@
     "_id": "$importId_2020753082",
     "account": "Spot",
     "assetId": "binance:ETH",
-    "balance": "6e-7",
+    "balance": "0.0000006",
     "balanceN": 6e-7,
     "change": "-0.50400560",
     "changeN": -0.5040056,

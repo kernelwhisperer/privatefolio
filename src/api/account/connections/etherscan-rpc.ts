@@ -1,8 +1,6 @@
 import type { BlockTag } from "ethers"
 import { EtherscanProvider } from "ethers"
 
-export type NativeTransaction = NormalTransaction | InternalTransaction
-
 export class FullEtherscanProvider extends EtherscanProvider {
   async getErc20Transactions(
     address: string,

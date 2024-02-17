@@ -202,7 +202,7 @@ export async function computeBalances(
       if (!latestBalances[assetId]) {
         latestBalances[assetId] = change
       } else {
-        latestBalances[assetId] = new Big(latestBalances[assetId]).plus(new Big(change)).toString()
+        latestBalances[assetId] = new Big(latestBalances[assetId]).plus(new Big(change)).toFixed()
       }
       latestBalances.timestamp = nextDay
 

@@ -1,13 +1,12 @@
 import {
+  AuditLog,
   AuditLogOperation,
-  EtherscanAuditLog,
+  EtherscanTransaction,
   ParserResult,
-  Transaction,
   TransactionType,
 } from "src/interfaces"
 import { Platform } from "src/settings"
 import { asUTC } from "src/utils/formatting-utils"
-import { hashString } from "src/utils/utils"
 
 export const Identifier = "etherscan-internal"
 export const platform: Platform = "ethereum"
@@ -23,59 +22,39 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
     .map((column) => column.replaceAll('"', ""))
   //
   const txHash = columns[0]
-  const blockNumber = columns[1]
+  // const blockNumber = columns[1]
   // const unixTimestamp = columns[2]
   const datetimeUtc = columns[3]
   const parentTxFrom = columns[4]
-  const parentTxTo = columns[5]
-  const parentTxEthValue = columns[6]
+  // const parentTxTo = columns[5]
+  // const parentTxEthValue = columns[6]
   const from = columns[7]
   const txTo = columns[8]
-  const contractAddress = columns[9]
+  // const contractAddress = columns[9]
   const valueIn = columns[10].replaceAll(",", "")
   const valueOut = columns[11].replaceAll(",", "")
-  const ethCurrentValue = columns[12]
-  const ethHistoricalPrice = columns[13]
-  const status = columns[14]
-  const errorCode = columns[15]
-  const txType = columns[17].trim()
-
-  const txMeta = {
-    blockNumber,
-    contractAddress,
-    errorCode,
-    ethCurrentValue,
-    ethHistoricalPrice,
-    from,
-    parentTxEthValue,
-    parentTxFrom,
-    parentTxTo,
-    status,
-    txHash,
-    txTo,
-    txType,
-    valueIn,
-    valueOut,
-  }
-  // console.log(txMeta)
+  // const ethCurrentValue = columns[12]
+  // const ethHistoricalPrice = columns[13]
+  // const status = columns[14]
+  // const errorCode = columns[15]
+  // const txType = columns[17].trim()
   //
-  const hash = hashString(`${index}_${csvRow}`)
-  const txId = `${fileImportId}_${hash}`
+  const txId = `${fileImportId}_${txHash}_INTERNAL`
   const timestamp = asUTC(new Date(datetimeUtc))
 
   const assetId = "ethereum:0x0000000000000000000000000000000000000000:ETH"
   const wallet = valueIn === "0" ? parentTxFrom : txTo
 
-  const logs: EtherscanAuditLog[] = []
+  const logs: AuditLog[] = []
   let type: TransactionType
   const operation: AuditLogOperation =
     valueOut === "0" && valueIn !== "0"
       ? "Deposit"
       : valueIn === "0" && valueOut === "0"
-      ? "Smart Contract Interaction"
+      ? "Smart Contract"
       : "Withdraw"
 
-  if (operation === "Smart Contract Interaction") {
+  if (operation === "Smart Contract") {
     type = "Unknown"
   } else {
     type = operation
@@ -114,29 +93,18 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
     }
   }
 
-  let fee: string | undefined, feeN: number | undefined
-
-  const tx: Transaction = {
+  const tx: EtherscanTransaction = {
     _id: txId,
-    fee,
-    feeAsset: assetId,
-    feeN,
     importId: fileImportId,
     importIndex: index,
     incoming: valueIn,
     incomingAsset: assetId,
     incomingN: parseFloat(valueIn),
-    outgoing: valueOut,
-    outgoingAsset: assetId,
-    outgoingN: parseFloat(valueOut),
     platform,
-    // price,
-    // priceN,
-    // role,
     timestamp,
+    txHash,
     type,
     wallet,
-    ...txMeta,
   }
 
   // WETH
