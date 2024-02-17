@@ -10,7 +10,7 @@ export const BLOCKCHAIN_FILES_LOCATION = "app-images/blockchains"
 export const PARSER_IDS = [
   "binance-account-statement",
   "binance-spot-history",
-  "binance-deposit-history",
+  // "binance-deposit-history",
   "coinmama",
   "etherscan",
   "etherscan-erc20",
@@ -29,9 +29,9 @@ export const PARSERS_META: Record<ParserId, ParserMeta> = {
   "binance-account-statement": {
     name: "Binance Account Statement",
   },
-  "binance-deposit-history": {
-    name: "Binance Deposit History",
-  },
+  // "binance-deposit-history": {
+  //   name: "Binance Deposit History",
+  // },
   "binance-spot-history": {
     name: "Binance Spot History",
   },
