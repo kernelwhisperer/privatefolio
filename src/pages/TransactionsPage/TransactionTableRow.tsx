@@ -107,37 +107,37 @@ export function TransactionTableRow(props: TableRowComponentProps<Transaction>) 
           <AmountBlock
             colorized
             placeholder=""
-            amount={outgoing ? `-${outgoing}` : 0}
+            amount={outgoing ? `-${outgoing}` : undefined}
             showSign
-            currencyTicker={getAssetTicker(outgoingAsset || (incomingAsset as string))}
+            currencyTicker={getAssetTicker(outgoingAsset)}
           />
         </TableCell>
         <TableCell>
-          <AssetBlock asset={outgoingAsset || (incomingAsset as string)} />
+          <AssetBlock asset={outgoingAsset} />
         </TableCell>
         <TableCell align="right">
           <AmountBlock
             colorized
             placeholder=""
-            amount={incoming || 0}
+            amount={incoming}
             showSign
-            currencyTicker={getAssetTicker(incomingAsset || (outgoingAsset as string))}
+            currencyTicker={getAssetTicker(incomingAsset)}
           />
         </TableCell>
         <TableCell>
-          <AssetBlock asset={incomingAsset || (outgoingAsset as string)} />
+          <AssetBlock asset={incomingAsset} />
         </TableCell>
         <TableCell align="right">
           <AmountBlock
             colorized
             placeholder=""
-            amount={fee || 0}
+            amount={fee}
             showSign
-            currencyTicker={getAssetTicker(feeAsset || incomingAsset || (outgoingAsset as string))}
+            currencyTicker={getAssetTicker(feeAsset)}
           />
         </TableCell>
         <TableCell>
-          <AssetBlock asset={feeAsset || incomingAsset || (outgoingAsset as string)} />
+          <AssetBlock asset={feeAsset} />
         </TableCell>
         <TableCell>
           <Tooltip title="Inspect">

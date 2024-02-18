@@ -35,6 +35,7 @@ export function AssetAvatar(props: AssetAvatarProps) {
     <StyledAvatar
       sx={{
         height: SIZE_MAP[size],
+        visibility: alt ? "visible" : "hidden",
         width: SIZE_MAP[size],
         ...sx,
       }}

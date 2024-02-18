@@ -7,7 +7,7 @@ import { getAssetTicker } from "src/utils/assets-utils"
 import { AssetAvatar } from "./AssetAvatar"
 
 type AssetBlockProps = {
-  asset: string
+  asset?: string
 }
 
 export function AssetBlock(props: AssetBlockProps) {
@@ -15,8 +15,18 @@ export function AssetBlock(props: AssetBlockProps) {
   const { asset } = props
 
   return (
-    <Stack direction="row" gap={0.5} alignItems="center" component="div">
-      <AssetAvatar size="small" src={assetMap[asset]?.image} alt={getAssetTicker(asset)} />
+    <Stack
+      direction="row"
+      gap={0.5}
+      alignItems="center"
+      component="div"
+      color={asset ? undefined : "text.secondary"}
+    >
+      <AssetAvatar
+        size="small"
+        src={asset ? assetMap[asset]?.image : undefined}
+        alt={asset ? getAssetTicker(asset) : undefined}
+      />
       <span>{getAssetTicker(asset)}</span>
     </Stack>
   )
