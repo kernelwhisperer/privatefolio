@@ -5,7 +5,7 @@ import { findTransactions } from "src/api/account/transactions-api"
 import { resetAccount } from "src/api/database"
 import { Connection } from "src/interfaces"
 import { ProgressUpdate } from "src/stores/task-store"
-import { normalizeTransaction, sanitizeAuditLog, sanitizeBalance } from "test/utils"
+import { normalizeTransaction, sanitizeAuditLog, sanitizeBalance } from "src/utils/test-utils"
 import { beforeAll, describe, expect, it } from "vitest"
 
 const accountName = "orange"

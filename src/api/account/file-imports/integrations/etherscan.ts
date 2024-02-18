@@ -41,7 +41,7 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
   if (isNaN(timestamp)) {
     throw new Error(`Invalid timestamp: ${datetimeUtc}`)
   }
-  const txId = `${fileImportId}_${txHash}`
+  const txId = `${fileImportId}_${txHash}_NORMAL_${index}`
   const assetId = "ethereum:0x0000000000000000000000000000000000000000:ETH"
   const wallet = incoming === "0" ? from : to
   const hasError = status === "Error(0)" || undefined // TODO statuses like Error(1) means only some internal txns failed

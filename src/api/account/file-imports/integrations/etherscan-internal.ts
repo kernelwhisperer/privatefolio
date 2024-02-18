@@ -39,7 +39,7 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
   // const errorCode = columns[15]
   // const txType = columns[17].trim()
   //
-  const txId = `${fileImportId}_${txHash}_INTERNAL`
+  const txId = `${fileImportId}_${txHash}_INTERNAL_${index}`
   const timestamp = asUTC(new Date(datetimeUtc))
 
   const assetId = "ethereum:0x0000000000000000000000000000000000000000:ETH"

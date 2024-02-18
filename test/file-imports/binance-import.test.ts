@@ -6,7 +6,7 @@ import { addFileImport } from "src/api/account/file-imports/file-imports-api"
 import { findTransactions } from "src/api/account/transactions-api"
 import { getAccount, resetAccount } from "src/api/database"
 import { ProgressUpdate } from "src/stores/task-store"
-import { normalizeTransaction, sanitizeAuditLog, sanitizeBalance } from "test/utils"
+import { normalizeTransaction, sanitizeAuditLog, sanitizeBalance } from "src/utils/test-utils"
 import { beforeAll, describe, expect, it } from "vitest"
 
 const accountName = "green-zebra-1234"

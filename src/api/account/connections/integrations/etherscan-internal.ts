@@ -37,7 +37,7 @@ export function parseInternal(
     throw new Error(`Invalid timestamp: ${time}`)
   }
   const wallet = address.toLowerCase()
-  const txId = `${connection._id}_${txHash}_INTERNAL`
+  const txId = `${connection._id}_${txHash}_INTERNAL_${index}`
   const assetId = "ethereum:0x0000000000000000000000000000000000000000:ETH"
   const operation: AuditLogOperation = to?.toLowerCase() === wallet ? "Deposit" : "Withdraw"
   const type: TransactionType = operation
@@ -91,14 +91,9 @@ export function parseInternal(
     })
   }
 
-  let fee: string | undefined, feeAsset: string | undefined, feeN: number | undefined
-
   const tx: EtherscanTransaction = {
     _id: txId,
     contractAddress: contractAddress || undefined,
-    fee,
-    feeAsset,
-    feeN,
     importId: connection._id,
     importIndex: index,
     incoming: incoming === "0" ? undefined : incoming,
@@ -108,9 +103,6 @@ export function parseInternal(
     outgoingAsset: outgoing === "0" ? undefined : outgoingAsset,
     outgoingN: outgoing === "0" ? undefined : outgoingN,
     platform,
-    // price,
-    // priceN,
-    // role,
     timestamp,
     txHash,
     type,

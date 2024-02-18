@@ -33,7 +33,7 @@ export function parseNormal(
   if (isNaN(timestamp)) {
     throw new Error(`Invalid timestamp: ${time}`)
   }
-  const txId = `${connection._id}_${txHash}`
+  const txId = `${connection._id}_${txHash}_NORMAL_${index}`
   const assetId = "ethereum:0x0000000000000000000000000000000000000000:ETH"
   const wallet = address.toLowerCase()
   const hasError = isError === "1" || undefined

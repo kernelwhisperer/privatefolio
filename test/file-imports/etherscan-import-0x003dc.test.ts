@@ -6,7 +6,12 @@ import { addFileImport } from "src/api/account/file-imports/file-imports-api"
 import { findTransactions } from "src/api/account/transactions-api"
 import { getAccount, resetAccount } from "src/api/database"
 import { ProgressUpdate } from "src/stores/task-store"
-import { normalizeTransaction, sanitizeAuditLog, sanitizeBalance } from "test/utils"
+import {
+  normalizeTransaction,
+  sanitizeAuditLog,
+  sanitizeBalance,
+  trimTxId,
+} from "src/utils/test-utils"
 import { beforeAll, describe, expect, it } from "vitest"
 
 const accountName = "turquoise"
@@ -197,7 +202,7 @@ describe("should import 0x003dc via files", () => {
           ],
           "platform": "ethereum",
           "rows": 428,
-          "transactions": 0,
+          "transactions": 418,
           "wallets": [
             "0x003dc32fe920a4aaeed12dc87e145f030aa753f3",
           ],
@@ -233,10 +238,20 @@ describe("should import 0x003dc via files", () => {
     const transactions = await findTransactions({}, accountName)
     const balances = await getHistoricalBalances(accountName)
     // assert
-    expect(transactions.length).toMatchInlineSnapshot(`530`)
-    expect(transactions.map(normalizeTransaction)).toMatchFileSnapshot(
-      "../__snapshots__/0x003dc/transactions.ts.snap"
-    )
+    expect(transactions.length).toMatchInlineSnapshot(`948`)
+    expect(
+      transactions
+        .sort((a, b) => {
+          const delta = b.timestamp - a.timestamp
+
+          if (delta === 0) {
+            return trimTxId(a._id, a.platform).localeCompare(trimTxId(b._id, b.platform))
+          }
+
+          return delta
+        })
+        .map(normalizeTransaction)
+    ).toMatchFileSnapshot("../__snapshots__/0x003dc/transactions.ts.snap")
     expect(auditLogs.length).toMatchInlineSnapshot(`1024`)
     expect(auditLogs.map(sanitizeAuditLog)).toMatchFileSnapshot(
       "../__snapshots__/0x003dc/audit-logs.ts.snap"

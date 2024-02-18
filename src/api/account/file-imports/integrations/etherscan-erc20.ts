@@ -1,6 +1,12 @@
 import { isAddress } from "ethers"
 import spamTokens from "src/config/spam-tokens.json"
-import { AuditLog, AuditLogOperation, ParserResult } from "src/interfaces"
+import {
+  AuditLog,
+  AuditLogOperation,
+  EtherscanTransaction,
+  ParserResult,
+  TransactionType,
+} from "src/interfaces"
 import { Platform } from "src/settings"
 import { asUTC } from "src/utils/formatting-utils"
 export const Identifier = "etherscan-erc20"
@@ -15,20 +21,17 @@ export function parser(
   fileImportId: string,
   parserContext: Record<string, unknown>
 ): ParserResult {
+  // ----------------------------------------------------------------- Parse
   const userAddress = parserContext.userAddress as string
-
   if (!userAddress) {
     throw new Error("'userAddress' is required for this type of file import")
   }
-
   if (!isAddress(userAddress)) {
     throw new Error("'userAddress' is not valid.")
   }
-
   const columns = csvRow
     .split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/)
     .map((column) => column.replaceAll('"', ""))
-
   //
   const txHash = columns[0]
   // const blockNumber = columns[1]
@@ -41,33 +44,50 @@ export function parser(
   const contractAddress = columns[8]
   // const tokenName = columns[9]
   const symbol = columns[10].trim()
-
   if (tokenValue === "0") {
     return { logs: [] }
   }
   if (contractAddress in spamTokens) {
     return { logs: [] }
   }
-  //
-  const _id = `${fileImportId}_${txHash}_ERC20_${index}`
+  // ----------------------------------------------------------------- Derive
   const timestamp = asUTC(new Date(datetimeUtc))
-
+  if (isNaN(timestamp)) {
+    throw new Error(`Invalid timestamp: ${datetimeUtc}`)
+  }
+  const txId = `${fileImportId}_${txHash}_ERC20_${index}`
   const operation: AuditLogOperation =
     to.toLowerCase() === userAddress.toLowerCase() ? "Deposit" : "Withdraw"
+  const type: TransactionType = operation
+  const wallet = operation === "Deposit" ? to : from
+  const assetId = `ethereum:${contractAddress}:${symbol}`
+  const importId = fileImportId
+  const importIndex = index
+
+  let incoming: string | undefined, incomingAsset: string | undefined, incomingN: number | undefined
+  let outgoing: string | undefined, outgoingAsset: string | undefined, outgoingN: number | undefined
+
+  if (operation === "Deposit") {
+    incoming = tokenValue
+    incomingN = parseFloat(incoming)
+    incomingAsset = assetId
+  } else {
+    outgoing = tokenValue
+    outgoingN = parseFloat(outgoing)
+    outgoingAsset = assetId
+  }
 
   const change = operation === "Deposit" ? tokenValue : `-${tokenValue}`
   const changeN = parseFloat(change)
 
-  const wallet = operation === "Deposit" ? to : from
-
   const logs: AuditLog[] = [
     {
-      _id,
-      assetId: `ethereum:${contractAddress}:${symbol}`,
+      _id: `${txId}_TRANSFER_${index}`,
+      assetId,
       change,
       changeN,
-      importId: fileImportId,
-      importIndex: index,
+      importId,
+      importIndex,
       operation,
       platform,
       timestamp,
@@ -75,5 +95,23 @@ export function parser(
     },
   ]
 
-  return { logs }
+  const tx: EtherscanTransaction = {
+    _id: txId,
+    contractAddress: contractAddress || undefined,
+    importId,
+    importIndex,
+    incoming: incoming === "0" ? undefined : incoming,
+    incomingAsset: incoming === "0" ? undefined : incomingAsset,
+    incomingN: incoming === "0" ? undefined : incomingN,
+    outgoing: outgoing === "0" ? undefined : outgoing,
+    outgoingAsset: outgoing === "0" ? undefined : outgoingAsset,
+    outgoingN: outgoing === "0" ? undefined : outgoingN,
+    platform,
+    timestamp,
+    txHash,
+    type,
+    wallet,
+  }
+
+  return { logs, txns: [tx] }
 }
