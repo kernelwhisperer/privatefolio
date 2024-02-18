@@ -96,7 +96,7 @@ describe("should import 0xf98 via files", () => {
           ],
           "platform": "ethereum",
           "rows": 8,
-          "transactions": 0,
+          "transactions": 8,
           "wallets": [
             "0xf98c96b5d10faafc2324847c82305bd5fd7e5ad3",
           ],
@@ -129,7 +129,7 @@ describe("should import 0xf98 via files", () => {
     const transactions = await findTransactions({}, accountName)
     const balances = await getHistoricalBalances(accountName)
     // assert
-    expect(transactions.length).toMatchInlineSnapshot(`9`)
+    expect(transactions.length).toMatchInlineSnapshot(`17`)
     expect(transactions.map(normalizeTransaction)).toMatchFileSnapshot(
       "../__snapshots__/0xf98/transactions.ts.snap"
     )
