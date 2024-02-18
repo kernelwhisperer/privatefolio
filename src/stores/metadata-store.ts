@@ -18,6 +18,7 @@ import { $activeAccount } from "./account-store"
 
 export type FilterOptionsMap = {
   assetId: string[]
+  feeAsset: string[]
   incomingAsset: string[]
   operation: AuditLogOperation[]
   outgoingAsset: string[]
@@ -32,6 +33,7 @@ export const $filterOptionsMap = map<FilterOptionsMap>()
 
 export const FILTER_LABEL_MAP: Record<FilterKey, string> = {
   assetId: "Asset",
+  feeAsset: "Fee Asset",
   incomingAsset: "Incoming Asset",
   operation: "Operation",
   outgoingAsset: "Outgoing Asset",
@@ -92,6 +94,7 @@ async function computeFilterMap() {
 
   const map: FilterOptionsMap = {
     assetId: assetIdOptions,
+    feeAsset: assetIdOptions,
     incomingAsset: assetIdOptions,
     operation: [...operations].sort(),
     outgoingAsset: assetIdOptions,

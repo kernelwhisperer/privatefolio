@@ -14,10 +14,12 @@ const _filterOrder: (keyof Transaction)[] = [
   "type",
   "outgoingAsset",
   "incomingAsset",
+  "feeAsset",
 ]
 const _filterOrderBySpecificity: (keyof Transaction)[] = [
   "outgoingAsset",
   "incomingAsset",
+  "feeAsset",
   "type",
   "wallet",
   "platform",
@@ -37,36 +39,91 @@ export async function indexTransactions(progress: ProgressCallback, accountName:
   progress([75, "Transactions: updating index for 'platform'"])
   await account.transactionsDB.createIndex({
     index: {
-      fields: ["platform", "timestamp", "wallet", "type", "outgoingAsset", "incomingAsset"], // MUST respect the order in _filterOrder
+      fields: [
+        "platform",
+        "timestamp",
+        "wallet",
+        "type",
+        "outgoingAsset",
+        "incomingAsset",
+        "feeAsset",
+      ], // MUST respect the order in _filterOrder
       name: "platform",
     },
   })
   progress([80, "Transactions: updating index for 'wallet'"])
   await account.transactionsDB.createIndex({
     index: {
-      fields: ["wallet", "timestamp", "platform", "type", "outgoingAsset", "incomingAsset"], // MUST respect the order in _filterOrder
+      fields: [
+        "wallet",
+        "timestamp",
+        "platform",
+        "type",
+        "outgoingAsset",
+        "incomingAsset",
+        "feeAsset",
+      ], // MUST respect the order in _filterOrder
       name: "wallet",
     },
   })
   progress([85, "Transactions: updating index for 'type'"])
   await account.transactionsDB.createIndex({
     index: {
-      fields: ["type", "timestamp", "platform", "wallet", "outgoingAsset", "incomingAsset"], // MUST respect the order in _filterOrder
+      fields: [
+        "type",
+        "timestamp",
+        "platform",
+        "wallet",
+        "outgoingAsset",
+        "incomingAsset",
+        "feeAsset",
+      ], // MUST respect the order in _filterOrder
       name: "type",
     },
   })
   progress([90, "Transactions: updating index for 'outgoingAsset'"])
   await account.transactionsDB.createIndex({
     index: {
-      fields: ["outgoingAsset", "timestamp", "platform", "wallet", "type", "incomingAsset"], // MUST respect the order in _filterOrder
+      fields: [
+        "outgoingAsset",
+        "timestamp",
+        "platform",
+        "wallet",
+        "type",
+        "incomingAsset",
+        "feeAsset",
+      ], // MUST respect the order in _filterOrder
       name: "outgoingAsset",
     },
   })
   progress([95, "Transactions: updating index for 'incomingAsset'"])
   await account.transactionsDB.createIndex({
     index: {
-      fields: ["incomingAsset", "timestamp", "platform", "wallet", "type", "outgoingAsset"], // MUST respect the order in _filterOrder
+      fields: [
+        "incomingAsset",
+        "timestamp",
+        "platform",
+        "wallet",
+        "type",
+        "outgoingAsset",
+        "feeAsset",
+      ], // MUST respect the order in _filterOrder
       name: "incomingAsset",
+    },
+  })
+  progress([99, "Transactions: updating index for 'incomingAsset'"])
+  await account.transactionsDB.createIndex({
+    index: {
+      fields: [
+        "feeAsset",
+        "timestamp",
+        "platform",
+        "wallet",
+        "type",
+        "outgoingAsset",
+        "incomingAsset",
+      ], // MUST respect the order in _filterOrder
+      name: "feeAsset",
     },
   })
 }

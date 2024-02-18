@@ -22,11 +22,7 @@ export function TransactionTable(props: TransactionsTableProps) {
     async (filters, rowsPerPage, page, order) => {
       const selectorOverrides: PouchDB.Find.Selector = symbol
         ? {
-            $or: [
-              { outgoingAsset: symbol },
-              { incomingAsset: symbol },
-              // { feeAsset: symbol }, TODO
-            ],
+            $or: [{ outgoingAsset: symbol }, { incomingAsset: symbol }, { feeAsset: symbol }],
           }
         : {}
 
@@ -116,6 +112,7 @@ export function TransactionTable(props: TransactionsTableProps) {
         sx: { maxWidth: 160, minWidth: 160, width: 160 },
       },
       {
+        filterable: true,
         key: "feeAsset",
         label: "Asset",
         sx: { maxWidth: 120, minWidth: 120, width: 120 },
