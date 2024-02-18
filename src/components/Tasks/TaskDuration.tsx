@@ -3,7 +3,7 @@ import { a, useSpring } from "@react-spring/web"
 import React, { useEffect, useState } from "react"
 
 import { FinishedTask, Task } from "../../stores/task-store"
-import { formatNumber } from "../../utils/formatting-utils"
+import { formatDuration } from "../../utils/formatting-utils"
 
 export function TaskDuration({ task }: { task: Task | FinishedTask }) {
   const completed = "duration" in task
@@ -37,13 +37,7 @@ export function TaskDuration({ task }: { task: Task | FinishedTask }) {
     <Typography variant="inherit" component="span" color="text.secondary">
       <a.span>
         {/* https://github.com/pmndrs/react-spring/issues/1461 */}
-        {style.time.to(
-          (x) =>
-            `${formatNumber(x / 1000, {
-              maximumFractionDigits: 2,
-              minimumFractionDigits: 2,
-            })}s`
-        )}
+        {style.time.to((x) => formatDuration(x / 1000))}
       </a.span>
     </Typography>
   )

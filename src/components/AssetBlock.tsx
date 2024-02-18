@@ -5,6 +5,7 @@ import { $assetMetaMap } from "src/stores/metadata-store"
 import { getAssetTicker } from "src/utils/assets-utils"
 
 import { AssetAvatar } from "./AssetAvatar"
+import { Truncate } from "./Truncate"
 
 type AssetBlockProps = {
   asset?: string
@@ -17,7 +18,7 @@ export function AssetBlock(props: AssetBlockProps) {
   return (
     <Stack
       direction="row"
-      gap={0.5}
+      gap={0.75}
       alignItems="center"
       component="div"
       color={asset ? undefined : "text.secondary"}
@@ -27,7 +28,7 @@ export function AssetBlock(props: AssetBlockProps) {
         src={asset ? assetMap[asset]?.image : undefined}
         alt={asset ? getAssetTicker(asset) : undefined}
       />
-      <span>{getAssetTicker(asset)}</span>
+      <Truncate>{getAssetTicker(asset)}</Truncate>
     </Stack>
   )
 }

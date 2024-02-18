@@ -10,7 +10,7 @@ import {
 import React from "react"
 
 import { MonoFont } from "../theme"
-import { formatNumber } from "../utils/formatting-utils"
+import { formatDuration } from "../utils/formatting-utils"
 
 export function QueryTimer({ queryTime }: { queryTime: number | null }) {
   const isMobile = useMediaQuery("(max-width: 599px)")
@@ -21,14 +21,7 @@ export function QueryTimer({ queryTime }: { queryTime: number | null }) {
         title={
           queryTime ? (
             <Stack>
-              <span>
-                Query time:{" "}
-                {formatNumber(queryTime / 1000, {
-                  maximumFractionDigits: 2,
-                  minimumFractionDigits: 2,
-                })}
-                s
-              </span>
+              <span>Query time: {formatDuration(queryTime / 1000)}</span>
               {/* <span>Count query time: 0.1s</span> */}
               <span className="secondary">
                 Fetching this data can take long because it is read from disk.
@@ -55,15 +48,7 @@ export function QueryTimer({ queryTime }: { queryTime: number | null }) {
           ) : (
             <>
               <TimerSharp fontSize="small" sx={{ padding: 0.25 }} />
-              {isMobile ? null : (
-                <span>
-                  {formatNumber(queryTime / 1000, {
-                    maximumFractionDigits: 2,
-                    minimumFractionDigits: 2,
-                  })}
-                  s
-                </span>
-              )}
+              {isMobile ? null : <span>{formatDuration(queryTime / 1000)}</span>}
             </>
           )}
         </Typography>

@@ -14,6 +14,16 @@ export function getDecimalPrecision(num: number) {
   return p
 }
 
+export function formatDuration(seconds: number) {
+  if (seconds < 60) {
+    return `${seconds.toFixed(2)}s`
+  } else if (seconds < 3600) {
+    return `${(seconds / 60).toFixed(2)}m`
+  } else {
+    return `${(seconds / 3600).toFixed(2)}h`
+  }
+}
+
 export function formatNumber(number: number, opts: Intl.NumberFormatOptions = {}) {
   return new Intl.NumberFormat(locale, {
     notation: "standard",
