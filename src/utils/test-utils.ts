@@ -43,8 +43,8 @@ export function sanitizeAuditLog(auditLog: AuditLog): Partial<AuditLog> {
 export function normalizeTransaction(
   transaction: Transaction | EtherscanTransaction
 ): Partial<Transaction> {
-  const { method: _method, ...rest } = transaction as EtherscanTransaction
-  return sanitizeTransaction(rest)
+  // const { ...rest } = transaction as EtherscanTransaction
+  return sanitizeTransaction(transaction)
 }
 
 export function sanitizeTransaction(transaction: Transaction): Partial<Transaction> {
@@ -67,4 +67,14 @@ export function sanitizeTransaction(transaction: Transaction): Partial<Transacti
 export function sanitizeBalance(balance: BalanceMap): Partial<BalanceMap> {
   const { _rev, _id, ...rest } = balance
   return rest
+}
+
+export function sortTransactions(a: Transaction, b: Transaction) {
+  const delta = b.timestamp - a.timestamp
+
+  if (delta === 0) {
+    return trimTxId(a._id, a.platform).localeCompare(trimTxId(b._id, b.platform))
+  }
+
+  return delta
 }

@@ -7,6 +7,7 @@ import {
   ParserResult,
   TransactionType,
 } from "src/interfaces"
+import { extractMethodFromFunctionName } from "src/utils/integrations/etherscan-utils"
 
 import { NormalTransaction } from "../etherscan-rpc"
 
@@ -27,6 +28,7 @@ export function parseNormal(
     contractAddress,
     from,
     functionName,
+    methodId,
   } = row
   // ----------------------------------------------------------------- Derive
   const timestamp = new Date(Number(time) * 1000).getTime()
@@ -37,6 +39,7 @@ export function parseNormal(
   const assetId = "ethereum:0x0000000000000000000000000000000000000000:ETH"
   const wallet = address.toLowerCase()
   const hasError = isError === "1" || undefined
+  const method = extractMethodFromFunctionName(functionName || methodId)
   //
   const logs: AuditLog[] = []
   let type: TransactionType
@@ -113,7 +116,7 @@ export function parseNormal(
     incoming: incoming === "0" ? undefined : incoming,
     incomingAsset: incoming === "0" ? undefined : incomingAsset,
     incomingN: incoming === "0" ? undefined : incomingN,
-    method: functionName,
+    method,
     outgoing: outgoing === "0" ? undefined : outgoing,
     outgoingAsset: outgoing === "0" ? undefined : outgoingAsset,
     outgoingN: outgoing === "0" ? undefined : outgoingN,

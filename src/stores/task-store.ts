@@ -6,6 +6,7 @@ import { timeQueue } from "../utils/utils"
 export enum TaskPriority {
   Low = 2,
   Medium = 5,
+  MediumPlus = 6,
   High = 8,
   VeryHigh = 10,
 }

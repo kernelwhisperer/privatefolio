@@ -10,6 +10,7 @@ import {
   Platform,
   PlatformMetadata,
   TRANSACTIONS_TYPES,
+  TransactionType,
 } from "../interfaces"
 import { DEFAULT_DEBOUNCE_DURATION, PLATFORMS_META } from "../settings"
 import { clancy } from "../workers/remotes"
@@ -21,7 +22,7 @@ export type FilterOptionsMap = {
   operation: AuditLogOperation[]
   outgoingAsset: string[]
   platform: string[]
-  type: string[]
+  type: readonly TransactionType[]
   wallet: string[]
 }
 

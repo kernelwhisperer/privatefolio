@@ -1,5 +1,6 @@
 import {
   CalculateOutlined,
+  CallMergeRounded,
   CurrencyExchange,
   MemoryRounded,
   MoneyOffRounded,
@@ -15,6 +16,7 @@ import { $accountReset, $accounts, $activeAccount } from "src/stores/account-sto
 import { useConfirm } from "../../hooks/useConfirm"
 import { enqueueTask, TaskPriority } from "../../stores/task-store"
 import {
+  enqueueAutoMerge,
   enqueueFetchPrices,
   enqueueIndexDatabase,
   enqueueRecomputeBalances,
@@ -56,6 +58,18 @@ export function ImportDataActions() {
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
         transformOrigin={{ horizontal: "right", vertical: "top" }}
       >
+        <MenuItem
+          dense
+          onClick={() => {
+            enqueueAutoMerge()
+            handleClose()
+          }}
+        >
+          <ListItemIcon>
+            <CallMergeRounded fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Auto-merge transactions</ListItemText>
+        </MenuItem>
         <MenuItem
           dense
           onClick={() => {

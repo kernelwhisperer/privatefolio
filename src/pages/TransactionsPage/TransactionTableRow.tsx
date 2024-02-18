@@ -1,38 +1,20 @@
-import {
-  AddRounded,
-  RemoveRounded,
-  SvgIconComponent,
-  SwapHoriz,
-  Visibility,
-} from "@mui/icons-material"
-import { alpha, Avatar, Chip, IconButton, Stack, TableCell, TableRow, Tooltip } from "@mui/material"
-import { grey } from "@mui/material/colors"
+import { Visibility } from "@mui/icons-material"
+import { Avatar, IconButton, Stack, TableCell, TableRow, Tooltip } from "@mui/material"
 import { useStore } from "@nanostores/react"
 import React from "react"
+import { ActionBlock } from "src/components/ActionBlock"
 import { AmountBlock } from "src/components/AmountBlock"
 import { AssetBlock } from "src/components/AssetBlock"
 import { useBoolean } from "src/hooks/useBoolean"
 import { PLATFORMS_META } from "src/settings"
 import { getAssetTicker } from "src/utils/assets-utils"
-import { greenColor, redColor } from "src/utils/color-utils"
 
 import { TimestampBlock } from "../../components/TimestampBlock"
 import { Truncate } from "../../components/Truncate"
-import { Transaction, TransactionType } from "../../interfaces"
+import { Transaction } from "../../interfaces"
 import { $platformMetaMap } from "../../stores/metadata-store"
 import { TableRowComponentProps } from "../../utils/table-utils"
 import { TransactionDrawer } from "./TransactionDrawer"
-
-const OPERATION_COLORS: Partial<Record<TransactionType, string>> = {
-  Buy: greenColor,
-  Sell: redColor,
-}
-
-const OPERATION_ICONS: Partial<Record<TransactionType, SvgIconComponent>> = {
-  Buy: AddRounded,
-  Sell: RemoveRounded,
-  Swap: SwapHoriz,
-}
 
 export function TransactionTableRow(props: TableRowComponentProps<Transaction>) {
   const {
@@ -58,9 +40,6 @@ export function TransactionTableRow(props: TableRowComponentProps<Transaction>) 
   } = row
 
   const platformMetaMap = useStore($platformMetaMap)
-
-  const color = OPERATION_COLORS[type] || grey[500]
-  const TypeIconComponent = OPERATION_ICONS[type]
 
   const { value: open, toggle: toggleOpen } = useBoolean(false)
 
@@ -90,18 +69,7 @@ export function TransactionTableRow(props: TableRowComponentProps<Transaction>) 
           </Tooltip>
         </TableCell>
         <TableCell>
-          <Tooltip title={type}>
-            <Chip
-              size="small"
-              sx={{ background: alpha(color, 0.075) }}
-              label={
-                <Stack direction="row" gap={0.5} alignItems="center" paddingRight={0.5}>
-                  {TypeIconComponent && <TypeIconComponent sx={{ color, fontSize: "inherit" }} />}
-                  <Truncate>{type}</Truncate>
-                </Stack>
-              }
-            />
-          </Tooltip>
+          <ActionBlock action={type} />
         </TableCell>
         <TableCell align="right">
           <AmountBlock

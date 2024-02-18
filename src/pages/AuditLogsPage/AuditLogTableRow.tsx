@@ -1,54 +1,27 @@
-import { AddRounded, RemoveRounded, SvgIconComponent, TrendingFlat } from "@mui/icons-material"
-import { alpha, Avatar, Chip, Stack, TableCell, TableRow, Tooltip } from "@mui/material"
-import { green, grey, red } from "@mui/material/colors"
+import { AddRounded, RemoveRounded } from "@mui/icons-material"
+import { Avatar, Stack, TableCell, TableRow, Tooltip } from "@mui/material"
 import { useStore } from "@nanostores/react"
 import React from "react"
+import { ActionBlock } from "src/components/ActionBlock"
 import { AmountBlock } from "src/components/AmountBlock"
 import { AssetBlock } from "src/components/AssetBlock"
 import { getAssetTicker } from "src/utils/assets-utils"
+import { greenColor, redColor } from "src/utils/color-utils"
 
 import { TimestampBlock } from "../../components/TimestampBlock"
 import { Truncate } from "../../components/Truncate"
-import { AuditLog, AuditLogOperation } from "../../interfaces"
+import { AuditLog } from "../../interfaces"
 import { PLATFORMS_META } from "../../settings"
-import { $assetMetaMap, $platformMetaMap } from "../../stores/metadata-store"
+import { $platformMetaMap } from "../../stores/metadata-store"
 import { TableRowComponentProps } from "../../utils/table-utils"
-
-const redColor = red[400]
-const greenColor = green[400]
-
-const OPERATION_COLORS: Partial<Record<AuditLogOperation, string>> = {
-  Buy: greenColor,
-  Distribution: greenColor,
-  Fee: redColor,
-  Sell: redColor,
-}
-
-const OPERATION_ICONS: Partial<Record<AuditLogOperation, SvgIconComponent>> = {
-  Buy: AddRounded,
-  Deposit: TrendingFlat,
-  Distribution: AddRounded,
-  Fee: RemoveRounded,
-  Sell: RemoveRounded,
-  Withdraw: RemoveRounded,
-}
 
 export function AuditLogTableRow(props: TableRowComponentProps<AuditLog>) {
   const { row, relativeTime, headCells, isMobile: _isMobile, isTablet: _isTablet, ...rest } = props
   const { assetId, change, changeN, balance, operation, timestamp, platform, wallet } = row
 
-  const assetMap = useStore($assetMetaMap)
   const platformMetaMap = useStore($platformMetaMap)
 
   const changeColor = changeN < 0 ? redColor : greenColor
-
-  let color = OPERATION_COLORS[operation] || grey[500]
-  let OpIconComponent = OPERATION_ICONS[operation]
-
-  if (operation === "Funding Fee") {
-    color = changeColor
-    OpIconComponent = changeN < 0 ? RemoveRounded : AddRounded
-  }
 
   const showAssetColumn = headCells.length === 7
 
@@ -94,18 +67,15 @@ export function AuditLogTableRow(props: TableRowComponentProps<AuditLog>) {
           </Tooltip>
         </TableCell>
         <TableCell>
-          <Tooltip title={operation}>
-            <Chip
-              size="small"
-              sx={{ background: alpha(color, 0.075) }}
-              label={
-                <Stack direction="row" gap={0.5} alignItems="center" paddingRight={0.5}>
-                  {OpIconComponent && <OpIconComponent sx={{ color, fontSize: "inherit" }} />}
-                  <Truncate>{operation}</Truncate>
-                </Stack>
-              }
+          {operation === "Funding Fee" ? (
+            <ActionBlock
+              action={operation}
+              color={changeColor}
+              IconComponent={changeN < 0 ? RemoveRounded : AddRounded}
             />
-          </Tooltip>
+          ) : (
+            <ActionBlock action={operation} />
+          )}
         </TableCell>
         <TableCell align="right">
           <AmountBlock

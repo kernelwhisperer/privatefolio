@@ -18,7 +18,7 @@ export const TRANSACTIONS_TYPES = [
   "Withdraw",
   "Unknown",
   "Unwrap",
-]
+] as const
 export type TransactionType = (typeof TRANSACTIONS_TYPES)[number]
 
 // type ExchangeId = "mexc" | "binance"

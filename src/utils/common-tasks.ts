@@ -6,6 +6,7 @@ import { $taskQueue, enqueueTask, TaskPriority } from "../stores/task-store"
 import { clancy } from "../workers/remotes"
 
 export function handleAuditLogChange() {
+  enqueueAutoMerge()
   enqueueIndexDatabase()
   // invalidate balancesCursor
   enqueueRefreshBalances()
@@ -102,6 +103,25 @@ export function enqueueFetchPrices() {
     },
     name: "Fetch asset prices",
     priority: TaskPriority.Low,
+  })
+}
+
+export function enqueueAutoMerge() {
+  const taskQueue = $taskQueue.get()
+
+  const existing = taskQueue.find((task) => task.name === "Auto-merge transactions")
+
+  if (existing) return
+
+  enqueueTask({
+    abortable: true,
+    description: "Auto-merging transactions.",
+    determinate: true,
+    function: async (progress, signal) => {
+      await clancy.autoMergeTransactions($activeAccount.get(), progress, signal)
+    },
+    name: "Auto-merge transactions",
+    priority: TaskPriority.MediumPlus,
   })
 }
 

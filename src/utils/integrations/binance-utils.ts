@@ -142,8 +142,9 @@ export function groupTransactions(transactions: Transaction[]): Transaction[] {
     const key = `${tx.timestamp}_${tx.incomingAsset}_${tx.outgoingAsset}_${tx.feeAsset}`
     if (!groups[key]) {
       groups[key] = [tx]
+    } else {
+      groups[key].push(tx)
     }
-    groups[key].push(tx)
   }
 
   for (const i in groups) {

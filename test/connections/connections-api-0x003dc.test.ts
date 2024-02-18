@@ -1,7 +1,7 @@
 import { findAuditLogs } from "src/api/account/audit-logs-api"
 import { computeBalances, getHistoricalBalances } from "src/api/account/balances-api"
 import { addConnection, syncConnection } from "src/api/account/connections/connections-api"
-import { findTransactions } from "src/api/account/transactions-api"
+import { autoMergeTransactions, findTransactions } from "src/api/account/transactions-api"
 import { resetAccount } from "src/api/database"
 import { Connection } from "src/interfaces"
 import { ProgressUpdate } from "src/stores/task-store"
@@ -9,7 +9,7 @@ import {
   normalizeTransaction,
   sanitizeAuditLog,
   sanitizeBalance,
-  trimTxId,
+  sortTransactions,
 } from "src/utils/test-utils"
 import { beforeAll, describe, expect, it } from "vitest"
 
@@ -79,26 +79,31 @@ describe("should import 0x003dc via connection", () => {
     `)
   })
 
+  it.sequential("should merge transactions", async () => {
+    // arrange
+    const updates: ProgressUpdate[] = []
+    // act
+    await autoMergeTransactions(accountName, (state) => updates.push(state))
+    // assert
+    expect(updates.join("\n")).toMatchInlineSnapshot(`
+      "0,Fetching all transactions
+      25,Processing 948 Ethereum transactions
+      50,Saving 211 merged transactions
+      75,Deleting 493 deduplicated transactions
+      100,Done"
+    `)
+  })
+
   it.sequential("should save the correct data", async () => {
     // act
     const auditLogs = await findAuditLogs({}, accountName)
     const transactions = await findTransactions({}, accountName)
     const balances = await getHistoricalBalances(accountName)
     // assert
-    expect(transactions.length).toMatchInlineSnapshot(`948`)
-    expect(
-      transactions
-        .sort((a, b) => {
-          const delta = b.timestamp - a.timestamp
-
-          if (delta === 0) {
-            return trimTxId(a._id, a.platform).localeCompare(trimTxId(b._id, b.platform))
-          }
-
-          return delta
-        })
-        .map(normalizeTransaction)
-    ).toMatchFileSnapshot("../__snapshots__/0x003dc/transactions.ts.snap")
+    expect(transactions.length).toMatchInlineSnapshot(`666`)
+    expect(transactions.sort(sortTransactions).map(normalizeTransaction)).toMatchFileSnapshot(
+      "../__snapshots__/0x003dc/transactions.ts.snap"
+    )
     expect(auditLogs.length).toMatchInlineSnapshot(`1024`)
     expect(auditLogs.map(sanitizeAuditLog)).toMatchFileSnapshot(
       "../__snapshots__/0x003dc/audit-logs.ts.snap"

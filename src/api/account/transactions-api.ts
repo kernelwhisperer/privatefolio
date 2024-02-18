@@ -1,10 +1,12 @@
 // /* eslint-disable sort-keys-fix/sort-keys-fix */
 import { proxy } from "comlink"
+import { mergeTransactions } from "src/utils/integrations/etherscan-utils"
 import { noop } from "src/utils/utils"
 
-import { Transaction } from "../../interfaces"
+import { EtherscanTransaction, Transaction } from "../../interfaces"
 import { ProgressCallback } from "../../stores/task-store"
 import { getAccount } from "../database"
+import { validateOperation } from "../database-utils"
 
 const _filterOrder: (keyof Transaction)[] = [
   "platform",
@@ -125,7 +127,7 @@ export async function findTransactions(request: FindTransactionsRequest = {}, ac
     sort,
   }
   // console.log("📜 LOG > findTransactions > _req:", _req)
-  // const explain = await (transactionsDB as any).explain(_req)
+  // const explain = await (account.transactionsDB as any).explain(_req)
   // console.log("📜 LOG > findTransactions > explain:", explain.index)
 
   //
@@ -162,4 +164,46 @@ export function subscribeToTransactions(callback: () => void, accountName: strin
       changesSub.cancel()
     } catch {}
   })
+}
+
+export async function autoMergeTransactions(
+  accountName: string,
+  progress: ProgressCallback = noop,
+  signal?: AbortSignal
+) {
+  const account = getAccount(accountName)
+  progress([0, "Fetching all transactions"])
+  const transactions = await findTransactions({}, accountName)
+
+  const ethereumTransactions = transactions.filter(
+    (tx) => tx.platform === "ethereum"
+  ) as EtherscanTransaction[]
+
+  if (signal?.aborted) {
+    throw new Error(signal.reason)
+  }
+  progress([25, `Processing ${ethereumTransactions.length} Ethereum transactions`])
+  const { merged, deduplicated } = mergeTransactions(ethereumTransactions)
+  //
+
+  if (signal?.aborted) {
+    throw new Error(signal.reason)
+  }
+  progress([50, `Saving ${merged.length} merged transactions`])
+  const mergedUpdates = await account.transactionsDB.bulkDocs(merged)
+  validateOperation(mergedUpdates)
+  //
+
+  if (signal?.aborted) {
+    throw new Error(signal.reason)
+  }
+  progress([75, `Deleting ${deduplicated.length} deduplicated transactions`])
+  const deduplicatedUpdates = await account.transactionsDB.bulkDocs(
+    deduplicated.map((tx) => ({ _deleted: true, _id: tx._id, _rev: tx._rev } as never))
+  )
+  validateOperation(deduplicatedUpdates)
+  //
+  // TODO fix audit log txId
+
+  progress([100, "Done"])
 }

@@ -2,7 +2,6 @@ import { ArrowRightAltRounded, CloseRounded } from "@mui/icons-material"
 import {
   Avatar,
   Button,
-  Chip,
   Drawer,
   DrawerProps,
   IconButton,
@@ -13,12 +12,12 @@ import {
 import { useStore } from "@nanostores/react"
 import React, { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
+import { ActionBlock } from "src/components/ActionBlock"
 import { AmountBlock } from "src/components/AmountBlock"
 import { ExternalLink } from "src/components/ExternalLink"
 import { SectionTitle } from "src/components/SectionTitle"
 import { TimestampBlock } from "src/components/TimestampBlock"
-import { Truncate } from "src/components/Truncate"
-import { Transaction } from "src/interfaces"
+import { EtherscanTransaction, Transaction } from "src/interfaces"
 import { PLATFORMS_META } from "src/settings"
 import { $activeAccount, $activeIndex } from "src/stores/account-store"
 import { PopoverToggleProps } from "src/stores/app-store"
@@ -55,6 +54,8 @@ export function TransactionDrawer(props: TransactionDrawerProps) {
     txHash,
     ...txMeta
   } = tx
+
+  const method = (tx as EtherscanTransaction).method
 
   const [logsNumber, setLogsNumber] = useState<number | null>(null)
 
@@ -105,17 +106,14 @@ export function TransactionDrawer(props: TransactionDrawerProps) {
         </div>
         <div>
           <SectionTitle>Type</SectionTitle>
-          <Chip
-            size="small"
-            // sx={{ background: alpha(color, 0.075) }}
-            label={
-              <Stack direction="row" gap={0.5} alignItems="center" paddingRight={0.5}>
-                {/* {TypeIconComponent && <TypeIconComponent sx={{ color, fontSize: "inherit" }} />} */}
-                <Truncate>{type}</Truncate>
-              </Stack>
-            }
-          />
+          <ActionBlock action={type} />
         </div>
+        {method && (
+          <div>
+            <SectionTitle>Smart Contract Method</SectionTitle>
+            <ActionBlock action={method} />
+          </div>
+        )}
         <div>
           <SectionTitle>Timestamp</SectionTitle>
           <TimestampBlock timestamp={timestamp} relative={relativeTime} />
