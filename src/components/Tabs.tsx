@@ -6,7 +6,8 @@ import { SerifFont } from "src/theme"
 export function Tabs({ sx, ...rest }: TabsProps) {
   return (
     <MuiTabs
-      // variant="scrollable" // FIXME
+      variant="scrollable"
+      scrollButtons={false}
       sx={(theme) => ({
         marginX: 2,
         [`& .${tabsClasses.indicator}`]: {

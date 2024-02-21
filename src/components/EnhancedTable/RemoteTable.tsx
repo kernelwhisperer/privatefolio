@@ -1,4 +1,4 @@
-import { Paper, Stack, TableHead } from "@mui/material"
+import { Paper, Stack, TableHead, useMediaQuery } from "@mui/material"
 import Table from "@mui/material/Table"
 import TableBody from "@mui/material/TableBody"
 import TableCell from "@mui/material/TableCell"
@@ -173,6 +173,9 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
 
   const stickyVersion = rowsPerPage > 20
 
+  const isTablet = useMediaQuery("(max-width: 899px)")
+  const isMobile = useMediaQuery("(max-width: 599px)")
+
   return (
     <>
       {transitions((styles, isLoading) => (
@@ -209,34 +212,36 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
               >
                 <TableContainer sx={{ overflowX: "unset" }}>
                   <Table size="small" stickyHeader={stickyVersion}>
-                    <TableHead>
-                      <TableRow>
-                        {headCells.map((headCell, index) => (
-                          <TableCell
-                            key={index}
-                            padding="normal"
-                            sortDirection={orderBy === headCell.key ? order : false}
-                            sx={headCell.sx}
-                          >
-                            <ConnectedTableHead<T>
-                              activeFilters={activeFilters}
-                              setFilterKey={setFilterKey}
-                              headCell={headCell}
-                              order={order}
-                              orderBy={orderBy}
-                              onSort={handleSort}
-                              onRelativeTime={handleRelativeTime}
-                              relativeTime={relativeTime}
-                            />
-                          </TableCell>
-                        ))}
-                      </TableRow>
-                    </TableHead>
+                    {isTablet ? null : (
+                      <TableHead>
+                        <TableRow>
+                          {headCells.map((headCell, index) => (
+                            <TableCell
+                              key={index}
+                              padding="normal"
+                              sortDirection={orderBy === headCell.key ? order : false}
+                              sx={headCell.sx}
+                            >
+                              <ConnectedTableHead<T>
+                                activeFilters={activeFilters}
+                                setFilterKey={setFilterKey}
+                                headCell={headCell}
+                                order={order}
+                                orderBy={orderBy}
+                                onSort={handleSort}
+                                onRelativeTime={handleRelativeTime}
+                                relativeTime={relativeTime}
+                              />
+                            </TableCell>
+                          ))}
+                        </TableRow>
+                      </TableHead>
+                    )}
                     <TableBody>
                       {rows.map((row) => (
                         <TableRowComponent
-                          isTablet={false} // TODO
-                          isMobile={false} // TODO
+                          isTablet={isTablet}
+                          isMobile={isMobile}
                           key={row._id}
                           headCells={headCells}
                           relativeTime={relativeTime}
