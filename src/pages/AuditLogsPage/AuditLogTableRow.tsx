@@ -70,7 +70,7 @@ export function AuditLogTableRow(props: TableRowComponentProps<AuditLog>) {
           {operation === "Funding Fee" ? (
             <ActionBlock
               action={operation}
-              color={changeColor}
+              color={changeColor as any} // FIXME
               IconComponent={changeN < 0 ? RemoveRounded : AddRounded}
             />
           ) : (
