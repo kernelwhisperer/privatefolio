@@ -4,16 +4,16 @@ import React from "react"
 import { $assetMetaMap } from "src/stores/metadata-store"
 import { getAssetTicker } from "src/utils/assets-utils"
 
-import { AssetAvatar } from "./AssetAvatar"
+import { AssetAvatar, AssetAvatarProps } from "./AssetAvatar"
 import { Truncate } from "./Truncate"
 
 type AssetBlockProps = {
   asset?: string
-}
+} & Omit<AssetAvatarProps, "alt" | "src">
 
 export function AssetBlock(props: AssetBlockProps) {
   const assetMap = useStore($assetMetaMap)
-  const { asset } = props
+  const { asset, ...rest } = props
 
   return (
     <Stack
@@ -27,6 +27,7 @@ export function AssetBlock(props: AssetBlockProps) {
         size="small"
         src={asset ? assetMap[asset]?.image : undefined}
         alt={asset ? getAssetTicker(asset) : undefined}
+        {...rest}
       />
       <Truncate>{getAssetTicker(asset)}</Truncate>
     </Stack>

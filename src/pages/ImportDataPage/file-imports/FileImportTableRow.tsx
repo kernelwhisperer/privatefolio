@@ -41,7 +41,7 @@ export function FileImportTableRow(props: TableRowComponentProps<FileImport>) {
                   <Skeleton height={20} width={80} />
                 )}
                 <Tooltip title={name}>
-                  <Truncate>{name}</Truncate>
+                  <Truncate sx={{maxWidth: 200}}>{name}</Truncate>
                 </Tooltip>
               </Stack>
               <Stack

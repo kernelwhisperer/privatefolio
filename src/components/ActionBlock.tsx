@@ -5,7 +5,7 @@ import {
   SvgIconComponent,
   SwapHoriz,
 } from "@mui/icons-material"
-import { alpha, Chip, Stack, Tooltip } from "@mui/material"
+import { alpha, Chip, ChipProps, Stack, Tooltip } from "@mui/material"
 import { grey } from "@mui/material/colors"
 import React from "react"
 import { AuditLogOperation, TransactionType } from "src/interfaces"
@@ -19,7 +19,7 @@ type ActionBlockProps = {
   IconComponent?: SvgIconComponent
   action: string
   color?: string
-}
+} & ChipProps
 
 const colorMap: Partial<Record<Action, string>> = {
   Buy: greenColor,
@@ -40,7 +40,7 @@ const iconMap: Partial<Record<Action, SvgIconComponent>> = {
 }
 
 export function ActionBlock(props: ActionBlockProps) {
-  const { action, color: colorOverride, IconComponent: IconComponentOverride } = props
+  const { action, color: colorOverride, IconComponent: IconComponentOverride, ...rest } = props
 
   const color = colorOverride || colorMap[action] || grey[500]
   const IconComponent = IconComponentOverride || iconMap[action]
@@ -56,6 +56,7 @@ export function ActionBlock(props: ActionBlockProps) {
             <Truncate>{action}</Truncate>
           </Stack>
         }
+        {...rest}
       />
     </Tooltip>
   )

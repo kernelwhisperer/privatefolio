@@ -1,5 +1,5 @@
-import { Visibility } from "@mui/icons-material"
-import { Avatar, IconButton, Stack, TableCell, TableRow, Tooltip } from "@mui/material"
+import { ArrowRightAltRounded, Visibility } from "@mui/icons-material"
+import { Avatar, Box, Button, IconButton, Stack, TableCell, TableRow, Tooltip } from "@mui/material"
 import { useStore } from "@nanostores/react"
 import React from "react"
 import { ActionBlock } from "src/components/ActionBlock"
@@ -15,6 +15,7 @@ import { Transaction } from "../../interfaces"
 import { $platformMetaMap } from "../../stores/metadata-store"
 import { TableRowComponentProps } from "../../utils/table-utils"
 import { TransactionDrawer } from "./TransactionDrawer"
+import { SwapHoriz } from "@mui/icons-material"
 
 export function TransactionTableRow(props: TableRowComponentProps<Transaction>) {
   const {
@@ -42,6 +43,73 @@ export function TransactionTableRow(props: TableRowComponentProps<Transaction>) 
   const platformMetaMap = useStore($platformMetaMap)
 
   const { value: open, toggle: toggleOpen } = useBoolean(false)
+
+  if (_isTablet) {
+    return (
+      <>
+        <TableRow hover>
+          <TableCell sx={{ width: "100%" }}>
+            <Stack direction="column" justifyContent="space-between" alignItems="flex-start" gap={1}>
+              <Box sx={{ color: "text.secondary" }}>
+                <TimestampBlock timestamp={timestamp} relative={relativeTime} />
+              </Box>
+              <ActionBlock action={type} size="medium" />
+              <Stack direction="row" gap={3} paddingY={1} sx={{
+                fontSize: "18px"
+              }}
+                alignItems="center">
+                {
+                  outgoing && (
+                    <Stack direction="row" gap={1} alignItems="center">
+                      <AmountBlock
+                        colorized
+                        placeholder=""
+                        amount={outgoing ? `-${outgoing}` : undefined}
+                        showSign
+                        currencyTicker={getAssetTicker(outgoingAsset)}
+                      />
+                      <AssetBlock asset={outgoingAsset} size="medium" />
+                    </Stack>
+                  )
+                }
+                {outgoing && incoming ? (
+                  <SwapHoriz fontSize="small" color="secondary" />
+                ) : null}
+                {
+                  incoming && (
+                    <Stack direction="row" gap={1} alignItems="center">
+                      <AmountBlock
+                        colorized
+                        placeholder=""
+                        amount={incoming}
+                        showSign
+                        currencyTicker={getAssetTicker(incomingAsset)}
+                      />
+                      <AssetBlock asset={incomingAsset} size="medium" />
+                    </Stack>
+                  )
+                }
+              </Stack>
+              <Button
+                size="small"
+                color="primary"
+                onClick={toggleOpen}
+              >
+                Inspect details <ArrowRightAltRounded />
+              </Button>
+            </Stack>
+          </TableCell>
+        </TableRow>
+        <TransactionDrawer
+          key={row._id}
+          open={open}
+          toggleOpen={toggleOpen}
+          tx={row}
+          relativeTime={relativeTime}
+        />
+      </>
+    )
+  }
 
   return (
     <>
