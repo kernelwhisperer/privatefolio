@@ -1,12 +1,11 @@
 import { Stack, TableCell, TableRow, Typography } from "@mui/material"
 import { useStore } from "@nanostores/react"
 import React from "react"
-import { useNavigate } from "react-router-dom"
 import { AmountBlock } from "src/components/AmountBlock"
+import { AppLink } from "src/components/AppLink"
+import { AssetBlock } from "src/components/AssetBlock"
 import { $baseCurrency } from "src/stores/account-settings-store"
-import { getAssetTicker } from "src/utils/assets-utils"
 
-import { AssetAvatar } from "../../components/AssetAvatar"
 import { Balance } from "../../interfaces"
 import { $assetMetaMap } from "../../stores/metadata-store"
 import { TableRowComponentProps } from "../../utils/table-utils"
@@ -22,32 +21,29 @@ export function BalanceTableRow(props: TableRowComponentProps<Balance>) {
   } = props
   const { assetId, balance, price, value } = row
 
-  const navigate = useNavigate()
   const assetMap = useStore($assetMetaMap)
 
   const currency = useStore($baseCurrency)
 
   if (isTablet) {
     return (
-      <TableRow
-        hover
-        onClick={() => {
-          navigate(`./asset/${assetId}`)
-        }}
-        sx={{ cursor: "pointer" }}
-        {...rest}
-      >
-        <TableCell sx={{ width: "100%" }}>
-          <Stack direction="row" justifyContent="space-between" alignItems="center">
-            <Stack direction="row" gap={1} alignItems="center" component="div">
-              <AssetAvatar
+      <TableRow hover {...rest}>
+        <TableCell sx={{ width: "100%" }} variant="clickable">
+          <AppLink to={`./asset/${encodeURI(assetId)}`}>
+            <Stack direction="row" justifyContent="space-between" alignItems="center">
+              <AssetBlock
+                asset={assetId}
                 size="medium"
-                src={assetMap[assetId]?.image}
-                alt={getAssetTicker(assetId)}
+                secondary={<AmountBlock amount={balance} />}
               />
-              <Stack>
+              <Stack alignItems="flex-end">
                 <Typography variant="body1">
-                  <span>{getAssetTicker(assetId)}</span>
+                  <AmountBlock
+                    amount={value}
+                    currencySymbol={currency.symbol}
+                    currencyTicker={currency.name}
+                    significantDigits={currency.significantDigits}
+                  />
                 </Typography>
                 <Typography
                   color="text.secondary"
@@ -55,60 +51,32 @@ export function BalanceTableRow(props: TableRowComponentProps<Balance>) {
                   fontWeight={300}
                   letterSpacing={0.5}
                 >
-                  <AmountBlock amount={balance} />
+                  <AmountBlock
+                    amount={price?.value}
+                    currencySymbol={currency.symbol}
+                    currencyTicker={currency.name}
+                    significantDigits={currency.maxDigits}
+                  />
                 </Typography>
               </Stack>
             </Stack>
-            <Stack alignItems="flex-end">
-              <Typography variant="body1">
-                <AmountBlock
-                  amount={value}
-                  currencySymbol={currency.symbol}
-                  currencyTicker={currency.name}
-                  significantDigits={currency.significantDigits}
-                />
-              </Typography>
-              <Typography
-                color="text.secondary"
-                variant="caption"
-                fontWeight={300}
-                letterSpacing={0.5}
-              >
-                <AmountBlock
-                  amount={price?.value}
-                  currencySymbol={currency.symbol}
-                  currencyTicker={currency.name}
-                  significantDigits={currency.maxDigits}
-                />
-              </Typography>
-            </Stack>
-          </Stack>
+          </AppLink>
         </TableCell>
       </TableRow>
     )
   }
 
   return (
-    <TableRow
-      hover
-      onClick={() => {
-        navigate(`./asset/${assetId}`)
-      }}
-      sx={{ cursor: "pointer" }}
-      {...rest}
-    >
-      <TableCell sx={{ maxWidth: 380, minWidth: 160, width: 380 }}>
-        <Stack direction="row" gap={1} alignItems="center" component="div">
-          <AssetAvatar src={assetMap[assetId]?.image} alt={getAssetTicker(assetId)} size="small" />
-          <Stack>
-            <span>{getAssetTicker(assetId)}</span>
-          </Stack>
-        </Stack>
+    <TableRow hover {...rest}>
+      <TableCell variant="clickable">
+        <AppLink to={`./asset/${encodeURI(assetId)}`}>
+          <AssetBlock asset={assetId} />
+        </AppLink>
       </TableCell>
-      <TableCell align="right" sx={{ maxWidth: 220, minWidth: 220, width: 220 }}>
+      <TableCell variant="clickable" align="right">
         <AmountBlock amount={balance} />
       </TableCell>
-      <TableCell align="right" sx={{ maxWidth: 220, minWidth: 220, width: 220 }}>
+      <TableCell variant="clickable" align="right">
         <AmountBlock
           amount={price?.value}
           currencySymbol={currency.symbol}
@@ -116,7 +84,7 @@ export function BalanceTableRow(props: TableRowComponentProps<Balance>) {
           significantDigits={currency.maxDigits}
         />
       </TableCell>
-      <TableCell align="right" sx={{ maxWidth: 220, minWidth: 220, width: 220 }}>
+      <TableCell variant="clickable" align="right">
         <AmountBlock
           amount={value}
           currencySymbol={currency.symbol}
