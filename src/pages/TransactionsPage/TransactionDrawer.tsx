@@ -1,10 +1,18 @@
 import { ArrowRightAltRounded, CloseRounded } from "@mui/icons-material"
-import { Box, Button, Drawer, DrawerProps, IconButton, Skeleton, Stack, TextField, Typography } from "@mui/material"
+import {
+  Button,
+  Drawer,
+  DrawerProps,
+  IconButton,
+  Skeleton,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material"
 import { useStore } from "@nanostores/react"
 import { debounce } from "lodash-es"
 import React, { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
-import { getAssetPriceMap } from "src/api/core/daily-prices-api"
 import { ActionBlock } from "src/components/ActionBlock"
 import { AmountBlock } from "src/components/AmountBlock"
 import { AppLink } from "src/components/AppLink"
@@ -14,7 +22,8 @@ import { IdentifierBlock } from "src/components/IdentifierBlock"
 import { PlatformBlock } from "src/components/PlatformBlock"
 import { SectionTitle } from "src/components/SectionTitle"
 import { TimestampBlock } from "src/components/TimestampBlock"
-import { EtherscanTransaction, Transaction, Balance, ChartData } from "src/interfaces"
+import { ValueChip } from "src/components/ValueChip"
+import { ChartData, EtherscanTransaction, Transaction } from "src/interfaces"
 import { DEFAULT_DEBOUNCE_DURATION } from "src/settings"
 import { $baseCurrency } from "src/stores/account-settings-store"
 import { $activeAccount, $activeIndex } from "src/stores/account-store"
@@ -24,13 +33,12 @@ import { getAssetTicker } from "src/utils/assets-utils"
 import { formatHex, getExplorerLink } from "src/utils/utils"
 import { clancy } from "src/workers/remotes"
 
-const updateTransactionDebounced = debounce((
-  accountName: string,
-  id: string,
-  update: Partial<Transaction>,
-) => {
-  clancy.updateTransaction(accountName, id, update)
-}, DEFAULT_DEBOUNCE_DURATION)
+const updateTransactionDebounced = debounce(
+  (accountName: string, id: string, update: Partial<Transaction>) => {
+    clancy.updateTransaction(accountName, id, update)
+  },
+  DEFAULT_DEBOUNCE_DURATION
+)
 
 type TransactionDrawerProps = DrawerProps &
   PopoverToggleProps & {
@@ -76,24 +84,21 @@ export function TransactionDrawer(props: TransactionDrawerProps) {
       setLogsNumber(logs.length)
     })
 
-    clancy.getAssetPriceMap(timestamp).then(priceMap => {
+    clancy.getAssetPriceMap(timestamp).then((priceMap) => {
       setPriceMap(priceMap)
     })
-
   }, [_id, open])
 
   const currency = useStore($baseCurrency)
 
-  const [textInput, setTextInput] = useState(tx.notes||"");
+  const [textInput, setTextInput] = useState(tx.notes || "")
 
-
-
-  const handleTextInputChange = event => {
-    setTextInput(event.target.value);
+  const handleTextInputChange = (event) => {
+    setTextInput(event.target.value)
     updateTransactionDebounced($activeAccount.get(), _id, {
-      notes: event.target.value
+      notes: event.target.value,
     })
-  };
+  }
 
   return (
     <Drawer open={open} onClose={toggleOpen} {...rest}>
@@ -141,125 +146,88 @@ export function TransactionDrawer(props: TransactionDrawerProps) {
         {incomingAsset && (
           <div>
             <SectionTitle>Incoming</SectionTitle>
-            <Stack direction="row" alignItems="center" gap={1}>
+            <Stack direction="row" alignItems="center" gap={0.25}>
               <AmountBlock
                 colorized
                 amount={incoming}
                 showSign
                 currencyTicker={getAssetTicker(incomingAsset)}
+                variant="body1"
               />
               <Button
                 size="small"
                 component={AppLink}
                 to={`../asset/${encodeURI(incomingAsset)}`}
-                sx={{ paddingX: 2 }}
+                sx={{ fontSize: "0.9rem", padding: 1 }}
               >
-                <AssetBlock asset={incomingAsset} />
+                <AssetBlock asset={incomingAsset} size="small" />
               </Button>
+              <ValueChip
+                value={
+                  priceMap && incomingN && priceMap[incomingAsset]?.value
+                    ? priceMap[incomingAsset].value * incomingN
+                    : undefined
+                }
+              />
             </Stack>
-            {
-              !!(priceMap && incomingN && priceMap[incomingAsset]?.value) && (
-
-                <Typography
-                  color="text.secondary"
-                  variant="caption"
-                  fontWeight={300}
-                  letterSpacing={0.5}
-                >
-                  ({" "}
-                  <AmountBlock
-                    amount={priceMap[incomingAsset]?.value * incomingN}
-                    currencySymbol={currency.symbol}
-                    currencyTicker={currency.name}
-                    significantDigits={currency.maxDigits}
-                  />
-                  )
-                </Typography>
-              )
-            }
-
           </div>
         )}
         {outgoingAsset && (
           <div>
             <SectionTitle>Outgoing</SectionTitle>
-            <Stack direction="row" alignItems="center" gap={1}>
+            <Stack direction="row" alignItems="center" gap={0.25}>
               <AmountBlock
                 colorized
                 amount={outgoing ? `-${outgoing}` : outgoing}
                 showSign
                 currencyTicker={getAssetTicker(outgoingAsset)}
+                variant="body1"
               />
               <Button
                 size="small"
                 component={AppLink}
                 to={`../asset/${encodeURI(outgoingAsset)}`}
-                sx={{ paddingX: 2 }}
+                sx={{ fontSize: "0.9rem", padding: 1 }}
               >
-                <AssetBlock asset={outgoingAsset} />
+                <AssetBlock asset={outgoingAsset} size="small" />
               </Button>
+              <ValueChip
+                value={
+                  priceMap && outgoingN && priceMap[outgoingAsset]?.value
+                    ? priceMap[outgoingAsset].value * outgoingN
+                    : undefined
+                }
+              />
             </Stack>
-            {
-              !!(priceMap && outgoingN && priceMap[outgoingAsset]?.value) && (
-
-                <Typography
-                  color="text.secondary"
-                  variant="caption"
-                  fontWeight={300}
-                  letterSpacing={0.5}
-                >
-                  ({" "}
-                  <AmountBlock
-                    amount={priceMap[outgoingAsset]?.value * outgoingN}
-                    currencySymbol={currency.symbol}
-                    currencyTicker={currency.name}
-                    significantDigits={currency.maxDigits}
-                  />
-                  )
-                </Typography>
-              )
-            }
           </div>
         )}
         {feeAsset && (
           <div>
             <SectionTitle>Fee</SectionTitle>
-            <Stack direction="row" alignItems="center" gap={1}>
+            <Stack direction="row" alignItems="center" gap={0.25}>
               <AmountBlock
                 colorized
                 amount={fee}
                 showSign
                 currencyTicker={getAssetTicker(feeAsset)}
+                variant="body1"
               />
               <Button
                 size="small"
                 component={AppLink}
                 to={`../asset/${encodeURI(feeAsset)}`}
-                sx={{ paddingX: 2 }}
+                sx={{ fontSize: "0.9rem", padding: 1 }}
               >
-                <AssetBlock asset={feeAsset} />
+                <AssetBlock asset={feeAsset} size="small" />
               </Button>
+              <ValueChip
+                value={
+                  priceMap && feeN && priceMap[feeAsset]?.value
+                    ? priceMap[feeAsset].value * feeN
+                    : undefined
+                }
+              />
             </Stack>
-            {
-              !!(priceMap && feeN && priceMap[feeAsset]?.value) && (
-
-                <Typography
-                  color="text.secondary"
-                  variant="caption"
-                  fontWeight={300}
-                  letterSpacing={0.5}
-                >
-                  ({" "}
-                  <AmountBlock
-                    amount={priceMap[feeAsset]?.value * feeN}
-                    currencySymbol={currency.symbol}
-                    currencyTicker={currency.name}
-                    significantDigits={currency.maxDigits}
-                  />
-                  )
-                </Typography>
-              )
-            }
           </div>
         )}
         {price && (

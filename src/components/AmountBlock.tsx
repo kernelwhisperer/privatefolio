@@ -1,6 +1,6 @@
-import { Box, Stack, Tooltip, Typography } from "@mui/material"
+import { Box, Stack, Tooltip, Typography, TypographyProps } from "@mui/material"
 import { useStore } from "@nanostores/react"
-import React, { useState } from "react"
+import React, { useMemo, useState } from "react"
 import { $debugMode } from "src/stores/app-store"
 import { MonoFont } from "src/theme"
 import { greenColor, redColor } from "src/utils/color-utils"
@@ -8,12 +8,13 @@ import { EMPTY_OBJECT } from "src/utils/utils"
 
 import { formatNumber, getDecimalPrecision } from "../utils/formatting-utils"
 
-type AmountBlockProps = {
+type AmountBlockProps = TypographyProps & {
   amount?: string | number
   colorized?: boolean
   currencySymbol?: string
   currencyTicker?: string
   // formatOpts?: Intl.NumberFormatOptions
+  maxDigits?: number
   placeholder?: string
   showSign?: boolean
   showTicker?: boolean
@@ -35,6 +36,8 @@ export function AmountBlock(props: AmountBlockProps) {
     colorized,
     showTicker,
     showSign,
+    maxDigits,
+    ...rest
   } = props
 
   const hasValue = amount !== undefined
@@ -45,6 +48,8 @@ export function AmountBlock(props: AmountBlockProps) {
 
   // let minimumFractionDigits = currencyTicker === "USDT" ? 2 : significantDigits TODO derive this from the ticker
   let minimumFractionDigits = debugMode ? 4 : significantDigits
+
+  // auto-adjust minimumFractionDigits
   if (minimumFractionDigits === undefined && typeof amountN === "number") {
     if (amountN > 10_000 || amountN < -10_000) minimumFractionDigits = 0
     else if (amountN < 1 && amountN > -1)
@@ -53,13 +58,38 @@ export function AmountBlock(props: AmountBlockProps) {
 
   const [copied, setCopied] = useState(false)
 
+  const formattedValue = useMemo(() => {
+    if (typeof amountN !== "number") return ""
+
+    return formatNumber(amountN, {
+      maximumFractionDigits: minimumFractionDigits,
+      minimumFractionDigits,
+      // notation: "compact",
+      ...formatOpts,
+    })
+  }, [amountN, formatOpts, minimumFractionDigits])
+
+  const fullLabel = useMemo(() => {
+    if (typeof amountN !== "number") return ""
+
+    let fullLabel = `${currencySymbol}${formattedValue}`
+
+    if (showTicker) {
+      fullLabel = `${fullLabel} ${currencyTicker}`
+    }
+
+    fullLabel = fullLabel.replace(`${currencySymbol}-`, `-${currencySymbol}`)
+
+    return fullLabel
+  }, [amountN, currencySymbol, currencyTicker, formattedValue, showTicker])
+
   return (
     <Tooltip
       title={
         typeof amountN === "number" ? (
           <Stack alignItems="center">
             <Box sx={{ fontFamily: MonoFont }}>
-              {amount} {currencyTicker}
+              {formattedValue} {currencyTicker}
             </Box>
             <span className="secondary">({copied ? "copied" : "copy to clipboard"})</span>
           </Stack>
@@ -87,7 +117,8 @@ export function AmountBlock(props: AmountBlockProps) {
         onClick={() => {
           if (!hasValue) return
 
-          navigator.clipboard.writeText(String(amount))
+          const clipText = maxDigits ? (amountN as number).toFixed(maxDigits) : String(amount)
+          navigator.clipboard.writeText(clipText)
 
           setCopied(true)
 
@@ -95,17 +126,10 @@ export function AmountBlock(props: AmountBlockProps) {
             setCopied(false)
           }, 1_000)
         }}
+        {...rest}
       >
         {typeof amountN === "number" ? (
-          `${currencySymbol}${formatNumber(amountN, {
-            maximumFractionDigits: minimumFractionDigits,
-            minimumFractionDigits,
-            // notation: "compact",
-            ...formatOpts,
-          })} ${showTicker ? currencyTicker : ""}`.replace(
-            `${currencySymbol}-`,
-            `-${currencySymbol}`
-          )
+          fullLabel
         ) : (
           <Typography color="text.secondary" component="span" variant="inherit">
             {placeholder}
