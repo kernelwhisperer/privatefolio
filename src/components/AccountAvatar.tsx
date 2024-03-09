@@ -4,7 +4,7 @@ import { memoize } from "lodash-es"
 import React from "react"
 
 export interface AccountAvatarProps extends AvatarProps {
-  alt: string
+  alt?: string
   size?: "small" | "medium" | "large"
 }
 
@@ -15,7 +15,7 @@ const SIZE_MAP = {
 }
 
 export function AccountAvatar(props: AccountAvatarProps) {
-  const { alt, size = "medium", sx, ...rest } = props
+  const { alt = "", size = "medium", sx, ...rest } = props
   const colors = getGradientColors(stringToHex(alt))
 
   return (

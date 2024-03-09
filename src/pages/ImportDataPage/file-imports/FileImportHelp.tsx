@@ -1,15 +1,16 @@
 import {
+  AlertTitle,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  Paper,
   Stack,
   Tab,
   Typography,
 } from "@mui/material"
 import React, { useState } from "react"
+import { Callout } from "src/components/Callout"
 import { PlatformAvatar } from "src/components/PlatformAvatar"
 import { Tabs } from "src/components/Tabs"
 import { useBoolean } from "src/hooks/useBoolean"
@@ -36,25 +37,20 @@ export function FileImportHelp() {
 
   return (
     <>
-      <Paper
+      <Callout
+        onClick={toggleModalOpen}
         sx={{
           "&:hover": {
-            backgroundColor: "var(--mui-palette-action-hover)",
+            backgroundColor: "var(--mui-palette-action-hover) !important",
           },
-          backgroundColor: "var(--mui-palette-background-default)",
-          borderColor: "var(--mui-palette-TableCell-border)",
           cursor: "pointer",
-          padding: 1,
-          textAlign: "center",
         }}
-        elevation={0}
-        variant="outlined"
-        onClick={toggleModalOpen}
       >
+        <AlertTitle sx={{ fontSize: "0.85rem" }}>How to create file imports?</AlertTitle>
         <Typography variant="body2" color="text.secondary">
-          Learn <u>how to export</u> your data from Etherscan or Binance.
+          Click here to learn how to export your data from Etherscan or Binance.
         </Typography>
-      </Paper>
+      </Callout>
       <Dialog open={modalOpen} onClose={toggleModalOpen}>
         <DialogTitle>
           <span>How to create file imports</span>

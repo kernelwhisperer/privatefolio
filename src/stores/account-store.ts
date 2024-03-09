@@ -11,10 +11,10 @@ $accounts.listen((accounts) => {
   localStorage.setItem("privatefolio-accounts", JSON.stringify(accounts))
 })
 
-const accountIndex = window.location.pathname.split("/")[2]
-const user = $accounts.get()[accountIndex]
+const initialAccountIndex = Number(window.location.pathname.split("/")[2])
+const initialAccount = !isNaN(initialAccountIndex) ? accounts[initialAccountIndex] : "main"
 
-export const $activeAccount = atom<string>(user || "main")
+export const $activeAccount = atom<string>(initialAccount)
 export const $activeIndex = computed($activeAccount, (activeAccount) => {
   return $accounts.get().indexOf(activeAccount)
 })

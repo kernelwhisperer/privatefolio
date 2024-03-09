@@ -61,6 +61,9 @@ export function NavigationMenu() {
             bottom: 8,
             height: 4,
           },
+          [`& .${tabsClasses.flexContainer}`]: {
+            gap: 2,
+          },
           [`& .${tabsClasses.flexContainer} > a`]: {
             minWidth: 0,
             paddingX: 0,

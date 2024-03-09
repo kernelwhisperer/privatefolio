@@ -14,7 +14,7 @@ type TableFooterProps = TablePaginationProps & {
 }
 
 export function TableFooter(props: TableFooterProps) {
-  const { queryTime, count, stickyVersion, ...rest } = props
+  const { queryTime, count, stickyVersion, sx, ...rest } = props
 
   const isTablet = useMediaQuery("(max-width: 899px)")
 
@@ -29,6 +29,7 @@ export function TableFooter(props: TableFooterProps) {
         bottom: 0,
         paddingX: 1.5,
         position: stickyVersion ? "sticky" : undefined,
+        ...sx,
       }}
       justifyContent="space-between"
       alignItems="center"

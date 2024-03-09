@@ -122,13 +122,22 @@ export function ConnectionTableRow(props: TableRowComponentProps<Connection>) {
           </>
         )}
       </TableCell>
-      <TableCell sx={{ maxWidth: 80, minWidth: 80, width: 80 }} align="right">
+      <TableCell>
         <IconButton
+          size="small"
           color="secondary"
           onClick={handleClick}
-          sx={{ marginRight: -0.5, marginY: -0.5 }}
+          sx={{
+            // ".MuiTableRow-root:hover &": {
+            //   visibility: "visible",
+            // },
+            height: 28,
+            marginLeft: -1,
+            marginY: -0.5,
+            // visibility: "hidden",
+          }}
         >
-          <MoreHoriz fontSize="small" />
+          <MoreHoriz fontSize="inherit" />
         </IconButton>
         <Menu
           anchorEl={anchorEl}

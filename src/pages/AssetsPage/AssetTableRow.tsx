@@ -1,4 +1,4 @@
-import { TableCell, TableRow } from "@mui/material"
+import { Stack, TableCell, TableRow } from "@mui/material"
 import React from "react"
 import { AppLink } from "src/components/AppLink"
 import { AssetBlock } from "src/components/AssetBlock"
@@ -23,9 +23,11 @@ export function AssetTableRow(props: TableRowComponentProps<Asset>) {
     <>
       <TableRow hover {...rest}>
         <TableCell variant="clickable">
-          <AppLink to={`../asset/${encodeURI(assetId)}`}>
-            <AssetBlock asset={assetId} secondary={name} size="medium" />
-          </AppLink>
+          <Stack sx={{ height: 52 }} justifyContent="center">
+            <AppLink to={`../asset/${encodeURI(assetId)}`}>
+              <AssetBlock asset={assetId} secondary={name} size="medium" />
+            </AppLink>
+          </Stack>
         </TableCell>
         <TableCell>
           <PlatformBlock platform={getAssetPlatform(assetId)} />

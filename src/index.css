@@ -9,6 +9,10 @@
   background: var(--mui-palette-primary-main);
 }
 
+body {
+  background: rgb(40, 40, 40);
+}
+
 html {
   /* scrollbar-width: thin; */
   /* scrollbar-color: rgba(205, 205, 205) green; */
@@ -41,7 +45,7 @@ body::-webkit-scrollbar-thumb {
   background: transparent;
 }
 
-body::-webkit-scrollbar {
+html[data-mui-color-scheme="light"] body::-webkit-scrollbar {
   background: rgb(255, 255, 255);
 }
 

@@ -12,7 +12,6 @@ import { refreshNetworth } from "src/utils/common-tasks"
 import { formatDate } from "src/utils/formatting-utils"
 
 import { MemoryTable } from "../../components/EnhancedTable/MemoryTable"
-import { NoDataCard } from "../../components/NoDataCard"
 import { StaggeredList } from "../../components/StaggeredList"
 import { Subheading } from "../../components/Subheading"
 import { Balance } from "../../interfaces"
@@ -93,7 +92,7 @@ export default function BalancesPage({ show }: { show: boolean }) {
   )
 
   return (
-    <StaggeredList component="main" gap={2} show={show}>
+    <StaggeredList component="main" gap={4} show={show}>
       {queryTime !== null && rows.length === 0 ? null : (
         <div>
           <Subheading>
@@ -133,18 +132,14 @@ export default function BalancesPage({ show }: { show: boolean }) {
             </IconButton>
           </Tooltip>
         </Subheading>
-        {queryTime !== null && rows.length === 0 ? (
-          <NoDataCard />
-        ) : (
-          <MemoryTable<Balance>
-            initOrderBy="value"
-            headCells={headCells}
-            TableRowComponent={BalanceTableRow}
-            rows={rows}
-            defaultRowsPerPage={10}
-            queryTime={queryTime}
-          />
-        )}
+        <MemoryTable<Balance>
+          initOrderBy="value"
+          headCells={headCells}
+          TableRowComponent={BalanceTableRow}
+          rows={rows}
+          defaultRowsPerPage={10}
+          queryTime={queryTime}
+        />
       </div>
     </StaggeredList>
   )

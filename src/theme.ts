@@ -28,6 +28,12 @@ declare module "@mui/material/Badge" {
   }
 }
 
+declare module "@mui/material/CircularProgress" {
+  interface CircularProgressPropsColorOverrides {
+    accent: true
+  }
+}
+
 declare module "@mui/material/TableCell" {
   interface TableCellPropsVariantOverrides {
     clickable: true
@@ -237,10 +243,13 @@ export const theme: CssVarsThemeOptions = {
           transparent: "on",
         },
         anchor: "right",
-        disableScrollLock: true,
-        slotProps: { backdrop: { invisible: true } },
       },
       styleOverrides: {
+        paperAnchorBottom: {
+          borderBottom: "none",
+          borderLeft: "none",
+          borderRight: "none",
+        },
         paperAnchorLeft: {
           borderBottom: "none",
           borderBottomRightRadius: 16,
@@ -328,7 +337,6 @@ export const theme: CssVarsThemeOptions = {
     MuiPopover: {
       defaultProps: {
         TransitionComponent: Fade,
-        disableScrollLock: true,
         slotProps: {
           paper: {
             elevation: 1,

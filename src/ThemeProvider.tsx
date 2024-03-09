@@ -18,6 +18,7 @@ export function ThemeProvider({ children }: PropsWithChildren) {
   const browserPreference = useReducedMotion()
 
   const isMobile = useMediaQuery("(max-width: 599px)")
+  const isTablet = useMediaQuery("(max-width: 899px)")
   // const isMobile = useMediaQuery((theme: any) => theme.breakpoints.down("md"))
 
   const skipAnimation = useMemo(() => {
@@ -39,10 +40,21 @@ export function ThemeProvider({ children }: PropsWithChildren) {
   const extendedTheme = useMemo(
     () =>
       extendTheme(
-        merge(
-          {},
-          theme,
-          skipAnimation
+        merge({}, theme, {
+          components: {
+            MuiDrawer: {
+              defaultProps: {
+                disableScrollLock: !isTablet,
+                slotProps: { backdrop: { invisible: !isTablet } },
+              },
+            },
+            MuiPopover: {
+              defaultProps: {
+                disableScrollLock: !isTablet,
+              },
+            },
+          },
+          ...(skipAnimation
             ? ({
                 components: {
                   MuiButtonBase: {
@@ -61,10 +73,10 @@ export function ThemeProvider({ children }: PropsWithChildren) {
                   create: () => "none",
                 },
               } as CssVarsThemeOptions)
-            : {}
-        )
+            : {}),
+        })
       ),
-    [skipAnimation]
+    [isTablet, skipAnimation]
   )
   return (
     <>

@@ -4,7 +4,6 @@ import TableBody from "@mui/material/TableBody"
 import TableCell from "@mui/material/TableCell"
 import TableContainer from "@mui/material/TableContainer"
 import TableRow from "@mui/material/TableRow"
-import { a, useTransition } from "@react-spring/web"
 import React, {
   ChangeEvent,
   ComponentType,
@@ -26,10 +25,10 @@ import {
   TableRowComponentProps,
   ValueSelector,
 } from "../../utils/table-utils"
-import { SPRING_CONFIGS } from "../../utils/utils"
+import { CircularSpinner } from "../CircularSpinner"
 import { FilterChip } from "../FilterChip"
+import { NoDataButton } from "../NoDataButton"
 import { ConnectedTableHead } from "./ConnectedTableHead"
-import { TableSkeleton } from "./TableSkeleton"
 
 function descendingComparator<T extends BaseType>(a: T, b: T, valueSelector: ValueSelector<T>) {
   const valueA = valueSelector(a)
@@ -64,10 +63,12 @@ export function getComparator<T extends BaseType>(
 
 export type MemoryTableProps<T extends BaseType> = {
   TableRowComponent: ComponentType<TableRowComponentProps<T>>
+  addNewRow?: JSX.Element
   /**
    * @default 20
    */
   defaultRowsPerPage?: number
+  emptyContent?: JSX.Element
   headCells: HeadCell<T>[]
   initOrderBy: keyof T
   queryTime?: number | null
@@ -80,8 +81,10 @@ export function MemoryTable<T extends BaseType>(props: MemoryTableProps<T>) {
     rows,
     TableRowComponent,
     defaultRowsPerPage = 20,
+    addNewRow,
     initOrderBy,
     queryTime,
+    emptyContent = <NoDataButton />,
   } = props
 
   const [order, setOrder] = useState<Order>("desc")
@@ -162,104 +165,131 @@ export function MemoryTable<T extends BaseType>(props: MemoryTableProps<T>) {
     setRelativeTime((prev) => !prev)
   }, [])
 
-  const transitions = useTransition(queryTime === null, {
-    config: SPRING_CONFIGS.veryQuick,
-    enter: { opacity: 2 },
-    exitBeforeEnter: true,
-    from: { opacity: 2 },
-    leave: { delay: 150, opacity: 1 }, // TODO delay: 50,
-  })
-
   const isTablet = useMediaQuery("(max-width: 899px)")
   const isMobile = useMediaQuery("(max-width: 599px)")
 
   const stickyVersion = rowsPerPage > 20
 
+  const isLoading = queryTime === null
+  const isEmpty = rows.length === 0
+
   return (
     <>
-      {transitions((styles, isLoading) => (
-        <a.div style={styles}>
-          {isLoading ? (
-            <TableSkeleton />
-          ) : (
-            <Stack gap={1}>
-              {Object.keys(activeFilters).length > 0 && (
-                <Stack direction="row" spacing={1} marginLeft={1} marginTop={0.5}>
-                  {Object.keys(activeFilters).map((x) => (
-                    <FilterChip
-                      key={x}
-                      label={`${FILTER_LABEL_MAP[x]} = ${getFilterValueLabel(activeFilters[x])}`}
-                      color={stringToColor(x)}
-                      onDelete={() => {
-                        setFilterKey(x as keyof T, undefined)
-                      }}
-                    />
-                  ))}
-                </Stack>
-              )}
-              <Paper
-                variant="outlined"
-                sx={{
-                  background: stickyVersion ? "var(--mui-palette-background-paper)" : undefined,
-                  overflowX: { lg: "unset", xs: "auto" },
+      <Stack gap={1}>
+        {Object.keys(activeFilters).length > 0 && (
+          <Stack direction="row" spacing={1} marginLeft={1} marginTop={0.5}>
+            {Object.keys(activeFilters).map((x) => (
+              <FilterChip
+                key={x}
+                label={`${FILTER_LABEL_MAP[x]} = ${getFilterValueLabel(activeFilters[x])}`}
+                color={stringToColor(x)}
+                onDelete={() => {
+                  setFilterKey(x as keyof T, undefined)
                 }}
-              >
-                <TableContainer sx={{ overflowX: "unset" }}>
-                  <Table size="small" stickyHeader={stickyVersion}>
-                    {isTablet ? null : (
-                      <TableHead>
-                        <TableRow>
-                          {headCells.map((headCell, index) => (
-                            <TableCell
-                              key={index}
-                              padding="normal"
-                              sortDirection={orderBy === headCell.key ? order : false}
-                              sx={headCell.sx}
-                            >
-                              <ConnectedTableHead<T>
-                                activeFilters={activeFilters}
-                                setFilterKey={setFilterKey}
-                                headCell={headCell}
-                                order={order}
-                                orderBy={orderBy}
-                                onSort={handleSort}
-                                onRelativeTime={handleRelativeTime}
-                                relativeTime={relativeTime}
-                              />
-                            </TableCell>
-                          ))}
-                        </TableRow>
-                      </TableHead>
-                    )}
-                    <TableBody>
-                      {visibleRows.map((row) => (
-                        <TableRowComponent
-                          isTablet={isTablet}
-                          isMobile={isMobile}
-                          key={row._id}
-                          headCells={headCells}
+              />
+            ))}
+          </Stack>
+        )}
+        <Paper
+          variant="outlined"
+          sx={{
+            background: stickyVersion ? "var(--mui-palette-background-paper)" : undefined,
+            overflowX: { lg: "unset", xs: "auto" },
+          }}
+        >
+          <TableContainer sx={{ overflowX: "unset" }}>
+            <Table size="small" stickyHeader={stickyVersion}>
+              {isTablet ? null : (
+                <TableHead>
+                  <TableRow>
+                    {headCells.map((headCell, index) => (
+                      <TableCell
+                        key={index}
+                        padding="normal"
+                        sortDirection={orderBy === headCell.key ? order : false}
+                        sx={{
+                          ...headCell.sx,
+                          ...(isLoading || isEmpty
+                            ? {
+                                borderColor: "transparent",
+                                opacity: 0,
+                              }
+                            : {}),
+                        }}
+                      >
+                        <ConnectedTableHead<T>
+                          activeFilters={activeFilters}
+                          setFilterKey={setFilterKey}
+                          headCell={headCell}
+                          order={order}
+                          orderBy={orderBy}
+                          onSort={handleSort}
+                          onRelativeTime={handleRelativeTime}
                           relativeTime={relativeTime}
-                          row={row}
                         />
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-                <TableFooter
-                  stickyVersion={stickyVersion}
-                  page={page}
-                  queryTime={queryTime}
-                  onPageChange={handleChangePage}
-                  onRowsPerPageChange={handleChangeRowsPerPage}
-                  rowsPerPageOptions={[10, 20, 50, 100]}
-                  count={rows.length}
-                  rowsPerPage={rowsPerPage}
-                />
-              </Paper>
-            </Stack>
-          )}
-        </a.div>
-      ))}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                </TableHead>
+              )}
+              <TableBody>
+                {visibleRows.map((row) => (
+                  <TableRowComponent
+                    isTablet={isTablet}
+                    isMobile={isMobile}
+                    key={row._id}
+                    headCells={headCells}
+                    relativeTime={relativeTime}
+                    row={row}
+                  />
+                ))}
+                {visibleRows.length === 0 && !isEmpty && (
+                  <TableRow>
+                    <TableCell colSpan={headCells.length}>
+                      No data matches the current filters...
+                    </TableCell>
+                  </TableRow>
+                )}
+                {(isLoading || isEmpty) && (
+                  <TableRow>
+                    <TableCell colSpan={headCells.length}>
+                      <Stack justifyContent="center" alignItems="center" sx={{ height: 260 }}>
+                        {isEmpty && !isLoading && emptyContent}
+                        {isLoading && <CircularSpinner color="accent" />}
+                      </Stack>
+                    </TableCell>
+                  </TableRow>
+                )}
+                {!isLoading && addNewRow && !isEmpty && (
+                  <TableRow>
+                    <TableCell colSpan={headCells.length} variant="clickable">
+                      {addNewRow}
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TableFooter
+            stickyVersion={stickyVersion}
+            page={page}
+            queryTime={queryTime}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+            rowsPerPageOptions={[10, 20, 50, 100]}
+            count={rows.length}
+            rowsPerPage={rowsPerPage}
+            sx={{
+              ...(isLoading || isEmpty
+                ? {
+                    borderColor: "transparent",
+                    opacity: 0,
+                  }
+                : {}),
+            }}
+          />
+        </Paper>
+      </Stack>
     </>
   )
 }

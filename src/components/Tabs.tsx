@@ -1,5 +1,4 @@
 import { Tabs as MuiTabs, tabsClasses, TabsProps } from "@mui/material"
-import { grey } from "@mui/material/colors"
 import React from "react"
 import { SerifFont } from "src/theme"
 
@@ -11,14 +10,16 @@ export function Tabs({ sx, ...rest }: TabsProps) {
       sx={(theme) => ({
         marginX: 2,
         [`& .${tabsClasses.indicator}`]: {
-          background: grey[600],
-          //
+          // background: grey[600],
+          background: "var(--mui-palette-secondary-main)",
+          // background: "var(--mui-palette-accent-main)",
           borderTopLeftRadius: 32,
           borderTopRightRadius: 32,
+          // borderRadius: 4,
           height: 4,
         },
         [`& .${tabsClasses.flexContainer}`]: {
-          gap: 2,
+          gap: 3,
         },
         [`& .${tabsClasses.flexContainer} > a`]: {
           ...theme.typography.body1,

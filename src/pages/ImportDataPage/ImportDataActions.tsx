@@ -206,8 +206,13 @@ export function ImportDataActions() {
                 description: `Removing all data belonging to '${activeAccount}' from disk.`,
                 function: async () => {
                   await clancy.deleteAccount(activeAccount)
-                  $activeAccount.set("main")
-                  $accounts.set($accounts.get().filter((x) => x !== activeAccount))
+                  const newAccounts = $accounts.get().filter((x) => x !== activeAccount)
+                  $accounts.set(newAccounts)
+                  if (newAccounts.length > 0) {
+                    $activeAccount.set(newAccounts[newAccounts.length - 1])
+                  } else {
+                    $activeAccount.set("main")
+                  }
                 },
                 name: "Delete account",
                 priority: TaskPriority.High,

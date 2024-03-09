@@ -112,14 +112,20 @@ export function TaskDropdown() {
 
   return (
     <>
-      <Tooltip title="Background tasks">
+      <Tooltip title="Tasks">
         <Button
           size="small"
           variant="outlined"
           color={"secondary"}
           sx={{ paddingY: 0.5 }}
           onClick={handleClick}
-          startIcon={pendingTask ? <PendingTaskProgress /> : <DoneAllRounded />}
+          startIcon={
+            pendingTask ? (
+              <PendingTaskProgress />
+            ) : (
+              <DoneAllRounded sx={{ height: 14, width: 14 }} />
+            )
+          }
         >
           <Truncate sx={{ maxWidth: 260 }}>
             {pendingTask ? `${pendingTask.name}` : "Up to date"}
@@ -169,6 +175,7 @@ export function TaskDropdown() {
                     edge="end"
                     aria-label="delete"
                     size="small"
+                    color="secondary"
                     onClick={() => cancelTask(task.id)}
                   >
                     <CancelOutlined fontSize="inherit" />
@@ -197,7 +204,7 @@ export function TaskDropdown() {
               }
             >
               <ListItemButton onClick={() => setSelectedTaskId(pendingTask.id)}>
-                <PendingTaskProgress sx={{ marginRight: 1.25 }} />
+                <PendingTaskProgress key={pendingTask.id} sx={{ marginRight: 1.25 }} />
                 <ListItemText
                   primary={
                     <Stack direction="row" gap={0.5}>
@@ -237,7 +244,7 @@ export function TaskDropdown() {
           {taskQueue.length === 0 && taskHistory.length === 0 && !pendingTask && (
             <ListItem>
               <ListItemButton disabled>
-                <ListItemText primary="Nothing to see here" />
+                <ListItemText primary="Nothing to see here..." />
               </ListItemButton>
             </ListItem>
           )}

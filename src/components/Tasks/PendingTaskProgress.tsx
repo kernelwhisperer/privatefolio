@@ -1,8 +1,9 @@
-import { Box, CircularProgress, CircularProgressProps } from "@mui/material"
+import { Box, CircularProgressProps } from "@mui/material"
 import { useStore } from "@nanostores/react"
 import React, { useMemo } from "react"
 
 import { $pendingTask, $progressHistory } from "../../stores/task-store"
+import { CircularSpinner } from "../CircularSpinner"
 
 export function PendingTaskProgress({ sx = {}, ...rest }: CircularProgressProps) {
   const task = useStore($pendingTask)
@@ -30,33 +31,11 @@ export function PendingTaskProgress({ sx = {}, ...rest }: CircularProgressProps)
   }
 
   return (
-    <Box sx={{ fontSize: "14px !important", height: 14, position: "relative", width: 14, ...sx }}>
-      <CircularProgress
-        variant="determinate"
-        sx={{
-          // color: (theme) => theme.palette.grey[theme.palette.mode === "light" ? 300 : 800],
-          // color: "var(--mui-palette-LinearProgress-infoBg)",
-          color: "var(--mui-palette-LinearProgress-secondaryBg)",
-          left: 0,
-          position: "absolute",
-          top: 0,
-        }}
-        size={14}
-        thickness={4.5}
-        {...rest}
-        value={100}
-      />
-      <CircularProgress
-        key={task.id}
+    <Box sx={sx}>
+      <CircularSpinner
         variant={task.determinate ? "determinate" : "indeterminate"}
         disableShrink={!task.determinate}
-        // color="info"
         color="secondary"
-        sx={{
-          left: 0,
-          position: "absolute",
-          top: 0,
-        }}
         size={14}
         thickness={4.5}
         value={progressPercent}

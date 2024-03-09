@@ -19,7 +19,6 @@ import { clancy } from "src/workers/remotes"
 
 import { AddressInput } from "../../../components/AddressInput"
 import { SectionTitle } from "../../../components/SectionTitle"
-import { StaggeredList } from "../../../components/StaggeredList"
 import { Platform } from "../../../interfaces"
 import { CONNECTIONS, PLATFORMS_META } from "../../../settings"
 import { PopoverToggleProps } from "../../../stores/app-store"
@@ -63,14 +62,7 @@ export function ConnectionDrawer({ open, toggleOpen, ...rest }: DrawerProps & Po
   return (
     <Drawer open={open} onClose={toggleOpen} {...rest}>
       <form onSubmit={handleSubmit}>
-        <StaggeredList
-          paddingX={2}
-          paddingY={1}
-          gap={4}
-          show={open}
-          secondary
-          sx={{ overflowX: "hidden", width: 359 }}
-        >
+        <Stack paddingX={2} paddingY={1} gap={4} sx={{ overflowX: "hidden", width: 359 }}>
           <Stack direction="row" justifyContent="space-between" alignItems="center">
             <Typography variant="subtitle1" letterSpacing="0.025rem">
               Add connection
@@ -116,10 +108,12 @@ export function ConnectionDrawer({ open, toggleOpen, ...rest }: DrawerProps & Po
               onChange={(event) => setLabel(event.target.value)}
             />
           </div>
-          <LoadingButton variant="contained" type="submit" loading={loading}>
-            Add connection
-          </LoadingButton>
-        </StaggeredList>
+          <div>
+            <LoadingButton variant="contained" type="submit" loading={loading}>
+              Add connection
+            </LoadingButton>
+          </div>
+        </Stack>
       </form>
     </Drawer>
   )

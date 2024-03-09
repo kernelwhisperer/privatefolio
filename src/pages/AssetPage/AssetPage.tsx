@@ -36,7 +36,6 @@ export default function AssetPage({ show }: { show: boolean }) {
     return <Navigate to=".." replace={true} />
   }
 
-  const [queryTime, setQueryTime] = useState<number | null>(null)
   const [rows, setRows] = useState<Balance[]>([])
 
   const activeAccount = useStore($activeAccount)
@@ -44,11 +43,9 @@ export default function AssetPage({ show }: { show: boolean }) {
 
   useEffect(() => {
     function fetchData() {
-      const start = Date.now()
       clancy.getBalancesAt(undefined, activeAccount, false).then((balances) => {
         // fetch no longer accurate
         if (activeAccount !== $activeAccount.get()) return
-        setQueryTime(Date.now() - start)
         setRows(balances)
       })
     }
@@ -68,7 +65,7 @@ export default function AssetPage({ show }: { show: boolean }) {
       <BackButton to=".." sx={{ marginLeft: 1 }}>
         Home
       </BackButton>
-      <Stack direction="row" alignItems="center" width="100%" justifyContent="space-between">
+      <Stack direction="row" alignItems="center" width="100%" gap={6} paddingBottom={2}>
         <Stack direction="row" gap={1} component="div" sx={{ marginX: 2 }}>
           <AssetAvatar size="large" src={assetMap[assetId]?.image} alt={getAssetTicker(assetId)} />
           <Stack>
@@ -85,11 +82,11 @@ export default function AssetPage({ show }: { show: boolean }) {
             </Typography>
           </Stack>
         </Stack>
-        <Stack>
+        <Stack alignItems="center">
           <SectionTitle>Balance</SectionTitle>
-          <AmountBlock amount={row?.balanceN} currencyTicker={getAssetTicker(assetId)} />
+          <AmountBlock amount={row?.balanceN} currencyTicker={getAssetTicker(assetId)} showTicker />
         </Stack>
-        <Stack>
+        <Stack alignItems="center">
           <SectionTitle>Value</SectionTitle>
           <AmountBlock
             amount={row?.value}

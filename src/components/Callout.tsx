@@ -2,7 +2,7 @@ import { InfoOutlined } from "@mui/icons-material"
 import { Alert, AlertProps } from "@mui/material"
 import React from "react"
 
-export function Callout(props: AlertProps) {
+export function Callout({ sx, ...rest }: AlertProps) {
   return (
     <Alert
       icon={<InfoOutlined fontSize="inherit" />}
@@ -13,8 +13,9 @@ export function Callout(props: AlertProps) {
         },
         borderColor: "var(--mui-palette-TableCell-border)",
         color: "var(--mui-palette-secondary-main)",
+        ...sx,
       }}
-      {...props}
+      {...rest}
     />
   )
 }

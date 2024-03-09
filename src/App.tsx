@@ -7,6 +7,7 @@ import { Navigate, Route, Routes, useLocation } from "react-router-dom"
 import { AccountIndexRoute } from "./AccountIndexRoute"
 import { ErrorBoundary } from "./components/ErrorBoundary"
 import { Header } from "./components/Header/Header"
+import FourZeroFourPage from "./pages/404"
 import AssetPage from "./pages/AssetPage/AssetPage"
 import AssetsPage from "./pages/AssetsPage/AssetsPage"
 import AuditLogsPage from "./pages/AuditLogsPage/AuditLogsPage"
@@ -123,7 +124,7 @@ export default function App() {
                     path="assets"
                     element={<AssetsPage show={key === pathname && appPath === "assets"} />}
                   />
-                  <Route path="*" element={<Navigate to="/u/0" />} />
+                  <Route path="*" element={<FourZeroFourPage show />} />
                 </Route>
                 <Route
                   path="/"

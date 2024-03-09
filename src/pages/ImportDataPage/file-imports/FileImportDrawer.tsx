@@ -99,8 +99,6 @@ export function FileImportDrawer(props: FileImportDrawerProps) {
         paddingX={2}
         paddingY={1}
         gap={2}
-        // show={open}
-        // secondary
         sx={(theme) => ({ overflowX: "hidden", width: 359, ...theme.typography.body2 })}
       >
         <Stack marginBottom={2} direction="row" justifyContent="space-between" alignItems="center">

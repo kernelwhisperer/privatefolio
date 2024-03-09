@@ -1,4 +1,5 @@
-import { CircularProgress, Paper, PaperProps, Stack, Typography, useTheme } from "@mui/material"
+import { Add, FolderOutlined } from "@mui/icons-material"
+import { Button, ButtonProps, Stack, Typography, useTheme } from "@mui/material"
 import { proxy } from "comlink"
 import React, { useCallback, useRef, useState } from "react"
 import { ConfirmDialogContextType, useConfirm } from "src/hooks/useConfirm"
@@ -10,12 +11,13 @@ import { enqueueTask, TaskPriority } from "../stores/task-store"
 import { handleAuditLogChange } from "../utils/common-tasks"
 import { clancy } from "../workers/remotes"
 import { AddressInputUncontrolled } from "./AddressInput"
+import { CircularSpinner } from "./CircularSpinner"
 import { SectionTitle } from "./SectionTitle"
 
-export function FileDrop(props: PaperProps & { defaultBg?: string }) {
+export function FileDrop(props: ButtonProps) {
   const theme = useTheme()
 
-  const { children, defaultBg = theme.palette.background.paper, sx, ...rest } = props
+  const { size, sx, ...rest } = props
 
   const [cloning, setCloning] = useState(false)
   const [dragOver, setDragOver] = useState(false)
@@ -113,24 +115,21 @@ export function FileDrop(props: PaperProps & { defaultBg?: string }) {
   )
 
   return (
-    <Paper
-      variant="outlined"
-      elevation={0}
+    <Button
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
       onClick={() => fileInputRef.current?.click()}
       sx={{
         "&:hover": {
-          backgroundColor: theme.palette.action.hover,
+          backgroundColor: "var(--mui-palette-action-hover) !important",
         },
-        backgroundColor: dragOver ? theme.palette.action.hover : defaultBg,
-        borderStyle: "dashed",
+        backgroundColor: dragOver ? "var(--mui-palette-action-hover) !important" : undefined,
         // borderWidth: 2,
         color: theme.palette.text.primary,
         cursor: "pointer",
         padding: 1,
-        textAlign: "center",
+        textAlign: "start",
         transition: theme.transitions.create("background-color", {
           duration: theme.transitions.duration.shortest,
         }),
@@ -138,11 +137,16 @@ export function FileDrop(props: PaperProps & { defaultBg?: string }) {
       }}
       {...rest}
     >
-      <Typography color="text.secondary" variant="body2" component="div">
+      <Typography
+        color="text.secondary"
+        variant="body2"
+        component="div"
+        sx={{ minHeight: 22, width: "100%" }}
+      >
         {cloning ? (
-          <Stack alignItems="center" gap={4}>
+          <Stack>
             <span>
-              <CircularProgress
+              <CircularSpinner
                 size={12}
                 color="inherit"
                 sx={{ marginBottom: "-1px", marginRight: 1 }}
@@ -151,11 +155,19 @@ export function FileDrop(props: PaperProps & { defaultBg?: string }) {
             </span>
           </Stack>
         ) : (
-          <Stack alignItems="center" gap={4}>
-            {children}
+          <Stack
+            alignItems={size === "large" ? "center" : "flex-start"}
+            direction={size === "large" ? "column" : "row"}
+          >
+            {size === "large" ? (
+              <FolderOutlined sx={{ height: 64, width: 64 }} />
+            ) : (
+              <Add sx={{ height: 20, marginRight: 1, width: 20 }} />
+            )}
+
             <span>
-              Drag and drop your <code>.csv</code> files here or <u>browse files</u> from your
-              computer.
+              Click to <u>browse files</u> from your computer or <u>drag and drop</u> your{" "}
+              <code>.csv</code> files here.
             </span>
           </Stack>
         )}
@@ -168,7 +180,7 @@ export function FileDrop(props: PaperProps & { defaultBg?: string }) {
         accept=".csv"
         multiple
       />
-    </Paper>
+    </Button>
   )
 }
 

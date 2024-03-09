@@ -19,7 +19,6 @@ export function DatabaseInfo() {
   const [storageUsage, setStorageUsage] = useState<number | null>(null)
   const [auditLogs, setAuditLogs] = useState<number | null>(null)
   const [transactions, setTransactions] = useState<number | null>(null)
-  // const [genesis, setGenesis] = useState<number | null>(null)
   const accountReset = useStore($accountReset)
 
   useEffect(() => {
@@ -93,7 +92,7 @@ export function DatabaseInfo() {
   }, [accountReset])
 
   return (
-    <Paper sx={{ minWidth: 340 }}>
+    <Paper sx={{ minWidth: 340, width: { lg: 600 } }}>
       <Stack sx={{ paddingX: 2, paddingY: 1 }} gap={1}>
         <Stack direction="row" justifyContent="space-between">
           <SectionTitle>Disk Usage</SectionTitle>

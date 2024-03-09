@@ -37,7 +37,10 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   )
 
   return (
-    <Dialog open={open} onClose={handleCancel}>
+    <Dialog
+      open={open}
+      // onClose={handleCancel}  TODO based on props
+    >
       <form onSubmit={handleSubmit}>
         <DialogTitle>
           <Stack direction="row" alignItems="center" gap={0.5}>

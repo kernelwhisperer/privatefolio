@@ -1,11 +1,9 @@
-import { FolderOutlined } from "@mui/icons-material"
 import { Stack } from "@mui/material"
 import { useStore } from "@nanostores/react"
 import { proxy } from "comlink"
 import React, { useEffect, useMemo, useState } from "react"
 import { MemoryTable } from "src/components/EnhancedTable/MemoryTable"
 import { FileDrop } from "src/components/FileDrop"
-import { StaggeredList } from "src/components/StaggeredList"
 import { FileImport } from "src/interfaces"
 import { $accountReset, $activeAccount } from "src/stores/account-store"
 import { HeadCell } from "src/utils/table-utils"
@@ -15,7 +13,6 @@ import { FileImportHelp } from "./FileImportHelp"
 import { FileImportTableRow } from "./FileImportTableRow"
 
 export function FileImportsTable() {
-  const [showDrop, setShowDrop] = useState<boolean>(false)
   const [queryTime, setQueryTime] = useState<number | null>(null)
   const [rows, setRows] = useState<FileImport[]>([])
 
@@ -27,9 +24,6 @@ export function FileImportsTable() {
       const rows = await clancy.getFileImports($activeAccount.get())
       setQueryTime(Date.now() - start)
       setRows(rows)
-      setTimeout(() => {
-        setShowDrop(true)
-      }, 0)
     }
 
     fetchData().then()
@@ -108,31 +102,18 @@ export function FileImportsTable() {
   )
 
   return (
-    <>
-      {queryTime !== null && rows.length === 0 ? (
-        <FileDrop sx={{ padding: 4 }}>
-          <Stack alignItems="center">
-            <FolderOutlined sx={{ height: 64, width: 64 }} />
-            <span>Nothing to see here...</span>
-          </Stack>
-        </FileDrop>
-      ) : (
-        <MemoryTable<FileImport>
-          initOrderBy="timestamp"
-          headCells={headCells}
-          TableRowComponent={FileImportTableRow}
-          rows={rows}
-          queryTime={queryTime}
-          defaultRowsPerPage={10}
-          //
-        />
-      )}
-      <StaggeredList paddingTop={1} gap={1}>
-        {queryTime !== null && rows.length !== 0 && showDrop && (
-          <FileDrop defaultBg="var(--mui-palette-background-default)" />
-        )}
-        <FileImportHelp />
-      </StaggeredList>
-    </>
+    <Stack gap={1}>
+      <MemoryTable<FileImport>
+        initOrderBy="timestamp"
+        headCells={headCells}
+        TableRowComponent={FileImportTableRow}
+        rows={rows}
+        queryTime={queryTime}
+        defaultRowsPerPage={10}
+        emptyContent={<FileDrop sx={{ padding: 6 }} size="large" />}
+        addNewRow={<FileDrop fullWidth sx={{ borderRadius: 0, paddingX: 1.5 }} />}
+      />
+      <FileImportHelp />
+    </Stack>
   )
 }

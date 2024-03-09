@@ -58,7 +58,7 @@ export function AccountPicker() {
 
   const navigate = useNavigate()
 
-  const handleCreate = useCallback(() => {
+  const handleSubmit = useCallback(() => {
     const nameTrimmed = name.trim()
     if (nameTrimmed === "") {
       setError("This field cannot be empty")
@@ -75,7 +75,7 @@ export function AccountPicker() {
     toggleModalOpen()
     setError("")
     setName("")
-    navigate("/u/" + accounts.length)
+    navigate(`/u/${accounts.length}/import-data`)
     // HACK: this is a hack to make sure the active account is set after the navigation
     setTimeout(() => {
       $activeAccount.set(nameTrimmed)
@@ -187,31 +187,34 @@ export function AccountPicker() {
         </Drawer>
       </Portal> */}
       <Dialog open={modalOpen} onClose={toggleModalOpen}>
-        <DialogTitle>
-          <span>Add Account</span>
-        </DialogTitle>
-        <DialogContent sx={{ minWidth: 320 }}>
-          <div>
-            <SectionTitle>Name *</SectionTitle>
-            <TextField
-              variant="outlined"
-              fullWidth
-              size="small"
-              value={name}
-              onChange={(event) => setName(event.target.value)}
-              error={!!error}
-              helperText={error}
-            />
-          </div>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={toggleModalOpen} color="secondary" sx={{ paddingX: 2 }}>
-            Cancel
-          </Button>
-          <Button onClick={handleCreate} color="primary" sx={{ paddingX: 2 }}>
-            Create
-          </Button>
-        </DialogActions>
+        <form onSubmit={handleSubmit}>
+          <DialogTitle>
+            <span>Add Account</span>
+          </DialogTitle>
+          <DialogContent sx={{ minWidth: 320 }}>
+            <div>
+              <SectionTitle>Name *</SectionTitle>
+              <TextField
+                autoFocus
+                variant="outlined"
+                fullWidth
+                size="small"
+                value={name}
+                onChange={(event) => setName(event.target.value)}
+                error={!!error}
+                helperText={error}
+              />
+            </div>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={toggleModalOpen} color="secondary" sx={{ paddingX: 2 }}>
+              Cancel
+            </Button>
+            <Button type="submit" color="primary" sx={{ paddingX: 2 }}>
+              Create
+            </Button>
+          </DialogActions>
+        </form>
       </Dialog>
     </Box>
   )
