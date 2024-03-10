@@ -3,6 +3,15 @@
 Changes to this project will be documented in this file.
 Versioning is based on [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v0.2.0 - 2024/03/10
+
+### 💡 Feature updates
+
+- Better mobile support for Navigation and Settings.
+- Better Improve UI/UX for data tables (especially loading)
+
+---
+
 ## v0.1.0 - 2024/03/02
 
 ### 💡 Feature updates
@@ -13,6 +22,5 @@ Versioning is based on [Semantic Versioning](https://semver.org/spec/v2.0.0.html
 
 ### 🐛 Bug Fixes
 
-- Fix `TaskDetailsDialog` to show the previous progress percentage for updates that have the format `[undefined, string]`, indicating that the progress remained the same, but a new.
-
----
+- Fix `TaskDetailsDialog` to show the previous progress percentage for updates that have the format
+`[undefined, string]`, indicating that the progress remained the same, but a new.
