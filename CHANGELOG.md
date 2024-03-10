@@ -8,7 +8,7 @@ Versioning is based on [Semantic Versioning](https://semver.org/spec/v2.0.0.html
 ### 💡 Feature updates
 
 - Better mobile support for Navigation and Settings.
-- Better Improve UI/UX for data tables (especially loading)
+- Improved UI/UX for data tables (especially loading)
 
 ---
 
