@@ -124,9 +124,9 @@ export const MenuDrawerContents = ({ appVer, gitHash, open, toggleOpen }: MenuCo
             color="secondary"
             sx={{
               direction: "row",
+              display: isInstalled ? "none" : "inline-flex",
               justifyContent: "flex-start",
               transition: "transform 0.33s",
-              visibility: isInstalled ? "hidden" : "visible",
             }}
             onClick={promptInstall}
           >

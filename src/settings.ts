@@ -46,6 +46,7 @@ export const PLATFORM_IDS = [
   "binance",
   "coinmama",
   "ethereum",
+  "coinbase",
   // "evm",
   "mexc",
   // "op",
@@ -65,6 +66,7 @@ export const PLATFORMS_META: Record<PlatformId, PlatformMeta> = {
     logoUrl: "https://assets.coingecko.com/markets/images/52/small/binance.jpg?1519353250",
     name: "Binance",
   },
+  coinbase: { logoUrl: "", name: "Coinbase" },
   coinmama: { logoUrl: "", name: "Coinmama" },
   ethereum: {
     logoUrl: "https://icons.llamao.fi/icons/chains/rsz_ethereum.jpg",
