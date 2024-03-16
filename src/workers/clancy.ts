@@ -10,6 +10,7 @@ import * as kv from "../api/account/kv-api"
 import * as networth from "../api/account/networth-api"
 import * as portfolio from "../api/account/portfolio-api"
 import * as transactions from "../api/account/transactions-api"
+import * as assets from "../api/core/assets-api"
 import * as dailyPrices from "../api/core/daily-prices-api"
 import * as database from "../api/database"
 
@@ -24,6 +25,7 @@ const worker = {
   ...transactions,
   ...kv,
   ...portfolio,
+  ...assets,
 }
 
 export type Clancy = typeof worker

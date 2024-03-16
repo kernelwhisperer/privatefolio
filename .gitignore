@@ -45,3 +45,5 @@ pnpm-debug.log*
 next-env.d.ts
 
 .env
+
+public/app-data/assets
