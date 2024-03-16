@@ -29,13 +29,11 @@ export function ExportToCsvOptions(props: filteredData) {
         </IconButton>
       </Tooltip>
       <Menu
-        id="basic-menu"
+        
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
-        MenuListProps={{
-          "aria-labelledby": "basic-button",
-        }}
+
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
         transformOrigin={{ horizontal: "right", vertical: "top" }}
       >

@@ -17,9 +17,9 @@ const _filterOrder: (keyof Transaction)[] = [
   "feeAsset",
 ]
 const _filterOrderBySpecificity: (keyof Transaction)[] = [
-  "outgoingAsset",
-  "incomingAsset",
   "feeAsset",
+  "incomingAsset",
+  "outgoingAsset",
   "type",
   "wallet",
   "platform",
@@ -167,12 +167,13 @@ export async function findTransactions(request: FindTransactionsRequest = {}, ac
         timestamp: { $exists: true },
       }
 
-  if (preferredFilter) {
-    _filterOrder.forEach((filter) => {
-      if (filter === preferredFilter) return
-      selector[filter] = filters[filter] ? filters[filter] : { $exists: true }
-    })
-  }
+  // FIXME: seems to be breaking - is it no longer needed?
+  // if (preferredFilter) {
+  //   _filterOrder.forEach((filter) => {
+  //     if (filter === preferredFilter) return
+  //     selector[filter] = filters[filter] ? filters[filter] : { $exists: true }
+  //   })
+  // }
 
   const sort: PouchDB.Find.FindRequest<Transaction>["sort"] = !preferredFilter
     ? [{ timestamp: order }]

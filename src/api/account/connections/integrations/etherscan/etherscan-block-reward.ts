@@ -7,6 +7,7 @@ import {
   Transaction,
   TransactionType,
 } from "src/interfaces"
+import { PLATFORMS_META } from "src/settings"
 
 import { BlockRewardTransaction } from "../etherscan-rpc"
 
@@ -25,7 +26,7 @@ export function parseBlockReward(
   }
   const wallet = address.toLowerCase()
   const txId = `${connection._id}_${wallet}+${blockNumber}_BLOCK_${index}`
-  const assetId = "ethereum:0x0000000000000000000000000000000000000000:ETH"
+  const assetId = PLATFORMS_META.ethereum.nativeAssetId as string
   const operation: AuditLogOperation = "Reward"
   const type: TransactionType = operation
 

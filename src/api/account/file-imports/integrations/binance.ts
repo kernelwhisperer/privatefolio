@@ -1,10 +1,10 @@
 import { AuditLogOperation, BinanceAuditLog, ParserResult } from "src/interfaces"
-import { Platform } from "src/settings"
+import { PlatformId } from "src/settings"
 import { asUTC } from "src/utils/formatting-utils"
 import { hashString } from "src/utils/utils"
 
 export const Identifier = "binance-account-statement"
-export const platform: Platform = "binance"
+export const platform: PlatformId = "binance"
 
 export const HEADERS = [
   '"User_ID","UTC_Time","Account","Operation","Coin","Change","Remark"',

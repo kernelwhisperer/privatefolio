@@ -2,6 +2,7 @@ import PouchDB from "pouchdb"
 import PouchDBFind from "pouchdb-find"
 
 import {
+  Asset,
   AuditLog,
   BalanceMap,
   Connection,
@@ -38,7 +39,9 @@ if (testEnvironment) {
 // }
 PouchDB.plugin(PouchDBFind)
 
-const defaultDbOptions: PouchDB.Configuration.LocalDatabaseConfiguration = {
+export const Pouch = PouchDB
+
+export const defaultDbOptions: PouchDB.Configuration.LocalDatabaseConfiguration = {
   adapter: testEnvironment ? "memory" : undefined,
   auto_compaction: true,
   revs_limit: 1,
@@ -46,6 +49,7 @@ const defaultDbOptions: PouchDB.Configuration.LocalDatabaseConfiguration = {
 
 // Account database
 function createAccount(accountName: string) {
+  const assetsDB = new PouchDB<Asset>(`${accountName}/assets`, defaultDbOptions)
   const connectionsDB = new PouchDB<Connection>(`${accountName}/connections`, defaultDbOptions)
   const fileImportsDB = new PouchDB<FileImport>(`${accountName}/file-imports`, defaultDbOptions)
   const auditLogsDB = new PouchDB<AuditLog>(`${accountName}/audit-logs`, defaultDbOptions)
@@ -53,6 +57,7 @@ function createAccount(accountName: string) {
   const balancesDB = new PouchDB<BalanceMap>(`${accountName}/balances`, defaultDbOptions)
   const networthDB = new PouchDB<Networth>(`${accountName}/networth`, defaultDbOptions)
   const keyValueDB = new PouchDB<{ value: unknown }>(`${accountName}/key-value`, defaultDbOptions)
+
   // transactionsDB.on("indexing", function (event) {
   //   console.log("Indexing", event)
   // })
@@ -61,6 +66,7 @@ function createAccount(accountName: string) {
   // })
 
   return {
+    assetsDB,
     auditLogsDB,
     balancesDB,
     connectionsDB,
@@ -92,6 +98,7 @@ export async function deleteAccount(accountName: string) {
   const account = getAccount(accountName)
   //
   const {
+    assetsDB,
     auditLogsDB,
     balancesDB,
     connectionsDB,
@@ -100,6 +107,7 @@ export async function deleteAccount(accountName: string) {
     networthDB,
     transactionsDB,
   } = account
+  await assetsDB.destroy()
   await connectionsDB.destroy()
   await fileImportsDB.destroy()
   await auditLogsDB.destroy()

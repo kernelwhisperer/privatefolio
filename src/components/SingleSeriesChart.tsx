@@ -12,7 +12,6 @@ import {
   IconButton,
   IconButtonProps,
   Paper,
-  Skeleton,
   Stack,
   SvgIcon,
   Tooltip,
@@ -20,7 +19,6 @@ import {
   useTheme,
 } from "@mui/material"
 import { useStore } from "@nanostores/react"
-import { a, useTransition } from "@react-spring/web"
 import {
   DeepPartial,
   IChartApi,
@@ -31,7 +29,7 @@ import {
   Time,
 } from "lightweight-charts"
 import { merge } from "lodash-es"
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import React, { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { $inspectTime } from "src/stores/pages/balances-store"
 
 import { useBoolean } from "../hooks/useBoolean"
@@ -48,8 +46,9 @@ import {
   greenColor,
   greenColorDark,
 } from "../utils/chart-utils"
-import { SPRING_CONFIGS } from "../utils/utils"
 import { Chart, ChartProps } from "./Chart"
+import { CircularSpinner } from "./CircularSpinner"
+import { NoDataAvailable } from "./NoDataAvailable"
 import { QueryTimer } from "./QueryTimer"
 
 export function ChartIconButton({ active, ...rest }: IconButtonProps & { active: boolean }) {
@@ -68,6 +67,7 @@ export type QueryFunction = () => Promise<ChartData[]>
 export type TooltipOpts = Partial<Omit<TooltipPrimitiveOptions, "priceExtractor">>
 
 interface SingleSeriesChartProps extends Omit<Partial<ChartProps>, "chartRef"> {
+  emptyContent?: ReactNode
   /**
    * @default "Candlestick"
    */
@@ -87,6 +87,7 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
     size = "large",
     seriesOptions = DEFAULT_OPTS as DeepPartial<SeriesOptionsCommon>,
     tooltipOptions = DEFAULT_OPTS as TooltipOpts,
+    emptyContent = <NoDataAvailable />,
     ...rest
   } = props
 
@@ -106,7 +107,7 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
   const seriesRef = useRef<ISeriesApi<SeriesType> | undefined>(undefined)
   // const preferredType = useStore($preferredType)
   const [preferredType, setPreferredType] = useState<SeriesType>(initType)
-  const [loading, setLoading] = useState<boolean>(true)
+  const [isLoading, setLoading] = useState<boolean>(true)
   const [queryTime, setQueryTime] = useState<number | null>(null)
   const [data, setData] = useState<ChartData[]>([])
 
@@ -321,19 +322,11 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
     })
   }, [queryFn, activeInterval])
 
-  const transitions = useTransition(loading, {
-    config: SPRING_CONFIGS.veryQuick,
-    enter: { opacity: 2 },
-    exitBeforeEnter: true,
-    from: { opacity: 2 },
-    leave: { opacity: 1 },
-  })
+  const isEmpty = data.length === 0
 
   return (
     <>
-      {transitions((styles, isLoading) => (
-        <a.div style={styles}>
-          {isLoading ? (
+      {/* {isLoading ? (
             <Stack gap={1.5} sx={{ height, overflow: "hidden" }} justifyContent="center">
               <Stack
                 direction="row"
@@ -341,214 +334,191 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
                 alignItems={"flex-end"}
                 sx={{ paddingY: 1, width: 1168 }}
               >
-                <Skeleton animation={false} variant="rounded" width={37} height={"80%"}></Skeleton>
-                <Skeleton animation={false} variant="rounded" width={37} height={260}></Skeleton>
-                <Skeleton animation={false} variant="rounded" width={37} height={"100%"}></Skeleton>
-                <Skeleton animation={false} variant="rounded" width={37} height={280}></Skeleton>
-                <Skeleton animation={false} variant="rounded" width={37} height={"80%"}></Skeleton>
-                <Skeleton animation={false} variant="rounded" width={37} height={220}></Skeleton>
-                <Skeleton animation={false} variant="rounded" width={37} height={"100%"}></Skeleton>
-                <Skeleton animation={false} variant="rounded" width={37} height={260}></Skeleton>
-                <Skeleton animation={false} variant="rounded" width={37} height={290}></Skeleton>
-                <Skeleton animation={false} variant="rounded" width={37} height={300}></Skeleton>
-                <Skeleton animation={false} variant="rounded" width={37} height={"80%"}></Skeleton>
-                <Skeleton animation={false} variant="rounded" width={37} height={260}></Skeleton>
-                <Skeleton animation={false} variant="rounded" width={37} height={"100%"}></Skeleton>
-                <Skeleton animation={false} variant="rounded" width={37} height={280}></Skeleton>
-                <Skeleton animation={false} variant="rounded" width={37} height={"80%"}></Skeleton>
-                <Skeleton animation={false} variant="rounded" width={37} height={220}></Skeleton>
-                <Skeleton animation={false} variant="rounded" width={37} height={"100%"}></Skeleton>
-                <Skeleton animation={false} variant="rounded" width={37} height={260}></Skeleton>
-                <Skeleton animation={false} variant="rounded" width={37} height={290}></Skeleton>
-                <Skeleton animation={false} variant="rounded" width={37} height={300}></Skeleton>
-                <Skeleton animation={false} variant="rounded" width={37} height={"80%"}></Skeleton>
-                <Skeleton animation={false} variant="rounded" width={37} height={260}></Skeleton>
-                <Skeleton animation={false} variant="rounded" width={37} height={"100%"}></Skeleton>
-                <Skeleton animation={false} variant="rounded" width={37} height={280}></Skeleton>
-                {/* <Skeleton animation={false} variant="rounded" width={37} height={"80%"}></Skeleton>
-                <Skeleton animation={false} variant="rounded" width={37} height={220}></Skeleton>
-                <Skeleton animation={false} variant="rounded" width={37} height={"100%"}></Skeleton>
-                <Skeleton animation={false} variant="rounded" width={37} height={260}></Skeleton>
-                <Skeleton animation={false} variant="rounded" width={37} height={290}></Skeleton>
-                <Skeleton animation={false} variant="rounded" width={37} height={300}></Skeleton> */}
+                <CircularSpinner color="accent" />
               </Stack>
             </Stack>
-          ) : (
-            <Paper
-              sx={{
-                height,
-                overflow: "hidden", // because of borderRadius
-                position: "relative",
-                // height: "100%",
-                ...(fullscreen
-                  ? {
-                      bottom: 0,
-                      left: 0,
-                      position: "absolute",
-                      right: 0,
-                      top: 0,
-                    }
-                  : {
-                      // height: "calc(100% - 32px)",
-                    }),
-              }}
-            >
-              <Stack
-                sx={{
-                  borderBottom: "1px solid var(--mui-palette-TableCell-border)",
-                  marginLeft: -0.5,
-                  minHeight: 43,
-                }}
-                alignItems="center"
-                justifyContent="space-between"
-                paddingX={1.5}
-                direction="row"
+          ) : ( */}
+      <Paper
+        sx={{
+          height,
+          overflow: "hidden", // because of borderRadius
+          position: "relative",
+          // height: "100%",
+          ...(fullscreen
+            ? {
+                bottom: 0,
+                left: 0,
+                position: "absolute",
+                right: 0,
+                top: 0,
+              }
+            : {
+                // height: "calc(100% - 32px)",
+              }),
+        }}
+      >
+        <Stack
+          sx={{
+            borderBottom: "1px solid var(--mui-palette-TableCell-border)",
+            marginLeft: -0.5,
+            minHeight: 43,
+            ...(isLoading || isEmpty
+              ? {
+                  borderColor: "transparent",
+                  opacity: 0,
+                }
+              : {}),
+          }}
+          alignItems="center"
+          justifyContent="space-between"
+          paddingX={1.5}
+          direction="row"
+        >
+          <Stack direction="row" gap={1}>
+            <Stack direction="row">
+              <Tooltip
+                title={
+                  <>
+                    Switch to <b>Move</b> cursor
+                  </>
+                }
               >
-                <Stack direction="row" gap={1}>
-                  <Stack direction="row">
-                    <Tooltip
-                      title={
-                        <>
-                          Switch to <b>Move</b> cursor
-                        </>
-                      }
+                <span>
+                  <ChartIconButton
+                    active={cursorMode === "move"}
+                    onClick={() => setCursorMode("move")}
+                  >
+                    <ControlCamera fontSize="inherit" />
+                  </ChartIconButton>
+                </span>
+              </Tooltip>
+              <Tooltip
+                title={
+                  <>
+                    Switch to <b>Inspect</b> cursor
+                    <br />
+                    (or hold <i>Ctrl</i> for quick toggle)
+                  </>
+                }
+              >
+                <span>
+                  <ChartIconButton
+                    active={cursorMode === "inspect"}
+                    onClick={() => setCursorMode("inspect")}
+                  >
+                    <SvgIcon fontSize="inherit">
+                      {/* cc https://icon-sets.iconify.design/fluent/cursor-16-filled/ */}
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 16 16"
+                      >
+                        <path
+                          fill="currentColor"
+                          d="M4.002 2.998a1 1 0 0 1 1.6-.8L13.6 8.2c.768.576.36 1.8-.6 1.8H9.053a1 1 0 0 0-.793.39l-2.466 3.215c-.581.758-1.793.347-1.793-.609z"
+                        />
+                      </svg>
+                    </SvgIcon>
+                  </ChartIconButton>
+                </span>
+              </Tooltip>
+              <Tooltip
+                title={
+                  <>
+                    <>
+                      Switch to <b>Measure</b> cursor
+                      <br />
+                      (or hold <i>Shift</i> for quick toggle)
+                    </>
+                  </>
+                }
+              >
+                <span>
+                  <ChartIconButton
+                    active={cursorMode === "measure"}
+                    onClick={() => setCursorMode("measure")}
+                  >
+                    <StraightenSharp fontSize="inherit" />
+                  </ChartIconButton>
+                </span>
+              </Tooltip>
+            </Stack>
+            <Divider orientation="vertical" flexItem />
+            <Stack direction="row">
+              {favoriteIntervals.map((interval) => (
+                <Tooltip key={interval} title="Switch interval">
+                  <span>
+                    <Button
+                      size="small"
+                      sx={{ borderRadius: 0.5, paddingX: 1 }}
+                      disabled={!["1d", "1w"].includes(interval)}
+                      // disabled={timeframes ? !timeframes.includes(interval as Timeframe) : false}
+                      // className={timeframe === interval ? "active" : undefined}
+                      title={interval}
+                      aria-label={interval}
+                      color={interval === activeInterval ? "accent" : "secondary"}
+                      onClick={() => {
+                        $preferredInterval.set(interval)
+                      }}
                     >
-                      <span>
-                        <ChartIconButton
-                          active={cursorMode === "move"}
-                          onClick={() => setCursorMode("move")}
-                        >
-                          <ControlCamera fontSize="inherit" />
-                        </ChartIconButton>
-                      </span>
-                    </Tooltip>
-                    <Tooltip
-                      title={
-                        <>
-                          Switch to <b>Inspect</b> cursor
-                          <br />
-                          (or hold <i>Ctrl</i> for quick toggle)
-                        </>
-                      }
-                    >
-                      <span>
-                        <ChartIconButton
-                          active={cursorMode === "inspect"}
-                          onClick={() => setCursorMode("inspect")}
-                        >
-                          <SvgIcon fontSize="inherit">
-                            {/* cc https://icon-sets.iconify.design/fluent/cursor-16-filled/ */}
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="16"
-                              height="16"
-                              viewBox="0 0 16 16"
-                            >
-                              <path
-                                fill="currentColor"
-                                d="M4.002 2.998a1 1 0 0 1 1.6-.8L13.6 8.2c.768.576.36 1.8-.6 1.8H9.053a1 1 0 0 0-.793.39l-2.466 3.215c-.581.758-1.793.347-1.793-.609z"
-                              />
-                            </svg>
-                          </SvgIcon>
-                        </ChartIconButton>
-                      </span>
-                    </Tooltip>
-                    <Tooltip
-                      title={
-                        <>
-                          <>
-                            Switch to <b>Measure</b> cursor
-                            <br />
-                            (or hold <i>Shift</i> for quick toggle)
-                          </>
-                        </>
-                      }
-                    >
-                      <span>
-                        <ChartIconButton
-                          active={cursorMode === "measure"}
-                          onClick={() => setCursorMode("measure")}
-                        >
-                          <StraightenSharp fontSize="inherit" />
-                        </ChartIconButton>
-                      </span>
-                    </Tooltip>
-                  </Stack>
-                  <Divider orientation="vertical" flexItem />
-                  <Stack direction="row">
-                    {favoriteIntervals.map((interval) => (
-                      <Tooltip key={interval} title="Switch interval">
-                        <span>
-                          <Button
-                            size="small"
-                            sx={{ borderRadius: 0.5, paddingX: 1 }}
-                            disabled={!["1d", "1w"].includes(interval)}
-                            // disabled={timeframes ? !timeframes.includes(interval as Timeframe) : false}
-                            // className={timeframe === interval ? "active" : undefined}
-                            title={interval}
-                            aria-label={interval}
-                            color={interval === activeInterval ? "accent" : "secondary"}
-                            onClick={() => {
-                              $preferredInterval.set(interval)
-                            }}
-                          >
-                            {interval.replace("1d", "D").replace("1w", "W")}
-                          </Button>
-                        </span>
-                      </Tooltip>
-                    ))}
-                  </Stack>
-                  <Divider orientation="vertical" flexItem />
-                  <Stack direction="row">
-                    <Tooltip title="Switch to Candlestick">
-                      <span>
-                        <ChartIconButton
-                          disabled={data.length > 0 && !("open" in data[0])}
-                          active={activeType === "Candlestick"}
-                          onClick={() => setPreferredType("Candlestick")}
-                        >
-                          <CandlestickChartSharp fontSize="inherit" />
-                        </ChartIconButton>
-                      </span>
-                    </Tooltip>
-                    <Tooltip title="Switch to Area">
-                      <span>
-                        <ChartIconButton
-                          active={activeType === "Area"}
-                          onClick={() => setPreferredType("Area")}
-                        >
-                          {/* <ShowChart fontSize="inherit" /> */}
-                          {/* cc https://icon-sets.iconify.design/material-symbols/area-chart/ */}
-                          <SvgIcon fontSize="inherit">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                fill="currentColor"
-                                d="m21 16l-9.4-7.35l-3.975 5.475L3 10.5V7l4 3l5-7l5 4h4zM3 20v-7l5 4l4-5.5l9 7.025V20z"
-                              />
-                            </svg>
-                          </SvgIcon>
-                        </ChartIconButton>
-                      </span>
-                    </Tooltip>
-                    <Tooltip title="Switch to Histogram">
-                      <span>
-                        <ChartIconButton
-                          active={activeType == "Histogram"}
-                          onClick={() => setPreferredType("Histogram")}
-                        >
-                          <BarChartOutlined fontSize="inherit" />
-                        </ChartIconButton>
-                      </span>
-                    </Tooltip>
-                  </Stack>
-                </Stack>
-                <Stack direction="row">
-                  {/* <IconButton size="small" onClick={toggleFullscreen} color="secondary">
+                      {interval.replace("1d", "D").replace("1w", "W")}
+                    </Button>
+                  </span>
+                </Tooltip>
+              ))}
+            </Stack>
+            <Divider orientation="vertical" flexItem />
+            <Stack direction="row">
+              <Tooltip title="Switch to Candlestick">
+                <span>
+                  <ChartIconButton
+                    disabled={data.length > 0 && !("open" in data[0])}
+                    active={activeType === "Candlestick"}
+                    onClick={() => setPreferredType("Candlestick")}
+                  >
+                    <CandlestickChartSharp fontSize="inherit" />
+                  </ChartIconButton>
+                </span>
+              </Tooltip>
+              <Tooltip title="Switch to Area">
+                <span>
+                  <ChartIconButton
+                    active={activeType === "Area"}
+                    onClick={() => setPreferredType("Area")}
+                  >
+                    {/* <ShowChart fontSize="inherit" /> */}
+                    {/* cc https://icon-sets.iconify.design/material-symbols/area-chart/ */}
+                    <SvgIcon fontSize="inherit">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          fill="currentColor"
+                          d="m21 16l-9.4-7.35l-3.975 5.475L3 10.5V7l4 3l5-7l5 4h4zM3 20v-7l5 4l4-5.5l9 7.025V20z"
+                        />
+                      </svg>
+                    </SvgIcon>
+                  </ChartIconButton>
+                </span>
+              </Tooltip>
+              <Tooltip title="Switch to Histogram">
+                <span>
+                  <ChartIconButton
+                    active={activeType == "Histogram"}
+                    onClick={() => setPreferredType("Histogram")}
+                  >
+                    <BarChartOutlined fontSize="inherit" />
+                  </ChartIconButton>
+                </span>
+              </Tooltip>
+            </Stack>
+          </Stack>
+          <Stack direction="row">
+            {/* <IconButton size="small" onClick={toggleFullscreen} color="secondary">
                     {fullscreen ? (
                       <FullscreenExit fontSize="inherit" />
                     ) : (
@@ -558,57 +528,66 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
                   <IconButton size="small" color="secondary">
                     <MoreHoriz fontSize="inherit" />
                   </IconButton> */}
-                </Stack>
-              </Stack>
-              <Box sx={{ height: "calc(100% - 43px - 4px)" }}>
-                <Chart
-                  chartRef={chartRef}
-                  onChartReady={handleChartReady}
-                  logScale={logScale}
-                  cursor={
-                    cursorMode === "move"
-                      ? "move"
-                      : cursorMode === "inspect"
-                      ? "pointer"
-                      : "crosshair"
-                  }
-                  {...rest}
-                />
-              </Box>
-              <Stack
-                sx={{
-                  "& > *": {
-                    alignItems: "center",
-                    background: "var(--mui-palette-background-paper)",
-                    display: "flex",
-                    height: 28,
-                    paddingX: 1.5,
-                  },
-                  bottom: 4,
-                  position: "absolute",
-                  width: "100%",
-                  zIndex: 1,
-                }}
-                justifyContent="space-between"
-                direction="row"
-              >
-                <div>{queryTime !== undefined && <QueryTimer queryTime={queryTime} />}</div>
-                <div>
-                  <Button
-                    color={logScale ? "accent" : "secondary"}
-                    size="small"
-                    variant="text"
-                    onClick={toggleLogScale}
-                    sx={{ borderRadius: 0.5, paddingX: 1 }}
-                  >
-                    Log
-                  </Button>
-                </div>
-              </Stack>
-            </Paper>
+          </Stack>
+        </Stack>
+        <Box sx={{ height: "calc(100% - 43px - 4px)" }}>
+          {(isLoading || isEmpty) && (
+            <Stack
+              justifyContent="center"
+              alignItems="center"
+              sx={{ height: "100%", width: "100%" }}
+            >
+              {isEmpty && !isLoading && emptyContent}
+              {isLoading && <CircularSpinner color="accent" />}
+            </Stack>
           )}
-        </a.div>
-      ))}
+          <Chart
+            chartRef={chartRef}
+            onChartReady={handleChartReady}
+            logScale={logScale}
+            cursor={
+              cursorMode === "move" ? "move" : cursorMode === "inspect" ? "pointer" : "crosshair"
+            }
+            {...rest}
+          />
+        </Box>
+        <Stack
+          sx={{
+            "& > *": {
+              alignItems: "center",
+              background: "var(--mui-palette-background-paper)",
+              display: "flex",
+              height: 28,
+              paddingX: 1.5,
+            },
+            bottom: 4,
+            position: "absolute",
+            width: "100%",
+            zIndex: 1,
+            ...(isLoading || isEmpty
+              ? {
+                  borderColor: "transparent",
+                  opacity: 0,
+                }
+              : {}),
+          }}
+          justifyContent="space-between"
+          direction="row"
+        >
+          <div>{queryTime !== undefined && <QueryTimer queryTime={queryTime} />}</div>
+          <div>
+            <Button
+              color={logScale ? "accent" : "secondary"}
+              size="small"
+              variant="text"
+              onClick={toggleLogScale}
+              sx={{ borderRadius: 0.5, paddingX: 1 }}
+            >
+              Log
+            </Button>
+          </div>
+        </Stack>
+      </Paper>
     </>
   )
 }

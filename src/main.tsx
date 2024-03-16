@@ -1,4 +1,3 @@
-// import "./index.css"
 import "./workers/remotes"
 
 import * as React from "react"

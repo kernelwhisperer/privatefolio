@@ -109,7 +109,6 @@ export function FileImportsTable() {
         TableRowComponent={FileImportTableRow}
         rows={rows}
         queryTime={queryTime}
-        defaultRowsPerPage={10}
         emptyContent={<FileDrop sx={{ padding: 6 }} size="large" />}
         addNewRow={<FileDrop fullWidth sx={{ borderRadius: 0, paddingX: 1.5 }} />}
       />

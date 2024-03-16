@@ -25,7 +25,6 @@ import { TimestampBlock } from "src/components/TimestampBlock"
 import { ValueChip } from "src/components/ValueChip"
 import { ChartData, EtherscanTransaction, Transaction } from "src/interfaces"
 import { DEFAULT_DEBOUNCE_DURATION } from "src/settings"
-import { $baseCurrency } from "src/stores/account-settings-store"
 import { $activeAccount, $activeIndex } from "src/stores/account-store"
 import { PopoverToggleProps } from "src/stores/app-store"
 import { MonoFont } from "src/theme"
@@ -87,9 +86,7 @@ export function TransactionDrawer(props: TransactionDrawerProps) {
     clancy.getAssetPriceMap(timestamp).then((priceMap) => {
       setPriceMap(priceMap)
     })
-  }, [_id, open])
-
-  const currency = useStore($baseCurrency)
+  }, [_id, open, timestamp])
 
   const [textInput, setTextInput] = useState(tx.notes || "")
 
@@ -288,6 +285,7 @@ export function TransactionDrawer(props: TransactionDrawerProps) {
         <div>
           <SectionTitle>Notes</SectionTitle>
           <TextField
+            autoComplete="off"
             multiline
             onChange={handleTextInputChange}
             defaultValue={textInput}

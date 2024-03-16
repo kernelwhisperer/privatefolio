@@ -1,6 +1,6 @@
-import { AuditLog, BalanceMap, EtherscanTransaction, Platform, Transaction } from "src/interfaces"
+import { AuditLog, BalanceMap, EtherscanTransaction, PlatformId, Transaction } from "src/interfaces"
 
-export function trimTxId(fullId: string, platform: Platform): string {
+export function trimTxId(fullId: string, platform: PlatformId): string {
   const parts = fullId.split("_")
 
   // Example "1682669678_0xb41d6819932845278e7c451400f1778a952b35c6358dc51b49436438753f5113_NORMAL_0"
@@ -10,7 +10,7 @@ export function trimTxId(fullId: string, platform: Platform): string {
   return trimmedId
 }
 
-export function trimAuditLogId(fullId: string, platform: Platform): string {
+export function trimAuditLogId(fullId: string, platform: PlatformId): string {
   const parts = fullId.split("_")
 
   // Example "1682669678_0xb41d6819932845278e7c451400f1778a952b35c6358dc51b49436438753f5113_NORMAL_0_VALUE_0"

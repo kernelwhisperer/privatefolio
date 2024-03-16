@@ -43,8 +43,6 @@ export function TaskDetailsDialog({ taskId, ...props }: DialogProps & { taskId: 
   const updates = Object.keys(updateMap)
   const completed = task && "completedAt" in task && task.completedAt
 
-  const latestPercentRef = useRef<number>(0)
-
   const progressPercent = useMemo<number>(() => {
     if (completed && !task.abortController?.signal.aborted && !task?.errorMessage) {
       return 100
@@ -54,15 +52,13 @@ export function TaskDetailsDialog({ taskId, ...props }: DialogProps & { taskId: 
       return 0
     }
 
-    const lastUpdate = updates[updates.length - 1]
+    const lastUpdate = updates.findLast((update) => typeof updateMap[update][0] === "number")
 
-    const newValue = updateMap[lastUpdate][0]
-
-    if (typeof newValue === "number") {
-      latestPercentRef.current = newValue
+    if (typeof lastUpdate === "string") {
+      return updateMap[lastUpdate][0] as number
     }
 
-    return latestPercentRef.current
+    return 0
   }, [completed, task, updateMap, updates])
 
   const detailsRef = useRef<HTMLDivElement>(null)

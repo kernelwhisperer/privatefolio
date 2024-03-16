@@ -6,13 +6,11 @@ import { TransactionTable } from "./TransactionTable"
 
 export default function TransactionsPage({ show }: { show: boolean }) {
   const [searchParams] = useSearchParams()
-  const id = searchParams.get("id") || undefined
+  const txId = searchParams.get("id") || undefined
 
   return (
     <StaggeredList component="main" gap={2} show={show}>
-      <div>
-        <TransactionTable id={id} />
-      </div>
+      <TransactionTable txId={txId} />
     </StaggeredList>
   )
 }

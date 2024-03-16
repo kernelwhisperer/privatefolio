@@ -7,6 +7,7 @@ import {
   ParserResult,
   TransactionType,
 } from "src/interfaces"
+import { PLATFORMS_META } from "src/settings"
 import { extractMethodFromFunctionName } from "src/utils/integrations/etherscan-utils"
 
 import { NormalTransaction } from "../etherscan-rpc"
@@ -36,7 +37,7 @@ export function parseNormal(
     throw new Error(`Invalid timestamp: ${time}`)
   }
   const txId = `${connection._id}_${txHash}_NORMAL_${index}`
-  const assetId = "ethereum:0x0000000000000000000000000000000000000000:ETH"
+  const assetId = PLATFORMS_META.ethereum.nativeAssetId as string
   const wallet = address.toLowerCase()
   const hasError = isError === "1" || undefined
   const method = extractMethodFromFunctionName(functionName || methodId)

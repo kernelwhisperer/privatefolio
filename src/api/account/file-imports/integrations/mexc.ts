@@ -5,12 +5,12 @@ import {
   TransactionRole,
   TransactionSide,
 } from "src/interfaces"
-import { Platform } from "src/settings"
+import { PlatformId } from "src/settings"
 import { asUTC } from "src/utils/formatting-utils"
 import { hashString } from "src/utils/utils"
 
 export const Identifier = "mexc"
-export const platform: Platform = "mexc"
+export const platform: PlatformId = "mexc"
 
 export const HEADER = "Pairs,Time,Side,Filled Price,Executed Amount,Total,Fee,Role"
 

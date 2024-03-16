@@ -1,10 +1,10 @@
 import { AuditLog, ParserResult, Transaction, TransactionSide } from "src/interfaces"
-import { Platform } from "src/settings"
+import { PlatformId } from "src/settings"
 import { asUTC } from "src/utils/formatting-utils"
 import { hashString } from "src/utils/utils"
 
 export const Identifier = "binance-spot-history"
-export const platform: Platform = "binance"
+export const platform: PlatformId = "binance"
 
 export const HEADER = '"Date(UTC)","Pair","Side","Price","Executed","Amount","Fee"'
 

@@ -58,6 +58,7 @@ export function AddAccount(props: addAccountProps) {
           <div>
             <SectionTitle>Name *</SectionTitle>
             <TextField
+              autoComplete="off"
               autoFocus
               variant="outlined"
               fullWidth

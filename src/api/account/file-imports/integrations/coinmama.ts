@@ -1,10 +1,10 @@
 import { AuditLog, AuditLogOperation, ParserResult, Transaction } from "src/interfaces"
-import { Platform } from "src/settings"
+import { PlatformId } from "src/settings"
 import { asUTC } from "src/utils/formatting-utils"
 import { hashString } from "src/utils/utils"
 
 export const Identifier = "coinmama"
-export const platform: Platform = "coinmama"
+export const platform: PlatformId = "coinmama"
 
 export const HEADER = "Transaction, Type,	Amount,	Date Created,	Status"
 

@@ -9,6 +9,7 @@ import { PlatformMap } from "../../stores/metadata-store"
 
 export async function findPlatformsMeta(nameMap: Record<string, boolean>) {
   const map: PlatformMap = {}
+  return map
 
   if (Object.keys(nameMap).length === 0) {
     return map

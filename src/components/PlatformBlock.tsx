@@ -1,8 +1,6 @@
 import { Stack, Tooltip } from "@mui/material"
-import { useStore } from "@nanostores/react"
 import React from "react"
-import { PLATFORMS_META } from "src/settings"
-import { $platformMetaMap } from "src/stores/metadata-store"
+import { PlatformId, PLATFORMS_META } from "src/settings"
 
 import { AssetAvatarProps } from "./AssetAvatar"
 import { PlatformAvatar } from "./PlatformAvatar"
@@ -14,21 +12,22 @@ type PlatformBlockProps = {
 
 export function PlatformBlock(props: PlatformBlockProps) {
   const { platform, hideName, ...rest } = props
-  const platformMetaMap = useStore($platformMetaMap)
+
+  const meta = PLATFORMS_META[platform as PlatformId]
 
   return (
     <Tooltip title={hideName ? PLATFORMS_META[platform].name : null}>
       <Stack direction="row" gap={0.5} alignItems="center" component="div">
         <PlatformAvatar
           size="small"
-          src={platformMetaMap[platform]?.image}
+          src={meta.logoUrl}
           sx={{
             borderRadius: "2px",
           }}
-          alt={PLATFORMS_META[platform].name}
+          alt={meta.name}
           {...rest}
         />
-        {!hideName && <span>{PLATFORMS_META[platform].name}</span>}
+        {!hideName && <span>{meta.name}</span>}
       </Stack>
     </Tooltip>
   )

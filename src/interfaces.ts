@@ -5,8 +5,9 @@ import {
   InternalTransaction,
   NormalTransaction,
 } from "./api/account/connections/integrations/etherscan-rpc"
-import { ParserId, Platform } from "./settings"
-export type { Platform } from "./settings"
+import { ParserId, PlatformId } from "./settings"
+
+export type { PlatformId } from "./settings"
 
 export type TransactionRole = "Maker" | "Taker"
 export type TransactionSide = "BUY" | "SELL"
@@ -56,7 +57,7 @@ export interface Transaction {
   outgoing?: string
   outgoingAsset?: string
   outgoingN?: number
-  platform: Platform
+  platform: PlatformId
   price?: string
   priceN?: number
   role?: TransactionRole
@@ -86,16 +87,6 @@ export type AuditLogOperation =
   | "Transfer"
   | "Smart Contract"
   | "Reward"
-
-export type PlatformId = "ethereum" | "binance" | "coinbase" | "coinmama"
-
-export interface AssetMetadata {
-  coingeckoId?: string
-  image: string
-  isStablecoin?: boolean
-  name: string
-  symbol: string
-}
 
 export interface Exchange {
   coingeckoId: string
@@ -136,7 +127,7 @@ export interface AuditLog {
   importId: string
   importIndex: number
   operation: AuditLogOperation
-  platform: Platform
+  platform: PlatformId
   timestamp: Timestamp
   txId?: string
   wallet: string
@@ -159,7 +150,7 @@ export interface FileImport {
     integration: ParserId
     logs: number
     operations: AuditLogOperation[]
-    platform: Platform
+    platform: PlatformId
     rows: number
     transactions: number
     wallets: string[]
@@ -322,7 +313,7 @@ export interface Connection {
     transactions: number
     wallets: string[]
   }
-  platform: Platform
+  platform: PlatformId
   syncedAt?: number
   /**
    * createdAt
@@ -358,6 +349,88 @@ export type SyncResult = {
   walletMap: Record<string, boolean>
 }
 
-export type Asset = AssetMetadata & {
-  _id: string
+export interface CoingeckoMetadataFull {
+  // additional_notices: any[]
+  asset_platform_id: string
+  block_time_in_minutes: number
+  categories: string[]
+  contract_address: string
+  country_origin: string
+  description: {
+    en: string
+  }
+  detail_platforms: {
+    [key: string]: {
+      contract_address: string
+      decimal_place: number
+    }
+  }
+  genesis_date: null | string
+  hashing_algorithm: null | string
+  id: string
+  image: {
+    large: string
+    small: string
+    thumb: string
+  }
+  last_updated: string
+  links: {
+    announcement_url: string[]
+    bitcointalk_thread_identifier: null | string
+    blockchain_site: string[]
+    chat_url: string[]
+    facebook_username: string
+    homepage: string[]
+    official_forum_url: string[]
+    repos_url: {
+      bitbucket: string[]
+      github: string[]
+    }
+    subreddit_url: string
+    telegram_channel_identifier: string
+    twitter_screen_name: string
+    whitepaper: string
+  }
+  market_cap_rank: number
+  name: string
+  platforms: {
+    [key: string]: string
+  }
+  preview_listing: boolean
+  public_notice: null | string
+  sentiment_votes_down_percentage: number
+  sentiment_votes_up_percentage: number
+  // status_updates: any[]
+  symbol: string
+  watchlist_portfolio_users: number
+  web_slug: string
 }
+
+export interface CoingeckoMetadataShort {
+  logoUrl: string
+  name: string
+}
+
+export interface AssetMetadata {
+  coingeckoId?: string
+  logoUrl: string
+  name: string
+  symbol: string
+}
+
+export interface Asset extends Partial<AssetMetadata> {
+  _id: string
+  priceApiId?: string
+  symbol: string
+}
+
+export interface FullAsset extends Asset {
+  price?: ChartData | null
+}
+
+/**
+ * Example: `0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2` (WETH)
+ */
+export type Web3Address = string
+
+export type CsvData = (string | number | undefined)[][]

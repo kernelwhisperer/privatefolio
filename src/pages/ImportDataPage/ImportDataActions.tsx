@@ -1,9 +1,6 @@
 import {
   CalculateOutlined,
-  CallMergeRounded,
-  CurrencyExchange,
   MemoryRounded,
-  MoneyOffRounded,
   MoreHoriz,
   PersonRemoveRounded,
   RestartAltRounded,
@@ -16,8 +13,6 @@ import { $accountReset, $accounts, $activeAccount } from "src/stores/account-sto
 import { useConfirm } from "../../hooks/useConfirm"
 import { enqueueTask, TaskPriority } from "../../stores/task-store"
 import {
-  enqueueAutoMerge,
-  enqueueFetchPrices,
   enqueueIndexDatabase,
   enqueueRecomputeBalances,
   enqueueRecomputeNetworth,
@@ -48,28 +43,12 @@ export function ImportDataActions() {
         </IconButton>
       </Tooltip>
       <Menu
-        id="basic-menu"
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
-        MenuListProps={{
-          "aria-labelledby": "basic-button",
-        }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
         transformOrigin={{ horizontal: "right", vertical: "top" }}
       >
-        <MenuItem
-          dense
-          onClick={() => {
-            enqueueAutoMerge()
-            handleClose()
-          }}
-        >
-          <ListItemIcon>
-            <CallMergeRounded fontSize="small" />
-          </ListItemIcon>
-          <ListItemText>Auto-merge transactions</ListItemText>
-        </MenuItem>
         <MenuItem
           dense
           onClick={() => {
@@ -105,51 +84,6 @@ export function ImportDataActions() {
             <CalculateOutlined fontSize="small" />
           </ListItemIcon>
           <ListItemText>Recompute networth</ListItemText>
-        </MenuItem>
-        <MenuItem
-          dense
-          onClick={() => {
-            enqueueFetchPrices()
-            handleClose()
-          }}
-        >
-          <ListItemIcon>
-            <CurrencyExchange fontSize="small" />
-          </ListItemIcon>
-          <ListItemText>Fetch asset prices</ListItemText>
-        </MenuItem>
-        <MenuItem
-          dense
-          onClick={async () => {
-            const { confirmed } = await confirm({
-              content: (
-                <>
-                  Asset prices are stored in a separate database, do not contain any sensitive
-                  information and are stored on disk in order to speed things up.
-                  <br />
-                  <br />
-                  Are you sure you wish to continue?
-                </>
-              ),
-              title: "Delete asset prices",
-            })
-            if (confirmed) {
-              enqueueTask({
-                description: "Removing asset price data, which is saved on disk.",
-                function: async () => {
-                  await clancy.resetCoreDatabase()
-                },
-                name: "Delete asset prices",
-                priority: TaskPriority.High,
-              })
-              handleClose()
-            }
-          }}
-        >
-          <ListItemIcon>
-            <MoneyOffRounded fontSize="small" />
-          </ListItemIcon>
-          <ListItemText>Delete asset prices</ListItemText>
         </MenuItem>
         <MenuItem
           dense

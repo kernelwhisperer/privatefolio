@@ -1,10 +1,15 @@
-import { CachedRounded, VisibilityOffRounded, VisibilityRounded } from "@mui/icons-material"
+import {
+  CachedRounded,
+  InfoOutlined,
+  VisibilityOffRounded,
+  VisibilityRounded,
+} from "@mui/icons-material"
 import { IconButton, Tooltip, Typography } from "@mui/material"
 import { useStore } from "@nanostores/react"
 import { proxy } from "comlink"
 import { debounce } from "lodash-es"
 import React, { useEffect, useMemo, useState } from "react"
-import { InformativeRowHiddenBalances } from "src/components/InformativeRowHiddenBalances"
+import { AttentionBlock } from "src/components/AttentionBlock"
 import { DEFAULT_DEBOUNCE_DURATION } from "src/settings"
 import { $hideSmallBalances, $hideSmallBalancesMap } from "src/stores/account-settings-store"
 import { $activeAccount } from "src/stores/account-store"
@@ -48,8 +53,6 @@ export default function BalancesPage({ show }: { show: boolean }) {
 
         setRows(visibleBalances)
         setHiddenBalances(allBalances.length - visibleBalances.length)
-
-        console.log("Balances", allBalances)
       })
     }
 
@@ -155,9 +158,12 @@ export default function BalancesPage({ show }: { show: boolean }) {
           defaultRowsPerPage={10}
           queryTime={queryTime}
           extraRow={
-            hiddenBalances ? (
-              <InformativeRowHiddenBalances hiddenBalancesN={hiddenBalances} />
-            ) : undefined
+            !!hiddenBalances && (
+              <AttentionBlock>
+                <InfoOutlined sx={{ height: 20, width: 20 }} />
+                <span>{hiddenBalances} hidden balances...</span>
+              </AttentionBlock>
+            )
           }
         />
       </div>

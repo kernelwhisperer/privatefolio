@@ -56,7 +56,7 @@ export async function getPricesForAsset(assetId: string, timestamp?: Timestamp) 
   return prices.docs.map((x) => x.price)
 }
 
-export async function getAssetPriceMap(timestamp: Timestamp) {
+export async function getAssetPriceMap(timestamp: Timestamp = new Date().getTime()) {
   await indexDailyPrices()
 
   const day: Timestamp = timestamp - (timestamp % 86400000)
@@ -163,6 +163,10 @@ export async function fetchDailyPrices(
             timeInterval: "1d" as ResolutionString,
             until,
           })
+
+          if (signal?.aborted) {
+            throw new Error(signal.reason)
+          }
 
           if (results.length === 0) {
             progress([undefined, `Skipped ${getAssetTicker(assetId)}: no results`])

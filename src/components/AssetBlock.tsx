@@ -1,7 +1,7 @@
 import { Stack, Typography } from "@mui/material"
 import { useStore } from "@nanostores/react"
 import React, { ReactNode } from "react"
-import { $assetMetaMap } from "src/stores/metadata-store"
+import { $assetMap } from "src/stores/metadata-store"
 import { getAssetTicker } from "src/utils/assets-utils"
 
 import { AssetAvatar, AssetAvatarProps } from "./AssetAvatar"
@@ -13,7 +13,7 @@ type AssetBlockProps = {
 } & Omit<AssetAvatarProps, "alt" | "src">
 
 export function AssetBlock(props: AssetBlockProps) {
-  const assetMap = useStore($assetMetaMap)
+  const assetMap = useStore($assetMap)
   const { asset, secondary, ...rest } = props
 
   return (
@@ -26,7 +26,7 @@ export function AssetBlock(props: AssetBlockProps) {
     >
       <AssetAvatar
         size="small"
-        src={asset ? assetMap[asset]?.image : undefined}
+        src={asset ? assetMap[asset]?.logoUrl : undefined}
         alt={asset ? getAssetTicker(asset) : undefined}
         {...rest}
       />

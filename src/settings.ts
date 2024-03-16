@@ -1,11 +1,10 @@
-export const ASSET_PAGES = 10
-export const ASSET_FILES_LOCATION = "app-images/assets"
+export const ASSET_FILES_LOCATION = "app-data/assets"
 
 export const EXCHANGE_PAGES = 2
-export const EXCHANGE_FILES_LOCATION = "app-images/exchanges"
+export const EXCHANGE_FILES_LOCATION = "app-data/exchanges"
 
 export const BLOCKCHAIN_PAGES = 1
-export const BLOCKCHAIN_FILES_LOCATION = "app-images/blockchains"
+export const BLOCKCHAIN_FILES_LOCATION = "app-data/blockchains"
 
 export const PARSER_IDS = [
   "binance-account-statement",
@@ -53,17 +52,26 @@ export const PLATFORM_IDS = [
   // "polygon",
 ] as const
 
-export type Platform = (typeof PLATFORM_IDS)[number]
+export type PlatformId = (typeof PLATFORM_IDS)[number]
 
 export type PlatformMeta = {
+  logoUrl: string
   name: string
+  nativeAssetId?: string
 }
 
-export const PLATFORMS_META: Record<Platform, PlatformMeta> = {
-  binance: { name: "Binance" },
-  coinmama: { name: "Coinmama" },
-  ethereum: { name: "Ethereum" },
-  mexc: { name: "MEXC Global" },
+export const PLATFORMS_META: Record<PlatformId, PlatformMeta> = {
+  binance: {
+    logoUrl: "https://assets.coingecko.com/markets/images/52/small/binance.jpg?1519353250",
+    name: "Binance",
+  },
+  coinmama: { logoUrl: "", name: "Coinmama" },
+  ethereum: {
+    logoUrl: "https://icons.llamao.fi/icons/chains/rsz_ethereum.jpg",
+    name: "Ethereum",
+    nativeAssetId: "ethereum:0x0000000000000000000000000000000000000000:ETH",
+  },
+  mexc: { logoUrl: "", name: "MEXC Global" },
 }
 
 export const CONNECTIONS = {
@@ -74,3 +82,26 @@ export const DEFAULT_DEBOUNCE_DURATION = 1500
 
 export const DB_OPERATION_PAGE_SIZE = 1000
 export const PRICE_API_PAGINATION = 900 // coinbase limit is 300, binance is 1000
+
+export const PRICE_API_IDS = ["coinbase", "binance", "defi-llama"] as const
+export type PriceApiId = (typeof PRICE_API_IDS)[number]
+
+export type PriceApiMeta = {
+  logoUrl: string
+  name: string
+}
+
+export const PRICE_APIS_META: Record<PriceApiId, PriceApiMeta> = {
+  binance: {
+    logoUrl: "/app-data/integrations/binance.svg",
+    name: "Binance",
+  },
+  coinbase: {
+    logoUrl: "/app-data/integrations/coinbase.svg",
+    name: "Coinbase",
+  },
+  "defi-llama": {
+    logoUrl: "/app-data/integrations/defi-llama.png",
+    name: "DefiLlama",
+  },
+}

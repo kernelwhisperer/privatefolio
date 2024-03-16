@@ -276,7 +276,7 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
                 {rows.length === 0 && !isEmpty && (
                   <TableRow>
                     <TableCell colSpan={headCells.length}>
-                      No data matches the current filters...
+                      No records match the current filters.
                     </TableCell>
                   </TableRow>
                 )}

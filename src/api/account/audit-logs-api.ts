@@ -90,12 +90,13 @@ export async function findAuditLogs(request: FindAuditLogsRequest = {}, accountN
         timestamp: { $exists: true },
       }
 
-  if (preferredFilter) {
-    _filterOrder.forEach((filter) => {
-      if (filter === preferredFilter) return
-      selector[filter] = filters[filter] ? filters[filter] : { $exists: true }
-    })
-  }
+  // FIXME: is this no longer needed?
+  // if (preferredFilter) {
+  //   _filterOrder.forEach((filter) => {
+  //     if (filter === preferredFilter) return
+  //     selector[filter] = filters[filter] ? filters[filter] : { $exists: true }
+  //   })
+  // }
 
   const sort: PouchDB.Find.FindRequest<AuditLog>["sort"] = !preferredFilter
     ? [{ timestamp: order }, { changeN: order }]

@@ -2,6 +2,7 @@ import React from "react"
 
 import { StaggeredList } from "../../components/StaggeredList"
 import { Subheading } from "../../components/Subheading"
+import { AssetsActions } from "./AssetsActions"
 import { AssetTable } from "./AssetTable"
 
 export default function AssetsPage({ show }: { show: boolean }) {
@@ -10,6 +11,7 @@ export default function AssetsPage({ show }: { show: boolean }) {
       <div>
         <Subheading>
           <span>Assets</span>
+          <AssetsActions />
         </Subheading>
         <AssetTable />
       </div>

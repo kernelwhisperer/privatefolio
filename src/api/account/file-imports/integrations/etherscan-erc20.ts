@@ -1,5 +1,4 @@
 import { isAddress } from "ethers"
-import spamTokens from "src/config/spam-tokens.json"
 import {
   AuditLog,
   AuditLogOperation,
@@ -7,10 +6,11 @@ import {
   ParserResult,
   TransactionType,
 } from "src/interfaces"
-import { Platform } from "src/settings"
+import { PlatformId } from "src/settings"
 import { asUTC } from "src/utils/formatting-utils"
+import { isSpamToken } from "src/utils/integrations/etherscan-utils"
 export const Identifier = "etherscan-erc20"
-export const platform: Platform = "ethereum"
+export const platform: PlatformId = "ethereum"
 
 export const HEADER =
   '"Txhash","Blockno","UnixTimestamp","DateTime (UTC)","From","To","TokenValue","USDValueDayOfTx","ContractAddress","TokenName","TokenSymbol"'
@@ -47,7 +47,7 @@ export function parser(
   if (tokenValue === "0") {
     return { logs: [] }
   }
-  if (contractAddress in spamTokens || symbol.includes("http")) {
+  if (isSpamToken(contractAddress, symbol)) {
     return { logs: [] }
   }
   // ----------------------------------------------------------------- Derive

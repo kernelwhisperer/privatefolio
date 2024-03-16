@@ -5,11 +5,11 @@ import {
   ParserResult,
   TransactionType,
 } from "src/interfaces"
-import { Platform } from "src/settings"
+import { PlatformId, PLATFORMS_META } from "src/settings"
 import { asUTC } from "src/utils/formatting-utils"
 
 export const Identifier = "etherscan"
-export const platform: Platform = "ethereum"
+export const platform: PlatformId = "ethereum"
 
 export const HEADER =
   '"Txhash","Blockno","UnixTimestamp","DateTime (UTC)","From","To","ContractAddress","Value_IN(ETH)","Value_OUT(ETH)","CurrentValue","TxnFee(ETH)","TxnFee(USD)","Historical $Price/Eth","Status","ErrCode","Method"'
@@ -42,7 +42,7 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
     throw new Error(`Invalid timestamp: ${datetimeUtc}`)
   }
   const txId = `${fileImportId}_${txHash}_NORMAL_${index}`
-  const assetId = "ethereum:0x0000000000000000000000000000000000000000:ETH"
+  const assetId = PLATFORMS_META.ethereum.nativeAssetId as string
   const wallet = incoming === "0" ? from : to
   const hasError = status === "Error(0)" || undefined // TODO statuses like Error(1) means only some internal txns failed
   //

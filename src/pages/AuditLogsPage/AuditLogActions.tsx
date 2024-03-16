@@ -22,13 +22,11 @@ export function AuditLogActions() {
         <MoreHoriz fontSize="small" />
       </IconButton>
       <Menu
-        id="basic-menu"
+        
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
-        MenuListProps={{
-          "aria-labelledby": "basic-button",
-        }}
+
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
         transformOrigin={{ horizontal: "right", vertical: "top" }}
       >

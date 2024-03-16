@@ -1,5 +1,6 @@
 import { getPair, mapToChartData, queryPrices } from "src/api/core/prices/llama-price-api"
 import { ResolutionString } from "src/interfaces"
+import { PLATFORMS_META } from "src/settings"
 import { expect, it } from "vitest"
 
 it("should fetch WETH prices within a range", async () => {
@@ -34,7 +35,7 @@ it("should fetch WETH prices within a small range", async () => {
   // act
   const result = await queryPrices({
     limit: 1,
-    pair: getPair("ethereum:0x0000000000000000000000000000000000000000:ETH"),
+    pair: getPair(PLATFORMS_META.ethereum.nativeAssetId as string),
     since: 1706572800000,
     timeInterval: "1d" as ResolutionString,
     until: 1706572800000,

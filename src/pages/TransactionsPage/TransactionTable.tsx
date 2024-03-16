@@ -13,23 +13,23 @@ import {
 import { Transaction } from "../../interfaces"
 import { HeadCell } from "../../utils/table-utils"
 import { clancy } from "../../workers/remotes"
-import { ExportTransactionsToCsvOptions } from "./ExportTransactionsToCsvOptions"
+import { TransactionActions } from "./TransactionActions"
 import { TransactionTableRow } from "./TransactionTableRow"
 
 interface TransactionsTableProps extends Pick<RemoteTableProps<Transaction>, "defaultRowsPerPage"> {
   assetId?: string
-  id?: string
+  txId?: string
 }
 
 export function TransactionTable(props: TransactionsTableProps) {
-  const { assetId, id, ...rest } = props
+  const { assetId, txId, ...rest } = props
 
-  const [transactionsFiltered, setTransactionsFiltered] = useState<Transaction[]>([])
+  const [tableData, setTableData] = useState<Transaction[]>([])
 
   const queryFn: QueryFunction<Transaction> = useCallback(
     async (filters, rowsPerPage, page, order) => {
-      if (id) {
-        const transaction = await clancy.getTransaction($activeAccount.get(), id)
+      if (txId) {
+        const transaction = await clancy.getTransaction($activeAccount.get(), txId)
         return [[transaction], 1]
       }
 
@@ -50,7 +50,7 @@ export function TransactionTable(props: TransactionsTableProps) {
         $activeAccount.get()
       )
 
-      setTransactionsFiltered(transactions)
+      setTableData(transactions)
 
       return [
         transactions,
@@ -67,7 +67,7 @@ export function TransactionTable(props: TransactionsTableProps) {
             .then((logs) => logs.length),
       ]
     },
-    [assetId, id]
+    [assetId, txId]
   )
 
   const headCells = useMemo<HeadCell<Transaction>[]>(
@@ -144,9 +144,9 @@ export function TransactionTable(props: TransactionsTableProps) {
     <>
       <Stack direction="row" justifyContent="space-between">
         <Subheading>Transactions</Subheading>
-        <ExportTransactionsToCsvOptions transactionsFiltered={transactionsFiltered} />
+        <TransactionActions tableData={tableData} />
       </Stack>
-      {id && (
+      {txId && (
         <Box
           sx={{
             marginBottom: 1,
@@ -155,7 +155,7 @@ export function TransactionTable(props: TransactionsTableProps) {
           }}
         >
           <FilterChip
-            label={`Id = ${id}`}
+            label={`Id = ${txId}`}
             color={stringToColor("Id")}
             // onDelete={() => {
             // TODO

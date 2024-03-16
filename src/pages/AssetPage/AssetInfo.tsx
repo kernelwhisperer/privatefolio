@@ -1,148 +1,70 @@
-"use client"
+import { Paper, Stack, Typography } from "@mui/material"
+import React, { useEffect, useState } from "react"
+import { getFullMetadata } from "src/api/core/assets/coingecko-asset-api"
+import { getCachedCoingeckoId } from "src/api/core/assets/coingecko-asset-cache"
+import { CircularSpinner } from "src/components/CircularSpinner"
+import { IdentifierBlock } from "src/components/IdentifierBlock"
+import { NoDataAvailable } from "src/components/NoDataAvailable"
+import { PlatformBlock } from "src/components/PlatformBlock"
+import { SectionTitle } from "src/components/SectionTitle"
+import { CoingeckoMetadataFull } from "src/interfaces"
+import { getAssetPlatform } from "src/utils/assets-utils"
 
-import { Box, Stack, Typography } from "@mui/material"
-// import icons from "base64-cryptocurrency-icons";
-import React from "react"
-
-import { Transaction } from "../../interfaces"
-import { formatNumber } from "../../utils/formatting-utils"
-
-interface AssetInfoProps {
-  amountBought: number
-  amountSold: number
-  assetSymbol: string
-  costBasis: number
-  holdings: number
-  moneyIn: number
-  moneyOut: number
-  tradeHistory: Transaction[]
+type AssetInfoProps = {
+  assetId: string
 }
 
-const headCells = [
-  {
-    disablePadding: true,
-    id: "id",
-    label: "Id",
-  },
-  {
-    id: "datetime",
-    label: "Datetime",
-  },
-  {
-    id: "side",
-    label: "Side",
-  },
-  {
-    id: "filledPrice",
-    label: "Price",
-    numeric: true,
-  },
-  {
-    id: "amount",
-    label: "Amount",
-    numeric: true,
-  },
-  {
-    id: "total",
-    label: "Total",
-    numeric: true,
-  },
-]
-
 export function AssetInfo(props: AssetInfoProps) {
-  const {
-    costBasis,
-    moneyIn,
-    moneyOut,
-    tradeHistory,
-    assetSymbol,
-    // amountBought,
-    // amountSold,
-    holdings,
-  } = props
+  const { assetId } = props
+  const [isLoading, setLoading] = useState(false)
+  const [metadata, setMetadata] = useState<CoingeckoMetadataFull | null>(null)
+
+  useEffect(() => {
+    setLoading(true)
+    getCachedCoingeckoId(assetId)
+      .then(getFullMetadata)
+      .then(setMetadata)
+      .finally(() => setLoading(false))
+  }, [assetId])
+
+  const isEmpty = metadata === null
 
   return (
-    <Box sx={{ width: "100%" }}>
-      <Stack
-        marginX={2}
-        direction="row"
-        marginBottom={2}
-        flexWrap="wrap"
-        justifyContent="space-between"
-        alignItems="center"
-      >
-        <Typography variant="h3" fontWeight={700}>
-          {assetSymbol}
+    <Paper sx={{ padding: 2 }}>
+      {isLoading || isEmpty ? (
+        <Stack justifyContent="center" alignItems="center" sx={{ height: 260 }}>
+          {isEmpty && !isLoading && <NoDataAvailable />}
+          {isLoading && <CircularSpinner color="accent" />}
+        </Stack>
+      ) : (
+        <Typography variant="body2" component="div">
+          <Stack gap={2}>
+            <div>
+              <SectionTitle>Coingecko ID</SectionTitle>
+              <IdentifierBlock id={metadata.id} />
+            </div>
+            <div>
+              <SectionTitle>Platform</SectionTitle>
+              <PlatformBlock platform={getAssetPlatform(assetId)} />
+            </div>
+            <div>
+              <SectionTitle>Description</SectionTitle>
+              <span> {metadata?.description.en || "No description available."}</span>
+            </div>
+            {/* categories */}
+            {/* genesis_date */}
+            {/* last_updated */}
+            {/* market_cap_rank */}
+            {/* watchlist_portfolio_users */}
+            {/* links */}
+            {/* market data */}
+            {/* community data */}
+            {/* dev data? */}
+            {/* tickers */}
+            {/* platforms */}
+          </Stack>
         </Typography>
-        <Stack gap={4} flexWrap="wrap" direction="row">
-          {/* <Typography variant="body1">
-          <span>No. of trades</span> <span>{tradeHistory.length}</span>
-        </Typography> */}
-          <Stack>
-            <Typography variant="body1" color="text.secondary">
-              Avg. buy price
-            </Typography>
-            <Typography variant="body1">{formatNumber(costBasis)} USDT</Typography>
-          </Stack>
-          {/* <Stack>
-          <Typography variant="body1" color="text.secondary">
-            Amount bought
-          </Typography>
-          <Typography variant="body1">
-            {amountBought} {assetSymbol}
-          </Typography>
-        </Stack>
-        <Stack>
-          <Typography variant="body1" color="text.secondary">
-            Amount sold
-          </Typography>
-          <Typography variant="body1">
-            {amountSold} {assetSymbol}
-          </Typography>
-        </Stack> */}
-          <Stack>
-            <Typography variant="body1" color="text.secondary">
-              Holdings
-            </Typography>
-            <Typography variant="body1">
-              {holdings} {assetSymbol}
-            </Typography>
-          </Stack>
-          <Stack>
-            <Typography variant="body1" color="text.secondary">
-              Cost
-            </Typography>
-            <Typography variant="body1">{formatNumber(moneyIn - moneyOut)} USDT</Typography>
-          </Stack>
-          {/* <Stack>
-          <Typography variant="body1" color="text.secondary">
-            Money in
-          </Typography>
-          <Typography variant="body1">{formatNumber(moneyIn)} USDT</Typography>
-        </Stack>
-        <Stack>
-          <Typography variant="body1" color="text.secondary">
-            Money out
-          </Typography>
-          <Typography variant="body1">{formatNumber(moneyOut)} USDT</Typography>
-        </Stack> */}
-        </Stack>
-      </Stack>
-      <Stack gap={4} marginX={2}>
-        {/* <MemoChart
-          data={tradeHistory
-            .map((x) => ({
-              value: x.filledPrice,
-            }))
-            .reverse()}
-        /> */}
-        {/* <Chart
-          data={tradeHistory.map((x) => ({
-            time: new Date(x.datetime).getTime() / 1000,
-            value: x.filledPrice,
-          }))}
-        /> */}
-      </Stack>
-    </Box>
+      )}
+    </Paper>
   )
 }

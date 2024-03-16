@@ -3,6 +3,7 @@ import { AlertTitle, Box, Button, Stack, Typography } from "@mui/material"
 import { useStore } from "@nanostores/react"
 import { proxy } from "comlink"
 import React, { useEffect, useMemo, useState } from "react"
+import { AttentionBlock } from "src/components/AttentionBlock"
 import { Callout } from "src/components/Callout"
 import { MemoryTable } from "src/components/EnhancedTable/MemoryTable"
 import { useBoolean } from "src/hooks/useBoolean"
@@ -113,24 +114,14 @@ export function ConnectionsTable() {
           </Button>
         }
         addNewRow={
-          <Button
-            onClick={toggleOpen}
-            fullWidth
-            sx={(theme) => ({
-              borderRadius: 0,
-              color: "text.secondary",
-              justifyContent: "flex-start",
-              paddingX: 1.5,
-              paddingY: 1,
-              textAlign: "start",
-              ...theme.typography.body2,
-            })}
-          >
-            <Add sx={{ height: 20, marginRight: 1, width: 20 }} />
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          <AttentionBlock component={Button} onClick={toggleOpen} fullWidth>
+            <Add sx={{ height: 20, width: 20 }} />
             <span>
               Click to <u>add a new connection</u>.
             </span>
-          </Button>
+          </AttentionBlock>
         }
       />
       <Stack paddingTop={1}>

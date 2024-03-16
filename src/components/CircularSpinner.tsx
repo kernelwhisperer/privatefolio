@@ -7,14 +7,13 @@ import {
 import React from "react"
 
 export function CircularSpinner(props: CircularProgressProps) {
-  const { size = 40, ...rest } = props
+  const { sx, size = 40, variant = "indeterminate", ...rest } = props
 
   return (
     <Box sx={{ height: size, position: "relative", width: size }}>
       <CircularProgress
         size={size}
         thickness={4}
-        disableShrink
         {...rest}
         value={100}
         variant="determinate"
@@ -23,10 +22,11 @@ export function CircularSpinner(props: CircularProgressProps) {
           left: 0,
           position: "absolute",
           top: 0,
+          ...sx,
         }}
       />
       <CircularProgress
-        variant="indeterminate"
+        variant={variant}
         sx={{
           animationDuration: "550ms",
           left: 0,
@@ -35,10 +35,11 @@ export function CircularSpinner(props: CircularProgressProps) {
           [`& .${circularProgressClasses.circle}`]: {
             strokeLinecap: "round",
           },
+          ...sx,
         }}
         size={size}
         thickness={4}
-        disableShrink
+        disableShrink={variant === "indeterminate"}
         {...rest}
       />
     </Box>

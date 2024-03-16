@@ -1,5 +1,4 @@
 import Big from "big.js"
-import spamTokens from "src/config/spam-tokens.json"
 import {
   AuditLog,
   AuditLogOperation,
@@ -8,6 +7,7 @@ import {
   ParserResult,
   TransactionType,
 } from "src/interfaces"
+import { isSpamToken } from "src/utils/integrations/etherscan-utils"
 
 import { Erc20Transaction } from "../etherscan-rpc"
 
@@ -31,19 +31,19 @@ export function parseERC20(
   if (value === "0") {
     return { logs: [] }
   }
-  if (contractAddress in spamTokens || symbol.includes("http")) {
-    return { logs: [] }
-  }
   // ----------------------------------------------------------------- Derive
   const timestamp = new Date(Number(time) * 1000).getTime()
   if (isNaN(timestamp)) {
     throw new Error(`Invalid timestamp: ${time}`)
   }
+  const assetId = `ethereum:${contractAddress}:${symbol}`
+  if (isSpamToken(contractAddress, symbol)) {
+    return { logs: [] }
+  }
   const txId = `${connection._id}_${txHash}_ERC20_${index}`
   const wallet = address.toLowerCase()
   const operation: AuditLogOperation = to?.toLowerCase() === wallet ? "Deposit" : "Withdraw"
   const type: TransactionType = operation
-  const assetId = `ethereum:${contractAddress}:${symbol}`
   const decimals = Number(tokenDecimal)
   const importId = connection._id
   const importIndex = index

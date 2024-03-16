@@ -1,7 +1,7 @@
 import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded"
 import { ListItemIcon, ListItemText, Stack } from "@mui/material"
 import React from "react"
-import { CSVLink } from "react-csv"
+import { downloadCsv } from "src/utils/utils"
 
 export type CsvData = (string | number | undefined)[][]
 
@@ -12,16 +12,20 @@ interface ExportToCsvProps {
 }
 export default function ExportToCsv(props: ExportToCsvProps) {
   const { data, filename, text } = props
+
   return (
     <>
-      <CSVLink filename={filename} data={data} style={{ color: "#FFFFFF", textDecoration: "none" }}>
-        <Stack direction="row">
-          <ListItemIcon>
-            <DownloadRoundedIcon fontSize="small" />
-          </ListItemIcon>
-          <ListItemText>{text}</ListItemText>
-        </Stack>
-      </CSVLink>
+      <Stack
+        direction="row"
+        onClick={() => {
+          downloadCsv(data, filename)
+        }}
+      >
+        <ListItemIcon>
+          <DownloadRoundedIcon fontSize="small" />
+        </ListItemIcon>
+        <ListItemText>{text}</ListItemText>
+      </Stack>
     </>
   )
 }

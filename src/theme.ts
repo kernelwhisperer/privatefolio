@@ -88,7 +88,7 @@ export const theme: CssVarsThemeOptions = {
         },
         background: {
           default: "rgb(40, 40, 40)",
-          paper: "rgb(43 43 43)",
+          paper: "rgb(42, 42, 42)",
           paperTransparent: "rgba(45, 45, 45, 0.33)", // derived from default + paper
         },
         info: {

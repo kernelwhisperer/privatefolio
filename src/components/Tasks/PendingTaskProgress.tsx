@@ -22,8 +22,13 @@ export function PendingTaskProgress({ sx = {}, ...rest }: CircularProgressProps)
       return 0
     }
 
-    const lastUpdate = updates[updates.length - 1]
-    return updateMap[lastUpdate][0] || 0
+    const lastUpdate = updates.findLast((update) => typeof updateMap[update][0] === "number")
+
+    if (typeof lastUpdate === "string") {
+      return updateMap[lastUpdate][0] as number
+    }
+
+    return 0
   }, [completed, progressHistory, task])
 
   if (!task) {
@@ -31,10 +36,9 @@ export function PendingTaskProgress({ sx = {}, ...rest }: CircularProgressProps)
   }
 
   return (
-    <Box sx={sx}>
+    <Box sx={sx} key={task.id}>
       <CircularSpinner
         variant={task.determinate ? "determinate" : "indeterminate"}
-        disableShrink={!task.determinate}
         color="secondary"
         size={14}
         thickness={4.5}

@@ -16,10 +16,11 @@ import { clancy } from "src/workers/remotes"
 import { AssetAvatar } from "../../components/AssetAvatar"
 import { BackButton } from "../../components/BackButton"
 import { StaggeredList } from "../../components/StaggeredList"
-import { $assetMetaMap, $filterOptionsMap } from "../../stores/metadata-store"
+import { $assetMap, $filterOptionsMap } from "../../stores/metadata-store"
 import { SerifFont } from "../../theme"
 import { AuditLogTable } from "../AuditLogsPage/AuditLogTable"
 import { TransactionTable } from "../TransactionsPage/TransactionTable"
+import { AssetInfo } from "./AssetInfo"
 import { BalanceChart } from "./BalanceChart"
 import { PriceChart } from "./PriceChart"
 
@@ -28,7 +29,7 @@ export default function AssetPage({ show }: { show: boolean }) {
   const assetId = params.assetId // ?.toLocaleUpperCase()
   const [searchParams] = useSearchParams()
   const tab = searchParams.get("tab") || ""
-  const assetMap = useStore($assetMetaMap)
+  const assetMap = useStore($assetMap)
 
   const filterMap = useStore($filterOptionsMap)
 
@@ -53,13 +54,10 @@ export default function AssetPage({ show }: { show: boolean }) {
     fetchData()
   }, [])
 
-  console.log(rows)
-
   const row = rows.find((obj) => {
     return obj.assetId === assetId
   })
 
-  console.log(row)
   return (
     <StaggeredList component="main" gap={2} show={show}>
       <BackButton to=".." sx={{ marginLeft: 1 }}>
@@ -67,7 +65,11 @@ export default function AssetPage({ show }: { show: boolean }) {
       </BackButton>
       <Stack direction="row" alignItems="center" width="100%" gap={6} paddingBottom={2}>
         <Stack direction="row" gap={1} component="div" sx={{ marginX: 2 }}>
-          <AssetAvatar size="large" src={assetMap[assetId]?.image} alt={getAssetTicker(assetId)} />
+          <AssetAvatar
+            size="large"
+            src={assetMap[assetId]?.logoUrl}
+            alt={getAssetTicker(assetId)}
+          />
           <Stack>
             <Typography variant="h6" fontFamily={SerifFont} sx={{ marginBottom: -0.5 }}>
               <span>{getAssetTicker(assetId)}</span>
@@ -104,11 +106,13 @@ export default function AssetPage({ show }: { show: boolean }) {
           {/* <NavTab value="pnl" to={`?tab=pnl`} label="Profit & Loss"  /> */}
           <NavTab value="transactions" to={`?tab=transactions`} label="Transactions" />
           <NavTab value="audit-logs" to={`?tab=audit-logs`} label="Audit logs" />
+          <NavTab value="asset-info" to={`?tab=asset-info`} label="Asset Info" />
         </Tabs>
         {tab === "" && <PriceChart symbol={assetId} />}
         {tab === "balance" && <BalanceChart symbol={assetId} />}
         {tab === "transactions" && <TransactionTable assetId={assetId} defaultRowsPerPage={10} />}
         {tab === "audit-logs" && <AuditLogTable assetId={assetId} defaultRowsPerPage={10} />}
+        {tab === "asset-info" && <AssetInfo assetId={assetId} />}
       </Stack>
       {/* <AssetInfo
            assetSymbol={assetSymbol}

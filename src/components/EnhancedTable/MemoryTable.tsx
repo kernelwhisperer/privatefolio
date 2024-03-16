@@ -8,6 +8,7 @@ import React, {
   ChangeEvent,
   ComponentType,
   MouseEvent,
+  ReactNode,
   useCallback,
   useMemo,
   useState,
@@ -69,9 +70,10 @@ export type MemoryTableProps<T extends BaseType> = {
    */
   defaultRowsPerPage?: number
   emptyContent?: JSX.Element
-  extraRow?: JSX.Element
+  extraRow?: ReactNode
   headCells: HeadCell<T>[]
   initOrderBy: keyof T
+  initOrderDir?: "asc" | "desc"
   queryTime?: number | null
   rowCount?: number
   rows: T[]
@@ -83,6 +85,7 @@ export function MemoryTable<T extends BaseType>(props: MemoryTableProps<T>) {
     rows,
     TableRowComponent,
     defaultRowsPerPage = 20,
+    initOrderDir = "desc",
     addNewRow,
     initOrderBy,
     queryTime,
@@ -91,7 +94,7 @@ export function MemoryTable<T extends BaseType>(props: MemoryTableProps<T>) {
     rowCount = rows.length,
   } = props
 
-  const [order, setOrder] = useState<Order>("desc")
+  const [order, setOrder] = useState<Order>(initOrderDir)
   const [orderBy, setOrderBy] = useState<keyof T>(initOrderBy)
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(defaultRowsPerPage)
@@ -197,7 +200,9 @@ export function MemoryTable<T extends BaseType>(props: MemoryTableProps<T>) {
         <Paper
           variant="outlined"
           sx={{
-            background: stickyVersion ? "var(--mui-palette-background-paper)" : undefined,
+            background: stickyVersion
+              ? "var(--mui-palette-background-paper) !important"
+              : undefined,
             overflowX: { lg: "unset", xs: "auto" },
           }}
         >
@@ -250,7 +255,7 @@ export function MemoryTable<T extends BaseType>(props: MemoryTableProps<T>) {
                 {visibleRows.length === 0 && !isEmpty && (
                   <TableRow>
                     <TableCell colSpan={headCells.length}>
-                      No data matches the current filters...
+                      No records match the current filters.
                     </TableCell>
                   </TableRow>
                 )}

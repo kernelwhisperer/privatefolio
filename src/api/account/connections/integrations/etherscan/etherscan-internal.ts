@@ -7,6 +7,7 @@ import {
   ParserResult,
   TransactionType,
 } from "src/interfaces"
+import { PLATFORMS_META } from "src/settings"
 
 import { InternalTransaction } from "../etherscan-rpc"
 
@@ -37,7 +38,7 @@ export function parseInternal(
   }
   const wallet = address.toLowerCase()
   const txId = `${connection._id}_${txHash}_INTERNAL_${index}`
-  const assetId = "ethereum:0x0000000000000000000000000000000000000000:ETH"
+  const assetId = PLATFORMS_META.ethereum.nativeAssetId as string
   const operation: AuditLogOperation = to?.toLowerCase() === wallet ? "Deposit" : "Withdraw"
   const type: TransactionType = operation
 

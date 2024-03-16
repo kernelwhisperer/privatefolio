@@ -1,3 +1,5 @@
+import { CsvData } from "src/interfaces"
+
 /**
  * Returns a hash code from a string
  * @param  {String} str The string to hash.
@@ -87,4 +89,27 @@ export function formatCamelCase(str: string) {
     .replace(/([A-Z])/g, " $1")
     .replace(/^./, (str) => str.toUpperCase())
     .trim()
+}
+
+function createCsvString(data: CsvData) {
+  return data
+    .map((row) =>
+      row
+        .map(String) // Convert every element to String to avoid errors
+        .map((value) => `"${value.replace(/"/g, '""')}"`) // Escape double quotes
+        .join(",")
+    )
+    .join("\n")
+}
+
+export function downloadCsv(data: CsvData, filename: string) {
+  const blob = new Blob([createCsvString(data)], { type: "text/csv;charset=utf-8;" })
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement("a")
+  link.href = url
+  link.setAttribute("download", filename)
+  document.body.appendChild(link) // Required for Firefox
+  link.click()
+  document.body.removeChild(link) // Clean up
+  URL.revokeObjectURL(url) // Free up resources
 }

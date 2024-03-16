@@ -6,9 +6,9 @@ import { $activeAccount } from "./account-store"
 export const DEFAULT_SIGNIFICANT_DIGITS = 2
 
 export interface Currency {
+  id: string
   logo?: string
   maxDigits: number
-  id: string
   significantDigits: number
   symbol: string
 }
@@ -65,6 +65,19 @@ export const $hideSmallBalances = computed(
   [$activeAccount, $hideSmallBalancesMap],
   (activeAccount, hideSmallBalancesMap) => {
     const val = hideSmallBalancesMap[activeAccount]
+    return typeof val === "string" ? val === "true" : true
+  }
+)
+
+export const $hideUnlistedMap = persistentMap<Record<string, string | undefined>>(
+  "privatefolio-unlisted-assets",
+  {}
+)
+
+export const $hideUnlisted = computed(
+  [$activeAccount, $hideUnlistedMap],
+  (activeAccount, hideUnlistedMap) => {
+    const val = hideUnlistedMap[activeAccount]
     return typeof val === "string" ? val === "true" : true
   }
 )

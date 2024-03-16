@@ -19,7 +19,7 @@ import { clancy } from "src/workers/remotes"
 
 import { AddressInput } from "../../../components/AddressInput"
 import { SectionTitle } from "../../../components/SectionTitle"
-import { Platform } from "../../../interfaces"
+import { PlatformId } from "../../../interfaces"
 import { CONNECTIONS, PLATFORMS_META } from "../../../settings"
 import { PopoverToggleProps } from "../../../stores/app-store"
 
@@ -28,7 +28,7 @@ export function ConnectionDrawer({ open, toggleOpen, ...rest }: DrawerProps & Po
 
   const [label, setLabel] = useState("")
   const [address, setAddress] = useState("")
-  const [platform, setPlatform] = useState<Platform>("ethereum")
+  const [platform, setPlatform] = useState<PlatformId>("ethereum")
 
   useEffect(() => {
     setLoading(false)
@@ -78,7 +78,7 @@ export function ConnectionDrawer({ open, toggleOpen, ...rest }: DrawerProps & Po
               fullWidth
               size="small"
               value={platform}
-              onChange={(event) => setPlatform(event.target.value as Platform)}
+              onChange={(event) => setPlatform(event.target.value as PlatformId)}
             >
               {Object.keys(CONNECTIONS).map((x) => (
                 <MenuItem key={x} value={x}>
@@ -90,6 +90,8 @@ export function ConnectionDrawer({ open, toggleOpen, ...rest }: DrawerProps & Po
           <div>
             <SectionTitle>Address *</SectionTitle>
             <AddressInput
+              autoComplete="off"
+              autoFocus
               value={address}
               onChange={setAddress}
               variant="outlined"
@@ -101,6 +103,7 @@ export function ConnectionDrawer({ open, toggleOpen, ...rest }: DrawerProps & Po
           <div>
             <SectionTitle>Label</SectionTitle>
             <TextField
+              autoComplete="off"
               variant="outlined"
               fullWidth
               size="small"

@@ -1,4 +1,4 @@
-import { MenuItem, Select } from "@mui/material"
+import { MenuItem, Select, SelectChangeEvent } from "@mui/material"
 import { useStore } from "@nanostores/react"
 import React from "react"
 import {
@@ -10,7 +10,7 @@ import { $activeAccount } from "src/stores/account-store"
 
 export function CurrencySelector() {
   const currency = useStore($baseCurrency)
-  const handleChange = (event) => {
+  const handleChange = (event: SelectChangeEvent<string>) => {
     const newCurrency = DEFAULT_CURRENCIES_MAP[event.target.value]
     $baseCurrencyMap.setKey($activeAccount.get(), newCurrency.id)
   }

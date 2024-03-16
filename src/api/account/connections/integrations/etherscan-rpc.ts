@@ -176,7 +176,7 @@ export interface InternalTransaction {
 
 /**
  * @example
- * ```json`
+ * ```json
  * {
  *   "blockNumber": "4497036",
  *   "timeStamp": "1511302899",
@@ -198,7 +198,7 @@ export interface InternalTransaction {
  *   "input": "deprecated",
  *   "confirmations": "14403522"
  * }
- * ``
+ * ```
  */
 export interface Erc20Transaction {
   blockHash: string
@@ -224,7 +224,7 @@ export interface Erc20Transaction {
 
 /**
  * @example
- * ```json`
+ * ```json
  * {
  *    "withdrawalIndex":"14",
  *    "validatorIndex":"119023",
@@ -233,7 +233,7 @@ export interface Erc20Transaction {
  *    "blockNumber":"17034877",
  *    "timestamp":"1681338599"
  * }
- * ``
+ * ```
  */
 export interface StakingWithdrawalTransaction {
   address: string
@@ -246,13 +246,13 @@ export interface StakingWithdrawalTransaction {
 
 /**
  * @example
- * ```json`
+ * ```json
  * {
  *     "blockNumber":"3462296",
  *     "timeStamp":"1491118514",
  *     "blockReward":"5194770940000000000"
  * }
- * ``
+ * ```
  */
 export interface BlockRewardTransaction {
   blockNumber: string

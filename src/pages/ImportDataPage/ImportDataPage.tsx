@@ -19,11 +19,6 @@ export default function ImportDataPage({ show }: { show: boolean }) {
 
   return (
     <StaggeredList component="main" gap={2} show={show}>
-      {/* <div>
-        <Subheading>
-          <span>Database info</span>
-        </Subheading>
-      </div> */}
       <Stack>
         <Stack
           direction="row"

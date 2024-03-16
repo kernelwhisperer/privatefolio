@@ -7,6 +7,7 @@ import {
   Transaction,
   TransactionType,
 } from "src/interfaces"
+import { PLATFORMS_META } from "src/settings"
 
 import { StakingWithdrawalTransaction } from "../etherscan-rpc"
 
@@ -31,7 +32,7 @@ export function parseStakingWithdrawal(
   }
   const wallet = address.toLowerCase()
   const txId = `${connection._id}_${validatorIndex}+${withdrawalIndex}_BEACON_${index}`
-  const assetId = "ethereum:0x0000000000000000000000000000000000000000:ETH"
+  const assetId = PLATFORMS_META.ethereum.nativeAssetId as string
   const operation: AuditLogOperation = "Deposit"
   const type: TransactionType = operation
 

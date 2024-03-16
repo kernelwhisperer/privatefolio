@@ -2,13 +2,10 @@ import { debounce } from "lodash-es"
 import { keepMount, map } from "nanostores"
 import { getAssetTicker } from "src/utils/assets-utils"
 
-import { findAssetsMeta } from "../api/core/assets-meta-api"
-import { findPlatformsMeta } from "../api/core/platforms-meta-api"
 import {
-  AssetMetadata,
+  Asset,
   AuditLogOperation,
-  Platform,
-  PlatformMetadata,
+  PlatformId,
   TRANSACTIONS_TYPES,
   TransactionType,
 } from "../interfaces"
@@ -46,7 +43,7 @@ export function getFilterValueLabel(value: string) {
   if (value === undefined) return
 
   if (value in PLATFORMS_META) {
-    return PLATFORMS_META[value as Platform].name
+    return PLATFORMS_META[value as PlatformId].name
   }
 
   if (value.includes(":")) {
@@ -56,7 +53,7 @@ export function getFilterValueLabel(value: string) {
   return value
 }
 
-async function computeFilterMap() {
+export async function computeFilterMap() {
   const platforms = new Set<string>()
   const assetIds = new Set<string>()
   const wallets = new Set<string>()
@@ -107,29 +104,16 @@ async function computeFilterMap() {
   return map
 }
 
-export type AssetMap = Record<string, AssetMetadata>
-export const $assetMetaMap = map<AssetMap>({})
+export type AssetMap = Record<string, Asset>
+export const $assetMap = map<AssetMap>({})
 
-export type PlatformMap = Partial<Record<Platform, PlatformMetadata>>
-export const $platformMetaMap = map<PlatformMap>({})
-
-keepMount($assetMetaMap)
+keepMount($assetMap)
 keepMount($filterOptionsMap)
-keepMount($platformMetaMap)
-
-// logAtoms({ $assetMap, $filterMap: $filterOptionsMap, $platformMetaMap })
 
 export async function computeMetadata() {
   const filterMap = await computeFilterMap()
-
-  const platformMap = filterMap.platform.reduce((map, platform) => {
-    map[platform] = true
-    return map
-  }, {} as Record<string, boolean>)
-
-  await Promise.all([
-    findAssetsMeta(filterMap.assetId).then($assetMetaMap.set),
-    findPlatformsMeta(platformMap).then($platformMetaMap.set),
-  ])
+  await clancy.getAssetMap($activeAccount.get(), filterMap.assetId).then($assetMap.set)
 }
 export const computeMetadataDebounced = debounce(computeMetadata, DEFAULT_DEBOUNCE_DURATION)
+
+// logAtoms({ $assetMap, $filterMap: $filterOptionsMap, $platformMetaMap })

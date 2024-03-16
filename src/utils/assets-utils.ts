@@ -1,7 +1,10 @@
-import { PlatformId } from "src/interfaces"
+import { PlatformId, Web3Address } from "src/interfaces"
 
 import { memoize } from "./fp-utils"
 
+/**
+ * Returns the ticker/symbol of an asset
+ */
 export const getAssetTicker = memoize(function getAssetTicker(assetId: string) {
   if (assetId === undefined) return "-"
 
@@ -10,6 +13,10 @@ export const getAssetTicker = memoize(function getAssetTicker(assetId: string) {
   return parts[2]
 })
 
-export const getAssetPlatform = memoize((assetId: string) => {
+export const getAssetPlatform = memoize(function getAssetPlatform(assetId: string) {
   return assetId.split(":")[0] as PlatformId
+})
+
+export const getAssetContract = memoize(function getAssetPlatform(assetId: string) {
+  return assetId.split(":")[1] as Web3Address
 })

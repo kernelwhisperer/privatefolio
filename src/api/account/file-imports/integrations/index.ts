@@ -1,5 +1,5 @@
 import { CsvParser } from "src/interfaces"
-import { ParserId, Platform } from "src/settings"
+import { ParserId, PlatformId } from "src/settings"
 
 import * as binance from "./binance"
 import * as binanceSpot from "./binance-spot-history"
@@ -30,7 +30,7 @@ export const PARSER_MATCHER: Record<ParserId, CsvParser> = {
   [binanceSpot.Identifier]: binanceSpot.parser,
 }
 
-export const PLATFORM_MATCHER: Record<ParserId, Platform> = {
+export const PLATFORM_MATCHER: Record<ParserId, PlatformId> = {
   [binance.Identifier]: binance.platform,
   [mexc.Identifier]: mexc.platform,
   [coinmama.Identifier]: coinmama.platform,

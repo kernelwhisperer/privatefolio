@@ -1,3 +1,4 @@
+import spamTokens from "src/config/spam-tokens.json"
 import { EtherscanTransaction } from "src/interfaces"
 
 import { sortTransactions } from "../test-utils"
@@ -91,4 +92,19 @@ export function mergeTransactions(transactions: EtherscanTransaction[]) {
     }
   }
   return { deduplicated, merged }
+}
+
+export function isSpamToken(contractAddress: string, symbol: string) {
+  const token = symbol.toLocaleLowerCase()
+
+  return (
+    contractAddress in spamTokens ||
+    token.includes("http") ||
+    token.includes(".com") ||
+    token.includes(".org") ||
+    token.includes(".net") ||
+    token.includes(".io") ||
+    token.includes("visit") ||
+    token.includes("claim")
+  )
 }
