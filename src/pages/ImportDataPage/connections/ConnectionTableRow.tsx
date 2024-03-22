@@ -150,7 +150,6 @@ export function ConnectionTableRow(props: TableRowComponentProps<Connection>) {
             dense
             onClick={async () => {
               enqueueSyncConnection(row)
-              handleAuditLogChange()
               handleClose()
             }}
           >
