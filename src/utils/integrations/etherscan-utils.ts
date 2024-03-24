@@ -47,7 +47,7 @@ export function mergeTransactions(transactions: EtherscanTransaction[]) {
   const sorted = transactions.sort(sortTransactions)
 
   const merged: EtherscanTransaction[] = []
-  const deduplicated: EtherscanTransaction[] = []
+  const deduplicateMap: Record<string, EtherscanTransaction[]> = {}
 
   const groups: Record<string, EtherscanTransaction[]> = {}
   for (const tx of sorted) {
@@ -88,10 +88,10 @@ export function mergeTransactions(transactions: EtherscanTransaction[]) {
       }
 
       merged.push(tx)
-      deduplicated.push(...group)
+      deduplicateMap[tx._id] = group
     }
   }
-  return { deduplicated, merged }
+  return { deduplicateMap, merged }
 }
 
 export function isSpamToken(contractAddress: string, symbol: string) {

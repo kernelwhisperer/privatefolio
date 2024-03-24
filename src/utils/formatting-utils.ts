@@ -44,6 +44,10 @@ export function asUTC(date: Date): Timestamp {
   )
 }
 
+export function toUTCString(timestamp: number): string {
+  return new Date(timestamp).toISOString().replace(/T/, " ").replace(/\..+/, "")
+}
+
 export function formatDateRelative(date: Date | number) {
   return formatDistance(date, new Date(), {
     addSuffix: true,

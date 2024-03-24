@@ -1,15 +1,17 @@
 import { AuditLog, CsvData, EtherscanTransaction, Transaction } from "src/interfaces"
-import { formatDateWithHour } from "src/utils/formatting-utils"
+import { formatDateWithHour, toUTCString } from "src/utils/formatting-utils"
 
 const HEADER = [
-  "Identifier",
   "Timestamp",
   "Platform",
   "Wallet",
   "Type",
   "Incoming",
+  "Incoming Asset",
   "Outgoing",
+  "Outgoing Asset",
   "Fee",
+  "Fee Asset",
   "Smart Contract",
   "Smart Contract Method",
   "Blockchain Tx",
@@ -29,17 +31,16 @@ const HeaderAuditLogs = [
 
 export function exportTransactionsToCsv(transactions: Transaction[]): CsvData {
   const rows: CsvData = transactions.map((tx) => [
-    tx._id,
-    formatDateWithHour(tx.timestamp, {
-      timeZone: "UTC",
-      timeZoneName: "short",
-    }),
+    toUTCString(tx.timestamp),
     tx.platform,
     tx.wallet,
     tx.type,
     tx.incoming,
+    tx.incomingAsset,
     tx.outgoing,
+    tx.outgoingAsset,
     tx.fee,
+    tx.feeAsset,
     (tx as EtherscanTransaction).contractAddress,
     (tx as EtherscanTransaction).method,
     tx.txHash,

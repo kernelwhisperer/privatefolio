@@ -15,6 +15,7 @@ export const PARSER_IDS = [
   "etherscan-erc20",
   "etherscan-internal",
   "mexc",
+  "privatefolio",
 ] as const
 
 export type ParserId = (typeof PARSER_IDS)[number]
@@ -39,6 +40,7 @@ export const PARSERS_META: Record<ParserId, ParserMeta> = {
   "etherscan-erc20": { name: "Etherscan ERC-20" },
   "etherscan-internal": { name: "Etherscan Internal" },
   mexc: { name: "Mexc" },
+  privatefolio: { name: "Privatefolio" },
 }
 
 export const PLATFORM_IDS = [

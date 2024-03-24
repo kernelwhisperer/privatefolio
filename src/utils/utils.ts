@@ -95,8 +95,7 @@ function createCsvString(data: CsvData) {
   return data
     .map((row) =>
       row
-        .map(String) // Convert every element to String to avoid errors
-        .map((value) => `"${value.replace(/"/g, '""')}"`) // Escape double quotes
+        .map((value) => `"${value === undefined ? "" : String(value).replace(/"/g, '""')}"`) // Escape double quotes
         .join(",")
     )
     .join("\n")
