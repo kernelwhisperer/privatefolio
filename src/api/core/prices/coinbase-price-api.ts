@@ -1,14 +1,9 @@
 import { UTCTimestamp } from "lightweight-charts"
-import {
-  ChartData,
-  CoinbaseBucket,
-  PlatformId,
-  QueryRequest,
-  ResolutionString,
-} from "src/interfaces"
+import { ChartData, CoinbaseBucket, QueryRequest, ResolutionString } from "src/interfaces"
+import { PriceApiId } from "src/settings"
 import { getAssetTicker } from "src/utils/assets-utils"
 
-export const Identifier: PlatformId = "coinbase"
+export const Identifier: PriceApiId = "coinbase"
 
 export function getPair(assetId: string) {
   return `${getAssetTicker(assetId)}-USD`

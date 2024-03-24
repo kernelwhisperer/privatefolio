@@ -1,8 +1,8 @@
 import { proxy } from "comlink"
-import { ChartData, ResolutionString, SavedPrice, Time, Timestamp } from "src/interfaces"
-import { PRICE_API_PAGINATION } from "src/settings"
+import { AssetId, ChartData, ResolutionString, SavedPrice, Time, Timestamp } from "src/interfaces"
+import { PRICE_API_PAGINATION, PRICE_APIS_META, PriceApiId } from "src/settings"
 import { ProgressCallback } from "src/stores/task-store"
-import { getAssetPlatform, getAssetTicker } from "src/utils/assets-utils"
+import { getAssetTicker } from "src/utils/assets-utils"
 import { formatDate } from "src/utils/formatting-utils"
 import { noop } from "src/utils/utils"
 
@@ -106,7 +106,8 @@ export async function getPriceCursor(assetId: string): Promise<Timestamp | undef
 }
 
 type FetchDailyPricesRequest = {
-  assetIds?: string[]
+  assetIds?: AssetId[]
+  priceApiMap?: Partial<Record<AssetId, PriceApiId>>
 }
 
 export async function fetchDailyPrices(
@@ -114,7 +115,7 @@ export async function fetchDailyPrices(
   progress: ProgressCallback = noop,
   signal?: AbortSignal
 ) {
-  const { assetIds } = request
+  const { assetIds, priceApiMap = {} } = request
 
   if (!assetIds) {
     throw new Error("No assetIds provided") // TODO prevent this
@@ -137,89 +138,104 @@ export async function fetchDailyPrices(
         throw new Error(signal.reason)
       }
 
-      const platformId = getAssetPlatform(assetId)
+      const preferredPriceApiId = priceApiMap[assetId]
+      const priceApiIds = preferredPriceApiId
+        ? [preferredPriceApiId]
+        : (Object.keys(PRICE_APIS) as PriceApiId[])
 
-      const priceApi = PRICE_APIS[platformId]
-      const priceMapper = PRICE_MAPPER[platformId]
-      const pairMapper = PAIR_MAPPER[platformId]
+      let since: Timestamp | undefined = await getPriceCursor(assetId)
+      let until: Timestamp | undefined = today
 
-      if (!priceApi || !priceMapper || !pairMapper) {
-        throw new Error(`Price API "${platformId}" is not supported`)
-      }
+      if (!since) since = today - 86400000 * PRICE_API_PAGINATION
 
-      try {
-        let since: Timestamp | undefined = await getPriceCursor(assetId)
-        let until: Timestamp | undefined = today
+      for (const priceApiId of priceApiIds) {
+        try {
+          while (true) {
+            console.log("📜 LOG > promises.push > priceApiId:", priceApiId)
 
-        if (!since) since = today - 86400000 * PRICE_API_PAGINATION
+            const priceApi = PRICE_APIS[priceApiId]
+            const priceMapper = PRICE_MAPPER[priceApiId]
+            const pairMapper = PAIR_MAPPER[priceApiId]
 
-        while (true) {
-          const pair = pairMapper(assetId)
-
-          const results = await priceApi({
-            limit: PRICE_API_PAGINATION,
-            pair,
-            since,
-            timeInterval: "1d" as ResolutionString,
-            until,
-          })
-
-          if (signal?.aborted) {
-            throw new Error(signal.reason)
-          }
-
-          if (results.length === 0) {
-            progress([undefined, `Skipped ${getAssetTicker(assetId)}: no results`])
-            break
-          }
-
-          const docIds: Array<{ id: string }> = []
-
-          const documentMap = results.reduce((acc, result) => {
-            const price = priceMapper(result)
-            const timestamp = (price.time as number) * 1000
-            const _id = `${assetId}-${timestamp}`
-
-            acc[_id] = {
-              _id,
-              assetId,
-              pair,
-              price,
-              timestamp,
+            if (!priceApi || !priceMapper || !pairMapper) {
+              throw new Error(`Price API "${priceApiId}" is not supported`)
             }
 
-            docIds.push({ id: _id })
-            return acc
-          }, {} as Record<string, SavedPrice>)
+            const pair = pairMapper(assetId)
 
-          const { results: docsWithRevision } = await core.dailyPricesDB.bulkGet({ docs: docIds })
+            const results = await priceApi({
+              limit: PRICE_API_PAGINATION,
+              pair,
+              since,
+              timeInterval: "1d" as ResolutionString,
+              until,
+            })
 
-          const docs: SavedPrice[] = docsWithRevision.map((x) => ({
-            ...documentMap[x.id],
-            _rev: "ok" in x.docs[0] ? x.docs[0].ok._rev : undefined,
-          }))
+            if (signal?.aborted) {
+              throw new Error(signal.reason)
+            }
 
-          const updates = await core.dailyPricesDB.bulkDocs(docs)
-          validateOperation(updates)
+            if (results.length === 0) {
+              progress([undefined, `Skipped ${getAssetTicker(assetId)}: no results`])
+              break
+            }
 
-          const start = (priceMapper(results[0]).time as number) * 1000
-          const end = (priceMapper(results[results.length - 1]).time as number) * 1000
+            const docIds: Array<{ id: string }> = []
 
-          progress([
-            undefined,
-            `Fetched ${getAssetTicker(assetId)} from ${formatDate(start)} to ${formatDate(end)}`,
-          ])
+            const documentMap = results.reduce((acc, result) => {
+              const price = priceMapper(result)
+              const timestamp = (price.time as number) * 1000
+              const _id = `${assetId}-${timestamp}`
 
-          if (results.length !== PRICE_API_PAGINATION) {
-            // reached listing date (genesis)
-            break
+              acc[_id] = {
+                _id,
+                assetId,
+                pair,
+                price,
+                timestamp,
+              }
+
+              docIds.push({ id: _id })
+              return acc
+            }, {} as Record<string, SavedPrice>)
+
+            const { results: docsWithRevision } = await core.dailyPricesDB.bulkGet({ docs: docIds })
+
+            const docs: SavedPrice[] = docsWithRevision.map((x) => ({
+              ...documentMap[x.id],
+              _rev: "ok" in x.docs[0] ? x.docs[0].ok._rev : undefined,
+            }))
+
+            const updates = await core.dailyPricesDB.bulkDocs(docs)
+            validateOperation(updates)
+
+            const start = (priceMapper(results[0]).time as number) * 1000
+            const end = (priceMapper(results[results.length - 1]).time as number) * 1000
+
+            progress([
+              undefined,
+              `Fetched ${getAssetTicker(assetId)} using ${
+                PRICE_APIS_META[priceApiId].name
+              } from ${formatDate(start)} to ${formatDate(end)}`,
+            ])
+
+            if (results.length !== PRICE_API_PAGINATION) {
+              // reached listing date (genesis)
+              break
+            }
+
+            until = start - 86400000
+            since = start - 86400000 * PRICE_API_PAGINATION
           }
+          break
 
-          until = start - 86400000
-          since = start - 86400000 * PRICE_API_PAGINATION
+          // TODO
+          // updateAsset(accountName, assetId, {
+          //   priceApiId: newValue,
+          // })
+        } catch (error) {
+          progress([undefined, `Skipped ${getAssetTicker(assetId)}: ${error}`])
         }
-      } catch (error) {
-        progress([undefined, `Skipped ${getAssetTicker(assetId)}: ${error}`])
       }
     })
   }

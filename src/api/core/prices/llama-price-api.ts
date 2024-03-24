@@ -1,6 +1,8 @@
-import { ChartData, LlamaPrice, PlatformId, QueryRequest, Time } from "../../../interfaces"
+import { PriceApiId } from "src/settings"
 
-export const Identifier: PlatformId = "ethereum"
+import { ChartData, LlamaPrice, QueryRequest, Time } from "../../../interfaces"
+
+export const Identifier: PriceApiId = "defi-llama"
 
 export function getPair(assetId: string) {
   const parts = assetId.split(":")

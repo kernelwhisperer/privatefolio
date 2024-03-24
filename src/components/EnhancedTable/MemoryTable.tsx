@@ -252,7 +252,7 @@ export function MemoryTable<T extends BaseType>(props: MemoryTableProps<T>) {
                     row={row}
                   />
                 ))}
-                {visibleRows.length === 0 && !isEmpty && (
+                {visibleRows.length === 0 && !isEmpty && !isLoading && (
                   <TableRow>
                     <TableCell colSpan={headCells.length}>
                       No records match the current filters.

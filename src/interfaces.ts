@@ -5,7 +5,7 @@ import {
   InternalTransaction,
   NormalTransaction,
 } from "./api/account/connections/integrations/etherscan-rpc"
-import { ParserId, PlatformId } from "./settings"
+import { ParserId, PlatformId, PriceApiId } from "./settings"
 
 export type { PlatformId } from "./settings"
 
@@ -420,7 +420,7 @@ export interface AssetMetadata {
 
 export interface Asset extends Partial<AssetMetadata> {
   _id: string
-  priceApiId?: string
+  priceApiId?: PriceApiId
   symbol: string
 }
 
@@ -434,3 +434,16 @@ export interface FullAsset extends Asset {
 export type Web3Address = string
 
 export type CsvData = (string | number | undefined)[][]
+
+export type FilterOptionsMap = {
+  assetId: string[]
+  feeAsset: string[]
+  incomingAsset: string[]
+  operation: AuditLogOperation[]
+  outgoingAsset: string[]
+  platform: string[]
+  type: readonly TransactionType[]
+  wallet: string[]
+}
+
+export type AssetId = string

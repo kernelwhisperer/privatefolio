@@ -3,10 +3,20 @@ import { proxy } from "comlink"
 import { mergeTransactions } from "src/utils/integrations/etherscan-utils"
 import { noop } from "src/utils/utils"
 
-import { EtherscanTransaction, Transaction } from "../../interfaces"
+import {
+  AuditLogOperation,
+  EtherscanTransaction,
+  FilterOptionsMap,
+  Transaction,
+  TRANSACTIONS_TYPES,
+} from "../../interfaces"
 import { ProgressCallback } from "../../stores/task-store"
+import { getAssetMap } from "../core/assets-api"
 import { getAccount } from "../database"
 import { validateOperation } from "../database-utils"
+import { findAuditLogsForTxId } from "./audit-logs-api"
+import { getConnections } from "./connections/connections-api"
+import { getFileImports } from "./file-imports/file-imports-api"
 
 const _filterOrder: (keyof Transaction)[] = [
   "platform",
@@ -246,27 +256,40 @@ export async function autoMergeTransactions(
     throw new Error(signal.reason)
   }
   progress([25, `Processing ${ethereumTransactions.length} Ethereum transactions`])
-  const { merged, deduplicated } = mergeTransactions(ethereumTransactions)
-  //
+  const { merged, deduplicateMap } = mergeTransactions(ethereumTransactions)
 
+  //
   if (signal?.aborted) {
     throw new Error(signal.reason)
   }
+  //
+
   progress([50, `Saving ${merged.length} merged transactions`])
   const mergedUpdates = await account.transactionsDB.bulkDocs(merged)
   validateOperation(mergedUpdates)
-  //
 
-  if (signal?.aborted) {
-    throw new Error(signal.reason)
+  progress([70, `Updating the audit logs of ${merged.length} merged transactions`])
+  for (const tx of merged) {
+    const deduplicated = deduplicateMap[tx._id]
+
+    for (const deduplicatedTx of deduplicated) {
+      const auditLogs = await findAuditLogsForTxId(deduplicatedTx._id, accountName)
+
+      for (const auditLog of auditLogs) {
+        auditLog.txId = tx._id
+      }
+
+      const logUpdates = await account.auditLogsDB.bulkDocs(auditLogs)
+      validateOperation(logUpdates)
+    }
   }
-  progress([75, `Deleting ${deduplicated.length} deduplicated transactions`])
+
+  const deduplicated = Object.values(deduplicateMap).flat()
+  progress([90, `Deleting ${deduplicated.length} deduplicated transactions`])
   const deduplicatedUpdates = await account.transactionsDB.bulkDocs(
     deduplicated.map((tx) => ({ _deleted: true, _id: tx._id, _rev: tx._rev } as never))
   )
   validateOperation(deduplicatedUpdates)
-  //
-  // TODO fix audit log txId
 
   progress([100, "Done"])
 }
@@ -281,4 +304,113 @@ export async function updateTransaction(
   const newValue = { ...existing, ...update }
   const dbUpdate = await account.transactionsDB.put(newValue)
   validateOperation([dbUpdate])
+}
+
+export async function getFilterMap(accountName: string) {
+  const platforms = new Set<string>()
+  const assetIds = new Set<string>()
+  const wallets = new Set<string>()
+  const operations = new Set<AuditLogOperation>()
+
+  const fileImports = await getFileImports(accountName)
+  for (const fileImport of fileImports) {
+    const { meta } = fileImport
+
+    if (!meta) {
+      continue
+    }
+
+    platforms.add(meta.platform)
+    meta.assetIds.forEach((x) => assetIds.add(x))
+    meta.wallets.forEach((x) => wallets.add(x))
+    meta.operations.forEach((x) => operations.add(x))
+  }
+
+  const connections = await getConnections(accountName)
+  for (const connection of connections) {
+    const { platform, meta } = connection
+
+    if (!meta) {
+      continue
+    }
+
+    platforms.add(platform)
+    meta.assetIds.forEach((x) => assetIds.add(x))
+    meta.wallets.forEach((x) => wallets.add(x))
+    meta.operations.forEach((x) => operations.add(x))
+  }
+
+  const assetIdOptions = [...assetIds].sort()
+
+  const map: FilterOptionsMap = {
+    assetId: assetIdOptions,
+    feeAsset: assetIdOptions,
+    incomingAsset: assetIdOptions,
+    operation: [...operations].sort(),
+    outgoingAsset: assetIdOptions,
+    platform: [...platforms].sort(),
+    type: TRANSACTIONS_TYPES,
+    wallet: [...wallets].sort(),
+  }
+
+  return map
+}
+
+export async function detectSpamTransactions(
+  accountName: string,
+  progress: ProgressCallback = noop,
+  signal?: AbortSignal
+) {
+  const account = getAccount(accountName)
+  progress([0, "Fetching all transactions"])
+  const transactions = await findTransactions({}, accountName)
+
+  const ethereumTransactions = transactions.filter(
+    (tx) => tx.platform === "ethereum"
+  ) as EtherscanTransaction[]
+
+  if (signal?.aborted) {
+    throw new Error(signal.reason)
+  }
+  progress([33, `Processing ${ethereumTransactions.length} Ethereum transactions`])
+  const filterMap = await getFilterMap(accountName)
+  const assetMap = await getAssetMap(accountName, filterMap.assetId)
+
+  const spam = ethereumTransactions.filter((tx) => {
+    // it means the user created the transaction
+    if (tx.fee) return false
+
+    if (tx.incomingAsset && !assetMap[tx.incomingAsset]?.coingeckoId) {
+      return true
+    }
+
+    if (tx.outgoingAsset && !assetMap[tx.outgoingAsset]?.coingeckoId) {
+      return true
+    }
+
+    return false
+  })
+
+  //
+  if (signal?.aborted) {
+    throw new Error(signal.reason)
+  }
+  //
+
+  progress([66, `Deleting ${spam.length} spam transactions`])
+  for (const spamTx of spam) {
+    const auditLogs = await findAuditLogsForTxId(spamTx._id, accountName)
+
+    const logUpdates = await account.auditLogsDB.bulkDocs(
+      auditLogs.map((log) => ({ _deleted: true, _id: log._id, _rev: log._rev } as never))
+    )
+    validateOperation(logUpdates)
+  }
+
+  const updates = await account.transactionsDB.bulkDocs(
+    spam.map((tx) => ({ _deleted: true, _id: tx._id, _rev: tx._rev } as never))
+  )
+  validateOperation(updates)
+
+  progress([100, "Done"])
 }

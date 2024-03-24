@@ -1,10 +1,18 @@
-import { CallMergeRounded, DownloadRounded, MemoryRounded, MoreHoriz } from "@mui/icons-material"
+import {
+  CallMergeRounded,
+  DownloadRounded,
+  MemoryRounded,
+  MoreHoriz,
+  RemoveCircle,
+} from "@mui/icons-material"
 import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Tooltip } from "@mui/material"
 import React from "react"
 import { exportTransactionsToCsv } from "src/api/account/file-imports/csv-export-utils"
 import { Transaction } from "src/interfaces"
+import { $activeAccount } from "src/stores/account-store"
 import {
   enqueueAutoMerge,
+  enqueueDetectSpamTransactions,
   enqueueExportAllTransactions,
   enqueueIndexTxnsDatabase,
 } from "src/utils/common-tasks"
@@ -43,7 +51,7 @@ export function TransactionActions(props: TransactionActionsProps) {
           dense
           onClick={() => {
             const data = exportTransactionsToCsv(tableData)
-            downloadCsv(data, "transactions.csv")
+            downloadCsv(data, `${$activeAccount.get()}-transactions.csv`)
             handleClose()
           }}
         >
@@ -75,6 +83,18 @@ export function TransactionActions(props: TransactionActionsProps) {
             <CallMergeRounded fontSize="small" />
           </ListItemIcon>
           <ListItemText>Auto-merge transactions</ListItemText>
+        </MenuItem>
+        <MenuItem
+          dense
+          onClick={() => {
+            enqueueDetectSpamTransactions()
+            handleClose()
+          }}
+        >
+          <ListItemIcon>
+            <RemoveCircle fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Detect spam transactions</ListItemText>
         </MenuItem>
         <MenuItem
           dense

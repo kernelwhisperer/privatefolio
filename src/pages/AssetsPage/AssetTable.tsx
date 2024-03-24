@@ -17,11 +17,12 @@ export function AssetTable() {
 
   const assetMap = useStore($assetMap)
   const [priceMap, setPriceMap] = useState<Record<string, ChartData>>()
-  const queryTime =
-    assetIds === undefined || (assetIds.length > 0 && Object.keys(assetMap).length) === 0 ? null : 0
+  const [queryTime, setQueryTime] = useState<number | null>(null)
 
   useEffect(() => {
+    const start = Date.now()
     clancy.getAssetPriceMap().then((priceMap) => {
+      setQueryTime(Date.now() - start)
       setPriceMap(priceMap)
     })
   }, [])

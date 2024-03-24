@@ -1,16 +1,11 @@
 import { UTCTimestamp } from "lightweight-charts"
 import { GITHUB_CI } from "src/env"
+import { PriceApiId } from "src/settings"
 import { getAssetTicker } from "src/utils/assets-utils"
 
-import {
-  BinanceKline,
-  ChartData,
-  PlatformId,
-  QueryRequest,
-  ResolutionString,
-} from "../../../interfaces"
+import { BinanceKline, ChartData, QueryRequest, ResolutionString } from "../../../interfaces"
 
-export const Identifier: PlatformId = "binance"
+export const Identifier: PriceApiId = "binance"
 
 export function getPair(assetId: string) {
   return `${getAssetTicker(assetId)}USDT`
@@ -47,14 +42,23 @@ export async function queryPrices(request: QueryRequest) {
     apiUrl = `${apiUrl}&endTime=${until}`
   }
 
-  const res = await fetch(apiUrl)
-  const data = await res.json()
+  try {
+    const res = await fetch(apiUrl)
+    const data = await res.json()
 
-  if (data.code) {
-    throw new Error(`Binance: ${data.msg} (${data.code})`)
+    if (data.code) {
+      throw new Error(`Binance: ${data.msg} (${data.code})`)
+    }
+
+    return data as BinanceKline[]
+  } catch (error) {
+    if (error instanceof TypeError && error.message.includes("Failed to fetch")) {
+      // safely assume its a cors error due to coin not found
+      throw new Error("Binance: NotFound")
+    }
+    console.error(error)
+    throw error
   }
-
-  return data as BinanceKline[]
 }
 
 export function mapToChartData(kline: BinanceKline): ChartData {

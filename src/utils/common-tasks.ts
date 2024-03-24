@@ -2,22 +2,23 @@ import {
   exportAuditLogsToCsv,
   exportTransactionsToCsv,
 } from "src/api/account/file-imports/csv-export-utils"
-import { AuditLog, Connection } from "src/interfaces"
+import { AssetId, AuditLog, Connection } from "src/interfaces"
+import { PriceApiId } from "src/settings"
 import { $activeAccount } from "src/stores/account-store"
 
-import { $assetMap, $filterOptionsMap, computeMetadata } from "../stores/metadata-store"
+import { $filterOptionsMap, computeMetadata } from "../stores/metadata-store"
 import { $taskQueue, enqueueTask, TaskPriority } from "../stores/task-store"
 import { clancy } from "../workers/remotes"
 import { downloadCsv } from "./utils"
 
-export function handleAuditLogChange(auditLog?: AuditLog) {
+export function handleAuditLogChange(_auditLog?: AuditLog) {
   // TODO invalidate balancesCursor based on auditLog.timestamp
   enqueueFetchAssetInfos()
+  enqueueDetectSpamTransactions()
   enqueueAutoMerge()
   enqueueIndexDatabase()
-  enqueueRefreshBalances()
-  enqueueFetchPrices()
-  enqueueRefreshNetworth()
+  //
+  refreshNetworth()
 }
 
 export function refreshNetworth() {
@@ -118,17 +119,42 @@ export function enqueueFetchPrices() {
     description: "Fetching price data for all assets.",
     determinate: true,
     function: async (progress, signal) => {
-      await computeMetadata()
+      const assetMap = await computeMetadata()
 
-      const assetMap = $assetMap.get()
-      const assetIds = Object.keys(assetMap).filter(
-        (assetId) => assetMap[assetId].coingeckoId !== undefined
-      )
+      const assetIds: AssetId[] = []
+      const priceApiMap: Partial<Record<AssetId, PriceApiId>> = {}
 
-      await clancy.fetchDailyPrices({ assetIds }, progress, signal)
+      for (const assetId in assetMap) {
+        const asset = assetMap[assetId]
+        if (asset.coingeckoId) {
+          assetIds.push(assetId)
+          priceApiMap[assetId] = asset.priceApiId
+        }
+      }
+
+      await clancy.fetchDailyPrices({ assetIds, priceApiMap }, progress, signal)
     },
     name: "Fetch asset prices",
     priority: TaskPriority.Low,
+  })
+}
+
+export function enqueueDetectSpamTransactions() {
+  const taskQueue = $taskQueue.get()
+
+  const existing = taskQueue.find((task) => task.name === "Detect spam transactions")
+
+  if (existing) return
+
+  enqueueTask({
+    abortable: true,
+    description: "Detect spam transactions.",
+    determinate: true,
+    function: async (progress, signal) => {
+      await clancy.detectSpamTransactions($activeAccount.get(), progress, signal)
+    },
+    name: "Detect spam transactions",
+    priority: TaskPriority.MediumPlus,
   })
 }
 
@@ -223,7 +249,7 @@ export function enqueueFetchAssetInfos() {
       await computeMetadata()
     },
     name: "Fetch asset infos",
-    priority: TaskPriority.Low,
+    priority: TaskPriority.MediumPlus,
   })
 }
 
@@ -261,7 +287,7 @@ export function enqueueExportAllTransactions() {
     function: async () => {
       const txns = await clancy.findTransactions({}, $activeAccount.get())
       const data = exportTransactionsToCsv(txns)
-      downloadCsv(data, "transactions.csv")
+      downloadCsv(data, `${$activeAccount.get()}-transactions.csv`)
     },
     name: "Export all transactions",
     priority: TaskPriority.Low,

@@ -18,7 +18,7 @@ import { AppLink } from "src/components/AppLink"
 import { AssetBlock } from "src/components/AssetBlock"
 import { PlatformAvatar } from "src/components/PlatformAvatar"
 import { PlatformBlock } from "src/components/PlatformBlock"
-import { PRICE_API_IDS, PRICE_APIS_META } from "src/settings"
+import { PRICE_API_IDS, PRICE_APIS_META, PriceApiId } from "src/settings"
 import { $baseCurrency } from "src/stores/account-settings-store"
 import { $activeAccount } from "src/stores/account-store"
 import { $assetMap } from "src/stores/metadata-store"
@@ -41,7 +41,7 @@ export function AssetTableRow(props: TableRowComponentProps<FullAsset>) {
   const currency = useStore($baseCurrency)
 
   const handleChange = (event: SelectChangeEvent<string>) => {
-    const newValue = event.target.value || undefined
+    const newValue: PriceApiId | undefined = (event.target.value as PriceApiId) || undefined
     clancy.updateAsset($activeAccount.get(), assetId, {
       priceApiId: newValue,
     })

@@ -69,7 +69,6 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
   const [loading, setLoading] = useState<boolean>(true) // TODO
   const [rows, setRows] = useState<T[]>([])
   const [orderBy, setOrderBy] = useState<keyof T>(initOrderBy)
-
   const [relativeTime, setRelativeTime] = useState(!$debugMode.get())
 
   const [searchParams, setSearchParams] = useSearchParams()
@@ -111,15 +110,16 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
     (_event: MouseEvent<HTMLButtonElement> | null, newPage: number) => {
       setPage(newPage)
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [setPage]
   )
 
-  const handleChangeRowsPerPage = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(parseInt(event.target.value, 10))
-    setPage(0)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  const handleChangeRowsPerPage = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      setRowsPerPage(parseInt(event.target.value, 10))
+      setPage(0)
+    },
+    [setPage, setRowsPerPage]
+  )
 
   const handleSort = useCallback(
     (_event: MouseEvent<unknown>, property: keyof T) => {
@@ -165,17 +165,14 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
     Promise.all([queryFn(activeFilters, rowsPerPage, page, order), wait(150)]).then(
       ([[rows, queryCount]]) => {
         setLoading(false)
+        setRows(rows)
+        setQueryTime(Date.now() - start)
 
-        setTimeout(() => {
-          setRows(rows)
-          setQueryTime(Date.now() - start)
-
-          if (typeof queryCount === "function") {
-            queryCount().then(setRowCount)
-          } else {
-            setRowCount(queryCount)
-          }
-        }, 0)
+        if (typeof queryCount === "function") {
+          queryCount().then(setRowCount)
+        } else {
+          setRowCount(queryCount)
+        }
       }
     )
   }, [queryFn, activeFilters, rowsPerPage, page, order])
@@ -273,7 +270,7 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
                     row={row}
                   />
                 ))}
-                {rows.length === 0 && !isEmpty && (
+                {rows.length === 0 && !isEmpty && !loading && (
                   <TableRow>
                     <TableCell colSpan={headCells.length}>
                       No records match the current filters.

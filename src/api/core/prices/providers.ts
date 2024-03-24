@@ -1,4 +1,5 @@
-import { ChartData, PlatformId, QueryRequest } from "src/interfaces"
+import { ChartData, QueryRequest } from "src/interfaces"
+import { PriceApiId } from "src/settings"
 
 import * as binance from "./binance-price-api"
 import * as coinbase from "./coinbase-price-api"
@@ -8,23 +9,20 @@ type PriceMapper = (data: any) => ChartData
 type PairMapper = (symbol: string) => string
 type PriceApi = (request: QueryRequest) => Promise<any>
 
-export const PRICE_MAPPER: Partial<Record<PlatformId, PriceMapper>> = {
-  [binance.Identifier]: binance.mapToChartData,
-  [coinbase.Identifier]: coinbase.mapToChartData,
-  [llama.Identifier]: llama.mapToChartData,
-  coinmama: coinbase.mapToChartData,
+export const PRICE_MAPPER: Record<PriceApiId, PriceMapper> = {
+  binance: binance.mapToChartData,
+  coinbase: coinbase.mapToChartData,
+  "defi-llama": llama.mapToChartData,
 }
 
-export const PRICE_APIS: Partial<Record<PlatformId, PriceApi>> = {
-  [binance.Identifier]: binance.queryPrices,
-  [coinbase.Identifier]: coinbase.queryPrices,
-  [llama.Identifier]: llama.queryPrices,
-  coinmama: coinbase.queryPrices,
+export const PRICE_APIS: Record<PriceApiId, PriceApi> = {
+  binance: binance.queryPrices,
+  coinbase: coinbase.queryPrices,
+  "defi-llama": llama.queryPrices,
 }
 
-export const PAIR_MAPPER: Partial<Record<PlatformId, PairMapper>> = {
-  [binance.Identifier]: binance.getPair,
-  [coinbase.Identifier]: coinbase.getPair,
-  [llama.Identifier]: llama.getPair,
-  coinmama: coinbase.getPair,
+export const PAIR_MAPPER: Record<PriceApiId, PairMapper> = {
+  binance: binance.getPair,
+  coinbase: coinbase.getPair,
+  "defi-llama": llama.getPair,
 }
