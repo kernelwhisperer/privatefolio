@@ -1,10 +1,13 @@
 import {
   CalculateOutlined,
+  DownloadRounded,
   MemoryRounded,
   MoreHoriz,
   PersonRemoveRounded,
   RestartAltRounded,
 } from "@mui/icons-material"
+import BackupRoundedIcon from "@mui/icons-material/BackupRounded"
+import RestoreRoundedIcon from "@mui/icons-material/RestoreRounded"
 import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Tooltip } from "@mui/material"
 import { useStore } from "@nanostores/react"
 import React from "react"
@@ -13,6 +16,8 @@ import { $accountReset, $accounts, $activeAccount } from "src/stores/account-sto
 import { useConfirm } from "../../hooks/useConfirm"
 import { enqueueTask, TaskPriority } from "../../stores/task-store"
 import {
+  enquenceBackup,
+  enqueueExportAppData,
   enqueueIndexDatabase,
   enqueueRecomputeBalances,
   enqueueRecomputeNetworth,
@@ -49,6 +54,42 @@ export function ImportDataActions() {
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
         transformOrigin={{ horizontal: "right", vertical: "top" }}
       >
+        <MenuItem
+          dense
+          onClick={() => {
+            enqueueExportAppData()
+            handleClose()
+          }}
+        >
+          <ListItemIcon>
+            <DownloadRounded fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Export app data</ListItemText>
+        </MenuItem>
+        <MenuItem
+          dense
+          onClick={() => {
+            // enquenceRestore()
+            handleClose()
+          }}
+        >
+          <ListItemIcon>
+            <RestoreRoundedIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Restore data</ListItemText>
+        </MenuItem>
+        <MenuItem
+          dense
+          onClick={() => {
+            enquenceBackup()
+            handleClose()
+          }}
+        >
+          <ListItemIcon>
+            <BackupRoundedIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Backup</ListItemText>
+        </MenuItem>
         <MenuItem
           dense
           onClick={() => {

@@ -1,3 +1,4 @@
+import JSZip from "jszip"
 import {
   exportAuditLogsToCsv,
   exportTransactionsToCsv,
@@ -9,7 +10,7 @@ import { $activeAccount } from "src/stores/account-store"
 import { $filterOptionsMap, computeMetadata } from "../stores/metadata-store"
 import { $taskQueue, enqueueTask, TaskPriority } from "../stores/task-store"
 import { clancy } from "../workers/remotes"
-import { downloadCsv } from "./utils"
+import { createCsvString, downloadCsv, downloadFile } from "./utils"
 
 export function handleAuditLogChange(_auditLog?: AuditLog) {
   // TODO invalidate balancesCursor based on auditLog.timestamp
@@ -314,3 +315,76 @@ export function enqueueExportAllAuditLogs() {
     priority: TaskPriority.Low,
   })
 }
+
+export function enqueueExportAppData() {
+  const taskQueue = $taskQueue.get()
+
+  const existing = taskQueue.find((task) => task.name === "Export app data")
+
+  if (existing) return
+
+  enqueueTask({
+    abortable: true,
+    description: "Export app data",
+    determinate: true,
+    function: async () => {
+      const auditLogs = await clancy.findAuditLogs({}, $activeAccount.get())
+      const auditLogsFile = createCsvString(exportAuditLogsToCsv(auditLogs))
+      const txns = await clancy.findTransactions({}, $activeAccount.get())
+      const txnsFile = createCsvString(exportTransactionsToCsv(txns))
+
+      const zip = new JSZip()
+      zip.file(`${$activeAccount.get()}-audit-logs.csv`, auditLogsFile)
+      zip.file(`${$activeAccount.get()}-transactions.csv`, txnsFile)
+
+      zip.generateAsync({ type: "blob" }).then(function (blob) {
+        downloadFile(blob, `${$activeAccount.get()}-data.zip`)
+      })
+    },
+    name: "Export app data",
+    priority: TaskPriority.Low,
+  })
+}
+
+export function enquenceBackup() {
+  const taskQueue = $taskQueue.get()
+
+  const existing = taskQueue.find((task) => task.name === "Backup")
+
+  if (existing) return
+
+  enqueueTask({
+    abortable: true,
+    description: "Backup",
+    determinate: true,
+    function: async () => {
+      const dbs = await clancy.backup($activeAccount.get())
+      const zip = new JSZip()
+      for (const db of dbs) {
+        zip.file(`${db[0]}-${$activeAccount.get()}.txt`, db[1])
+      }
+      zip.generateAsync({ type: "blob" }).then(function (blob) {
+        downloadFile(blob, `${$activeAccount.get()}-Backup.zip`)
+      })
+    },
+    name: "Backup",
+    priority: TaskPriority.Low,
+  })
+}
+
+// export function enquenceRestore() {
+//   const taskQueue = $taskQueue.get()
+
+//   const existing = taskQueue.find((task) => task.name === "Restore")
+
+//   if (existing) return
+
+//   enqueueTask({
+//     abortable: true,
+//     description: "Backup",
+//     determinate: true,
+//     function: async () => {},
+//     name: "Restore",
+//     priority: TaskPriority.Low,
+//   })
+// }
