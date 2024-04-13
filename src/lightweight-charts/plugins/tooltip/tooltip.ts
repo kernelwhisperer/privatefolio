@@ -19,6 +19,7 @@ import { throttle } from "lodash-es"
 import { formatNumber } from "../../../utils/formatting-utils"
 import { positionsLine } from "../../helpers/dimensions/positions"
 import { convertTime, formattedDateAndTime } from "../../helpers/time"
+import { StackedAreaData } from "../stacked-area-series/data"
 import { TooltipElement, TooltipOptions } from "./tooltip-element"
 
 class TooltipCrosshairLinePaneRenderer implements ISeriesPrimitivePaneRenderer {
@@ -73,7 +74,7 @@ interface TooltipCrosshairLineData {
 const defaultOptions: TooltipPrimitiveOptions = {
   currencySymbol: "",
   priceExtractor: (
-    data: LineData | CandlestickData | WhitespaceData,
+    data: LineData | CandlestickData | WhitespaceData | StackedAreaData,
     significantDigits: number
   ) => {
     if ((data as LineData).value !== undefined) {
@@ -87,6 +88,14 @@ const defaultOptions: TooltipPrimitiveOptions = {
         maximumFractionDigits: significantDigits,
         minimumFractionDigits: significantDigits,
       })
+    }
+    if ((data as StackedAreaData).values !== undefined) {
+      const d = data as StackedAreaData
+      console.log("📜 LOG > data:", d)
+      return d.values
+        .map((val, index) => `${d.assets[index]}: ${val}`)
+        .reverse()
+        .join("\n")
     }
     return ""
   },

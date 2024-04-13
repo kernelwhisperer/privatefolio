@@ -1,10 +1,9 @@
 import { TimerSharp } from "@mui/icons-material"
-import { Skeleton, Stack, Tooltip, Typography, useMediaQuery } from "@mui/material"
+import { Stack, Tooltip, Typography, useMediaQuery } from "@mui/material"
 import React from "react"
 
 import { MonoFont } from "../theme"
 import { formatDuration } from "../utils/formatting-utils"
-import { CircularSpinner } from "./CircularSpinner"
 
 export function QueryTimer({ queryTime }: { queryTime: number | null }) {
   const isMobile = useMediaQuery("(max-width: 599px)")
@@ -28,7 +27,7 @@ export function QueryTimer({ queryTime }: { queryTime: number | null }) {
           variant="caption"
           color="text.secondary"
           component={Stack}
-          sx={{ minWidth: isMobile ? undefined : 100 }}
+          sx={{ minWidth: isMobile ? 25 : 100 }}
           fontFamily={MonoFont}
           direction="row"
           gap={1}
@@ -36,8 +35,9 @@ export function QueryTimer({ queryTime }: { queryTime: number | null }) {
         >
           {queryTime === null ? (
             <>
-              <CircularSpinner size={14} color="inherit" sx={{ margin: "3px" }} />
-              {isMobile ? null : <Skeleton sx={{ flexGrow: 1 }}></Skeleton>}
+              {/* Seems no longer needed */}
+              {/* <CircularSpinner size={14} color="inherit" sx={{ margin: "3px" }} /> */}
+              {/* {isMobile ? null : <Skeleton sx={{ flexGrow: 1 }}></Skeleton>} */}
             </>
           ) : (
             <>

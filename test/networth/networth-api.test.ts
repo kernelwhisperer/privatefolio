@@ -1,9 +1,9 @@
 import fs from "fs"
 import { join } from "path"
 import { computeBalances } from "src/api/account/balances-api"
+import { fetchDailyPrices } from "src/api/account/daily-prices-api"
 import { addFileImport } from "src/api/account/file-imports/file-imports-api"
 import { computeNetworth, getHistoricalNetworth } from "src/api/account/networth-api"
-import { fetchDailyPrices } from "src/api/core/daily-prices-api"
 import { resetAccount } from "src/api/database"
 import { ProgressUpdate } from "src/stores/task-store"
 import { beforeAll, expect, it } from "vitest"
@@ -21,7 +21,7 @@ beforeAll(async () => {
   await addFileImport(file, undefined, accountName)
   const until = Date.UTC(2017, 8, 14, 0, 0, 0, 0) // 14 Sep 2017
   await computeBalances(accountName, { until })
-  await fetchDailyPrices({ assetIds: ["coinmama:BTC"] })
+  await fetchDailyPrices(accountName, { assetIds: ["coinmama:BTC"] })
 })
 
 it.sequential("should compute historical networth", async () => {

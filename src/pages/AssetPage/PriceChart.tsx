@@ -1,6 +1,8 @@
 import React, { useCallback } from "react"
+import { $activeAccount } from "src/stores/account-store"
+import { aggregateByWeek } from "src/utils/chart-utils"
 
-import { SingleSeriesChart } from "../../components/SingleSeriesChart"
+import { QueryFunction, SingleSeriesChart } from "../../components/SingleSeriesChart"
 import { clancy } from "../../workers/remotes"
 
 type BalanceChartProps = {
@@ -10,10 +12,13 @@ type BalanceChartProps = {
 export function PriceChart(props: BalanceChartProps) {
   const { symbol } = props
 
-  const queryFn = useCallback(async () => {
-    const prices = await clancy.getPricesForAsset(symbol)
-    return prices
-  }, [symbol])
+  const queryFn: QueryFunction = useCallback(
+    async (interval) => {
+      const prices = await clancy.getPricesForAsset($activeAccount.get(), symbol)
+      return interval === "1w" ? aggregateByWeek(prices) : prices
+    },
+    [symbol]
+  )
 
   return (
     <SingleSeriesChart

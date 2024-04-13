@@ -1,6 +1,7 @@
-import { getPair, mapToChartData, queryPrices } from "src/api/core/prices/binance-price-api"
+import { getPair, mapToChartData, queryPrices } from "src/api/external/prices/binance-price-api"
 import { GITHUB_CI } from "src/env"
-import { ResolutionString } from "src/interfaces"
+import { ResolutionString, Timestamp } from "src/interfaces"
+import { PRICE_API_PAGINATION } from "src/settings"
 import { expect, it } from "vitest"
 
 it("should fetch BTC prices within a range", async (test) => {
@@ -108,4 +109,25 @@ it("should fetch ETH prices within a range", async (test) => {
       },
     ]
   `)
+})
+
+it("should include today when limit is reached", async (test) => {
+  if (GITHUB_CI) {
+    test.skip()
+  }
+  const now = Date.now()
+  const today: Timestamp = now - (now % 86400000)
+  const since = today - 86400000 * (PRICE_API_PAGINATION - 1)
+
+  // act
+  const result = await queryPrices({
+    pair: getPair("binance:ETH"),
+    since,
+    timeInterval: "1d" as ResolutionString,
+    until: today,
+  })
+  // assert
+  const lastCandle = mapToChartData(result.slice(-1)[0])
+  expect(result.length).toMatchInlineSnapshot(`900`)
+  expect(lastCandle.time).toBe(today / 1000)
 })

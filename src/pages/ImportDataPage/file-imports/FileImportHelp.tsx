@@ -52,6 +52,7 @@ export function FileImportHelp() {
         </Typography>
       </Callout>
       <Dialog open={modalOpen} onClose={toggleModalOpen}>
+        {/* TODO add fullscreen on desktop and scrollbar on mobile */}
         <DialogTitle>
           <span>How to create file imports</span>
         </DialogTitle>

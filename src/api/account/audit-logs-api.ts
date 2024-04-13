@@ -9,46 +9,46 @@ import { getAccount } from "../database"
 const _filterOrder: (keyof AuditLog)[] = ["platform", "wallet", "operation", "assetId", "changeN"]
 const _filterOrderBySpecificity: (keyof AuditLog)[] = ["assetId", "operation", "wallet", "platform"]
 
-export async function indexAuditLogs(progress: ProgressCallback = noop, accountName: string) {
+export async function indexAuditLogs(accountName: string, progress: ProgressCallback = noop) {
   const account = getAccount(accountName)
   progress([0, "Audit logs: cleaning up stale indexes"])
   await account.auditLogsDB.viewCleanup()
-  progress([10, "Audit logs: updating index for 'timestamp'"])
+  progress([12.5, "Audit logs: updating index for 'timestamp'"])
   await account.auditLogsDB.createIndex({
     index: {
       fields: ["timestamp", "changeN"],
       name: "timestamp",
     },
   })
-  progress([20, "Audit logs: updating index for 'platform'"])
+  progress([25, "Audit logs: updating index for 'platform'"])
   await account.auditLogsDB.createIndex({
     index: {
       fields: ["platform", "timestamp", "changeN", "wallet", "operation", "assetId"], // MUST respect the order in _filterOrder
       name: "platform",
     },
   })
-  progress([30, "Audit logs: updating index for 'wallet'"])
+  progress([37.5, "Audit logs: updating index for 'wallet'"])
   await account.auditLogsDB.createIndex({
     index: {
       fields: ["wallet", "timestamp", "changeN", "platform", "operation", "assetId"], // MUST respect the order in _filterOrder
       name: "wallet",
     },
   })
-  progress([40, "Audit logs: updating index for 'operation'"])
+  progress([50, "Audit logs: updating index for 'operation'"])
   await account.auditLogsDB.createIndex({
     index: {
       fields: ["operation", "timestamp", "changeN", "platform", "wallet", "assetId"], // MUST respect the order in _filterOrder
       name: "operation",
     },
   })
-  progress([45, "Audit logs: updating index for 'assetId'"])
+  progress([62.5, "Audit logs: updating index for 'assetId'"])
   await account.auditLogsDB.createIndex({
     index: {
       fields: ["assetId", "timestamp", "changeN", "platform", "wallet", "operation"], // MUST respect the order in _filterOrder
       name: "assetId",
     },
   })
-  progress([50, "Audit logs: updating index for 'txId'"])
+  progress([75, "Audit logs: updating index for 'txId'"])
   await account.auditLogsDB.createIndex({
     index: {
       fields: ["txId", "timestamp", "changeN"],
@@ -74,8 +74,7 @@ export async function findAuditLogs(request: FindAuditLogsRequest = {}, accountN
   const account = getAccount(accountName)
   const { indexes } = await account.auditLogsDB.getIndexes()
   if (indexes.length === 1) {
-    // await indexAuditLogs(console.log, accountName)
-    await indexAuditLogs(undefined, accountName)
+    await indexAuditLogs(accountName)
   }
 
   const { filters = {}, limit, skip, order = "desc", fields } = request
@@ -123,8 +122,7 @@ export async function findAuditLogsForTxId(txId: string, accountName: string) {
   const account = getAccount(accountName)
   const { indexes } = await account.auditLogsDB.getIndexes()
   if (indexes.length === 1) {
-    // await indexAuditLogs(console.log, accountName)
-    await indexAuditLogs(undefined, accountName)
+    await indexAuditLogs(accountName)
   }
 
   const _req: PouchDB.Find.FindRequest<AuditLog> = {

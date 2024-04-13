@@ -5,6 +5,7 @@ import { AttentionBlock } from "src/components/AttentionBlock"
 import { MemoryTable } from "src/components/EnhancedTable/MemoryTable"
 import { ChartData, FullAsset } from "src/interfaces"
 import { $hideUnlisted } from "src/stores/account-settings-store"
+import { $activeAccount } from "src/stores/account-store"
 import { $assetMap, $filterOptionsMap } from "src/stores/metadata-store"
 import { getAssetPlatform, getAssetTicker } from "src/utils/assets-utils"
 import { HeadCell } from "src/utils/table-utils"
@@ -21,7 +22,7 @@ export function AssetTable() {
 
   useEffect(() => {
     const start = Date.now()
-    clancy.getAssetPriceMap().then((priceMap) => {
+    clancy.getAssetPriceMap($activeAccount.get()).then((priceMap) => {
       setQueryTime(Date.now() - start)
       setPriceMap(priceMap)
     })
@@ -94,10 +95,10 @@ export function AssetTable() {
         queryTime={queryTime}
         defaultRowsPerPage={10}
         extraRow={
-          hideUnlisted && (
+          !!hiddenAssets && (
             <AttentionBlock>
               <InfoOutlined sx={{ height: 20, width: 20 }} />
-              <span>{hiddenAssets} hidden assets...</span>
+              <span>{hiddenAssets} unlisted assets hidden...</span>
             </AttentionBlock>
           )
         }

@@ -9,22 +9,20 @@ import {
   Stack,
 } from "@mui/material"
 import React, { FormEvent, ReactNode, useCallback } from "react"
+import { noop } from "src/utils/utils"
 
 interface ConfirmDialogProps {
   content: string | ReactNode
+  dismissable?: boolean
   onClose: (confirmed: boolean, event?: FormEvent<HTMLFormElement>) => void
   open: boolean
   title: string
   variant?: "danger" | "warning" | "info" | "success"
 }
 
-const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
-  open,
-  onClose,
-  title,
-  content,
-  variant,
-}) => {
+export function ConfirmDialog(props: ConfirmDialogProps) {
+  const { open, onClose, title, content, variant, dismissable = true } = props
+
   const handleCancel = () => onClose(false)
 
   const handleSubmit = useCallback(
@@ -37,10 +35,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   )
 
   return (
-    <Dialog
-      open={open}
-      // onClose={handleCancel}  TODO based on props
-    >
+    <Dialog open={open} onClose={dismissable ? handleCancel : noop}>
       <form onSubmit={handleSubmit}>
         <DialogTitle>
           <Stack direction="row" alignItems="center" gap={0.5}>
@@ -64,5 +59,3 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
     </Dialog>
   )
 }
-
-export default ConfirmDialog

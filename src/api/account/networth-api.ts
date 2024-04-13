@@ -4,9 +4,9 @@ import { noop } from "src/utils/utils"
 
 import { Networth, Time, Timestamp } from "../../interfaces"
 import { ProgressCallback } from "../../stores/task-store"
-import { getAssetPriceMap } from "../core/daily-prices-api"
 import { getAccount } from "../database"
 import { validateOperation } from "../database-utils"
+import { getAssetPriceMap } from "./daily-prices-api"
 import { getValue, setValue } from "./kv-api"
 
 export async function invalidateNetworth(newValue: Timestamp, accountName: string) {
@@ -93,7 +93,7 @@ export async function computeNetworth(
   for (let i = 0; i < count; i++) {
     const { _id, _rev, timestamp, ...balanceMap } = balances[i]
 
-    const priceMap = await getAssetPriceMap(timestamp)
+    const priceMap = await getAssetPriceMap(accountName, timestamp)
 
     const totalValue = Object.keys(priceMap).reduce((acc, symbol) => {
       const price = priceMap[symbol]

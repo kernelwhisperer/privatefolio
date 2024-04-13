@@ -23,8 +23,8 @@ export function TableFooter(props: TableFooterProps) {
       direction="row"
       sx={{
         background: stickyVersion ? "var(--mui-palette-background-paper)" : undefined,
-        borderBottomLeftRadius: 8,
-        borderBottomRightRadius: 8,
+        borderBottomLeftRadius: "var(--priv-border-radius)",
+        borderBottomRightRadius: "var(--priv-border-radius)",
         borderTop: "1px solid var(--mui-palette-TableCell-border)",
         bottom: 0,
         paddingX: 1.5,
@@ -37,8 +37,8 @@ export function TableFooter(props: TableFooterProps) {
       {queryTime !== undefined && <QueryTimer queryTime={queryTime} />}
       {count === -1 ? (
         <Stack direction="row" justifyContent="space-between" flexGrow={1}>
-          <Skeleton width={139} height={38} />
-          <Skeleton width={360} height={38} />
+          <Skeleton sx={{ width: { lg: 139, xs: 40 } }} height={38} />
+          <Skeleton sx={{ width: { lg: 360, xs: 40 } }} height={38} />
         </Stack>
       ) : (
         <MuiTablePagination
@@ -61,7 +61,7 @@ export function TableFooter(props: TableFooterProps) {
               color: "var(--mui-palette-text-secondary)",
             },
             [`& .${tablePaginationClasses.select}`]: {
-              borderRadius: "8px !important",
+              borderRadius: 1,
             },
             [`& .${tablePaginationClasses.select}:hover`]: {
               background: "rgba(var(--mui-palette-common-onBackgroundChannel) / 0.05)",
@@ -80,8 +80,9 @@ export function TableFooter(props: TableFooterProps) {
           }
           slotProps={{
             select: {
-              renderValue: (value) => `${value} rows per page`,
-              sx: { display: { sm: "inline-flex", xs: "none" } },
+              renderValue: isTablet
+                ? (value) => String(value)
+                : (value) => `${value} rows per page`,
             },
           }}
           ActionsComponent={TablePaginationActions}

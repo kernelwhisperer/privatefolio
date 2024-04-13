@@ -1,13 +1,18 @@
-import { Tabs as MuiTabs, tabsClasses, TabsProps } from "@mui/material"
+import { Tabs as MuiTabs, tabsClasses, TabsProps as MuiTabsProps } from "@mui/material"
 import React from "react"
 import { SerifFont } from "src/theme"
 
-export function Tabs({ sx, ...rest }: TabsProps) {
+type TabsProps = MuiTabsProps & {
+  largeSize?: boolean
+}
+
+export function Tabs({ sx, largeSize, ...rest }: TabsProps) {
   return (
     <MuiTabs
       variant="scrollable"
       scrollButtons={false}
       sx={(theme) => ({
+        marginTop: "-9px",
         marginX: 2,
         [`& .${tabsClasses.indicator}`]: {
           // background: grey[600],
@@ -24,8 +29,9 @@ export function Tabs({ sx, ...rest }: TabsProps) {
         [`& .${tabsClasses.flexContainer} > a`]: {
           ...theme.typography.body1,
           fontFamily: SerifFont,
+          fontSize: largeSize ? "1.25rem" : "1rem",
           fontWeight: 500,
-          letterSpacing: 0.5,
+          letterSpacing: 0.66,
           //
           minWidth: 0,
           paddingX: 0,

@@ -75,7 +75,7 @@ export class TooltipElement {
       "flex-direction": "column",
       "font-family": MainFont,
       "font-size": this._options.compact ? "12px" : "14px",
-      "font-weight": "300",
+      "font-weight": "400",
       left: "0%",
       "line-height": this._options.compact ? "14px" : "16px",
       opacity: "0",

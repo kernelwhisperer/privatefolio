@@ -5,7 +5,7 @@ import { Subheading } from "src/components/Subheading"
 
 export default function FourZeroFourPage({ show }: { show: boolean }) {
   return (
-    <StaggeredList show={show}>
+    <StaggeredList component="main" gap={2} show={show}>
       <Subheading>Page not found</Subheading>
       <Typography paddingX={2} color="text.secondary">
         We cannot find the page you are looking for.

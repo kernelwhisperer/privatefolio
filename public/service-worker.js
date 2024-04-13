@@ -4,7 +4,7 @@ const worker = self
 worker.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open("privatefolio").then((cache) => {
-      return cache.addAll(["/", "index.html", "/manifest.json", "/favicon.png"])
+      return cache.addAll(["/", "index.html", "/manifest.json", "/privatefolio.svg"])
     })
   )
 })

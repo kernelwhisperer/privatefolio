@@ -1,20 +1,39 @@
-import { CallMergeRounded, DownloadRounded, MemoryRounded, MoreHoriz } from "@mui/icons-material"
-import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Tooltip } from "@mui/material"
-import React, { useState } from "react"
+import {
+  CalculateOutlined,
+  DownloadRounded,
+  MemoryRounded,
+  MoreHoriz,
+  Paid,
+  PaidOutlined,
+} from "@mui/icons-material"
+import {
+  IconButton,
+  ListItemAvatar,
+  ListItemText,
+  Menu,
+  MenuItem,
+  Stack,
+  Tooltip,
+} from "@mui/material"
+import { useStore } from "@nanostores/react"
+import React, { MutableRefObject, useState } from "react"
 import { exportAuditLogsToCsv } from "src/api/account/file-imports/csv-export-utils"
 import { AuditLog } from "src/interfaces"
+import { $showQuotedAmounts } from "src/stores/account-settings-store"
 import { $activeAccount } from "src/stores/account-store"
-import { enqueueTask, TaskPriority } from "src/stores/task-store"
-import { enqueueAutoMerge, enqueueExportAllAuditLogs } from "src/utils/common-tasks"
+import {
+  enqueueExportAllAuditLogs,
+  enqueueIndexAuditLogsDatabase,
+  enqueueRecomputeBalances,
+} from "src/utils/common-tasks"
 import { downloadCsv } from "src/utils/utils"
-import { clancy } from "src/workers/remotes"
 
 interface AuditLogsActionsProps {
-  tableData: AuditLog[]
+  tableDataRef: MutableRefObject<AuditLog[]>
 }
 
 export function AuditLogActions(props: AuditLogsActionsProps) {
-  const { tableData } = props
+  const { tableDataRef } = props
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -24,8 +43,22 @@ export function AuditLogActions(props: AuditLogsActionsProps) {
     setAnchorEl(null)
   }
 
+  const showQuotedAmounts = useStore($showQuotedAmounts)
+
   return (
-    <>
+    <Stack direction="row">
+      <Tooltip
+        title={showQuotedAmounts ? "Show amounts in Base Asset" : "Show amounts in Quote Currency"}
+      >
+        <IconButton
+          color="secondary"
+          onClick={() => {
+            $showQuotedAmounts.set(!showQuotedAmounts)
+          }}
+        >
+          {showQuotedAmounts ? <Paid fontSize="small" /> : <PaidOutlined fontSize="small" />}
+        </IconButton>
+      </Tooltip>
       <Tooltip title="Actions">
         <IconButton color="secondary" onClick={handleClick}>
           <MoreHoriz fontSize="small" />
@@ -41,14 +74,14 @@ export function AuditLogActions(props: AuditLogsActionsProps) {
         <MenuItem
           dense
           onClick={() => {
-            const data = exportAuditLogsToCsv(tableData)
+            const data = exportAuditLogsToCsv(tableDataRef.current)
             downloadCsv(data, `${$activeAccount.get()}-audit-logs.csv`)
             handleClose()
           }}
         >
-          <ListItemIcon>
+          <ListItemAvatar>
             <DownloadRounded fontSize="small" />
-          </ListItemIcon>
+          </ListItemAvatar>
           <ListItemText>Export table</ListItemText>
         </MenuItem>
         <MenuItem
@@ -58,43 +91,36 @@ export function AuditLogActions(props: AuditLogsActionsProps) {
             handleClose()
           }}
         >
-          <ListItemIcon>
+          <ListItemAvatar>
             <DownloadRounded fontSize="small" />
-          </ListItemIcon>
+          </ListItemAvatar>
           <ListItemText>Export all audit logs</ListItemText>
         </MenuItem>
         <MenuItem
           dense
           onClick={() => {
-            enqueueAutoMerge()
+            enqueueRecomputeBalances()
             handleClose()
           }}
         >
-          <ListItemIcon>
-            <CallMergeRounded fontSize="small" />
-          </ListItemIcon>
-          <ListItemText>Auto-merge audit logs</ListItemText>
+          <ListItemAvatar>
+            <CalculateOutlined fontSize="small" />
+          </ListItemAvatar>
+          <ListItemText>Recompute balances</ListItemText>
         </MenuItem>
         <MenuItem
           dense
           onClick={() => {
-            enqueueTask({
-              description: "Recomputing indexes for all audit logs.",
-              function: async (progress) => {
-                await clancy.indexAuditLogs(progress, $activeAccount.get())
-              },
-              name: "Recompute audit logs indexes",
-              priority: TaskPriority.Low,
-            })
+            enqueueIndexAuditLogsDatabase()
             handleClose()
           }}
         >
-          <ListItemIcon>
+          <ListItemAvatar>
             <MemoryRounded fontSize="small" />
-          </ListItemIcon>
-          <ListItemText>Recompute indexes</ListItemText>
+          </ListItemAvatar>
+          <ListItemText>Index audit logs database</ListItemText>
         </MenuItem>
       </Menu>
-    </>
+    </Stack>
   )
 }

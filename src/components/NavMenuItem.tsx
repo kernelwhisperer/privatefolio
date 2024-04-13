@@ -1,32 +1,30 @@
 import { ListItemAvatar, ListItemText, MenuItem, MenuItemProps } from "@mui/material"
 import React from "react"
-import { NavLink } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 
-export function NavMenuItem({
-  label,
-  avatar,
-  ...props
-}: MenuItemProps<typeof NavLink> & { avatar?: React.ReactNode; label: string; value: string }) {
+type NavMenuItemProps = Omit<MenuItemProps<typeof Link>, "style"> & {
+  avatar?: React.ReactNode
+  label: string
+  value: string
+}
+
+export function NavMenuItem(props: NavMenuItemProps) {
+  const { label, avatar, value, ...rest } = props
+
+  const location = useLocation()
+  const { pathname } = location
+  const appPath = pathname.split("/").slice(3).join("/")
+  const overriddenPathname = appPath.includes("asset/") ? "assets" : appPath
+
   return (
     <MenuItem
-      sx={{ alignContent: "center", minWidth: 240 }}
-      component={NavLink}
-      LinkComponent={NavLink}
-      {...props}
+      value={value}
+      className={overriddenPathname === value ? "Mui-selected" : ""}
+      component={Link}
+      LinkComponent={Link}
+      {...rest}
     >
-      {avatar && (
-        <ListItemAvatar
-          sx={{
-            alignItems: "center",
-            display: "flex",
-            justifyContent: "center",
-            marginRight: 2,
-            minWidth: 0,
-          }}
-        >
-          {avatar}
-        </ListItemAvatar>
-      )}
+      {avatar && <ListItemAvatar>{avatar}</ListItemAvatar>}
       <ListItemText primary={label} />
     </MenuItem>
   )

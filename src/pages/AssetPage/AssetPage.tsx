@@ -8,13 +8,12 @@ import { NavTab } from "src/components/NavTab"
 import { SectionTitle } from "src/components/SectionTitle"
 import { Tabs } from "src/components/Tabs"
 import { Balance } from "src/interfaces"
-import { $baseCurrency } from "src/stores/account-settings-store"
+import { $quoteCurrency } from "src/stores/account-settings-store"
 import { $activeAccount } from "src/stores/account-store"
 import { getAssetTicker } from "src/utils/assets-utils"
 import { clancy } from "src/workers/remotes"
 
 import { AssetAvatar } from "../../components/AssetAvatar"
-import { BackButton } from "../../components/BackButton"
 import { StaggeredList } from "../../components/StaggeredList"
 import { $assetMap, $filterOptionsMap } from "../../stores/metadata-store"
 import { SerifFont } from "../../theme"
@@ -40,7 +39,7 @@ export default function AssetPage({ show }: { show: boolean }) {
   const [rows, setRows] = useState<Balance[]>([])
 
   const activeAccount = useStore($activeAccount)
-  const currency = useStore($baseCurrency)
+  const currency = useStore($quoteCurrency)
 
   useEffect(() => {
     function fetchData() {
@@ -60,9 +59,9 @@ export default function AssetPage({ show }: { show: boolean }) {
 
   return (
     <StaggeredList component="main" gap={2} show={show}>
-      <BackButton to=".." sx={{ marginLeft: 1 }}>
-        Home
-      </BackButton>
+      {/* <BackButton to=".." sx={{ marginLeft: 1 }}>
+        Back
+      </BackButton> */}
       <Stack direction="row" alignItems="center" width="100%" gap={6} paddingBottom={2}>
         <Stack direction="row" gap={1} component="div" sx={{ marginX: 2 }}>
           <AssetAvatar

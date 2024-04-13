@@ -70,6 +70,7 @@ export function ConnectedTableHead<T extends BaseType>(props: ConnectedTableHead
         // marginX={-0.5}
         justifyContent={numeric ? "flex-end" : "flex-start"}
         alignItems="center"
+        sx={{ minHeight: 28 }}
       >
         {key === "timestamp" && (
           <Tooltip title={`Switch to ${relativeTime ? "absolute" : "relative"} time`}>

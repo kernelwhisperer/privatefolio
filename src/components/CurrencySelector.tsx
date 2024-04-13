@@ -1,18 +1,26 @@
-import { MenuItem, Select, SelectChangeEvent } from "@mui/material"
+import {
+  Box,
+  ListItemAvatar,
+  ListItemText,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  Tooltip,
+} from "@mui/material"
 import { useStore } from "@nanostores/react"
 import React from "react"
 import {
-  $baseCurrency,
-  $baseCurrencyMap,
+  $quoteCurrency,
+  $quoteCurrencyMap,
   DEFAULT_CURRENCIES_MAP,
 } from "src/stores/account-settings-store"
 import { $activeAccount } from "src/stores/account-store"
 
 export function CurrencySelector() {
-  const currency = useStore($baseCurrency)
+  const currency = useStore($quoteCurrency)
   const handleChange = (event: SelectChangeEvent<string>) => {
     const newCurrency = DEFAULT_CURRENCIES_MAP[event.target.value]
-    $baseCurrencyMap.setKey($activeAccount.get(), newCurrency.id)
+    $quoteCurrencyMap.setKey($activeAccount.get(), newCurrency.id)
   }
 
   return (
@@ -20,22 +28,28 @@ export function CurrencySelector() {
       size="small"
       onChange={handleChange}
       defaultValue={currency.id}
+      color="secondary"
       sx={{
         "& .MuiSelect-select": {
-          paddingY: 0.5,
+          paddingX: 2,
+          paddingY: 1,
         },
-        "& .MuiSvgIcon-root": {
-          color: "text.secondary",
-        },
-        borderRadius: 2,
-
-        color: "text.secondary",
-        fontSize: "0.875rem",
+        display: { sm: "inline-flex", xs: "none" },
+        fontSize: "0.8125rem",
+        fontWeight: 500,
+        height: 34,
+        overflow: "hidden",
       }}
+      renderValue={(value) => (
+        <Tooltip title="Quote Currency">
+          <Box sx={{ margin: -4, padding: 4 }}>{value}</Box>
+        </Tooltip>
+      )}
     >
-      {Object.values(DEFAULT_CURRENCIES_MAP).map((x) => (
-        <MenuItem key={x.id} value={x.id}>
-          {x.id}
+      {Object.values(DEFAULT_CURRENCIES_MAP).map(({ id, symbol }) => (
+        <MenuItem key={id} value={id} disabled={id !== "USD"}>
+          <ListItemAvatar sx={{ width: 12 }}>{symbol}</ListItemAvatar>
+          <ListItemText primary={id} />
         </MenuItem>
       ))}
     </Select>

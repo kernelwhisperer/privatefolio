@@ -8,10 +8,11 @@ import React, {
   useState,
 } from "react"
 
-import ConfirmDialog from "../components/ConfirmDialog/ConfirmDialog"
+import { ConfirmDialog } from "../components/ConfirmDialog/ConfirmDialog"
 
 type ConfirmationRequest = {
   content: string | ReactNode
+  dismissable?: boolean
   title: string
   variant?: "danger" | "warning" | "info" | "success"
 }
@@ -59,6 +60,7 @@ export function ConfirmDialogProvider({ children }: PropsWithChildren) {
           title={state.request.title}
           content={state.request.content}
           variant={state.request.variant}
+          dismissable={state.request.dismissable}
         />
       )}
     </ConfirmDialogContext.Provider>

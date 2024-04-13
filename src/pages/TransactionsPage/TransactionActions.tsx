@@ -3,12 +3,24 @@ import {
   DownloadRounded,
   MemoryRounded,
   MoreHoriz,
+  Paid,
+  PaidOutlined,
   RemoveCircle,
 } from "@mui/icons-material"
-import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Tooltip } from "@mui/material"
-import React from "react"
+import {
+  IconButton,
+  ListItemAvatar,
+  ListItemText,
+  Menu,
+  MenuItem,
+  Stack,
+  Tooltip,
+} from "@mui/material"
+import { useStore } from "@nanostores/react"
+import React, { MutableRefObject } from "react"
 import { exportTransactionsToCsv } from "src/api/account/file-imports/csv-export-utils"
 import { Transaction } from "src/interfaces"
+import { $showQuotedAmounts } from "src/stores/account-settings-store"
 import { $activeAccount } from "src/stores/account-store"
 import {
   enqueueAutoMerge,
@@ -19,11 +31,11 @@ import {
 import { downloadCsv } from "src/utils/utils"
 
 interface TransactionActionsProps {
-  tableData: Transaction[]
+  tableDataRef: MutableRefObject<Transaction[]>
 }
 
 export function TransactionActions(props: TransactionActionsProps) {
-  const { tableData } = props
+  const { tableDataRef } = props
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -33,8 +45,22 @@ export function TransactionActions(props: TransactionActionsProps) {
     setAnchorEl(null)
   }
 
+  const showQuotedAmounts = useStore($showQuotedAmounts)
+
   return (
-    <>
+    <Stack direction="row">
+      <Tooltip
+        title={showQuotedAmounts ? "Show amounts in Base Asset" : "Show amounts in Quote Currency"}
+      >
+        <IconButton
+          color="secondary"
+          onClick={() => {
+            $showQuotedAmounts.set(!showQuotedAmounts)
+          }}
+        >
+          {showQuotedAmounts ? <Paid fontSize="small" /> : <PaidOutlined fontSize="small" />}
+        </IconButton>
+      </Tooltip>
       <Tooltip title="Actions">
         <IconButton color="secondary" onClick={handleClick}>
           <MoreHoriz fontSize="small" />
@@ -50,14 +76,14 @@ export function TransactionActions(props: TransactionActionsProps) {
         <MenuItem
           dense
           onClick={() => {
-            const data = exportTransactionsToCsv(tableData)
+            const data = exportTransactionsToCsv(tableDataRef.current)
             downloadCsv(data, `${$activeAccount.get()}-transactions.csv`)
             handleClose()
           }}
         >
-          <ListItemIcon>
+          <ListItemAvatar>
             <DownloadRounded fontSize="small" />
-          </ListItemIcon>
+          </ListItemAvatar>
           <ListItemText>Export table</ListItemText>
         </MenuItem>
         <MenuItem
@@ -67,9 +93,9 @@ export function TransactionActions(props: TransactionActionsProps) {
             handleClose()
           }}
         >
-          <ListItemIcon>
+          <ListItemAvatar>
             <DownloadRounded fontSize="small" />
-          </ListItemIcon>
+          </ListItemAvatar>
           <ListItemText>Export all transactions</ListItemText>
         </MenuItem>
         <MenuItem
@@ -79,9 +105,9 @@ export function TransactionActions(props: TransactionActionsProps) {
             handleClose()
           }}
         >
-          <ListItemIcon>
+          <ListItemAvatar>
             <CallMergeRounded fontSize="small" />
-          </ListItemIcon>
+          </ListItemAvatar>
           <ListItemText>Auto-merge transactions</ListItemText>
         </MenuItem>
         <MenuItem
@@ -91,9 +117,9 @@ export function TransactionActions(props: TransactionActionsProps) {
             handleClose()
           }}
         >
-          <ListItemIcon>
+          <ListItemAvatar>
             <RemoveCircle fontSize="small" />
-          </ListItemIcon>
+          </ListItemAvatar>
           <ListItemText>Detect spam transactions</ListItemText>
         </MenuItem>
         <MenuItem
@@ -103,12 +129,12 @@ export function TransactionActions(props: TransactionActionsProps) {
             handleClose()
           }}
         >
-          <ListItemIcon>
+          <ListItemAvatar>
             <MemoryRounded fontSize="small" />
-          </ListItemIcon>
+          </ListItemAvatar>
           <ListItemText>Index transactions database</ListItemText>
         </MenuItem>
       </Menu>
-    </>
+    </Stack>
   )
 }

@@ -20,13 +20,8 @@ export default function ImportDataPage({ show }: { show: boolean }) {
   return (
     <StaggeredList component="main" gap={2} show={show}>
       <Stack>
-        <Stack
-          direction="row"
-          alignItems="center"
-          justifyContent="space-between"
-          sx={{ marginRight: 2 }}
-        >
-          <Tabs value={tab} defaultValue={defaultTab}>
+        <Stack direction="row" alignItems="flex-start" justifyContent="space-between">
+          <Tabs value={tab} defaultValue={defaultTab} largeSize>
             <NavTab value="connections" to={"?tab=connections"} label="Connections" />
             <NavTab value="file-imports" to={"?tab=file-imports"} label="File imports" />
             <NavTab value="database-info" to={"?tab=database-info"} label="Database Info" />

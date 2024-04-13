@@ -7,8 +7,7 @@ import {
 import { inputBaseClasses, Stack, TextField, Tooltip, Typography } from "@mui/material"
 import IconButton from "@mui/material/IconButton"
 import * as React from "react"
-
-import { MonoFont } from "../theme"
+import { MonoFont } from "src/theme"
 
 interface TablePaginationActionsProps {
   count: number
@@ -47,6 +46,7 @@ export function TablePaginationActions(props: TablePaginationActionsProps) {
             onClick={handleFirstPageButtonClick}
             disabled={page === 0}
             aria-label="first page"
+            color="secondary"
           >
             <KeyboardDoubleArrowLeftRounded />
           </IconButton>
@@ -59,6 +59,7 @@ export function TablePaginationActions(props: TablePaginationActionsProps) {
             onClick={handleBackButtonClick}
             disabled={page === 0}
             aria-label="previous page"
+            color="secondary"
           >
             <KeyboardArrowLeftRounded />
           </IconButton>
@@ -71,22 +72,19 @@ export function TablePaginationActions(props: TablePaginationActionsProps) {
           value={page + 1}
           sx={{
             width: 72,
+            [`& .${inputBaseClasses.input}`]: {
+              fontFamily: MonoFont,
+              paddingY: 0.5,
+              textAlign: "center",
+            },
             [`& .${inputBaseClasses.root}`]: {
               background: "var(--mui-palette-background-default)",
-            },
-            [`& .${inputBaseClasses.input}`]: {
-              textAlign: "center",
+              borderRadius: 2,
             },
           }}
           type="number"
           onChange={(event: any) => {
             onPageChange(event, Math.max(0, Math.min(event.target.value - 1, lastPage)))
-          }}
-          inputProps={{
-            sx: {
-              fontFamily: MonoFont,
-              paddingY: 0.5,
-            },
           }}
         />
         <Typography variant="body2" color="text.secondary">
@@ -100,6 +98,7 @@ export function TablePaginationActions(props: TablePaginationActionsProps) {
             onClick={handleNextButtonClick}
             disabled={page >= lastPage}
             aria-label="next page"
+            color="secondary"
           >
             <KeyboardArrowRightRounded />
           </IconButton>
@@ -112,6 +111,7 @@ export function TablePaginationActions(props: TablePaginationActionsProps) {
             onClick={handleLastPageButtonClick}
             disabled={page >= lastPage}
             aria-label="last page"
+            color="secondary"
           >
             <KeyboardDoubleArrowRightRounded />
           </IconButton>

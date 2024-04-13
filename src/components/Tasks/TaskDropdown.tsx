@@ -9,7 +9,6 @@ import {
 import {
   Button,
   IconButton,
-  List,
   ListItem,
   ListItemButton,
   ListItemText,
@@ -117,138 +116,148 @@ export function TaskDropdown() {
           size="small"
           variant="outlined"
           color={"secondary"}
-          sx={{ paddingY: 0.5 }}
+          sx={{ paddingX: 1.5, paddingY: 1 }}
           onClick={handleClick}
           startIcon={
             pendingTask ? (
               <PendingTaskProgress />
             ) : (
-              <DoneAllRounded sx={{ height: 14, width: 14 }} />
+              <DoneAllRounded sx={{ height: 16, width: 16 }} />
             )
           }
         >
-          <Truncate sx={{ maxWidth: 260 }}>
+          <Truncate sx={{ maxWidth: { sm: 260, xs: 120 } }}>
             {pendingTask ? `${pendingTask.name}` : "Up to date"}
           </Truncate>
         </Button>
       </Tooltip>
       <Menu
+        // BackdropProps={{ invisible: false }} FIXME
         open={open}
         anchorEl={anchorEl}
         onClose={handleClose}
         anchorOrigin={{
-          horizontal: "right",
+          horizontal: "center",
           vertical: "bottom",
         }}
         transformOrigin={{
-          horizontal: "right",
+          horizontal: "center",
           vertical: "top",
         }}
-        sx={{ marginTop: 0.5 }}
-        MenuListProps={{ sx: { maxHeight: 224 } }}
-        slotProps={{ paper: { sx: { overflowY: "scroll" } } }}
-      >
-        <List
-          dense
-          sx={{
+        sx={{
+          "& .MuiPopover-paper": {
+            maxHeight: 224,
+            maxWidth: { sm: 360 },
+            width: "100%",
+          },
+          marginTop: 0.5,
+        }}
+        MenuListProps={{
+          dense: true,
+          sx: {
             "& .MuiListItem-root": {
+              paddingX: 1,
               paddingY: 0,
             },
             "& .MuiListItemButton-root": {
-              borderRadius: 1,
+              // borderRadius: 0.5,
               opacity: "1 !important",
             },
             marginX: -1,
-            maxWidth: 360,
-            minWidth: 360,
-            paddingY: 0.5,
-          }}
-        >
-          {taskQueue
-            .slice()
-            .reverse()
-            .map((task) => (
-              <ListItem
-                key={task.id}
-                secondaryAction={
-                  <IconButton
-                    edge="end"
-                    aria-label="delete"
-                    size="small"
-                    color="secondary"
-                    onClick={() => cancelTask(task.id)}
-                  >
-                    <CancelOutlined fontSize="inherit" />
-                  </IconButton>
-                }
-              >
-                <ListItemButton disabled>
-                  <HourglassEmptyRounded sx={{ marginRight: 1.25, width: 14 }} color="secondary" />
-                  <ListItemText primary={<Truncate>{task.name}</Truncate>} />
-                </ListItemButton>
-              </ListItem>
-            ))}
-          {pendingTask && (
+          },
+        }}
+        slotProps={{
+          // backdrop: {
+          //   invisible: false,
+          // },
+          paper: { sx: { overflowY: "scroll" } },
+        }}
+      >
+        {taskQueue
+          .slice()
+          .reverse()
+          .map((task) => (
             <ListItem
+              key={task.id}
               secondaryAction={
-                pendingTask.abortable ? (
-                  <IconButton
-                    edge="end"
-                    aria-label="delete"
-                    size="small"
-                    onClick={() => cancelTask(pendingTask.id)}
-                  >
-                    <CancelOutlined fontSize="inherit" />
-                  </IconButton>
-                ) : null
+                <IconButton
+                  edge="end"
+                  aria-label="delete"
+                  size="small"
+                  color="secondary"
+                  onClick={() => cancelTask(task.id)}
+                >
+                  <CancelOutlined fontSize="inherit" />
+                </IconButton>
               }
             >
-              <ListItemButton onClick={() => setSelectedTaskId(pendingTask.id)}>
-                <PendingTaskProgress key={pendingTask.id} sx={{ marginRight: 1.25 }} />
-                <ListItemText
-                  primary={
-                    <Stack direction="row" gap={0.5}>
-                      <Truncate>{pendingTask.name}</Truncate>
-                      <Typography fontFamily={MonoFont} variant="inherit" color="text.secondary">
-                        (<TaskDuration key={pendingTask.id} task={pendingTask} />)
-                      </Typography>
-                    </Stack>
-                  }
-                />
-              </ListItemButton>
-            </ListItem>
-          )}
-          {taskHistory.map((task) => (
-            <ListItem key={task.id} dense>
-              <ListItemButton onClick={() => setSelectedTaskId(task.id)} dense>
-                {task.abortController?.signal.aborted ? (
-                  <Block sx={{ marginRight: 1, width: 16 }} color="secondary" />
-                ) : task.errorMessage ? (
-                  <ClearRounded sx={{ marginRight: 1, width: 16 }} color="error" />
-                ) : (
-                  <CheckRounded sx={{ marginRight: 1, width: 16 }} color="success" />
-                )}
-                <ListItemText
-                  primary={
-                    <Stack direction="row" gap={0.5}>
-                      <Truncate>{task.name}</Truncate>
-                      <Typography fontFamily={MonoFont} variant="inherit" color="text.secondary">
-                        (<TaskDuration task={task} />)
-                      </Typography>
-                    </Stack>
-                  }
-                />
+              <ListItemButton disabled>
+                <HourglassEmptyRounded sx={{ marginRight: 1.25, width: 14 }} color="secondary" />
+                <ListItemText primary={<Truncate>{task.name}</Truncate>} />
               </ListItemButton>
             </ListItem>
           ))}
-          {taskQueue.length === 0 && taskHistory.length === 0 && !pendingTask && (
-            <ListItem>
-              <ListItemButton disabled>
-                <ListItemText primary="Nothing to see here..." />
-              </ListItemButton>
-            </ListItem>
-          )}
-        </List>
+        {pendingTask && (
+          <ListItem
+            secondaryAction={
+              pendingTask.abortable ? (
+                <IconButton
+                  edge="end"
+                  aria-label="delete"
+                  size="small"
+                  color="secondary"
+                  onClick={() => cancelTask(pendingTask.id)}
+                >
+                  <CancelOutlined fontSize="inherit" />
+                </IconButton>
+              ) : null
+            }
+          >
+            <ListItemButton onClick={() => setSelectedTaskId(pendingTask.id)}>
+              <PendingTaskProgress key={pendingTask.id} sx={{ marginRight: 1.25 }} />
+              <ListItemText
+                primary={
+                  <Stack direction="row" gap={0.5}>
+                    <Truncate>{pendingTask.name}</Truncate>
+                    <Typography fontFamily={MonoFont} variant="inherit" color="text.secondary">
+                      (<TaskDuration key={pendingTask.id} task={pendingTask} />)
+                    </Typography>
+                  </Stack>
+                }
+              />
+            </ListItemButton>
+          </ListItem>
+        )}
+        {taskHistory.map((task) => (
+          <ListItem key={task.id}>
+            <ListItemButton onClick={() => setSelectedTaskId(task.id)}>
+              {task.abortController?.signal.aborted ? (
+                <Block sx={{ marginRight: 1, width: 16 }} color="secondary" />
+              ) : task.errorMessage ? (
+                <ClearRounded sx={{ marginRight: 1, width: 16 }} color="error" />
+              ) : (
+                <CheckRounded sx={{ marginRight: 1, width: 16 }} color="success" />
+              )}
+              <ListItemText
+                primary={
+                  <Stack direction="row" gap={0.5}>
+                    <Truncate>{task.name}</Truncate>
+                    <Typography fontFamily={MonoFont} variant="inherit" color="text.secondary">
+                      (<TaskDuration task={task} />)
+                    </Typography>
+                  </Stack>
+                }
+              />
+            </ListItemButton>
+          </ListItem>
+        ))}
+        {taskQueue.length === 0 && taskHistory.length === 0 && !pendingTask && (
+          <ListItem>
+            <ListItemButton disabled>
+              <ListItemText primary="Nothing to see here..." />
+            </ListItemButton>
+          </ListItem>
+        )}
       </Menu>
       {selectedTaskId && (
         <TaskDetailsDialog open onClose={() => setSelectedTaskId(null)} taskId={selectedTaskId} />

@@ -1,28 +1,22 @@
-import { ArrowRightAltRounded, SwapHoriz, Visibility } from "@mui/icons-material"
-import { Box, Button, IconButton, Stack, TableCell, TableRow, Tooltip } from "@mui/material"
-import React from "react"
+import { SwapHoriz, Visibility } from "@mui/icons-material"
+import { IconButton, Stack, TableCell, TableRow, Tooltip, Typography } from "@mui/material"
+import React, { useEffect, useState } from "react"
 import { ActionBlock } from "src/components/ActionBlock"
-import { AmountBlock } from "src/components/AmountBlock"
+import { AssetAmountBlock } from "src/components/AssetAmountBlock"
 import { AssetBlock } from "src/components/AssetBlock"
 import { PlatformBlock } from "src/components/PlatformBlock"
 import { useBoolean } from "src/hooks/useBoolean"
-import { getAssetTicker } from "src/utils/assets-utils"
+import { $activeAccount } from "src/stores/account-store"
+import { clancy } from "src/workers/remotes"
 
 import { TimestampBlock } from "../../components/TimestampBlock"
 import { Truncate } from "../../components/Truncate"
-import { Transaction } from "../../interfaces"
+import { ChartData, Transaction } from "../../interfaces"
 import { TableRowComponentProps } from "../../utils/table-utils"
 import { TransactionDrawer } from "./TransactionDrawer"
 
 export function TransactionTableRow(props: TableRowComponentProps<Transaction>) {
-  const {
-    row,
-    relativeTime,
-    headCells: _headCells,
-    isMobile: _isMobile,
-    isTablet: _isTablet,
-    ...rest
-  } = props
+  const { row, relativeTime, headCells: _headCells, isMobile: _isMobile, isTablet, ...rest } = props
 
   const {
     incoming,
@@ -39,59 +33,71 @@ export function TransactionTableRow(props: TableRowComponentProps<Transaction>) 
 
   const { value: open, toggle: toggleOpen } = useBoolean(false)
 
-  if (_isTablet) {
+  const [priceMap, setPriceMap] = useState<Record<string, ChartData>>()
+
+  useEffect(() => {
+    clancy.getAssetPriceMap($activeAccount.get(), timestamp).then((priceMap) => {
+      setPriceMap(priceMap)
+    })
+  }, [open, timestamp])
+
+  if (isTablet) {
     return (
       <>
         <TableRow hover>
-          <TableCell colSpan={99}>
-            <Stack
-              direction="column"
-              justifyContent="space-between"
-              alignItems="flex-start"
-              gap={1}
-            >
-              <Box sx={{ color: "text.secondary" }}>
+          <TableCell colSpan={99} onClick={toggleOpen} sx={{ cursor: "pointer" }}>
+            <Stack>
+              <Typography variant="caption" color="text.secondary">
                 <TimestampBlock timestamp={timestamp} relative={relativeTime} />
-              </Box>
-              <ActionBlock action={type} size="medium" />
+              </Typography>
               <Stack
                 direction="row"
-                gap={3}
-                paddingY={1}
-                sx={{
-                  fontSize: "18px",
-                }}
+                gap={1}
+                marginY={0.5}
+                justifyContent="space-between"
                 alignItems="center"
+                flexWrap="wrap"
               >
-                {outgoing && (
-                  <Stack direction="row" gap={1} alignItems="center">
-                    <AmountBlock
-                      colorized
-                      placeholder=""
-                      amount={outgoing ? `-${outgoing}` : undefined}
-                      showSign
-                      currencyTicker={getAssetTicker(outgoingAsset)}
-                    />
-                    <AssetBlock asset={outgoingAsset} size="medium" />
-                  </Stack>
-                )}
-                {outgoing && incoming ? <SwapHoriz fontSize="small" color="secondary" /> : null}
-                {incoming && (
-                  <Stack direction="row" gap={1} alignItems="center">
-                    <AmountBlock
-                      colorized
-                      placeholder=""
-                      amount={incoming}
-                      showSign
-                      currencyTicker={getAssetTicker(incomingAsset)}
-                    />
-                    <AssetBlock asset={incomingAsset} size="medium" />
-                  </Stack>
-                )}
+                <ActionBlock action={type} />
+                <Stack
+                  direction="row"
+                  gap={1}
+                  alignItems="center"
+                  justifyContent="space-between"
+                  flexWrap="wrap"
+                  // flexGrow={outgoing && incoming ? 1 : 0}
+                >
+                  {outgoing && (
+                    <Stack direction="row" gap={1} alignItems="center">
+                      <AssetAmountBlock
+                        assetId={outgoingAsset}
+                        amount={outgoing ? `-${outgoing}` : undefined}
+                        priceMap={priceMap}
+                        colorized
+                        showSign
+                        placeholder=""
+                      />
+                      <AssetBlock asset={outgoingAsset} />
+                    </Stack>
+                  )}
+                  {outgoing && incoming ? (
+                    <SwapHoriz fontSize="small" color="secondary" sx={{ marginX: 2 }} />
+                  ) : null}
+                  {incoming && (
+                    <Stack direction="row" gap={1} alignItems="center">
+                      <AssetAmountBlock
+                        assetId={incomingAsset}
+                        amount={incoming}
+                        priceMap={priceMap}
+                        colorized
+                        showSign
+                        placeholder=""
+                      />
+                      <AssetBlock asset={incomingAsset} />
+                    </Stack>
+                  )}
+                </Stack>
               </Stack>
-              <Button size="small" color="primary" onClick={toggleOpen}>
-                Inspect details <ArrowRightAltRounded />
-              </Button>
             </Stack>
           </TableCell>
         </TableRow>
@@ -101,6 +107,7 @@ export function TransactionTableRow(props: TableRowComponentProps<Transaction>) 
           toggleOpen={toggleOpen}
           tx={row}
           relativeTime={relativeTime}
+          priceMap={priceMap}
         />
       </>
     )
@@ -124,36 +131,39 @@ export function TransactionTableRow(props: TableRowComponentProps<Transaction>) 
           <ActionBlock action={type} />
         </TableCell>
         <TableCell align="right" variant="clickable">
-          <AmountBlock
-            colorized
-            placeholder=""
+          <AssetAmountBlock
+            assetId={outgoingAsset}
             amount={outgoing ? `-${outgoing}` : undefined}
+            priceMap={priceMap}
+            colorized
             showSign
-            currencyTicker={getAssetTicker(outgoingAsset)}
+            placeholder=""
           />
         </TableCell>
         <TableCell>
           <AssetBlock asset={outgoingAsset} />
         </TableCell>
         <TableCell align="right" variant="clickable">
-          <AmountBlock
-            colorized
-            placeholder=""
+          <AssetAmountBlock
+            assetId={incomingAsset}
             amount={incoming}
+            priceMap={priceMap}
+            colorized
             showSign
-            currencyTicker={getAssetTicker(incomingAsset)}
+            placeholder=""
           />
         </TableCell>
         <TableCell>
           <AssetBlock asset={incomingAsset} />
         </TableCell>
         <TableCell align="right" variant="clickable">
-          <AmountBlock
-            colorized
-            placeholder=""
+          <AssetAmountBlock
+            assetId={feeAsset}
             amount={fee}
+            priceMap={priceMap}
+            colorized
             showSign
-            currencyTicker={getAssetTicker(feeAsset)}
+            placeholder=""
           />
         </TableCell>
         <TableCell>
@@ -186,6 +196,7 @@ export function TransactionTableRow(props: TableRowComponentProps<Transaction>) 
         toggleOpen={toggleOpen}
         tx={row}
         relativeTime={relativeTime}
+        priceMap={priceMap}
       />
     </>
   )

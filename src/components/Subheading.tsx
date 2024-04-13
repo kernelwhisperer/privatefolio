@@ -9,7 +9,13 @@ export function Subheading({ sx = {}, ...rest }: TypographyProps) {
       color="primary"
       variant="h6"
       fontFamily={SerifFont}
-      sx={{ minHeight: 36, paddingX: 2, ...sx }}
+      sx={{
+        //
+        letterSpacing: 0.75,
+        minHeight: 36,
+        paddingLeft: 2,
+        ...sx,
+      }}
       component={Stack}
       direction="row"
       alignItems="center"

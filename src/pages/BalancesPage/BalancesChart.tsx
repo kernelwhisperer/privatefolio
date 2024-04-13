@@ -2,17 +2,18 @@ import { useMediaQuery } from "@mui/material"
 import { useStore } from "@nanostores/react"
 import { proxy } from "comlink"
 import { debounce } from "lodash-es"
-import React, { useCallback, useEffect, useMemo, useState } from "react"
+import React, { memo, useCallback, useEffect, useMemo, useState } from "react"
 import { DEFAULT_DEBOUNCE_DURATION } from "src/settings"
-import { $baseCurrency } from "src/stores/account-settings-store"
+import { $quoteCurrency } from "src/stores/account-settings-store"
 import { $activeAccount } from "src/stores/account-store"
 import { $debugMode } from "src/stores/app-store"
-import { createPriceFormatter } from "src/utils/chart-utils"
+import { aggregateByWeek, createPriceFormatter } from "src/utils/chart-utils"
 
-import { SingleSeriesChart, TooltipOpts } from "../../components/SingleSeriesChart"
+import { QueryFunction, SingleSeriesChart, TooltipOpts } from "../../components/SingleSeriesChart"
 import { clancy } from "../../workers/remotes"
 
-export function BalancesChart() {
+function BalancesChartBase() {
+  const activeAccount = useStore($activeAccount)
   // hack to  refresh the chart
   const [refresh, setRefresh] = useState(0)
 
@@ -23,7 +24,7 @@ export function BalancesChart() {
           setRefresh(Math.random())
         }, DEFAULT_DEBOUNCE_DURATION)
       ),
-      $activeAccount.get()
+      activeAccount
     )
 
     return () => {
@@ -31,16 +32,18 @@ export function BalancesChart() {
         unsubscribe()
       })
     }
-  }, [])
+  }, [activeAccount])
 
-  const queryFn = useCallback(async () => {
-    const balances = await clancy.getHistoricalNetworth($activeAccount.get())
-    // console.log("📜 LOG > query > records:", balances)
-    return balances
+  const queryFn: QueryFunction = useCallback(
+    async (interval) => {
+      const networth = await clancy.getHistoricalNetworth(activeAccount)
+      return interval === "1w" ? aggregateByWeek(networth) : networth
+    },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [refresh])
+    [activeAccount, refresh]
+  )
 
-  const currency = useStore($baseCurrency)
+  const currency = useStore($quoteCurrency)
   const isMobile = useMediaQuery("(max-width: 599px)")
 
   const chartOptions = useMemo(
@@ -76,3 +79,5 @@ export function BalancesChart() {
     />
   )
 }
+
+export const BalancesChart = memo(BalancesChartBase)

@@ -1,7 +1,6 @@
-import { Box, Stack } from "@mui/material"
-import React, { useCallback, useMemo, useState } from "react"
+import { Box } from "@mui/material"
+import React, { MutableRefObject, useCallback, useMemo } from "react"
 import { FilterChip } from "src/components/FilterChip"
-import { Subheading } from "src/components/Subheading"
 import { $activeAccount } from "src/stores/account-store"
 import { stringToColor } from "src/utils/color-utils"
 
@@ -13,18 +12,16 @@ import {
 import { AuditLog } from "../../interfaces"
 import { HeadCell } from "../../utils/table-utils"
 import { clancy } from "../../workers/remotes"
-import { AuditLogActions } from "./AuditLogActions"
 import { AuditLogTableRow } from "./AuditLogTableRow"
 
 interface AuditLogsTableProps extends Pick<RemoteTableProps<AuditLog>, "defaultRowsPerPage"> {
   assetId?: string
+  tableDataRef?: MutableRefObject<AuditLog[]>
   txId?: string
 }
 
 export function AuditLogTable(props: AuditLogsTableProps) {
-  const { assetId, txId, ...rest } = props
-
-  const [tableData, setTableData] = useState<AuditLog[]>([])
+  const { assetId, txId, tableDataRef, ...rest } = props
 
   const queryFn: QueryFunction<AuditLog> = useCallback(
     async (filters, rowsPerPage, page, order) => {
@@ -43,7 +40,9 @@ export function AuditLogTable(props: AuditLogsTableProps) {
         $activeAccount.get()
       )
 
-      setTableData(auditLogs)
+      if (tableDataRef) {
+        tableDataRef.current = auditLogs
+      }
 
       return [
         auditLogs,
@@ -59,7 +58,7 @@ export function AuditLogTable(props: AuditLogsTableProps) {
             .then((logs) => logs.length),
       ]
     },
-    [assetId, txId]
+    [assetId, tableDataRef, txId]
   )
 
   const headCells = useMemo<HeadCell<AuditLog>[]>(
@@ -120,10 +119,6 @@ export function AuditLogTable(props: AuditLogsTableProps) {
 
   return (
     <>
-      <Stack direction="row" justifyContent="space-between">
-        <Subheading>Audit logs</Subheading>
-        <AuditLogActions tableData={tableData} />
-      </Stack>
       {txId && (
         <Box
           sx={{

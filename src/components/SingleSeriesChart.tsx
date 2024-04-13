@@ -30,25 +30,22 @@ import {
 } from "lightweight-charts"
 import { merge } from "lodash-es"
 import React, { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { StackedAreaData } from "src/lightweight-charts/plugins/stacked-area-series/data"
+import { StackedAreaSeries } from "src/lightweight-charts/plugins/stacked-area-series/stacked-area-series"
 import { $inspectTime } from "src/stores/pages/balances-store"
 
 import { useBoolean } from "../hooks/useBoolean"
-import { ChartData } from "../interfaces"
+import { ChartData, ResolutionString } from "../interfaces"
 import { DeltaTooltipPrimitive } from "../lightweight-charts/plugins/delta-tooltip/delta-tooltip"
 import {
   TooltipPrimitive,
   TooltipPrimitiveOptions,
 } from "../lightweight-charts/plugins/tooltip/tooltip"
 import { $favoriteIntervals, $preferredInterval } from "../stores/chart-store"
-import {
-  candleStickOptions,
-  extractTooltipColors,
-  greenColor,
-  greenColorDark,
-} from "../utils/chart-utils"
+import { candleStickOptions, extractTooltipColors, profitColor } from "../utils/chart-utils"
 import { Chart, ChartProps } from "./Chart"
 import { CircularSpinner } from "./CircularSpinner"
-import { NoDataAvailable } from "./NoDataAvailable"
+import { NoDataButton } from "./NoDataButton"
 import { QueryTimer } from "./QueryTimer"
 
 export function ChartIconButton({ active, ...rest }: IconButtonProps & { active: boolean }) {
@@ -62,7 +59,7 @@ export function ChartIconButton({ active, ...rest }: IconButtonProps & { active:
   )
 }
 
-export type QueryFunction = () => Promise<ChartData[]>
+export type QueryFunction = (interval: ResolutionString) => Promise<ChartData[] | StackedAreaData[]>
 
 export type TooltipOpts = Partial<Omit<TooltipPrimitiveOptions, "priceExtractor">>
 
@@ -87,7 +84,7 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
     size = "large",
     seriesOptions = DEFAULT_OPTS as DeepPartial<SeriesOptionsCommon>,
     tooltipOptions = DEFAULT_OPTS as TooltipOpts,
-    emptyContent = <NoDataAvailable />,
+    emptyContent = <NoDataButton />,
     ...rest
   } = props
 
@@ -109,7 +106,7 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
   const [preferredType, setPreferredType] = useState<SeriesType>(initType)
   const [isLoading, setLoading] = useState<boolean>(true)
   const [queryTime, setQueryTime] = useState<number | null>(null)
-  const [data, setData] = useState<ChartData[]>([])
+  const [data, setData] = useState<ChartData[] | StackedAreaData[]>([])
 
   const activeType = useMemo(() => {
     if (data.length <= 0) return preferredType
@@ -132,7 +129,7 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
   const theme = useTheme()
 
   const plotSeries = useCallback(
-    (data: ChartData[]) => {
+    (data: ChartData[] | StackedAreaData[]) => {
       if (!chartRef.current || data.length <= 0) {
         return
       }
@@ -143,29 +140,43 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
         } catch {}
       }
 
-      if (activeType === "Candlestick") {
-        seriesRef.current = chartRef.current.addCandlestickSeries({
-          ...candleStickOptions,
+      const isStackedData = "values" in data[0]
+
+      if (isStackedData) {
+        const customSeriesView = new StackedAreaSeries<StackedAreaData>()
+        const customSeries = chartRef.current.addCustomSeries(customSeriesView, {
           priceLineVisible: false,
           ...seriesOptions,
         })
-      } else if (activeType === "Histogram") {
-        seriesRef.current = chartRef.current.addHistogramSeries({
-          color: alpha(greenColorDark, 0.5),
-          priceLineVisible: false,
-          ...seriesOptions,
-        })
+
+        customSeries.setData(data as StackedAreaData[])
+        seriesRef.current = customSeries
       } else {
-        seriesRef.current = chartRef.current.addAreaSeries({
-          bottomColor: alpha(greenColor, 0),
-          lineColor: greenColor,
-          // lineType: 2,
-          lineWidth: 2,
-          priceLineVisible: false,
-          ...seriesOptions,
-        })
+        if (activeType === "Candlestick") {
+          seriesRef.current = chartRef.current.addCandlestickSeries({
+            ...candleStickOptions,
+            priceLineVisible: false,
+            ...seriesOptions,
+          })
+        } else if (activeType === "Histogram") {
+          seriesRef.current = chartRef.current.addHistogramSeries({
+            color: alpha(profitColor, 0.5),
+            priceLineVisible: false,
+            ...seriesOptions,
+          })
+        } else {
+          seriesRef.current = chartRef.current.addAreaSeries({
+            bottomColor: alpha(profitColor, 0),
+            lineColor: profitColor,
+            // lineType: 2,
+            lineWidth: 2,
+            priceLineVisible: false,
+            ...seriesOptions,
+          })
+        }
+        seriesRef.current.setData(data as ChartData[])
       }
-      seriesRef.current.setData(data)
+      //
       setSeriesReady(false)
       setTimeout(() => {
         setSeriesReady(true)
@@ -296,26 +307,7 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
     setQueryTime(null)
     const start = Date.now()
 
-    queryFn().then((result) => {
-      if (activeInterval === "1w") {
-        const aggregatedData: ChartData[] = []
-
-        let previousWeek: ChartData | undefined
-
-        for (let i = 0; i < result.length; i += 7) {
-          const weekData = result.slice(i, i + 7)
-          const open = previousWeek ? previousWeek.close : weekData[0]?.value
-          const close = weekData[weekData.length - 1]?.value
-          const low = Math.min(...weekData.map((d) => d.value))
-          const high = Math.max(...weekData.map((d) => d.value))
-
-          const weekCandle = { close, high, low, open, time: weekData[0]?.time, value: close }
-          previousWeek = weekCandle
-          aggregatedData.push(weekCandle)
-        }
-        result = aggregatedData
-      }
-
+    queryFn(activeInterval).then((result) => {
       setData(result)
       setLoading(false)
       setQueryTime(Date.now() - start)
@@ -334,7 +326,7 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
                 alignItems={"flex-end"}
                 sx={{ paddingY: 1, width: 1168 }}
               >
-                <CircularSpinner color="accent" />
+                <CircularSpinner color="secondary" />
               </Stack>
             </Stack>
           ) : ( */}
@@ -366,6 +358,7 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
               ? {
                   borderColor: "transparent",
                   opacity: 0,
+                  pointerEvents: "none",
                 }
               : {}),
           }}
@@ -508,7 +501,7 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
               <Tooltip title="Switch to Histogram">
                 <span>
                   <ChartIconButton
-                    active={activeType == "Histogram"}
+                    active={activeType === "Histogram"}
                     onClick={() => setPreferredType("Histogram")}
                   >
                     <BarChartOutlined fontSize="inherit" />
@@ -538,7 +531,7 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
               sx={{ height: "100%", width: "100%" }}
             >
               {isEmpty && !isLoading && emptyContent}
-              {isLoading && <CircularSpinner color="accent" />}
+              {isLoading && <CircularSpinner color="secondary" />}
             </Stack>
           )}
           <Chart
@@ -568,6 +561,7 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
               ? {
                   borderColor: "transparent",
                   opacity: 0,
+                  pointerEvents: "none",
                 }
               : {}),
           }}

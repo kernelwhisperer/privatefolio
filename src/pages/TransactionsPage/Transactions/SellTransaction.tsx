@@ -29,7 +29,7 @@
 //   return (
 //     <>
 //       <Typography component="div" variant="body1">
-//         <Paper variant="outlined">
+//         <Paper elevation={0}>
 //           <Grid container spacing={2} paddingY={1} paddingX={2}>
 //             <Grid item xs={12} lg={3}>
 //               <Stack alignItems="flex-start" gap={COLUMN_GAP}>

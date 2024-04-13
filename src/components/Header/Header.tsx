@@ -1,9 +1,11 @@
 "use client"
 
-import { AppBar, Container, Grid, Stack, Toolbar } from "@mui/material"
+import { AppBar, Container, Stack, Toolbar } from "@mui/material"
 import React from "react"
 
+import { CurrencySelector } from "../CurrencySelector"
 import { TaskDropdown } from "../Tasks/TaskDropdown"
+import { AccountPickerButton } from "./AccountPickerButton"
 import { NavigationMenu } from "./NavigationMenu"
 
 export function Header() {
@@ -13,31 +15,34 @@ export function Header() {
         <Container
           disableGutters
           maxWidth="xl"
-          sx={{ paddingX: { xs: 2 }, paddingY: 0, position: "relative" }}
+          sx={{ paddingX: 2, paddingY: 0, position: "relative" }}
         >
-          <Grid
-            container
-            spacing={{ sm: 2, xs: 0 }}
-            paddingX={2}
-            marginY={1}
-            justifyContent="space-between"
-          >
-            <Grid item xs={9} md={6} component={Stack} alignItems="center">
+          <Stack direction="row" gap={1} justifyContent="space-between">
+            <Stack direction="row" alignItems="center" sx={{ flex: 1 }} gap={1}>
               <NavigationMenu />
-            </Grid>
-            <Grid
-              item
-              xs={3}
-              md={3}
-              gap={0.5}
-              alignItems="center"
-              component={Stack}
-              justifyContent="flex-end"
-            >
+              {/* <TextField
+                size="small"
+                placeholder="Search for transaction, asset, etc"
+                sx={{
+                  [`& .${inputBaseClasses.input}`]: {
+                    fontWeight: 200,
+                    paddingY: 0.75,
+                  },
+                  [`& .${inputBaseClasses.root}`]: {
+                    backgroundColor: "var(--mui-palette-background-paperTransparent)",
+                    borderRadius: 2,
+                  },
+                  maxWidth: 460,
+                  width: "100%",
+                }}
+              /> */}
+            </Stack>
+            <Stack direction="row" gap={1} alignItems="center" justifyContent="flex-end">
               <TaskDropdown />
-              {/* <CurrencySelector /> */}
-            </Grid>
-          </Grid>
+              <CurrencySelector />
+              <AccountPickerButton />
+            </Stack>
+          </Stack>
         </Container>
       </Toolbar>
     </AppBar>

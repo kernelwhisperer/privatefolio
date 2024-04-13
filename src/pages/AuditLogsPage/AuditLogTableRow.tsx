@@ -1,22 +1,23 @@
-import { AddRounded, ArrowRightAltRounded, RemoveRounded, Visibility } from "@mui/icons-material"
-import { Box, Button, IconButton, Stack, TableCell, TableRow, Tooltip } from "@mui/material"
-import React from "react"
+import { AddRounded, RemoveRounded, Visibility } from "@mui/icons-material"
+import { IconButton, Stack, TableCell, TableRow, Tooltip, Typography } from "@mui/material"
+import React, { useEffect, useState } from "react"
 import { ActionBlock } from "src/components/ActionBlock"
-import { AmountBlock } from "src/components/AmountBlock"
+import { AssetAmountBlock } from "src/components/AssetAmountBlock"
 import { AssetBlock } from "src/components/AssetBlock"
 import { PlatformBlock } from "src/components/PlatformBlock"
 import { useBoolean } from "src/hooks/useBoolean"
-import { getAssetTicker } from "src/utils/assets-utils"
+import { $activeAccount } from "src/stores/account-store"
 import { greenColor, redColor } from "src/utils/color-utils"
+import { clancy } from "src/workers/remotes"
 
 import { TimestampBlock } from "../../components/TimestampBlock"
 import { Truncate } from "../../components/Truncate"
-import { AuditLog } from "../../interfaces"
+import { AuditLog, ChartData } from "../../interfaces"
 import { TableRowComponentProps } from "../../utils/table-utils"
 import { AuditLogDrawer } from "./AuditLogDrawer"
 
 export function AuditLogTableRow(props: TableRowComponentProps<AuditLog>) {
-  const { row, relativeTime, headCells, isMobile: _isMobile, isTablet: _isTablet, ...rest } = props
+  const { row, relativeTime, headCells, isMobile: _isMobile, isTablet, ...rest } = props
   const { assetId, change, changeN, balance, operation, timestamp, platform, wallet } = row
 
   const changeColor = changeN < 0 ? redColor : greenColor
@@ -25,39 +26,27 @@ export function AuditLogTableRow(props: TableRowComponentProps<AuditLog>) {
 
   const { value: open, toggle: toggleOpen } = useBoolean(false)
 
-  if (_isTablet) {
+  const [priceMap, setPriceMap] = useState<Record<string, ChartData>>()
+
+  useEffect(() => {
+    clancy.getAssetPriceMap($activeAccount.get(), timestamp).then((priceMap) => {
+      setPriceMap(priceMap)
+    })
+  }, [open, timestamp])
+
+  if (isTablet) {
     return (
       <>
-        <TableRow
-          hover
-          // hover={!open}
-          // onClick={toggleOpen}
-          // className={open ? "TableRow-open-top" : undefined}
-          // sx={(theme) => ({
-          // ...(open
-          //   ? {
-          //       "--mui-palette-TableCell-border": "rgba(0,0,0,0)",
-          //       background: "var(--mui-palette-background-default)",
-          //     }
-          //   : {}),
-          // })}
-          {...rest}
-        >
-          <TableCell colSpan={99}>
-            <Stack
-              direction="column"
-              justifyContent="space-between"
-              alignItems="flex-start"
-              gap={1}
-            >
-              <Box sx={{ color: "text.secondary" }}>
+        <TableRow hover {...rest}>
+          <TableCell colSpan={99} onClick={toggleOpen} sx={{ cursor: "pointer" }}>
+            <Stack>
+              <Typography variant="caption" color="text.secondary">
                 <TimestampBlock timestamp={timestamp} relative={relativeTime} />
-              </Box>
+              </Typography>
               <Stack
                 direction="row"
-                gap={4}
-                paddingY={1}
-                sx={{ fontSize: "18px", width: "100%" }}
+                gap={1}
+                marginY={0.5}
                 justifyContent="space-between"
                 alignItems="center"
               >
@@ -69,27 +58,19 @@ export function AuditLogTableRow(props: TableRowComponentProps<AuditLog>) {
                     IconComponent={changeN < 0 ? RemoveRounded : AddRounded}
                   />
                 ) : (
-                  <ActionBlock action={operation} size="medium" />
+                  <ActionBlock action={operation} />
                 )}
-                <Stack
-                  direction="row"
-                  gap={1}
-                  paddingY={1}
-                  sx={{ fontSize: "18px" }}
-                  alignItems="center"
-                >
-                  <AmountBlock
+                <Stack direction="row" gap={1} alignItems="center">
+                  <AssetAmountBlock
+                    assetId={assetId}
                     amount={change}
-                    showSign
+                    priceMap={priceMap}
                     colorized
-                    currencyTicker={getAssetTicker(assetId)}
+                    showSign
                   />
-                  {showAssetColumn && <AssetBlock asset={assetId} size="medium" />}
+                  {showAssetColumn && <AssetBlock asset={assetId} />}
                 </Stack>
               </Stack>
-              <Button size="small" color="primary" onClick={toggleOpen}>
-                Inspect details <ArrowRightAltRounded />
-              </Button>
             </Stack>
           </TableCell>
         </TableRow>
@@ -99,13 +80,8 @@ export function AuditLogTableRow(props: TableRowComponentProps<AuditLog>) {
           toggleOpen={toggleOpen}
           auditLog={row}
           relativeTime={relativeTime}
+          priceMap={priceMap}
         />
-        {/* {open && (
-          <TableRow className={open ? "TableRow-open-bottom" : undefined} sx={{ height: 200 }}>
-            <TableCell colSpan={2}>File Import</TableCell>
-            <TableCell colSpan={5}>Transaction</TableCell>
-          </TableRow>
-        )} */}
       </>
     )
   }
@@ -136,11 +112,12 @@ export function AuditLogTableRow(props: TableRowComponentProps<AuditLog>) {
           )}
         </TableCell>
         <TableCell align="right" variant="clickable">
-          <AmountBlock
+          <AssetAmountBlock
+            assetId={assetId}
             amount={change}
-            showSign
+            priceMap={priceMap}
             colorized
-            currencyTicker={getAssetTicker(assetId)}
+            showSign
           />
         </TableCell>
         {showAssetColumn && (
@@ -149,9 +126,10 @@ export function AuditLogTableRow(props: TableRowComponentProps<AuditLog>) {
           </TableCell>
         )}
         <TableCell align="right">
-          <AmountBlock
-            currencyTicker={getAssetTicker(assetId)}
+          <AssetAmountBlock
+            assetId={assetId}
             amount={balance}
+            priceMap={priceMap}
             tooltipMessage="Use the 'Compute balances' action to compute these values."
           />
         </TableCell>
@@ -182,6 +160,7 @@ export function AuditLogTableRow(props: TableRowComponentProps<AuditLog>) {
         toggleOpen={toggleOpen}
         auditLog={row}
         relativeTime={relativeTime}
+        priceMap={priceMap}
       />
     </>
   )

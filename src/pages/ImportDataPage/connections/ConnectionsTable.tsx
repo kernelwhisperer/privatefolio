@@ -125,22 +125,6 @@ export function ConnectionsTable() {
         }
       />
       <Stack paddingTop={1}>
-        {/* <Callout>
-          <AlertTitle sx={{ fontSize: "0.85rem" }}>
-            This feature is still being developed.
-          </AlertTitle>
-          If you have any ideas on how we can improve it, please{" "}
-          <Link target="_blank" href="https://github.com/kernelwhisperer/privatefolio/issues/new">
-            let us know
-          </Link>
-          !
-        </Callout> */}
-        {/* <Chip
-            size="small"
-            color="primary"
-            sx={{ fontSize: "0.65rem", height: 20, paddingX: 0.5 }}
-            label="BETA"
-          /> */}
         <Callout>
           <AlertTitle sx={{ fontSize: "0.85rem" }}>What are connections?</AlertTitle>
           <Box sx={{ maxWidth: 590 }}>

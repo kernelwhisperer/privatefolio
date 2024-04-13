@@ -1,5 +1,6 @@
-import { mapToChartData, queryPrices } from "src/api/core/prices/coinbase-price-api"
-import { ResolutionString } from "src/interfaces"
+import { mapToChartData, queryPrices } from "src/api/external/prices/coinbase-price-api"
+import { ResolutionString, Timestamp } from "src/interfaces"
+import { PRICE_API_PAGINATION } from "src/settings"
 import { expect, it } from "vitest"
 
 it("should fetch BTC prices within a range", async () => {
@@ -72,4 +73,22 @@ it("should throw an error", async () => {
   })
   // assert
   await expect(promise).rejects.toMatchInlineSnapshot(`[Error: Coinbase: NotFound]`)
+})
+
+it("should include today when limit is reached", async () => {
+  const now = Date.now()
+  const today: Timestamp = now - (now % 86400000)
+  const since = today - 86400000 * (PRICE_API_PAGINATION - 1)
+
+  // act
+  const result = await queryPrices({
+    pair: "ETH-USD",
+    since,
+    timeInterval: "1d" as ResolutionString,
+    until: today,
+  })
+  // assert
+  const lastCandle = mapToChartData(result.slice(-1)[0])
+  expect(result.length).toMatchInlineSnapshot(`900`)
+  expect(lastCandle.time).toBe(today / 1000)
 })

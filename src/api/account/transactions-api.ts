@@ -11,9 +11,9 @@ import {
   TRANSACTIONS_TYPES,
 } from "../../interfaces"
 import { ProgressCallback } from "../../stores/task-store"
-import { getAssetMap } from "../core/assets-api"
 import { getAccount } from "../database"
 import { validateOperation } from "../database-utils"
+import { getAssetMap } from "./assets-api"
 import { findAuditLogsForTxId } from "./audit-logs-api"
 import { getConnections } from "./connections/connections-api"
 import { getFileImports } from "./file-imports/file-imports-api"
@@ -35,18 +35,18 @@ const _filterOrderBySpecificity: (keyof Transaction)[] = [
   "platform",
 ]
 
-export async function indexTransactions(progress: ProgressCallback, accountName: string) {
+export async function indexTransactions(accountName: string, progress: ProgressCallback = noop) {
   const account = getAccount(accountName)
-  progress([60, "Transactions: cleaning up stale indexes"])
+  progress([0, "Transactions: cleaning up stale indexes"])
   await account.transactionsDB.viewCleanup()
-  progress([70, "Transactions: updating index for 'timestamp'"])
+  progress([12.5, "Transactions: updating index for 'timestamp'"])
   await account.transactionsDB.createIndex({
     index: {
       fields: ["timestamp"],
       name: "timestamp",
     },
   })
-  progress([75, "Transactions: updating index for 'platform'"])
+  progress([25, "Transactions: updating index for 'platform'"])
   await account.transactionsDB.createIndex({
     index: {
       fields: [
@@ -61,7 +61,7 @@ export async function indexTransactions(progress: ProgressCallback, accountName:
       name: "platform",
     },
   })
-  progress([80, "Transactions: updating index for 'wallet'"])
+  progress([37.5, "Transactions: updating index for 'wallet'"])
   await account.transactionsDB.createIndex({
     index: {
       fields: [
@@ -76,7 +76,7 @@ export async function indexTransactions(progress: ProgressCallback, accountName:
       name: "wallet",
     },
   })
-  progress([85, "Transactions: updating index for 'type'"])
+  progress([50, "Transactions: updating index for 'type'"])
   await account.transactionsDB.createIndex({
     index: {
       fields: [
@@ -91,7 +91,7 @@ export async function indexTransactions(progress: ProgressCallback, accountName:
       name: "type",
     },
   })
-  progress([90, "Transactions: updating index for 'outgoingAsset'"])
+  progress([62.5, "Transactions: updating index for 'outgoingAsset'"])
   await account.transactionsDB.createIndex({
     index: {
       fields: [
@@ -106,7 +106,7 @@ export async function indexTransactions(progress: ProgressCallback, accountName:
       name: "outgoingAsset",
     },
   })
-  progress([95, "Transactions: updating index for 'incomingAsset'"])
+  progress([75, "Transactions: updating index for 'incomingAsset'"])
   await account.transactionsDB.createIndex({
     index: {
       fields: [
@@ -121,7 +121,7 @@ export async function indexTransactions(progress: ProgressCallback, accountName:
       name: "incomingAsset",
     },
   })
-  progress([99, "Transactions: updating index for 'incomingAsset'"])
+  progress([87.5, "Transactions: updating index for 'feeAsset'"])
   await account.transactionsDB.createIndex({
     index: {
       fields: [
@@ -162,7 +162,7 @@ export async function findTransactions(request: FindTransactionsRequest = {}, ac
   const { indexes } = await account.transactionsDB.getIndexes()
   if (indexes.length === 1) {
     // await indexTransactions(console.log, accountName)
-    await indexTransactions(noop, accountName)
+    await indexTransactions(accountName)
   }
 
   const { filters = {}, limit, skip, order = "desc", fields, selectorOverrides = {} } = request

@@ -2,7 +2,7 @@ import { alpha, Chip } from "@mui/material"
 import { grey } from "@mui/material/colors"
 import { useStore } from "@nanostores/react"
 import React from "react"
-import { $baseCurrency } from "src/stores/account-settings-store"
+import { $quoteCurrency } from "src/stores/account-settings-store"
 
 import { AmountBlock } from "./AmountBlock"
 
@@ -13,7 +13,7 @@ type ValueChipProps = {
 export function ValueChip(props: ValueChipProps) {
   const { value } = props
 
-  const currency = useStore($baseCurrency)
+  const currency = useStore($quoteCurrency)
 
   return (
     <Chip

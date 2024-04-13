@@ -1,4 +1,3 @@
-import JSZip from "jszip"
 import { CsvData } from "src/interfaces"
 
 /**
@@ -34,7 +33,7 @@ export async function wait(interval: number) {
   return new Promise((resolve) => setTimeout(resolve, interval))
 }
 
-export function timeQueue<T extends (...args: any[]) => void>(
+export function timeQueue<T extends (...args: never[]) => void>(
   this: unknown,
   func: T,
   delay: number
@@ -118,19 +117,35 @@ export function downloadCsv(data: CsvData, filename: string) {
   downloadFile(blob, filename)
 }
 
-export async function extractFromZip(file: File) {
-  const csvFiles: File[] = []
+export function requestFile(allowedFileExtensions: string[], multiple = false): Promise<FileList> {
+  return new Promise((resolve, reject) => {
+    const fileInput = document.createElement("input")
+    fileInput.type = "file"
+    fileInput.accept = allowedFileExtensions.join(",")
+    fileInput.multiple = multiple
+    fileInput.style.display = "none"
 
-  const zip = await JSZip.loadAsync(file)
-  for (const csvFilename of Object.keys(zip.files)) {
-    const buffer = await zip.files[csvFilename].async("arraybuffer")
-    csvFiles.push(
-      new File([buffer], csvFilename, {
-        lastModified: file.lastModified,
-        type: "text/csv",
-      })
-    )
-  }
+    fileInput.addEventListener("change", () => {
+      if (fileInput.files && fileInput.files.length > 0) {
+        resolve(fileInput.files)
+      } else {
+        reject(new Error("No file selected"))
+      }
+    })
 
-  return csvFiles
+    // Simulate a click to open the file dialog
+    document.body.appendChild(fileInput)
+    fileInput.click()
+    document.body.removeChild(fileInput)
+
+    // Handle the case where the user cancels the file selection
+    fileInput.addEventListener("click", () => {
+      // Use a timeout to check if the input dialog was cancelled
+      setTimeout(() => {
+        if (fileInput.files === null || fileInput.files.length === 0) {
+          reject(new Error("File selection was canceled"))
+        }
+      }, 0)
+    })
+  })
 }

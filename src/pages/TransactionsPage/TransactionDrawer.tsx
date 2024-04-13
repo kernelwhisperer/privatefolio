@@ -41,17 +41,17 @@ const updateTransactionDebounced = debounce(
 
 type TransactionDrawerProps = DrawerProps &
   PopoverToggleProps & {
+    priceMap?: Record<string, ChartData>
     relativeTime: boolean
     tx: Transaction
   }
 
 export function TransactionDrawer(props: TransactionDrawerProps) {
-  const { open, toggleOpen, tx, relativeTime, ...rest } = props
+  const { open, toggleOpen, tx, relativeTime, priceMap, ...rest } = props
   const activeIndex = useStore($activeIndex)
 
   const {
     incoming,
-    incomingN,
     incomingAsset,
     type,
     timestamp,
@@ -59,10 +59,8 @@ export function TransactionDrawer(props: TransactionDrawerProps) {
     wallet,
     price,
     outgoing,
-    outgoingN,
     outgoingAsset,
     fee,
-    feeN,
     feeAsset,
     _id,
     txHash,
@@ -74,17 +72,11 @@ export function TransactionDrawer(props: TransactionDrawerProps) {
 
   const [logsNumber, setLogsNumber] = useState<number | null>(null)
 
-  const [priceMap, setPriceMap] = useState<Record<string, ChartData>>()
-
   useEffect(() => {
     if (!open) return
 
     clancy.findAuditLogsForTxId(_id, $activeAccount.get()).then((logs) => {
       setLogsNumber(logs.length)
-    })
-
-    clancy.getAssetPriceMap(timestamp).then((priceMap) => {
-      setPriceMap(priceMap)
     })
   }, [_id, open, timestamp])
 
@@ -161,8 +153,8 @@ export function TransactionDrawer(props: TransactionDrawerProps) {
               </Button>
               <ValueChip
                 value={
-                  priceMap && incomingN && priceMap[incomingAsset]?.value
-                    ? priceMap[incomingAsset].value * incomingN
+                  priceMap && incoming && priceMap[incomingAsset]?.value
+                    ? priceMap[incomingAsset].value * Number(incoming)
                     : undefined
                 }
               />
@@ -190,8 +182,8 @@ export function TransactionDrawer(props: TransactionDrawerProps) {
               </Button>
               <ValueChip
                 value={
-                  priceMap && outgoingN && priceMap[outgoingAsset]?.value
-                    ? priceMap[outgoingAsset].value * outgoingN
+                  priceMap && outgoing && priceMap[outgoingAsset]?.value
+                    ? priceMap[outgoingAsset].value * Number(outgoing)
                     : undefined
                 }
               />
@@ -219,8 +211,8 @@ export function TransactionDrawer(props: TransactionDrawerProps) {
               </Button>
               <ValueChip
                 value={
-                  priceMap && feeN && priceMap[feeAsset]?.value
-                    ? priceMap[feeAsset].value * feeN
+                  priceMap && fee && priceMap[feeAsset]?.value
+                    ? priceMap[feeAsset].value * Number(fee)
                     : undefined
                 }
               />

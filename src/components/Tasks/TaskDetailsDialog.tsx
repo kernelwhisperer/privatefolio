@@ -1,4 +1,4 @@
-import { CloseRounded } from "@mui/icons-material"
+import { CloseRounded, Fullscreen, FullscreenExit } from "@mui/icons-material"
 import {
   Box,
   Dialog,
@@ -10,9 +10,11 @@ import {
   Paper,
   Stack,
   Typography,
+  useMediaQuery,
 } from "@mui/material"
 import { useStore } from "@nanostores/react"
 import React, { useEffect, useMemo, useRef } from "react"
+import { useBoolean } from "src/hooks/useBoolean"
 import { $debugMode } from "src/stores/app-store"
 
 import { $pendingTask, $progressHistory, $taskHistory, FinishedTask } from "../../stores/task-store"
@@ -81,19 +83,24 @@ export function TaskDetailsDialog({ taskId, ...props }: DialogProps & { taskId: 
   }, [updateMap])
 
   const debugMode = useStore($debugMode)
+  const isDesktop = useMediaQuery("(min-width: 900px)")
+  const { value: fullscreen, toggle: toggleFullscreen } = useBoolean(false)
 
   if (!task) return null
 
   return (
     <Dialog
       sx={{
-        [`& .MuiDialog-paper`]: {
-          margin: 2,
-          maxWidth: "min(100%, 480px)",
+        "& .MuiDialog-paper:not(.MuiDialog-paperFullScreen)": {
           minWidth: 320,
-          width: 480,
+          width: 580,
+        },
+        "& .MuiDialog-paper:not(.MuiDialog-paperFullScreen) .details": {
+          maxHeight: 148,
+          minHeight: 148,
         },
       }}
+      fullScreen={fullscreen || undefined}
       // aria-labelledby="task-details-title"
       // aria-describedby="task-details-description"
       {...props}
@@ -101,13 +108,20 @@ export function TaskDetailsDialog({ taskId, ...props }: DialogProps & { taskId: 
       <DialogTitle>
         <Stack direction="row" justifyContent="space-between" alignItems="center">
           <span>{task.name}</span>
-          <IconButton
-            onClick={(event) => props.onClose?.(event, "escapeKeyDown")}
-            edge="end"
-            color="secondary"
-          >
-            <CloseRounded fontSize="small" />
-          </IconButton>
+          <Stack direction="row">
+            {isDesktop && (
+              <IconButton onClick={toggleFullscreen} color="secondary">
+                {fullscreen ? <FullscreenExit fontSize="small" /> : <Fullscreen fontSize="small" />}
+              </IconButton>
+            )}
+            <IconButton
+              onClick={(event) => props.onClose?.(event, "escapeKeyDown")}
+              edge="end"
+              color="secondary"
+            >
+              <CloseRounded fontSize="small" />
+            </IconButton>
+          </Stack>
         </Stack>
       </DialogTitle>
       <DialogContent>
@@ -141,12 +155,12 @@ export function TaskDetailsDialog({ taskId, ...props }: DialogProps & { taskId: 
           <div>
             <SectionTitle>Details</SectionTitle>
             <Paper
+              className="details"
               ref={detailsRef}
               sx={{
                 background: "var(--mui-palette-background-default)",
-                height: 148,
+                height: "100%",
                 marginX: -1,
-                maxHeight: 148,
                 overflowY: "auto",
                 paddingX: 1,
                 paddingY: 0.5,

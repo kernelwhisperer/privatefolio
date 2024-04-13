@@ -2,9 +2,9 @@ import fs from "fs"
 import { join } from "path"
 import { findAuditLogs } from "src/api/account/audit-logs-api"
 import { computeBalances, getBalancesAt, getHistoricalBalances } from "src/api/account/balances-api"
+import { fetchDailyPrices } from "src/api/account/daily-prices-api"
 import { addFileImport } from "src/api/account/file-imports/file-imports-api"
 import { getValue } from "src/api/account/kv-api"
-import { fetchDailyPrices } from "src/api/core/daily-prices-api"
 import { resetAccount } from "src/api/database"
 import { Timestamp } from "src/interfaces"
 import { ProgressUpdate } from "src/stores/task-store"
@@ -102,7 +102,7 @@ it.sequential("should fetch latest balances without price data", async () => {
 
 it.sequential("should fetch latest balances with price data", async () => {
   // arrange
-  await fetchDailyPrices({ assetIds: ["coinmama:BTC"] })
+  await fetchDailyPrices(accountName, { assetIds: ["coinmama:BTC"] })
   // act
   const balances = await getBalancesAt(undefined, accountName)
   // assert

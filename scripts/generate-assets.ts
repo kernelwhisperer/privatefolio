@@ -1,6 +1,6 @@
 import { mkdir, writeFile } from "fs/promises"
 import { join } from "path"
-import { COINGECKO_BASE_API } from "src/api/core/assets/coingecko-asset-api"
+import { COINGECKO_BASE_API } from "src/api/external/assets/coingecko-asset-api"
 
 import { AssetMetadata } from "../src/interfaces"
 import { ASSET_FILES_LOCATION } from "../src/settings"

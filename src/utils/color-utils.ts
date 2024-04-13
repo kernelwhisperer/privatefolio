@@ -46,5 +46,4 @@ export const stringToColor = memoize(
   )
 )
 
-export const redColor = colors.red[500]
-export const greenColor = colors.green[500]
+export { profitColor as greenColor, lossColor as redColor } from "./chart-utils"

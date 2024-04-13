@@ -1,28 +1,17 @@
-import {
-  CalculateOutlined,
-  DownloadRounded,
-  MemoryRounded,
-  MoreHoriz,
-  PersonRemoveRounded,
-  RestartAltRounded,
-} from "@mui/icons-material"
+import { CalculateOutlined, MemoryRounded, MoreHoriz } from "@mui/icons-material"
 import BackupRoundedIcon from "@mui/icons-material/BackupRounded"
 import RestoreRoundedIcon from "@mui/icons-material/RestoreRounded"
-import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Tooltip } from "@mui/material"
-import { useStore } from "@nanostores/react"
+import { IconButton, ListItemAvatar, ListItemText, Menu, MenuItem, Tooltip } from "@mui/material"
 import React from "react"
-import { $accountReset, $accounts, $activeAccount } from "src/stores/account-store"
+import { requestFile } from "src/utils/utils"
 
-import { useConfirm } from "../../hooks/useConfirm"
-import { enqueueTask, TaskPriority } from "../../stores/task-store"
 import {
-  enquenceBackup,
-  enqueueExportAppData,
+  enqueueBackup,
   enqueueIndexDatabase,
   enqueueRecomputeBalances,
   enqueueRecomputeNetworth,
+  enqueueRestore,
 } from "../../utils/common-tasks"
-import { clancy } from "../../workers/remotes"
 
 export function ImportDataActions() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
@@ -34,16 +23,10 @@ export function ImportDataActions() {
     setAnchorEl(null)
   }
 
-  const confirm = useConfirm()
-
-  // const debugMode = useStore($debugMode)
-
-  const activeAccount = useStore($activeAccount)
-
   return (
     <>
-      <Tooltip title="Database actions">
-        <IconButton color="secondary" onClick={handleClick} sx={{ marginRight: -1 }}>
+      <Tooltip title="Actions">
+        <IconButton color="secondary" onClick={handleClick}>
           <MoreHoriz fontSize="small" />
         </IconButton>
       </Tooltip>
@@ -57,50 +40,27 @@ export function ImportDataActions() {
         <MenuItem
           dense
           onClick={() => {
-            enqueueExportAppData()
+            enqueueBackup()
             handleClose()
           }}
         >
-          <ListItemIcon>
-            <DownloadRounded fontSize="small" />
-          </ListItemIcon>
-          <ListItemText>Export app data</ListItemText>
-        </MenuItem>
-        <MenuItem
-          dense
-          onClick={() => {
-            // enquenceRestore()
-            handleClose()
-          }}
-        >
-          <ListItemIcon>
-            <RestoreRoundedIcon fontSize="small" />
-          </ListItemIcon>
-          <ListItemText>Restore data</ListItemText>
-        </MenuItem>
-        <MenuItem
-          dense
-          onClick={() => {
-            enquenceBackup()
-            handleClose()
-          }}
-        >
-          <ListItemIcon>
+          <ListItemAvatar>
             <BackupRoundedIcon fontSize="small" />
-          </ListItemIcon>
+          </ListItemAvatar>
           <ListItemText>Backup</ListItemText>
         </MenuItem>
         <MenuItem
           dense
-          onClick={() => {
-            enqueueIndexDatabase()
+          onClick={async () => {
+            const files = await requestFile([".zip"], false)
             handleClose()
+            enqueueRestore(files[0])
           }}
         >
-          <ListItemIcon>
-            <MemoryRounded fontSize="small" />
-          </ListItemIcon>
-          <ListItemText>Index database</ListItemText>
+          <ListItemAvatar>
+            <RestoreRoundedIcon fontSize="small" />
+          </ListItemAvatar>
+          <ListItemText>Restore</ListItemText>
         </MenuItem>
         <MenuItem
           dense
@@ -109,9 +69,9 @@ export function ImportDataActions() {
             handleClose()
           }}
         >
-          <ListItemIcon>
+          <ListItemAvatar>
             <CalculateOutlined fontSize="small" />
-          </ListItemIcon>
+          </ListItemAvatar>
           <ListItemText>Recompute balances</ListItemText>
         </MenuItem>
         <MenuItem
@@ -121,85 +81,22 @@ export function ImportDataActions() {
             handleClose()
           }}
         >
-          <ListItemIcon>
+          <ListItemAvatar>
             <CalculateOutlined fontSize="small" />
-          </ListItemIcon>
+          </ListItemAvatar>
           <ListItemText>Recompute networth</ListItemText>
         </MenuItem>
         <MenuItem
           dense
-          onClick={async () => {
-            const { confirmed } = await confirm({
-              content: (
-                <>
-                  This action is permanent. All the data belonging to {activeAccount} will be lost.
-                  <br />
-                  <br />
-                  Are you sure you wish to continue?
-                </>
-              ),
-              title: "Reset account",
-              variant: "warning",
-            })
-            if (confirmed) {
-              enqueueTask({
-                description: `Removing all data belonging to '${activeAccount}' from disk.`,
-                function: async () => {
-                  await clancy.resetAccount($activeAccount.get())
-                  $accountReset.set(Math.random())
-                },
-                name: "Reset account",
-                priority: TaskPriority.Ultra,
-              })
-              handleClose()
-            }
+          onClick={() => {
+            enqueueIndexDatabase()
+            handleClose()
           }}
         >
-          <ListItemIcon>
-            <RestartAltRounded fontSize="small" />
-          </ListItemIcon>
-          <ListItemText>Reset account</ListItemText>
-        </MenuItem>
-        <MenuItem
-          dense
-          disabled={activeAccount === "main"}
-          onClick={async () => {
-            const { confirmed } = await confirm({
-              content: (
-                <>
-                  This action is permanent. All the data belonging to {activeAccount} will be lost.
-                  <br />
-                  <br />
-                  Are you sure you wish to continue?
-                </>
-              ),
-              title: "Delete account",
-              variant: "warning",
-            })
-            if (confirmed) {
-              enqueueTask({
-                description: `Removing all data belonging to '${activeAccount}' from disk.`,
-                function: async () => {
-                  await clancy.deleteAccount(activeAccount)
-                  const newAccounts = $accounts.get().filter((x) => x !== activeAccount)
-                  $accounts.set(newAccounts)
-                  if (newAccounts.length > 0) {
-                    $activeAccount.set(newAccounts[newAccounts.length - 1])
-                  } else {
-                    $activeAccount.set("main")
-                  }
-                },
-                name: "Delete account",
-                priority: TaskPriority.High,
-              })
-              handleClose()
-            }
-          }}
-        >
-          <ListItemIcon>
-            <PersonRemoveRounded fontSize="small" />
-          </ListItemIcon>
-          <ListItemText>Delete account</ListItemText>
+          <ListItemAvatar>
+            <MemoryRounded fontSize="small" />
+          </ListItemAvatar>
+          <ListItemText>Index database</ListItemText>
         </MenuItem>
       </Menu>
     </>

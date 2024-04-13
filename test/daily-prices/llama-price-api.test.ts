@@ -1,4 +1,4 @@
-import { getPair, mapToChartData, queryPrices } from "src/api/core/prices/llama-price-api"
+import { getPair, mapToChartData, queryPrices } from "src/api/external/prices/llama-price-api"
 import { ResolutionString } from "src/interfaces"
 import { PLATFORMS_META } from "src/settings"
 import { expect, it } from "vitest"

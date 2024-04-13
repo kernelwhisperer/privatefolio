@@ -1,4 +1,4 @@
-import { Box, LinearProgress, Paper, Stack, TableHead, useMediaQuery } from "@mui/material"
+import { LinearProgress, Paper, Stack, TableHead, useMediaQuery } from "@mui/material"
 import Table from "@mui/material/Table"
 import TableBody from "@mui/material/TableBody"
 import TableCell from "@mui/material/TableCell"
@@ -180,7 +180,7 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
   const isTablet = useMediaQuery("(max-width: 899px)")
   const isMobile = useMediaQuery("(max-width: 599px)")
 
-  const stickyVersion = rowsPerPage > 20
+  const stickyVersion = true // rowsPerPage > 20
 
   const isFirstLoading = queryTime === null
   const isEmpty = rows.length === 0 && Object.keys(activeFilters).length === 0
@@ -203,12 +203,11 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
           </Stack>
         )}
         <Paper
-          variant="outlined"
+          elevation={0}
           sx={{
             background: stickyVersion
               ? "var(--mui-palette-background-paper) !important"
               : undefined,
-            overflowX: { lg: "unset", xs: "auto" },
             paddingY: 0,
           }}
         >
@@ -228,6 +227,7 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
                             ? {
                                 borderColor: "transparent",
                                 opacity: 0,
+                                pointerEvents: "none",
                               }
                             : {}),
                         }}
@@ -245,21 +245,32 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
                       </TableCell>
                     ))}
                   </TableRow>
+                  <TableRow
+                    sx={{
+                      height: 0,
+                      position: "sticky",
+                      top: 39,
+                    }}
+                  >
+                    <TableCell colSpan={99} sx={{ border: 0, padding: 0 }}>
+                      {loading && !isFirstLoading && (
+                        <LinearProgress
+                          sx={{
+                            background: "transparent",
+                            borderRadius: 0,
+                            height: 2,
+                            position: "absolute",
+                            top: 0,
+                            width: "100%",
+                          }}
+                          color="accent"
+                        />
+                      )}
+                    </TableCell>
+                  </TableRow>
                 </TableHead>
               )}
               <TableBody>
-                <TableRow>
-                  <TableCell colSpan={headCells.length} sx={{ border: 0, padding: 0 }}>
-                    {loading && !isFirstLoading ? (
-                      <LinearProgress
-                        sx={{ background: "transparent", borderRadius: 0, height: 2 }}
-                        color="accent"
-                      />
-                    ) : (
-                      <Box sx={{ height: 2 }} />
-                    )}
-                  </TableCell>
-                </TableRow>
                 {rows.map((row) => (
                   <TableRowComponent
                     isTablet={isTablet}
@@ -272,24 +283,22 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
                 ))}
                 {rows.length === 0 && !isEmpty && !loading && (
                   <TableRow>
-                    <TableCell colSpan={headCells.length}>
-                      No records match the current filters.
-                    </TableCell>
+                    <TableCell colSpan={99}>No records match the current filters.</TableCell>
                   </TableRow>
                 )}
                 {(isFirstLoading || isEmpty) && (
                   <TableRow>
-                    <TableCell colSpan={headCells.length}>
+                    <TableCell colSpan={99}>
                       <Stack justifyContent="center" alignItems="center" sx={{ height: 260 }}>
                         {isEmpty && !isFirstLoading && emptyContent}
-                        {isFirstLoading && <CircularSpinner color="accent" />}
+                        {isFirstLoading && <CircularSpinner color="secondary" />}
                       </Stack>
                     </TableCell>
                   </TableRow>
                 )}
                 {!isFirstLoading && addNewRow && !isEmpty && (
                   <TableRow>
-                    <TableCell colSpan={headCells.length} variant="clickable">
+                    <TableCell colSpan={99} variant="clickable">
                       {addNewRow}
                     </TableCell>
                   </TableRow>
@@ -311,6 +320,7 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
                 ? {
                     borderColor: "transparent",
                     opacity: 0,
+                    pointerEvents: "none",
                   }
                 : {}),
             }}

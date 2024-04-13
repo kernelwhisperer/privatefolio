@@ -175,7 +175,7 @@ export function MemoryTable<T extends BaseType>(props: MemoryTableProps<T>) {
   const isTablet = useMediaQuery("(max-width: 899px)")
   const isMobile = useMediaQuery("(max-width: 599px)")
 
-  const stickyVersion = rowsPerPage > 20
+  const stickyVersion = true // rowsPerPage > 20
 
   const isLoading = queryTime === null
   const isEmpty = rowCount === 0
@@ -198,12 +198,11 @@ export function MemoryTable<T extends BaseType>(props: MemoryTableProps<T>) {
           </Stack>
         )}
         <Paper
-          variant="outlined"
+          elevation={0}
           sx={{
             background: stickyVersion
               ? "var(--mui-palette-background-paper) !important"
               : undefined,
-            overflowX: { lg: "unset", xs: "auto" },
           }}
         >
           <TableContainer sx={{ overflowX: "unset" }}>
@@ -222,6 +221,7 @@ export function MemoryTable<T extends BaseType>(props: MemoryTableProps<T>) {
                             ? {
                                 borderColor: "transparent",
                                 opacity: 0,
+                                pointerEvents: "none",
                               }
                             : {}),
                         }}
@@ -254,31 +254,29 @@ export function MemoryTable<T extends BaseType>(props: MemoryTableProps<T>) {
                 ))}
                 {visibleRows.length === 0 && !isEmpty && !isLoading && (
                   <TableRow>
-                    <TableCell colSpan={headCells.length}>
-                      No records match the current filters.
-                    </TableCell>
+                    <TableCell colSpan={99}>No records match the current filters.</TableCell>
                   </TableRow>
                 )}
                 {(isLoading || isEmpty) && (
                   <TableRow>
-                    <TableCell colSpan={headCells.length}>
+                    <TableCell colSpan={99}>
                       <Stack justifyContent="center" alignItems="center" sx={{ height: 260 }}>
                         {isEmpty && !isLoading && emptyContent}
-                        {isLoading && <CircularSpinner color="accent" />}
+                        {isLoading && <CircularSpinner color="secondary" />}
                       </Stack>
                     </TableCell>
                   </TableRow>
                 )}
                 {!isLoading && addNewRow && !isEmpty && (
                   <TableRow>
-                    <TableCell colSpan={headCells.length} variant="clickable">
+                    <TableCell colSpan={99} variant="clickable">
                       {addNewRow}
                     </TableCell>
                   </TableRow>
                 )}
                 {!isLoading && extraRow && !isEmpty && (
                   <TableRow>
-                    <TableCell colSpan={headCells.length} variant="clickable">
+                    <TableCell colSpan={99} variant="clickable">
                       {extraRow}
                     </TableCell>
                   </TableRow>
@@ -300,6 +298,7 @@ export function MemoryTable<T extends BaseType>(props: MemoryTableProps<T>) {
                 ? {
                     borderColor: "transparent",
                     opacity: 0,
+                    pointerEvents: "none",
                   }
                 : {}),
             }}

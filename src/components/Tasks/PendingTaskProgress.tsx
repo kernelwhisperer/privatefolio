@@ -40,7 +40,7 @@ export function PendingTaskProgress({ sx = {}, ...rest }: CircularProgressProps)
       <CircularSpinner
         variant={task.determinate ? "determinate" : "indeterminate"}
         color="secondary"
-        size={14}
+        size={16}
         thickness={4.5}
         value={progressPercent}
         {...rest}

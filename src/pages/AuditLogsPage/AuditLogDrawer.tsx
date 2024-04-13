@@ -1,7 +1,7 @@
 import { ArrowRightAltRounded, CloseRounded } from "@mui/icons-material"
 import { Button, Drawer, DrawerProps, IconButton, Stack, Typography } from "@mui/material"
 import { useStore } from "@nanostores/react"
-import React, { useEffect, useState } from "react"
+import React from "react"
 import { Link } from "react-router-dom"
 import { ActionBlock } from "src/components/ActionBlock"
 import { AmountBlock } from "src/components/AmountBlock"
@@ -13,50 +13,36 @@ import { SectionTitle } from "src/components/SectionTitle"
 import { TimestampBlock } from "src/components/TimestampBlock"
 import { ValueChip } from "src/components/ValueChip"
 import { AuditLog, ChartData } from "src/interfaces"
-import { $baseCurrency } from "src/stores/account-settings-store"
 import { $activeIndex } from "src/stores/account-store"
 import { PopoverToggleProps } from "src/stores/app-store"
 import { getAssetTicker } from "src/utils/assets-utils"
-import { clancy } from "src/workers/remotes"
 
 type AuditLogDrawerProps = DrawerProps &
   PopoverToggleProps & {
     auditLog: AuditLog
+    priceMap?: Record<string, ChartData>
     relativeTime: boolean
   }
 
 export function AuditLogDrawer(props: AuditLogDrawerProps) {
-  const { open, toggleOpen, auditLog, relativeTime, ...rest } = props
+  const { open, toggleOpen, auditLog, relativeTime, priceMap, ...rest } = props
 
   const {
     assetId,
     change,
-    changeN,
     balance,
-    balanceN,
     operation,
     timestamp,
     platform,
     wallet,
     _id,
     txId,
-    importId,
-    importIndex,
+    importId: _importId,
+    importIndex: _importIndex,
     // ...extra
   } = auditLog
 
   const activeIndex = useStore($activeIndex)
-
-  const [priceMap, setPriceMap] = useState<Record<string, ChartData>>()
-  const currency = useStore($baseCurrency)
-
-  useEffect(() => {
-    if (!open) return
-
-    clancy.getAssetPriceMap(timestamp).then((priceMap) => {
-      setPriceMap(priceMap)
-    })
-  }, [_id, open])
 
   return (
     <Drawer open={open} onClose={toggleOpen} {...rest}>
@@ -121,8 +107,8 @@ export function AuditLogDrawer(props: AuditLogDrawerProps) {
             </Button>
             <ValueChip
               value={
-                priceMap && changeN && priceMap[assetId]?.value
-                  ? priceMap[assetId].value * changeN
+                priceMap && change && priceMap[assetId]?.value
+                  ? priceMap[assetId].value * Number(change)
                   : undefined
               }
             />
@@ -132,10 +118,8 @@ export function AuditLogDrawer(props: AuditLogDrawerProps) {
           <SectionTitle>New balance</SectionTitle>
           <Stack direction="row" alignItems="center" gap={0.25}>
             <AmountBlock
-              colorized
               amount={balance}
               currencyTicker={getAssetTicker(assetId)}
-              showSign
               variant="body1"
             />
             <Button
@@ -148,8 +132,8 @@ export function AuditLogDrawer(props: AuditLogDrawerProps) {
             </Button>
             <ValueChip
               value={
-                priceMap && balanceN && priceMap[assetId]?.value
-                  ? priceMap[assetId].value * balanceN
+                priceMap && balance && priceMap[assetId]?.value
+                  ? priceMap[assetId].value * Number(balance)
                   : undefined
               }
             />
@@ -160,6 +144,7 @@ export function AuditLogDrawer(props: AuditLogDrawerProps) {
             <SectionTitle>Transaction ID</SectionTitle>
             <IdentifierBlock id={txId} />
             <Button
+              variant="outlined"
               size="small"
               color="secondary"
               component={Link}
@@ -168,7 +153,7 @@ export function AuditLogDrawer(props: AuditLogDrawerProps) {
               // onClick={toggleOpen}
               endIcon={<ArrowRightAltRounded fontSize="inherit" />}
             >
-              Inspect
+              See transaction
             </Button>
           </div>
         )}

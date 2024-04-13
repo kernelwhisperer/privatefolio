@@ -3,12 +3,13 @@ import { useStore } from "@nanostores/react"
 import { proxy } from "comlink"
 import { debounce } from "lodash-es"
 import React, { useCallback, useEffect, useMemo, useState } from "react"
+import { ChartData } from "src/interfaces"
 import { DEFAULT_DEBOUNCE_DURATION } from "src/settings"
-import { $baseCurrency } from "src/stores/account-settings-store"
+import { $quoteCurrency } from "src/stores/account-settings-store"
 import { $activeAccount } from "src/stores/account-store"
-import { createPriceFormatter, greenColor, redColor } from "src/utils/chart-utils"
+import { createPriceFormatter, lossColor, neutralColor, profitColor } from "src/utils/chart-utils"
 
-import { SingleSeriesChart, TooltipOpts } from "../../components/SingleSeriesChart"
+import { QueryFunction, SingleSeriesChart, TooltipOpts } from "../../components/SingleSeriesChart"
 import { clancy } from "../../workers/remotes"
 
 export function PnLChart() {
@@ -32,18 +33,44 @@ export function PnLChart() {
     }
   }, [])
 
-  const queryFn = useCallback(async () => {
-    const balances = await clancy.getHistoricalNetworth($activeAccount.get())
-    // console.log("📜 LOG > query > records:", balances)
-    return balances.map((balance) => ({
-      ...balance,
-      color: balance.change === 0 ? "gray" : balance.change > 0 ? greenColor : redColor,
-      value: balance.change,
-    }))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [refresh])
+  const queryFn: QueryFunction = useCallback(
+    async (interval) => {
+      const balances = await clancy.getHistoricalNetworth($activeAccount.get())
 
-  const currency = useStore($baseCurrency)
+      const data = balances.map((balance) => ({
+        color: balance.change === 0 ? neutralColor : balance.change > 0 ? profitColor : lossColor,
+        time: balance.time,
+        value: balance.change,
+      }))
+
+      let result: ChartData[]
+
+      if (interval === "1w") {
+        const aggregatedData: ChartData[] = []
+
+        for (let i = 0; i < data.length; i += 7) {
+          const weekData = data.slice(i, i + 7)
+          const value = weekData.reduce((acc, day) => acc + day.value, 0)
+
+          const weekCandle = {
+            color: value === 0 ? neutralColor : value > 0 ? profitColor : lossColor,
+            time: weekData[0]?.time,
+            value,
+          }
+          aggregatedData.push(weekCandle)
+        }
+        result = aggregatedData
+      } else {
+        result = data
+      }
+
+      return result
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [refresh]
+  )
+
+  const currency = useStore($quoteCurrency)
   const isMobile = useMediaQuery("(max-width: 599px)")
 
   const chartOptions = useMemo(

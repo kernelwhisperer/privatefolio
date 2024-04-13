@@ -1,4 +1,4 @@
-import { getPair, mapToChartData, queryPrices } from "src/api/core/prices/redstone-price-api"
+import { getPair, mapToChartData, queryPrices } from "src/api/external/prices/redstone-price-api"
 import { GITHUB_CI } from "src/env"
 import { ResolutionString } from "src/interfaces"
 import { PLATFORMS_META } from "src/settings"

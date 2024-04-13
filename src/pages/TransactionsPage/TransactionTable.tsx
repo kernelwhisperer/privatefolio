@@ -1,7 +1,6 @@
-import { Box, Stack } from "@mui/material"
-import React, { useCallback, useMemo, useState } from "react"
+import { Box } from "@mui/material"
+import React, { MutableRefObject, useCallback, useMemo } from "react"
 import { FilterChip } from "src/components/FilterChip"
-import { Subheading } from "src/components/Subheading"
 import { $activeAccount } from "src/stores/account-store"
 import { stringToColor } from "src/utils/color-utils"
 
@@ -13,18 +12,16 @@ import {
 import { Transaction } from "../../interfaces"
 import { HeadCell } from "../../utils/table-utils"
 import { clancy } from "../../workers/remotes"
-import { TransactionActions } from "./TransactionActions"
 import { TransactionTableRow } from "./TransactionTableRow"
 
 interface TransactionsTableProps extends Pick<RemoteTableProps<Transaction>, "defaultRowsPerPage"> {
   assetId?: string
+  tableDataRef?: MutableRefObject<Transaction[]>
   txId?: string
 }
 
 export function TransactionTable(props: TransactionsTableProps) {
-  const { assetId, txId, ...rest } = props
-
-  const [tableData, setTableData] = useState<Transaction[]>([])
+  const { assetId, txId, tableDataRef, ...rest } = props
 
   const queryFn: QueryFunction<Transaction> = useCallback(
     async (filters, rowsPerPage, page, order) => {
@@ -50,7 +47,9 @@ export function TransactionTable(props: TransactionsTableProps) {
         $activeAccount.get()
       )
 
-      setTableData(transactions)
+      if (tableDataRef) {
+        tableDataRef.current = transactions
+      }
 
       return [
         transactions,
@@ -67,7 +66,7 @@ export function TransactionTable(props: TransactionsTableProps) {
             .then((logs) => logs.length),
       ]
     },
-    [assetId, txId]
+    [assetId, tableDataRef, txId]
   )
 
   const headCells = useMemo<HeadCell<Transaction>[]>(
@@ -142,10 +141,6 @@ export function TransactionTable(props: TransactionsTableProps) {
 
   return (
     <>
-      <Stack direction="row" justifyContent="space-between">
-        <Subheading>Transactions</Subheading>
-        <TransactionActions tableData={tableData} />
-      </Stack>
       {txId && (
         <Box
           sx={{

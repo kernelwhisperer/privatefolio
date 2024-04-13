@@ -14,7 +14,7 @@ import {
   WhitespaceData,
 } from "lightweight-charts"
 
-import { CommonTooltipOptions, greenColorDark, redColor } from "../../../utils/chart-utils"
+import { CommonTooltipOptions, lossColor, profitColor } from "../../../utils/chart-utils"
 import { formatNumber } from "../../../utils/formatting-utils"
 import { Delegate, ISubscription } from "../../helpers/delegate"
 import { convertTime, formattedDateAndTime } from "../../helpers/time"
@@ -299,10 +299,8 @@ export class DeltaTooltipPrimitive implements ISeriesPrimitive<Time> {
       })} ${positive ? "+" : ""}${
         isNaN(pctChange) ? 0 : pctChange.toFixed(this._options.tooltip?.compact ? 0 : 2)
       }%`
-      deltaContent.deltaBackgroundColor = positive
-        ? alpha(greenColorDark, 0.2)
-        : alpha(redColor, 0.2)
-      deltaContent.deltaTextColor = positive ? greenColorDark : redColor
+      deltaContent.deltaBackgroundColor = positive ? alpha(profitColor, 0.2) : alpha(lossColor, 0.2)
+      deltaContent.deltaTextColor = positive ? profitColor : lossColor
       this._activeRange.fire({
         from: priceValues[correctOrder ? 0 : 1][1] + 1,
         positive,

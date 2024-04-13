@@ -94,12 +94,38 @@ export function ConnectionInspectDrawer(props: ConnectionInspectDrawerProps) {
         </div>
         <Stack direction="column" gap={1}>
           <SectionTitle>Actions</SectionTitle>
+          <Tooltip title={loadingSync ? "Syncing..." : "Sync connection"}>
+            <span>
+              <LoadingButton
+                size="small"
+                variant="outlined"
+                color="secondary"
+                loading={loadingSync}
+                onClick={async () => {
+                  setLoadingSync(true)
+                  enqueueTask({
+                    description: `Sync "${connection.address}"`,
+                    determinate: true,
+                    function: async (progress) => {
+                      await clancy.syncConnection(progress, connection, $activeAccount.get())
+                      setLoadingSync(false)
+                      handleAuditLogChange()
+                    },
+                    name: "Sync connection",
+                    priority: TaskPriority.High,
+                  })
+                }}
+              >
+                Sync connection
+              </LoadingButton>
+            </span>
+          </Tooltip>
           <Tooltip title={loadingReset ? "Reseting..." : "This will reset the connection"}>
             <span>
               <LoadingButton
                 size="small"
                 variant="outlined"
-                color="info"
+                color="secondary"
                 onClick={async () => {
                   setLoadingReset(true)
                   enqueueTask({
@@ -118,32 +144,6 @@ export function ConnectionInspectDrawer(props: ConnectionInspectDrawerProps) {
                 loading={loadingReset}
               >
                 Reset connection
-              </LoadingButton>
-            </span>
-          </Tooltip>
-          <Tooltip title={loadingSync ? "Syncing..." : "Sync connection"}>
-            <span>
-              <LoadingButton
-                size="small"
-                variant="outlined"
-                color="info"
-                loading={loadingSync}
-                onClick={async () => {
-                  setLoadingSync(true)
-                  enqueueTask({
-                    description: `Sync "${connection.address}"`,
-                    determinate: true,
-                    function: async (progress) => {
-                      await clancy.syncConnection(progress, connection, $activeAccount.get())
-                      setLoadingSync(false)
-                      handleAuditLogChange()
-                    },
-                    name: "Sync connection",
-                    priority: TaskPriority.High,
-                  })
-                }}
-              >
-                Sync connection
               </LoadingButton>
             </span>
           </Tooltip>

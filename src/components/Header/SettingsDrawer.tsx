@@ -51,7 +51,7 @@ export function SettingsDrawer(props: PopoverToggleProps) {
             variant="subtitle1"
             letterSpacing="0.025rem"
             align="center"
-            sx={{ paddingTop: "1rem" }}
+            sx={{ marginTop: 2 }}
           >
             Settings
           </Typography>
@@ -83,7 +83,6 @@ export function SettingsDrawer(props: PopoverToggleProps) {
             <CloseRounded fontSize="small" />
           </IconButton>
         </Stack>
-
         <SettingsDrawerContents appVer={APP_VERSION} gitHash={GIT_HASH} />
       </Drawer>
     </>

@@ -1,7 +1,7 @@
 import { Paper, Stack, Typography } from "@mui/material"
 import React, { useEffect, useState } from "react"
-import { getFullMetadata } from "src/api/core/assets/coingecko-asset-api"
-import { getCachedCoingeckoId } from "src/api/core/assets/coingecko-asset-cache"
+import { getFullMetadata } from "src/api/external/assets/coingecko-asset-api"
+import { getCachedCoingeckoId } from "src/api/external/assets/coingecko-asset-cache"
 import { CircularSpinner } from "src/components/CircularSpinner"
 import { IdentifierBlock } from "src/components/IdentifierBlock"
 import { NoDataAvailable } from "src/components/NoDataAvailable"
@@ -34,7 +34,7 @@ export function AssetInfo(props: AssetInfoProps) {
       {isLoading || isEmpty ? (
         <Stack justifyContent="center" alignItems="center" sx={{ height: 260 }}>
           {isEmpty && !isLoading && <NoDataAvailable />}
-          {isLoading && <CircularSpinner color="accent" />}
+          {isLoading && <CircularSpinner color="secondary" />}
         </Stack>
       ) : (
         <Typography variant="body2" component="div">

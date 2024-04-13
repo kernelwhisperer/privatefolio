@@ -1,4 +1,4 @@
-import { persistentMap } from "@nanostores/persistent"
+import { persistentAtom, persistentMap } from "@nanostores/persistent"
 import { computed } from "nanostores"
 
 import { $activeAccount } from "./account-store"
@@ -41,17 +41,17 @@ export const DEFAULT_CURRENCIES_MAP: Record<string, Currency> = {
   },
 }
 
-export const $baseCurrencyMap = persistentMap<Record<string, string | undefined>>(
-  "privatefolio-base-currency",
+export const $quoteCurrencyMap = persistentMap<Record<string, string | undefined>>(
+  "privatefolio-quote-currency",
   {}
 )
 
-export const $baseCurrency = computed(
-  [$activeAccount, $baseCurrencyMap],
-  (activeAccount, baseCurrencyMap) => {
-    const baseCurrencyId = baseCurrencyMap[activeAccount]
-    return typeof baseCurrencyId === "string"
-      ? DEFAULT_CURRENCIES_MAP[baseCurrencyId]
+export const $quoteCurrency = computed(
+  [$activeAccount, $quoteCurrencyMap],
+  (activeAccount, quoteCurrencyMap) => {
+    const quoteCurrencyId = quoteCurrencyMap[activeAccount]
+    return typeof quoteCurrencyId === "string"
+      ? DEFAULT_CURRENCIES_MAP[quoteCurrencyId]
       : DEFAULT_CURRENCIES_MAP.USD
   }
 )
@@ -79,5 +79,14 @@ export const $hideUnlisted = computed(
   (activeAccount, hideUnlistedMap) => {
     const val = hideUnlistedMap[activeAccount]
     return typeof val === "string" ? val === "true" : true
+  }
+)
+
+export const $showQuotedAmounts = persistentAtom<boolean>(
+  "privatefolio-show-quoted-amounts",
+  true,
+  {
+    decode: (value) => value === "true",
+    encode: (value) => (value ? "true" : "false"),
   }
 )

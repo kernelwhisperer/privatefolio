@@ -8,7 +8,7 @@ import { EMPTY_OBJECT } from "src/utils/utils"
 
 import { formatNumber, getDecimalPrecision } from "../utils/formatting-utils"
 
-type AmountBlockProps = TypographyProps & {
+export type AmountBlockProps = TypographyProps & {
   amount?: string | number
   colorized?: boolean
   currencySymbol?: string
@@ -42,7 +42,7 @@ export function AmountBlock(props: AmountBlockProps) {
 
   const hasValue = amount !== undefined
   const amountN = hasValue ? Number(amount) : undefined
-  const formatOpts = showSign && amount !== 0 ? showSignOpts : EMPTY_OBJECT
+  const formatOpts = showSign && amountN !== 0 ? showSignOpts : EMPTY_OBJECT
 
   const debugMode = useStore($debugMode)
 
@@ -79,6 +79,7 @@ export function AmountBlock(props: AmountBlockProps) {
     }
 
     fullLabel = fullLabel.replace(`${currencySymbol}-`, `-${currencySymbol}`)
+    fullLabel = fullLabel.replace(`${currencySymbol}+`, `+${currencySymbol}`)
 
     return fullLabel
   }, [amountN, currencySymbol, currencyTicker, formattedValue, showTicker])

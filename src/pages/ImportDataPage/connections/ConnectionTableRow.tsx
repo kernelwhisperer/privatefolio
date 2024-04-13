@@ -21,16 +21,77 @@ import { TableRowComponentProps } from "src/utils/table-utils"
 import { ConnectionInspectDrawer } from "./ConnectionInspectDrawer"
 
 export function ConnectionTableRow(props: TableRowComponentProps<Connection>) {
-  const {
-    row,
-    relativeTime,
-    headCells: _headCells,
-    isMobile: _isMobile,
-    isTablet: _isTablet,
-    ...rest
-  } = props
+  const { row, relativeTime, headCells: _headCells, isMobile: _isMobile, isTablet, ...rest } = props
   const { address, timestamp, syncedAt, platform, label, meta } = row
   const { value: open, toggle: toggleOpen } = useBoolean(false)
+
+  if (isTablet) {
+    return (
+      <>
+        <TableRow hover {...rest}>
+          <TableCell colSpan={99} onClick={toggleOpen} sx={{ cursor: "pointer" }}>
+            <Stack direction="row" justifyContent="space-between" alignItems="center">
+              <Stack gap={0.5} marginY={0.5}>
+                <Stack direction="row" gap={1} alignItems="center" component="div">
+                  {platform ? (
+                    <PlatformBlock platform={platform} hideName />
+                  ) : (
+                    <Skeleton height={20} width={80} />
+                  )}
+                  <Tooltip title={address}>
+                    <Truncate sx={{ fontFamily: MonoFont, maxWidth: 200 }}>{address}</Truncate>
+                  </Tooltip>
+                </Stack>
+                <Stack
+                  direction="row"
+                  gap={1}
+                  alignItems="center"
+                  component="div"
+                  sx={{ color: "text.secondary", fontSize: "0.75rem" }}
+                >
+                  {timestamp ? (
+                    <TimestampBlock timestamp={timestamp} relative={relativeTime} />
+                  ) : (
+                    <Skeleton height={20} width={80} />
+                  )}
+                  {" • "}
+                  {!syncedAt ? (
+                    <Typography color="text.secondary" component="span" variant="inherit">
+                      Not synced
+                    </Typography>
+                  ) : (
+                    <span>
+                      <span>Synced</span>{" "}
+                      <TimestampBlock timestamp={syncedAt} relative={relativeTime} />
+                    </span>
+                  )}
+                </Stack>
+              </Stack>
+              <Stack gap={0.5} alignItems={"flex-end"} sx={{ fontSize: "0.75rem" }}>
+                {!meta ? (
+                  <Skeleton height={20} width={80} />
+                ) : (
+                  <span>{formatNumber(meta.logs)} audit logs</span>
+                )}
+                {!meta ? (
+                  <Skeleton height={20} width={80} />
+                ) : (
+                  <span>{formatNumber(meta.transactions)} txns</span>
+                )}
+              </Stack>
+            </Stack>
+          </TableCell>
+        </TableRow>
+        <ConnectionInspectDrawer
+          key={row._id}
+          open={open}
+          toggleOpen={toggleOpen}
+          connection={row}
+          relativeTime={relativeTime}
+        />
+      </>
+    )
+  }
 
   return (
     <>
@@ -47,8 +108,8 @@ export function ConnectionTableRow(props: TableRowComponentProps<Connection>) {
             <TimestampBlock timestamp={syncedAt} relative={relativeTime} />
           )}
         </TableCell>
-        <TableCell sx={{ fontFamily: MonoFont, maxWidth: 420, minWidth: 300, width: 420 }}>
-          <Stack spacing={1} direction="row">
+        <TableCell sx={{ maxWidth: 420, minWidth: 300, width: 420 }}>
+          <Stack spacing={1} direction="row" sx={{ fontFamily: MonoFont }}>
             {platform ? <PlatformBlock platform={platform} hideName /> : <Skeleton></Skeleton>}
             <Tooltip title={address}>
               <Truncate>{address}</Truncate>

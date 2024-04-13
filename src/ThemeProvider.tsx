@@ -9,10 +9,12 @@ import { useStore } from "@nanostores/react"
 import { Globals, useReducedMotion } from "@react-spring/web"
 import { merge } from "lodash-es"
 import React, { PropsWithChildren, useEffect, useMemo } from "react"
+import { useLocation } from "react-router-dom"
 
-import { NavigationBarTheme } from "./components/NavigationBarTheme"
+import { ThemeSideEffects } from "./components/ThemeSideEffects"
 import { $reducedMotion } from "./stores/app-store"
 import { theme } from "./theme"
+import { themeLanding } from "./theme-landing"
 
 export function ThemeProvider({ children }: PropsWithChildren) {
   const reducedMotion = useStore($reducedMotion)
@@ -20,7 +22,8 @@ export function ThemeProvider({ children }: PropsWithChildren) {
 
   const isMobile = useMediaQuery("(max-width: 599px)")
   const isTablet = useMediaQuery("(max-width: 899px)")
-  // const isMobile = useMediaQuery((theme: any) => theme.breakpoints.down("md"))
+  const isDesktop = !isMobile && !isTablet
+  // const isMobile = useMediaQuery((theme: any) => theme.breakpoints.down("md")) FIXME
 
   const skipAnimation = useMemo(() => {
     if (reducedMotion === "never") {
@@ -38,11 +41,20 @@ export function ThemeProvider({ children }: PropsWithChildren) {
     Globals.assign({ skipAnimation })
   }, [skipAnimation])
 
+  const location = useLocation()
+  const { pathname } = location
+
   const extendedTheme = useMemo(
     () =>
       extendTheme(
         merge({}, theme, {
           components: {
+            MuiDialog: {
+              defaultProps: {
+                fullScreen: !isDesktop,
+                slotProps: { backdrop: { invisible: !isTablet } },
+              },
+            },
             MuiDrawer: {
               defaultProps: {
                 disableScrollLock: !isTablet,
@@ -55,6 +67,7 @@ export function ThemeProvider({ children }: PropsWithChildren) {
               },
             },
           },
+          ...(pathname === "/" ? themeLanding : {}),
           ...(skipAnimation
             ? ({
                 components: {
@@ -77,15 +90,15 @@ export function ThemeProvider({ children }: PropsWithChildren) {
             : {}),
         })
       ),
-    [isTablet, skipAnimation]
+    [isDesktop, isTablet, pathname, skipAnimation]
   )
+
+  // console.log("📜 LOG > ThemeProvider > extendedTheme:", extendedTheme)
   return (
-    <>
-      <CssVarsProvider defaultMode="system" theme={extendedTheme} disableTransitionOnChange>
-        <CssBaseline enableColorScheme />
-        <NavigationBarTheme />
-        {children}
-      </CssVarsProvider>
-    </>
+    <CssVarsProvider defaultMode="system" theme={extendedTheme} disableTransitionOnChange>
+      <CssBaseline enableColorScheme />
+      {children}
+      <ThemeSideEffects />
+    </CssVarsProvider>
   )
 }

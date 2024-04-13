@@ -1,7 +1,6 @@
 import PouchDB from "pouchdb"
 import PouchDBFind from "pouchdb-find"
 
-// import replicationStream from "pouchdb-replication-stream"
 import {
   Asset,
   AuditLog,
@@ -39,8 +38,6 @@ if (testEnvironment) {
 //   }
 // }
 PouchDB.plugin(PouchDBFind)
-// console.log("🚀 ~ replicationStream:", replicationStream)
-// PouchDB.plugin(replicationStream.plugin)
 
 export const Pouch = PouchDB
 
@@ -60,6 +57,7 @@ function createAccount(accountName: string) {
   const balancesDB = new PouchDB<BalanceMap>(`${accountName}/balances`, defaultDbOptions)
   const networthDB = new PouchDB<Networth>(`${accountName}/networth`, defaultDbOptions)
   const keyValueDB = new PouchDB<{ value: unknown }>(`${accountName}/key-value`, defaultDbOptions)
+  const dailyPricesDB = new PouchDB<SavedPrice>(`${accountName}/daily-prices`, defaultDbOptions)
 
   // transactionsDB.on("indexing", function (event) {
   //   console.log("Indexing", event)
@@ -73,6 +71,7 @@ function createAccount(accountName: string) {
     auditLogsDB,
     balancesDB,
     connectionsDB,
+    dailyPricesDB,
     fileImportsDB,
     keyValueDB,
     name: accountName,
@@ -109,6 +108,7 @@ export async function deleteAccount(accountName: string) {
     keyValueDB,
     networthDB,
     transactionsDB,
+    dailyPricesDB,
   } = account
   await assetsDB.destroy()
   await connectionsDB.destroy()
@@ -118,6 +118,7 @@ export async function deleteAccount(accountName: string) {
   await balancesDB.destroy()
   await networthDB.destroy()
   await keyValueDB.destroy()
+  await dailyPricesDB.destroy()
   //
   accounts.splice(accounts.indexOf(account), 1)
 }
@@ -126,22 +127,3 @@ export async function resetAccount(accountName: string) {
   await deleteAccount(accountName)
   getAccount(accountName)
 }
-
-// Core database
-export const core = {
-  dailyPricesDB: new PouchDB<SavedPrice>(`core/daily-prices`, defaultDbOptions),
-  sharedKeyValueDB: new PouchDB<{ value: unknown }>(`core/key-value`, defaultDbOptions),
-}
-
-export function initCoreDatabase() {
-  core.dailyPricesDB = new PouchDB<SavedPrice>(`core/daily-prices`, defaultDbOptions)
-  core.sharedKeyValueDB = new PouchDB<{ value: unknown }>(`core/key-value`, defaultDbOptions)
-}
-
-export async function resetCoreDatabase() {
-  await core.dailyPricesDB.destroy()
-  await core.sharedKeyValueDB.destroy()
-  initCoreDatabase()
-}
-
-export type CoreDatabase = ReturnType<typeof initCoreDatabase>

@@ -1,20 +1,19 @@
-import { Settings, StorageRounded, SwapHoriz } from "@mui/icons-material"
-import AttachFileRoundedIcon from "@mui/icons-material/AttachFileRounded"
-import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded"
-import HomeRoundedIcon from "@mui/icons-material/HomeRounded"
-import UnfoldMoreIcon from "@mui/icons-material/UnfoldMore"
-import WebAssetRoundedIcon from "@mui/icons-material/WebAssetRounded"
-import { Button, Stack, Typography, useMediaQuery } from "@mui/material"
-import { useStore } from "@nanostores/react"
+import {
+  DownloadRounded,
+  HomeRounded,
+  ReceiptLong,
+  Settings,
+  StorageRounded,
+  SyncAltRounded,
+  Workspaces,
+} from "@mui/icons-material"
+import { Button, ListItemAvatar, ListItemText, MenuItem, Stack, useMediaQuery } from "@mui/material"
 import React, { useEffect, useState } from "react"
 import { Link, useLocation } from "react-router-dom"
 import { useBoolean } from "src/hooks/useBoolean"
-import { $activeAccount } from "src/stores/account-store"
 
 import { AppVerProps, PopoverToggleProps } from "../../stores/app-store"
-import { AccountAvatar } from "../AccountAvatar"
 import { NavMenuItem } from "../NavMenuItem"
-import { AccountPicker } from "./AccountPicker"
 import { Logo } from "./Logo"
 import { SettingsDrawer } from "./SettingsDrawer"
 
@@ -60,13 +59,8 @@ export const MenuDrawerContents = ({ appVer, gitHash, open, toggleOpen }: MenuCo
   const location = useLocation()
   const { pathname } = location
   const accountIndex = pathname.split("/")[2]
-  const appPath = pathname.split("/").slice(3).join("/")
 
-  const overriddenPathname = appPath.includes("asset/") ? "" : appPath
-
-  const { value: openSettings, toggle: toggleOpenSettings } = useBoolean(false)
-  const { value: openAccountPicker, toggle: toggleOpenAccountPicker } = useBoolean(false)
-  const activeAccount = useStore($activeAccount)
+  const { value: openSettings, toggle: toggleSettingsOpen } = useBoolean(false)
 
   return (
     <>
@@ -74,160 +68,83 @@ export const MenuDrawerContents = ({ appVer, gitHash, open, toggleOpen }: MenuCo
         paddingX={2}
         paddingY={1}
         gap={1}
-        sx={{ height: "100%", overflowX: "hidden", width: "100%" }}
+        sx={{ height: "100%", width: "100%" }}
         justifyContent="space-between"
       >
-        <Stack>
-          <Stack direction="row" justifyContent="flex-between" paddingBottom={4}>
-            <Button
-              to="/"
-              aria-label="Visit Homepage"
-              component={Link}
-              sx={{
-                borderRadius: 8,
-                marginLeft: 1.5,
-                // marginLeft: -1,
-                padding: 1,
-                textTransform: "none",
-              }}
-            >
-              <Logo />
-            </Button>
-          </Stack>
-          <Stack marginBottom={4}>
-            <Button
-              onClick={toggleOpenAccountPicker}
-              size="small"
-              variant="outlined"
-              color={"secondary"}
-              sx={{
-                justifyContent: "space-between",
-                padding: "6px 16px",
-              }}
-            >
-              <Stack direction="row">
-                <AccountAvatar alt={activeAccount} size="small" sx={{ alignSelf: "center" }} />
-
-                <Typography
-                  variant="subtitle1"
-                  letterSpacing="0.025rem"
-                  paddingLeft="1rem"
-                  alignSelf="center"
-                >
-                  {activeAccount}
-                </Typography>
-              </Stack>
-              <UnfoldMoreIcon color="secondary" />
-            </Button>
-            <AccountPicker
-              open={openAccountPicker}
-              toggleOpen={toggleOpenAccountPicker}
-              toggleOpenMenuDrawer={toggleOpen}
-            />
-          </Stack>
+        <Stack gap={0.25}>
+          <Button
+            to="/"
+            aria-label="Visit Homepage"
+            component={Link}
+            fullWidth
+            sx={{
+              borderRadius: 0.5,
+              justifyContent: "flex-start",
+              marginBottom: 2,
+              paddingX: 2.5,
+              paddingY: 1,
+              textTransform: "none",
+            }}
+          >
+            <Logo />
+          </Button>
           <NavMenuItem
             value=""
             to={`/u/${accountIndex}/`}
             label="Home"
             onClick={toggleOpen}
-            avatar={<HomeRoundedIcon />}
-            sx={{
-              "&:hover": {
-                color: "text.primary",
-              },
-              bgcolor: overriddenPathname === "" ? "rgb(120, 120, 120,0.25)" : "none",
-              borderRadius: 0.5,
-              color: overriddenPathname === "" ? "text.primary" : "text.secondary",
-            }}
-          />
-          <NavMenuItem
-            value="assets"
-            to={`/u/${accountIndex}/assets`}
-            label="Assets"
-            onClick={toggleOpen}
-            avatar={<WebAssetRoundedIcon />}
-            sx={{
-              "&:hover": {
-                color: "text.primary",
-              },
-              bgcolor: overriddenPathname === "assets" ? "rgb(120, 120, 120,0.25)" : "none",
-              borderRadius: 0.5,
-              color: overriddenPathname === "assets" ? "text.primary" : "text.secondary",
-            }}
+            avatar={<HomeRounded />}
           />
           <NavMenuItem
             value="transactions"
             to={`/u/${accountIndex}/transactions`}
             label="Transactions"
             onClick={toggleOpen}
-            avatar={<SwapHoriz />}
-            sx={{
-              "&:hover": {
-                color: "text.primary",
-              },
-              bgcolor: overriddenPathname === "transactions" ? "rgb(120, 120, 120,0.25)" : "none",
-              borderRadius: 0.5,
-              color: overriddenPathname === "transactions" ? "text.primary" : "text.secondary",
-            }}
+            avatar={<SyncAltRounded />}
+          />
+          <NavMenuItem
+            value="assets"
+            to={`/u/${accountIndex}/assets`}
+            label="Assets"
+            onClick={toggleOpen}
+            avatar={<Workspaces />}
           />
           <NavMenuItem
             value="audit-logs"
             to={`/u/${accountIndex}/audit-logs`}
             label="Audit logs"
             onClick={toggleOpen}
-            avatar={<StorageRounded />}
-            sx={{
-              "&:hover": {
-                color: "text.primary",
-              },
-              bgcolor: overriddenPathname === "audit-logs" ? "rgb(120, 120, 120,0.25)" : "none",
-              borderRadius: 0.5,
-              color: overriddenPathname === "audit-logs" ? "text.primary" : "text.secondary",
-            }}
+            avatar={<ReceiptLong />}
           />
           <NavMenuItem
             value="import-data"
             to={`/u/${accountIndex}/import-data`}
             label="Import data"
             onClick={toggleOpen}
-            avatar={<AttachFileRoundedIcon />}
-            sx={{
-              "&:hover": {
-                color: "text.primary",
-              },
-              bgcolor: overriddenPathname === "import-data" ? "rgb(120, 120, 120,0.25)" : "none",
-              borderRadius: 0.5,
-              color: overriddenPathname === "import-data" ? "text.primary" : "text.secondary",
-            }}
+            avatar={<StorageRounded />}
           />
         </Stack>
         <Stack>
-          <Button
+          <MenuItem
             sx={{
               "&:hover": {
                 color: "text.primary",
               },
               borderRadius: 0.5,
               color: "text.secondary",
-              direction: "row",
               display: isInstalled ? "none" : "inline-flex",
-              justifyContent: "flex-start",
-              transition: "transform 0.33s",
-              width: "100%",
             }}
             onClick={promptInstall}
           >
-            <Stack display="contents">
-              <DownloadRoundedIcon />
-              <Typography variant="subtitle1" letterSpacing="0.025rem" paddingLeft="0.3rem">
-                Install app
-              </Typography>
-            </Stack>
-          </Button>
-          <Button
+            <ListItemAvatar>
+              <DownloadRounded />
+            </ListItemAvatar>
+            <ListItemText primary="Install app" />
+          </MenuItem>
+          <MenuItem
             onClick={() => {
               toggleOpen()
-              toggleOpenSettings()
+              toggleSettingsOpen()
             }}
             sx={{
               "&:hover": {
@@ -235,29 +152,21 @@ export const MenuDrawerContents = ({ appVer, gitHash, open, toggleOpen }: MenuCo
               },
               borderRadius: 0.5,
               color: "text.secondary",
-              direction: "row",
-              justifyContent: "flex-start",
-              marginRight: -1,
-              transition: "transform 0.33s",
-              width: "100%",
             }}
           >
-            <Stack display="contents">
+            <ListItemAvatar>
               <Settings
-                fontSize="small"
                 sx={{
-                  "&:hover": {
+                  "li:hover &": {
                     transform: "rotate(-30deg)",
                   },
                   transition: "transform 0.33s",
                 }}
               />
-              <Typography variant="subtitle1" letterSpacing="0.025rem" paddingLeft="0.5rem">
-                Settings
-              </Typography>
-            </Stack>
-          </Button>
-          <SettingsDrawer open={openSettings} toggleOpen={toggleOpenSettings} />
+            </ListItemAvatar>
+            <ListItemText primary="Settings" />
+          </MenuItem>
+          <SettingsDrawer open={openSettings} toggleOpen={toggleSettingsOpen} />
         </Stack>
       </Stack>
     </>

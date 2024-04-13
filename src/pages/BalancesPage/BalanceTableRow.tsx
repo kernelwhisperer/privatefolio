@@ -4,7 +4,7 @@ import React from "react"
 import { AmountBlock } from "src/components/AmountBlock"
 import { AppLink } from "src/components/AppLink"
 import { AssetBlock } from "src/components/AssetBlock"
-import { $baseCurrency } from "src/stores/account-settings-store"
+import { $quoteCurrency } from "src/stores/account-settings-store"
 
 import { Balance } from "../../interfaces"
 import { TableRowComponentProps } from "../../utils/table-utils"
@@ -20,7 +20,7 @@ export function BalanceTableRow(props: TableRowComponentProps<Balance>) {
   } = props
   const { assetId, balance, price, value } = row
 
-  const currency = useStore($baseCurrency)
+  const currency = useStore($quoteCurrency)
 
   if (isTablet) {
     return (

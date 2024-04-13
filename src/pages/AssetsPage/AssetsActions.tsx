@@ -8,7 +8,7 @@ import {
 } from "@mui/icons-material"
 import {
   IconButton,
-  ListItemIcon,
+  ListItemAvatar,
   ListItemText,
   Menu,
   MenuItem,
@@ -21,14 +21,11 @@ import { $hideUnlisted, $hideUnlistedMap } from "src/stores/account-settings-sto
 import { $activeAccount } from "src/stores/account-store"
 import { $debugMode } from "src/stores/app-store"
 
-import { useConfirm } from "../../hooks/useConfirm"
-import { enqueueTask, TaskPriority } from "../../stores/task-store"
 import {
   enqueueDeleteAssetInfos,
   enqueueFetchAssetInfos,
   enqueueFetchPrices,
 } from "../../utils/common-tasks"
-import { clancy } from "../../workers/remotes"
 
 export function AssetsActions() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
@@ -40,20 +37,17 @@ export function AssetsActions() {
     setAnchorEl(null)
   }
 
-  const confirm = useConfirm()
-
   const debugMode = useStore($debugMode)
   const hideUnlisted = useStore($hideUnlisted)
 
   return (
-    <Stack direction="row" gap={1}>
+    <Stack direction="row">
       <Tooltip title={hideUnlisted ? "Show unlisted assets" : "Hide unlisted assets"}>
         <IconButton
           color="secondary"
           onClick={() => {
             $hideUnlistedMap.setKey($activeAccount.get(), String(!hideUnlisted))
           }}
-          sx={{ marginRight: -1 }}
         >
           {hideUnlisted ? (
             <VisibilityOffRounded fontSize="small" />
@@ -62,46 +56,18 @@ export function AssetsActions() {
           )}
         </IconButton>
       </Tooltip>
-      <Tooltip title="Database actions">
-        <IconButton color="secondary" onClick={handleClick} sx={{ marginRight: -1 }}>
+      <Tooltip title="Actions">
+        <IconButton color="secondary" onClick={handleClick}>
           <MoreHoriz fontSize="small" />
         </IconButton>
       </Tooltip>
       <Menu
-        
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
-
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
         transformOrigin={{ horizontal: "right", vertical: "top" }}
       >
-        <MenuItem
-          dense
-          onClick={() => {
-            enqueueFetchAssetInfos()
-            handleClose()
-          }}
-        >
-          <ListItemIcon>
-            <AssignmentOutlined fontSize="small" />
-          </ListItemIcon>
-          <ListItemText>Fetch asset infos</ListItemText>
-        </MenuItem>
-        {debugMode && (
-          <MenuItem
-            dense
-            onClick={() => {
-              enqueueDeleteAssetInfos()
-              handleClose()
-            }}
-          >
-            <ListItemIcon>
-              <DeleteForever fontSize="small" />
-            </ListItemIcon>
-            <ListItemText>Delete asset infos</ListItemText>
-          </MenuItem>
-        )}
         <MenuItem
           dense
           onClick={() => {
@@ -109,12 +75,12 @@ export function AssetsActions() {
             handleClose()
           }}
         >
-          <ListItemIcon>
+          <ListItemAvatar>
             <AttachMoneyRounded fontSize="small" />
-          </ListItemIcon>
+          </ListItemAvatar>
           <ListItemText>Fetch asset prices</ListItemText>
         </MenuItem>
-        {debugMode && (
+        {/* {debugMode && (
           <MenuItem
             dense
             onClick={async () => {
@@ -143,10 +109,35 @@ export function AssetsActions() {
               }
             }}
           >
-            <ListItemIcon>
+            <ListItemAvatar>
               <DeleteForever fontSize="small" />
-            </ListItemIcon>
+            </ListItemAvatar>
             <ListItemText>Delete asset prices</ListItemText>
+          </MenuItem>
+        )} */}
+        <MenuItem
+          dense
+          onClick={() => {
+            enqueueFetchAssetInfos()
+            handleClose()
+          }}
+        >
+          <ListItemAvatar>
+            <AssignmentOutlined fontSize="small" />
+          </ListItemAvatar>
+          <ListItemText>Fetch asset infos</ListItemText>
+        </MenuItem>
+        {debugMode && (
+          <MenuItem
+            onClick={() => {
+              enqueueDeleteAssetInfos()
+              handleClose()
+            }}
+          >
+            <ListItemAvatar>
+              <DeleteForever fontSize="small" />
+            </ListItemAvatar>
+            <ListItemText>Delete asset infos</ListItemText>
           </MenuItem>
         )}
       </Menu>

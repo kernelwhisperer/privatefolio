@@ -5,10 +5,10 @@ import { noop } from "src/utils/utils"
 import { Balance, BalanceMap, Timestamp } from "../../interfaces"
 import { DB_OPERATION_PAGE_SIZE } from "../../settings"
 import { ProgressCallback } from "../../stores/task-store"
-import { getPricesForAsset } from "../core/daily-prices-api"
 import { getAccount } from "../database"
 import { validateOperation } from "../database-utils"
 import { countAuditLogs, indexAuditLogs } from "./audit-logs-api"
+import { getPricesForAsset } from "./daily-prices-api"
 import { getValue, setValue } from "./kv-api"
 import { invalidateNetworth } from "./networth-api"
 
@@ -35,7 +35,7 @@ export async function getBalancesAt(
 
     const balances = await Promise.all(
       balanceDocs.map(async (x) => {
-        const prices = await getPricesForAsset(x.assetId, timestamp)
+        const prices = await getPricesForAsset(accountName, x.assetId, timestamp)
         const price = prices.length > 0 ? prices[0] : undefined
 
         return {
@@ -57,6 +57,12 @@ export async function getBalancesAt(
 
 export type GetHistoricalBalancesRequest = {
   limit?: number
+  /**
+   * orderBy = timestamp, always
+   *
+   * @default "asc"
+   */
+  order?: "asc" | "desc"
   skip?: number
   symbol?: string
 }
@@ -65,7 +71,7 @@ export async function getHistoricalBalances(
   accountName: string,
   request: GetHistoricalBalancesRequest = {}
 ) {
-  const { symbol, limit, skip } = request
+  const { symbol, limit, skip, order = "asc" } = request
   const account = getAccount(accountName)
 
   const { indexes } = await account.balancesDB.getIndexes()
@@ -94,9 +100,9 @@ export async function getHistoricalBalances(
       symbol
         ? {
             // symbol: "desc", TODO TESTME
-            timestamp: "asc",
+            timestamp: order,
           }
-        : { timestamp: "asc" },
+        : { timestamp: order },
     ],
   })
 
@@ -129,7 +135,7 @@ export async function computeBalances(
 
   const { indexes } = await account.auditLogsDB.getIndexes()
   if (indexes.length === 1) {
-    await indexAuditLogs(undefined, accountName)
+    await indexAuditLogs(accountName)
   }
 
   const count =

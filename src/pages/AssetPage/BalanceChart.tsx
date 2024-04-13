@@ -2,6 +2,7 @@ import { UTCTimestamp } from "lightweight-charts"
 import React, { useCallback } from "react"
 import { $activeAccount } from "src/stores/account-store"
 import { getAssetTicker } from "src/utils/assets-utils"
+import { neutralColor } from "src/utils/chart-utils"
 
 import { QueryFunction, SingleSeriesChart } from "../../components/SingleSeriesChart"
 import { clancy } from "../../workers/remotes"
@@ -17,7 +18,7 @@ export function BalanceChart(props: BalanceChartProps) {
     const docs = await clancy.getHistoricalBalances($activeAccount.get(), { symbol: assetId })
 
     const records = docs.map((item) => ({
-      color: !item[assetId] ? "gray" : undefined,
+      color: !item[assetId] ? neutralColor : undefined,
       time: (item.timestamp / 1000) as UTCTimestamp,
       value: Number(item[assetId]) || 0,
     }))

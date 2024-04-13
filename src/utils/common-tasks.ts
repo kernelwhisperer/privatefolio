@@ -1,16 +1,16 @@
-import JSZip from "jszip"
+import { proxy } from "comlink"
 import {
   exportAuditLogsToCsv,
   exportTransactionsToCsv,
 } from "src/api/account/file-imports/csv-export-utils"
 import { AssetId, AuditLog, Connection } from "src/interfaces"
 import { PriceApiId } from "src/settings"
-import { $activeAccount } from "src/stores/account-store"
+import { $accountReset, $accounts, $activeAccount } from "src/stores/account-store"
 
 import { $filterOptionsMap, computeMetadata } from "../stores/metadata-store"
-import { $taskQueue, enqueueTask, TaskPriority } from "../stores/task-store"
+import { $taskQueue, enqueueTask, ProgressUpdate, TaskPriority } from "../stores/task-store"
 import { clancy } from "../workers/remotes"
-import { createCsvString, downloadCsv, downloadFile } from "./utils"
+import { downloadCsv, downloadFile } from "./utils"
 
 export function handleAuditLogChange(_auditLog?: AuditLog) {
   // TODO invalidate balancesCursor based on auditLog.timestamp
@@ -28,25 +28,36 @@ export function refreshNetworth() {
   enqueueRefreshNetworth()
 }
 
-export function enqueueIndexDatabase() {
+export async function enqueueIndexDatabase() {
   const taskQueue = $taskQueue.get()
 
   const existing = taskQueue.find((task) => task.name === "Index database")
 
   if (existing) return
 
-  enqueueTask({
-    description:
-      "Index audit logs and transactions to allow sorting, filtering and quicker query times.",
-    determinate: true,
-    function: async (progress) => {
-      await clancy.indexAuditLogs(progress, $activeAccount.get())
-      await clancy.indexTransactions(progress, $activeAccount.get())
-      await clancy.computeGenesis($activeAccount.get())
-      await clancy.computeLastTx($activeAccount.get())
-    },
-    name: "Index database",
-    priority: TaskPriority.Medium,
+  return new Promise<void>((resolve) => {
+    enqueueTask({
+      description:
+        "Index audit logs and transactions to allow sorting, filtering and quicker query times.",
+      determinate: true,
+      function: async (progress) => {
+        const accountName = $activeAccount.get()
+        const progressWithoutPercent = proxy((state: ProgressUpdate) => {
+          progress([undefined, state[1] as string])
+        })
+        await clancy.indexAuditLogs(accountName, progressWithoutPercent)
+        progress([33])
+        await clancy.indexTransactions(accountName, progressWithoutPercent)
+        progress([66])
+        await clancy.indexDailyPrices(accountName, progressWithoutPercent)
+        progress([99])
+        await clancy.computeGenesis(accountName)
+        await clancy.computeLastTx(accountName)
+        resolve()
+      },
+      name: "Index database",
+      priority: TaskPriority.Medium,
+    })
   })
 }
 
@@ -61,11 +72,29 @@ export function enqueueIndexTxnsDatabase() {
     description: "Index transactions to allow sorting, filtering and quicker query times.",
     determinate: true,
     function: async (progress) => {
-      await clancy.indexTransactions(progress, $activeAccount.get())
+      await clancy.indexTransactions($activeAccount.get(), progress)
       await clancy.computeGenesis($activeAccount.get())
       await clancy.computeLastTx($activeAccount.get())
     },
     name: "Index transactions database",
+    priority: TaskPriority.Medium,
+  })
+}
+
+export function enqueueIndexAuditLogsDatabase() {
+  const taskQueue = $taskQueue.get()
+
+  const existing = taskQueue.find((task) => task.name === "Index audit logs database")
+
+  if (existing) return
+
+  enqueueTask({
+    description: "Index audit logs to allow sorting, filtering and quicker query times.",
+    determinate: true,
+    function: async (progress) => {
+      await clancy.indexAuditLogs($activeAccount.get(), progress)
+    },
+    name: "Index audit logs database",
     priority: TaskPriority.Medium,
   })
 }
@@ -133,7 +162,12 @@ export function enqueueFetchPrices() {
         }
       }
 
-      await clancy.fetchDailyPrices({ assetIds, priceApiMap }, progress, signal)
+      await clancy.fetchDailyPrices(
+        $activeAccount.get(),
+        { assetIds, priceApiMap },
+        progress,
+        signal
+      )
     },
     name: "Fetch asset prices",
     priority: TaskPriority.Low,
@@ -316,37 +350,7 @@ export function enqueueExportAllAuditLogs() {
   })
 }
 
-export function enqueueExportAppData() {
-  const taskQueue = $taskQueue.get()
-
-  const existing = taskQueue.find((task) => task.name === "Export app data")
-
-  if (existing) return
-
-  enqueueTask({
-    abortable: true,
-    description: "Export app data",
-    determinate: true,
-    function: async () => {
-      const auditLogs = await clancy.findAuditLogs({}, $activeAccount.get())
-      const auditLogsFile = createCsvString(exportAuditLogsToCsv(auditLogs))
-      const txns = await clancy.findTransactions({}, $activeAccount.get())
-      const txnsFile = createCsvString(exportTransactionsToCsv(txns))
-
-      const zip = new JSZip()
-      zip.file(`${$activeAccount.get()}-audit-logs.csv`, auditLogsFile)
-      zip.file(`${$activeAccount.get()}-transactions.csv`, txnsFile)
-
-      zip.generateAsync({ type: "blob" }).then(function (blob) {
-        downloadFile(blob, `${$activeAccount.get()}-data.zip`)
-      })
-    },
-    name: "Export app data",
-    priority: TaskPriority.Low,
-  })
-}
-
-export function enquenceBackup() {
+export function enqueueBackup() {
   const taskQueue = $taskQueue.get()
 
   const existing = taskQueue.find((task) => task.name === "Backup")
@@ -355,36 +359,71 @@ export function enquenceBackup() {
 
   enqueueTask({
     abortable: true,
-    description: "Backup",
+    description:
+      "Backup account data, which can be used for restoring or migrating to another device.",
     determinate: true,
     function: async () => {
-      const dbs = await clancy.backup($activeAccount.get())
-      const zip = new JSZip()
-      for (const db of dbs) {
-        zip.file(`${db[0]}-${$activeAccount.get()}.txt`, db[1])
-      }
-      zip.generateAsync({ type: "blob" }).then(function (blob) {
-        downloadFile(blob, `${$activeAccount.get()}-Backup.zip`)
-      })
+      const blob = await clancy.backupAccount($activeAccount.get())
+      downloadFile(blob, `${$activeAccount.get()}-backup.zip`)
     },
     name: "Backup",
     priority: TaskPriority.Low,
   })
 }
 
-// export function enquenceRestore() {
-//   const taskQueue = $taskQueue.get()
+export async function enqueueRestore(file: File) {
+  const taskQueue = $taskQueue.get()
 
-//   const existing = taskQueue.find((task) => task.name === "Restore")
+  const existing = taskQueue.find((task) => task.name === "Restore account")
 
-//   if (existing) return
+  if (existing) return
 
-//   enqueueTask({
-//     abortable: true,
-//     description: "Backup",
-//     determinate: true,
-//     function: async () => {},
-//     name: "Restore",
-//     priority: TaskPriority.Low,
-//   })
-// }
+  return new Promise<void>((resolve) => {
+    enqueueTask({
+      description: "Restore account data from a backup file.",
+      determinate: true,
+      function: async (progress) => {
+        await clancy.restoreAccount($activeAccount.get(), file, progress)
+        resolve()
+      },
+      name: "Restore account",
+      priority: TaskPriority.Ultra,
+    })
+  })
+}
+
+export function enqueueResetAccount() {
+  const taskQueue = $taskQueue.get()
+
+  const existing = taskQueue.find((task) => task.name === "Reset account")
+
+  if (existing) return
+
+  enqueueTask({
+    description: `Removing all data belonging to '${$activeAccount.get()}' from disk.`,
+    function: async () => {
+      await clancy.resetAccount($activeAccount.get())
+      $accountReset.set(Math.random())
+    },
+    name: "Reset account",
+    priority: TaskPriority.Ultra,
+  })
+}
+export function enqueueDeleteAccount() {
+  const taskQueue = $taskQueue.get()
+
+  const existing = taskQueue.find((task) => task.name === "Delete account")
+
+  if (existing) return
+
+  enqueueTask({
+    description: `Removing all data belonging to '${$activeAccount.get()}' from disk.`,
+    function: async () => {
+      await clancy.deleteAccount($activeAccount.get())
+      const newAccounts = $accounts.get().filter((x) => x !== $activeAccount.get())
+      $accounts.set(newAccounts)
+    },
+    name: "Delete account",
+    priority: TaskPriority.High,
+  })
+}

@@ -1,8 +1,8 @@
 /* eslint-disable jest/no-conditional-expect */
 import fs from "fs"
 import { join } from "path"
+import { fetchDailyPrices, getPricesForAsset } from "src/api/account/daily-prices-api"
 import { addFileImport } from "src/api/account/file-imports/file-imports-api"
-import { fetchDailyPrices, getPricesForAsset } from "src/api/core/daily-prices-api"
 import { resetAccount } from "src/api/database"
 import { GITHUB_CI } from "src/env"
 import { ProgressUpdate } from "src/stores/task-store"
@@ -25,7 +25,7 @@ beforeAll(async () => {
 it("should fetch no prices", async () => {
   // act
   const updates: ProgressUpdate[] = []
-  await fetchDailyPrices({ assetIds: [] }, (state) => updates.push(state))
+  await fetchDailyPrices(accountName, { assetIds: [] }, (state) => updates.push(state))
   // assert
   expect(updates.join("\n")).toMatchInlineSnapshot(`"0,Fetching asset prices for 0 assets"`)
 })
@@ -37,8 +37,8 @@ it("should fetch BTC prices using Binance", async (test) => {
   // arrange
   const updates: ProgressUpdate[] = []
   // act
-  await fetchDailyPrices({ assetIds: ["binance:BTC"] }, (state) => updates.push(state))
-  const records = await getPricesForAsset("binance:BTC")
+  await fetchDailyPrices(accountName, { assetIds: ["binance:BTC"] }, (state) => updates.push(state))
+  const records = await getPricesForAsset(accountName, "binance:BTC")
   // assert
   // console.log(updates.join("\n"))
   let prevRecord
@@ -87,8 +87,10 @@ it("should fetch BTC prices using Coinbase", async () => {
   // arrange
   const updates: ProgressUpdate[] = []
   // act
-  await fetchDailyPrices({ assetIds: ["coinbase:BTC"] }, (state) => updates.push(state))
-  const records = await getPricesForAsset("coinbase:BTC")
+  await fetchDailyPrices(accountName, { assetIds: ["coinbase:BTC"] }, (state) =>
+    updates.push(state)
+  )
+  const records = await getPricesForAsset(accountName, "coinbase:BTC")
   // assert
   // console.log(updates.join("\n"))
   let prevRecord
@@ -139,10 +141,12 @@ it.skip("should fetch WBTC prices using DefiLlama", async () => {
   const updates: ProgressUpdate[] = []
   // act
   await fetchDailyPrices(
+    accountName,
     { assetIds: ["ethereum:0x2260fac5e5542a773aa44fbcfedf7c193bc2c599:WBTC"] },
     (state) => updates.push(state)
   )
   const records = await getPricesForAsset(
+    accountName,
     "ethereum:0x2260fac5e5542a773aa44fbcfedf7c193bc2c599:WBTC"
   )
   // assert
