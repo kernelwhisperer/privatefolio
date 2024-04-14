@@ -47,28 +47,32 @@ export function ThemeProvider({ children }: PropsWithChildren) {
   const extendedTheme = useMemo(
     () =>
       extendTheme(
-        merge({}, theme, {
-          components: {
-            MuiDialog: {
-              defaultProps: {
-                fullScreen: !isDesktop,
-                slotProps: { backdrop: { invisible: !isTablet } },
+        merge(
+          {},
+          theme,
+          {
+            components: {
+              MuiDialog: {
+                defaultProps: {
+                  fullScreen: !isDesktop,
+                  slotProps: { backdrop: { invisible: !isTablet } },
+                },
               },
-            },
-            MuiDrawer: {
-              defaultProps: {
-                disableScrollLock: !isTablet,
-                slotProps: { backdrop: { invisible: !isTablet } },
+              MuiDrawer: {
+                defaultProps: {
+                  disableScrollLock: !isTablet,
+                  slotProps: { backdrop: { invisible: !isTablet } },
+                },
               },
-            },
-            MuiPopover: {
-              defaultProps: {
-                disableScrollLock: !isTablet,
+              MuiPopover: {
+                defaultProps: {
+                  disableScrollLock: !isTablet,
+                },
               },
             },
           },
-          ...(pathname === "/" ? themeLanding : {}),
-          ...(skipAnimation
+          pathname === "/" ? themeLanding : {},
+          skipAnimation
             ? ({
                 components: {
                   MuiButtonBase: {
@@ -87,8 +91,8 @@ export function ThemeProvider({ children }: PropsWithChildren) {
                   create: () => "none",
                 },
               } as CssVarsThemeOptions)
-            : {}),
-        })
+            : {}
+        )
       ),
     [isDesktop, isTablet, pathname, skipAnimation]
   )
