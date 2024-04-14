@@ -7,6 +7,7 @@ import {
   GitHub,
   QueryStatsRounded,
   Telegram,
+  Twitter,
 } from "@mui/icons-material"
 import {
   Box,
@@ -218,9 +219,18 @@ export default function LandingPage() {
                 Get involved
               </Typography>
               <Typography variant="body1" color="text.secondary" marginTop={-1}>
-                Find us on Telegram, Discord or GitHub.
+                Find us on Twitter, Telegram, Discord or GitHub.
               </Typography>
               <Stack direction="row">
+                <IconButton
+                  size="large"
+                  target="_blank"
+                  href="https://twitter.com/PrivatefolioApp"
+                  LinkComponent={MuiLink}
+                  color="primary"
+                >
+                  <Twitter fontSize="large" />
+                </IconButton>
                 <IconButton
                   size="large"
                   target="_blank"

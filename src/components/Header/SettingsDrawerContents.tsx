@@ -89,7 +89,7 @@ export const SettingsDrawerContents = ({ appVer, gitHash }: MenuContentsProps) =
           </svg>
           <span>Discord</span>
         </CustomLink>
-        <CustomLink target="_blank" href="https://twitter.com/kernelwhisperer" role="listitem">
+        <CustomLink target="_blank" href="https://twitter.com/PrivatefolioApp" role="listitem">
           <Twitter fontSize="small" />
           <span>Twitter</span>
         </CustomLink>
