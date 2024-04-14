@@ -233,7 +233,7 @@ export default function LandingPage() {
                 <IconButton
                   size="large"
                   target="_blank"
-                  href="https://discord.gg/5ebfcrZY"
+                  href="https://discord.gg/Es69upwBqW"
                   LinkComponent={MuiLink}
                   color="primary"
                 >
