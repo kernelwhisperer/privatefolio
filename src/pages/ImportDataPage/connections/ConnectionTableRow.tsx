@@ -21,7 +21,7 @@ import { TableRowComponentProps } from "src/utils/table-utils"
 import { ConnectionInspectDrawer } from "./ConnectionInspectDrawer"
 
 export function ConnectionTableRow(props: TableRowComponentProps<Connection>) {
-  const { row, relativeTime, headCells: _headCells, isMobile: _isMobile, isTablet, ...rest } = props
+  const { row, relativeTime, headCells, isMobile: _isMobile, isTablet, ...rest } = props
   const { address, timestamp, syncedAt, platform, label, meta } = row
   const { value: open, toggle: toggleOpen } = useBoolean(false)
 
@@ -29,7 +29,7 @@ export function ConnectionTableRow(props: TableRowComponentProps<Connection>) {
     return (
       <>
         <TableRow hover {...rest}>
-          <TableCell colSpan={99} onClick={toggleOpen} sx={{ cursor: "pointer" }}>
+          <TableCell colSpan={headCells.length} onClick={toggleOpen} sx={{ cursor: "pointer" }}>
             <Stack direction="row" justifyContent="space-between" alignItems="center">
               <Stack gap={0.5} marginY={0.5}>
                 <Stack direction="row" gap={1} alignItems="center" component="div">

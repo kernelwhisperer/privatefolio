@@ -252,7 +252,7 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
                       top: 39,
                     }}
                   >
-                    <TableCell colSpan={99} sx={{ border: 0, padding: 0 }}>
+                    <TableCell colSpan={headCells.length} sx={{ border: 0, padding: 0 }}>
                       {loading && !isFirstLoading && (
                         <LinearProgress
                           sx={{
@@ -283,12 +283,14 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
                 ))}
                 {rows.length === 0 && !isEmpty && !loading && (
                   <TableRow>
-                    <TableCell colSpan={99}>No records match the current filters.</TableCell>
+                    <TableCell colSpan={headCells.length}>
+                      No records match the current filters.
+                    </TableCell>
                   </TableRow>
                 )}
                 {(isFirstLoading || isEmpty) && (
                   <TableRow>
-                    <TableCell colSpan={99}>
+                    <TableCell colSpan={headCells.length}>
                       <Stack justifyContent="center" alignItems="center" sx={{ height: 260 }}>
                         {isEmpty && !isFirstLoading && emptyContent}
                         {isFirstLoading && <CircularSpinner color="secondary" />}
@@ -298,7 +300,7 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
                 )}
                 {!isFirstLoading && addNewRow && !isEmpty && (
                   <TableRow>
-                    <TableCell colSpan={99} variant="clickable">
+                    <TableCell colSpan={headCells.length} variant="clickable">
                       {addNewRow}
                     </TableCell>
                   </TableRow>

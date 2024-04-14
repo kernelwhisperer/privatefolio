@@ -38,7 +38,7 @@ export function AuditLogTableRow(props: TableRowComponentProps<AuditLog>) {
     return (
       <>
         <TableRow hover {...rest}>
-          <TableCell colSpan={99} onClick={toggleOpen} sx={{ cursor: "pointer" }}>
+          <TableCell colSpan={headCells.length} onClick={toggleOpen} sx={{ cursor: "pointer" }}>
             <Stack>
               <Typography variant="caption" color="text.secondary">
                 <TimestampBlock timestamp={timestamp} relative={relativeTime} />

@@ -16,7 +16,7 @@ import { TableRowComponentProps } from "../../utils/table-utils"
 import { TransactionDrawer } from "./TransactionDrawer"
 
 export function TransactionTableRow(props: TableRowComponentProps<Transaction>) {
-  const { row, relativeTime, headCells: _headCells, isMobile: _isMobile, isTablet, ...rest } = props
+  const { row, relativeTime, headCells, isMobile: _isMobile, isTablet, ...rest } = props
 
   const {
     incoming,
@@ -45,7 +45,7 @@ export function TransactionTableRow(props: TableRowComponentProps<Transaction>) 
     return (
       <>
         <TableRow hover>
-          <TableCell colSpan={99} onClick={toggleOpen} sx={{ cursor: "pointer" }}>
+          <TableCell colSpan={headCells.length} onClick={toggleOpen} sx={{ cursor: "pointer" }}>
             <Stack>
               <Typography variant="caption" color="text.secondary">
                 <TimestampBlock timestamp={timestamp} relative={relativeTime} />

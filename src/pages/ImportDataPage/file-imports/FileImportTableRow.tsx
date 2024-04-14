@@ -13,7 +13,7 @@ import { TableRowComponentProps } from "src/utils/table-utils"
 import { FileImportDrawer } from "./FileImportDrawer"
 
 export function FileImportTableRow(props: TableRowComponentProps<FileImport>) {
-  const { row, relativeTime, headCells: _headCells, isMobile: _isMobile, isTablet, ...rest } = props
+  const { row, relativeTime, headCells, isMobile: _isMobile, isTablet, ...rest } = props
   const { name, meta, timestamp, lastModified, size } = row
   const platform = meta?.platform
 
@@ -23,7 +23,7 @@ export function FileImportTableRow(props: TableRowComponentProps<FileImport>) {
     return (
       <>
         <TableRow hover {...rest}>
-          <TableCell colSpan={99} onClick={toggleOpen} sx={{ cursor: "pointer" }}>
+          <TableCell colSpan={headCells.length} onClick={toggleOpen} sx={{ cursor: "pointer" }}>
             <Stack direction="row" justifyContent="space-between" alignItems="center">
               <Stack gap={0.5} marginY={0.5}>
                 <Stack direction="row" gap={1} alignItems="center" component="div">

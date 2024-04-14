@@ -254,12 +254,14 @@ export function MemoryTable<T extends BaseType>(props: MemoryTableProps<T>) {
                 ))}
                 {visibleRows.length === 0 && !isEmpty && !isLoading && (
                   <TableRow>
-                    <TableCell colSpan={99}>No records match the current filters.</TableCell>
+                    <TableCell colSpan={headCells.length}>
+                      No records match the current filters.
+                    </TableCell>
                   </TableRow>
                 )}
                 {(isLoading || isEmpty) && (
                   <TableRow>
-                    <TableCell colSpan={99}>
+                    <TableCell colSpan={headCells.length}>
                       <Stack justifyContent="center" alignItems="center" sx={{ height: 260 }}>
                         {isEmpty && !isLoading && emptyContent}
                         {isLoading && <CircularSpinner color="secondary" />}
@@ -269,14 +271,14 @@ export function MemoryTable<T extends BaseType>(props: MemoryTableProps<T>) {
                 )}
                 {!isLoading && addNewRow && !isEmpty && (
                   <TableRow>
-                    <TableCell colSpan={99} variant="clickable">
+                    <TableCell colSpan={headCells.length} variant="clickable">
                       {addNewRow}
                     </TableCell>
                   </TableRow>
                 )}
                 {!isLoading && extraRow && !isEmpty && (
                   <TableRow>
-                    <TableCell colSpan={99} variant="clickable">
+                    <TableCell colSpan={headCells.length} variant="clickable">
                       {extraRow}
                     </TableCell>
                   </TableRow>

@@ -32,7 +32,7 @@ export function AssetTableRow(props: TableRowComponentProps<FullAsset>) {
   const {
     row,
     relativeTime: _relativeTime,
-    headCells: _headCells,
+    headCells,
     isMobile: _isMobile,
     isTablet,
     ...rest
@@ -71,7 +71,7 @@ export function AssetTableRow(props: TableRowComponentProps<FullAsset>) {
   if (isTablet) {
     return (
       <TableRow hover {...rest}>
-        <TableCell colSpan={99} variant="clickable">
+        <TableCell colSpan={headCells.length} variant="clickable">
           <Stack direction="row" gap={1} justifyContent="space-between" flexWrap="nowrap">
             <AppLink to={`../asset/${encodeURI(assetId)}`}>
               <Stack sx={{ height: 52 }} alignItems="center" direction="row" gap={1}>
