@@ -1,6 +1,6 @@
 # Privatefolio
 
-A local-first, privacy-focused portfolio tracker.
+The Free* and Open-source Portfolio Tracker - All your crypto assets in one place
 
 ## License
 
