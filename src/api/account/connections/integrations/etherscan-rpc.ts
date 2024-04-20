@@ -1,6 +1,8 @@
 import type { BlockTag } from "ethers"
 import { EtherscanProvider } from "ethers"
 
+// MEV bot address: 0x00000000003b3cc22af3ae1eac0440bcee416b40
+
 export class FullEtherscanProvider extends EtherscanProvider {
   // https://docs.etherscan.io/api-endpoints/accounts#get-list-of-blocks-validated-by-address
   async getBlockRewardTransactions(
@@ -19,6 +21,7 @@ export class FullEtherscanProvider extends EtherscanProvider {
     return this.fetch("account", params)
   }
 
+  // https://docs.etherscan.io/api-endpoints/accounts#get-a-list-of-erc20-token-transfer-events-by-address
   async getErc20Transactions(
     address: string,
     startBlock?: BlockTag,
@@ -35,6 +38,7 @@ export class FullEtherscanProvider extends EtherscanProvider {
     return this.fetch("account", params)
   }
 
+  // https://docs.etherscan.io/api-endpoints/accounts#get-a-list-of-internal-transactions-by-address
   async getInternalTransactions(
     address: string,
     startBlock?: BlockTag,
@@ -68,6 +72,7 @@ export class FullEtherscanProvider extends EtherscanProvider {
     return this.fetch("account", params)
   }
 
+  // https://docs.etherscan.io/api-endpoints/accounts#get-a-list-of-normal-transactions-by-address
   async getTransactions(
     address: string,
     startBlock?: BlockTag,
