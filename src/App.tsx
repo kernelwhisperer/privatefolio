@@ -147,10 +147,7 @@ export default function App() {
                 <Routes location={item}>
                   <Route path="/u/:accountIndex" element={<AccountIndexRoute />}>
                     <Route index element={<HomePage />} />
-                    <Route
-                      path="asset/:assetId"
-                      element={<AssetPage show={key === pathname && appPath.includes("asset")} />}
-                    />
+                    <Route path="asset/:assetId" element={<AssetPage />} />
                     <Route
                       path="import-data"
                       element={
