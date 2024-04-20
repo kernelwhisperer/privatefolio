@@ -182,7 +182,7 @@ export function TaskDropdown() {
               secondaryAction={
                 <IconButton
                   edge="end"
-                  aria-label="delete"
+                  aria-label="Cancel Task"
                   size="small"
                   color="secondary"
                   onClick={() => cancelTask(task.id)}
@@ -203,7 +203,7 @@ export function TaskDropdown() {
               pendingTask.abortable ? (
                 <IconButton
                   edge="end"
-                  aria-label="delete"
+                  aria-label="Cancel Task"
                   size="small"
                   color="secondary"
                   onClick={() => cancelTask(pendingTask.id)}
@@ -213,7 +213,10 @@ export function TaskDropdown() {
               ) : null
             }
           >
-            <ListItemButton onClick={() => setSelectedTaskId(pendingTask.id)}>
+            <ListItemButton
+              onClick={() => setSelectedTaskId(pendingTask.id)}
+              aria-label="View Task Details"
+            >
               <PendingTaskProgress key={pendingTask.id} sx={{ marginRight: 1.25 }} />
               <ListItemText
                 primary={
@@ -230,7 +233,10 @@ export function TaskDropdown() {
         )}
         {taskHistory.map((task) => (
           <ListItem key={task.id}>
-            <ListItemButton onClick={() => setSelectedTaskId(task.id)}>
+            <ListItemButton
+              onClick={() => setSelectedTaskId(task.id)}
+              aria-label="View Task Details"
+            >
               {task.abortController?.signal.aborted ? (
                 <Block sx={{ marginRight: 1, width: 16 }} color="secondary" />
               ) : task.errorMessage ? (

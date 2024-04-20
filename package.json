@@ -17,7 +17,7 @@
     "test": "vitest",
     "test:ui": "vitest --ui",
     "coverage": "vitest run --coverage",
-    "db-server": "pouchdb-server -p 5984 -m",
+    "db-server": "pouchdb-server -p 5984 --dir ./local-db",
     "gen:assets": "ts-node -O '{\"module\": \"commonjs\"}' scripts/generate-assets.ts",
     "gen:blockchains": "ts-node -O '{\"module\": \"commonjs\"}' scripts/generate-blockchains.ts",
     "gen:exchanges": "ts-node -O '{\"module\": \"commonjs\"}' scripts/generate-exchanges.ts"

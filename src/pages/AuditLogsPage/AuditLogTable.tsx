@@ -24,9 +24,9 @@ export function AuditLogTable(props: AuditLogsTableProps) {
   const { assetId, txId, tableDataRef, ...rest } = props
 
   const queryFn: QueryFunction<AuditLog> = useCallback(
-    async (filters, rowsPerPage, page, order) => {
+    async (filters, rowsPerPage, page, order, signal) => {
       if (txId) {
-        const auditLogs = await clancy.findAuditLogsForTxId(txId, $activeAccount.get())
+        const auditLogs = await clancy.findAuditLogsForTxId(txId, $activeAccount.get(), signal)
         return [auditLogs, auditLogs.length]
       }
 
@@ -37,7 +37,8 @@ export function AuditLogTable(props: AuditLogsTableProps) {
           order,
           skip: page * rowsPerPage,
         },
-        $activeAccount.get()
+        $activeAccount.get(),
+        signal
       )
 
       if (tableDataRef) {
@@ -53,7 +54,8 @@ export function AuditLogTable(props: AuditLogsTableProps) {
                 fields: [],
                 filters: { assetId, ...filters },
               },
-              $activeAccount.get()
+              $activeAccount.get(),
+              signal
             )
             .then((logs) => logs.length),
       ]

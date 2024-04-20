@@ -4,6 +4,7 @@ import TableBody from "@mui/material/TableBody"
 import TableCell from "@mui/material/TableCell"
 import TableContainer from "@mui/material/TableContainer"
 import TableRow from "@mui/material/TableRow"
+import { useStore } from "@nanostores/react"
 import React, {
   ChangeEvent,
   ComponentType,
@@ -13,7 +14,7 @@ import React, {
   useMemo,
   useState,
 } from "react"
-import { $debugMode } from "src/stores/app-store"
+import { $showRelativeTime } from "src/stores/account-settings-store"
 
 import { TableFooter } from "../../components/TableFooter"
 import { FILTER_LABEL_MAP, getFilterValueLabel } from "../../stores/metadata-store"
@@ -134,6 +135,7 @@ export function MemoryTable<T extends BaseType>(props: MemoryTableProps<T>) {
 
       return next
     })
+    setPage(0)
   }, [])
 
   const valueSelectors = useMemo(
@@ -166,10 +168,10 @@ export function MemoryTable<T extends BaseType>(props: MemoryTableProps<T>) {
     [rows, order, orderBy, page, rowsPerPage, valueSelectors, activeFilters]
   )
 
-  const [relativeTime, setRelativeTime] = useState(!$debugMode.get())
+  const relativeTime = useStore($showRelativeTime)
 
   const handleRelativeTime = useCallback((_event: MouseEvent<unknown>) => {
-    setRelativeTime((prev) => !prev)
+    $showRelativeTime.set(!$showRelativeTime.get())
   }, [])
 
   const isTablet = useMediaQuery("(max-width: 899px)")

@@ -8,6 +8,7 @@ import {
   alpha,
   Box,
   Button,
+  Chip,
   Divider,
   IconButton,
   IconButtonProps,
@@ -41,7 +42,7 @@ import {
   TooltipPrimitive,
   TooltipPrimitiveOptions,
 } from "../lightweight-charts/plugins/tooltip/tooltip"
-import { $favoriteIntervals, $preferredInterval } from "../stores/chart-store"
+import { $favoriteIntervals, $preferredInterval, INTERVAL_LABEL_MAP } from "../stores/chart-store"
 import { candleStickOptions, extractTooltipColors, profitColor } from "../utils/chart-utils"
 import { Chart, ChartProps } from "./Chart"
 import { CircularSpinner } from "./CircularSpinner"
@@ -440,7 +441,22 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
             <Divider orientation="vertical" flexItem />
             <Stack direction="row">
               {favoriteIntervals.map((interval) => (
-                <Tooltip key={interval} title="Switch interval">
+                <Tooltip
+                  key={interval}
+                  title={
+                    <>
+                      Switch interval to {INTERVAL_LABEL_MAP[interval]}
+                      {!["1d", "1w"].includes(interval) && (
+                        <Chip
+                          size="small"
+                          color="primary"
+                          sx={{ fontSize: "0.65rem", height: 18, marginLeft: 1 }}
+                          label="Coming soon"
+                        />
+                      )}
+                    </>
+                  }
+                >
                   <span>
                     <Button
                       size="small"
@@ -449,7 +465,7 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
                       // disabled={timeframes ? !timeframes.includes(interval as Timeframe) : false}
                       // className={timeframe === interval ? "active" : undefined}
                       title={interval}
-                      aria-label={interval}
+                      aria-label={`Switch interval to ${INTERVAL_LABEL_MAP[interval]}`}
                       color={interval === activeInterval ? "accent" : "secondary"}
                       onClick={() => {
                         $preferredInterval.set(interval)
@@ -463,22 +479,24 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
             </Stack>
             <Divider orientation="vertical" flexItem />
             <Stack direction="row">
-              <Tooltip title="Switch to Candlestick">
+              <Tooltip title="Switch to Candlestick type">
                 <span>
                   <ChartIconButton
                     disabled={data.length > 0 && !("open" in data[0])}
                     active={activeType === "Candlestick"}
                     onClick={() => setPreferredType("Candlestick")}
+                    aria-label="Switch to Candlestick type"
                   >
                     <CandlestickChartSharp fontSize="inherit" />
                   </ChartIconButton>
                 </span>
               </Tooltip>
-              <Tooltip title="Switch to Area">
+              <Tooltip title="Switch to Area type">
                 <span>
                   <ChartIconButton
                     active={activeType === "Area"}
                     onClick={() => setPreferredType("Area")}
+                    aria-label="Switch to Area type"
                   >
                     {/* <ShowChart fontSize="inherit" /> */}
                     {/* cc https://icon-sets.iconify.design/material-symbols/area-chart/ */}
@@ -498,11 +516,12 @@ export function SingleSeriesChart(props: SingleSeriesChartProps) {
                   </ChartIconButton>
                 </span>
               </Tooltip>
-              <Tooltip title="Switch to Histogram">
+              <Tooltip title="Switch to Histogram type">
                 <span>
                   <ChartIconButton
                     active={activeType === "Histogram"}
                     onClick={() => setPreferredType("Histogram")}
+                    aria-label="Switch to Histogram type"
                   >
                     <BarChartOutlined fontSize="inherit" />
                   </ChartIconButton>

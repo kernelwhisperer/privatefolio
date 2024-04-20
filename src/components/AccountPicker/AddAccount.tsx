@@ -58,6 +58,7 @@ export function AddAccountDialog(props: AddAccountDialogProps) {
           <div>
             <SectionTitle>Name *</SectionTitle>
             <TextField
+              name="Account name"
               autoComplete="off"
               autoFocus
               variant="outlined"

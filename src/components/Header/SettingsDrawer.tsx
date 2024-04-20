@@ -79,7 +79,7 @@ export function SettingsDrawer(props: PopoverToggleProps) {
           <Typography variant="subtitle1" letterSpacing="0.025rem">
             Settings
           </Typography>
-          <IconButton onClick={toggleOpen} edge="end" color="secondary">
+          <IconButton onClick={toggleOpen} edge="end" color="secondary" aria-label="Close dialog">
             <CloseRounded fontSize="small" />
           </IconButton>
         </Stack>

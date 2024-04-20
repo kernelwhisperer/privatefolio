@@ -4,6 +4,7 @@ import TableBody from "@mui/material/TableBody"
 import TableCell from "@mui/material/TableCell"
 import TableContainer from "@mui/material/TableContainer"
 import TableRow from "@mui/material/TableRow"
+import { useStore } from "@nanostores/react"
 import React, {
   ChangeEvent,
   ComponentType,
@@ -14,7 +15,7 @@ import React, {
   useState,
 } from "react"
 import { useSearchParams } from "react-router-dom"
-import { $debugMode } from "src/stores/app-store"
+import { $showRelativeTime } from "src/stores/account-settings-store"
 import { wait } from "src/utils/utils"
 
 import { FILTER_LABEL_MAP, getFilterValueLabel } from "../../stores/metadata-store"
@@ -37,7 +38,8 @@ export type QueryFunction<T extends BaseType> = (
   filters: ActiveFilterMap<T>,
   rowsPerPage: number,
   page: number,
-  order: Order
+  order: Order,
+  signal: AbortSignal
 ) => Promise<[T[], number | (() => Promise<number>)]>
 
 export interface RemoteTableProps<T extends BaseType> {
@@ -66,10 +68,9 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
 
   const [queryTime, setQueryTime] = useState<number | null>(null)
   const [rowCount, setRowCount] = useState<number | null>(null)
-  const [loading, setLoading] = useState<boolean>(true) // TODO
+  const [loading, setLoading] = useState<boolean>(true)
   const [rows, setRows] = useState<T[]>([])
   const [orderBy, setOrderBy] = useState<keyof T>(initOrderBy)
-  const [relativeTime, setRelativeTime] = useState(!$debugMode.get())
 
   const [searchParams, setSearchParams] = useSearchParams()
 
@@ -84,10 +85,10 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
     [searchParams, setSearchParams]
   )
 
-  const page = searchParams.get("page") ? Number(searchParams.get("page")) : 0
+  const page = searchParams.get("page") ? Number(searchParams.get("page")) - 1 : 0
   const setPage = useCallback(
     (page: number) => {
-      searchParams.set("page", String(page))
+      searchParams.set("page", String(page + 1))
       setSearchParams(searchParams)
     },
     [searchParams, setSearchParams]
@@ -102,8 +103,10 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
     [searchParams, setSearchParams]
   )
 
+  const relativeTime = useStore($showRelativeTime)
+
   const handleRelativeTime = useCallback((_event: MouseEvent<unknown>) => {
-    setRelativeTime((prev) => !prev)
+    $showRelativeTime.set(!$showRelativeTime.get())
   }, [])
 
   const handleChangePage = useCallback(
@@ -154,27 +157,35 @@ export function RemoteTable<T extends BaseType>(props: RemoteTableProps<T>) {
         searchParams.set(String(key), String(value))
       }
       setSearchParams(searchParams)
+      setPage(0)
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [searchParams, setSearchParams]
   )
 
   useEffect(() => {
     const start = Date.now()
+    const controller = new AbortController()
 
     setLoading(true)
-    Promise.all([queryFn(activeFilters, rowsPerPage, page, order), wait(150)]).then(
-      ([[rows, queryCount]]) => {
-        setLoading(false)
-        setRows(rows)
-        setQueryTime(Date.now() - start)
+    Promise.all([
+      queryFn(activeFilters, rowsPerPage, page, order, controller.signal),
+      wait(150),
+    ]).then(([[rows, queryCount]]) => {
+      setLoading(false)
+      setRows(rows)
+      setQueryTime(Date.now() - start)
 
-        if (typeof queryCount === "function") {
-          queryCount().then(setRowCount)
-        } else {
-          setRowCount(queryCount)
-        }
+      if (typeof queryCount === "function") {
+        queryCount().then(setRowCount)
+      } else {
+        setRowCount(queryCount)
       }
-    )
+    })
+
+    return function cleanup() {
+      controller.abort("Result no longer needed.")
+    }
   }, [queryFn, activeFilters, rowsPerPage, page, order])
 
   const isTablet = useMediaQuery("(max-width: 899px)")

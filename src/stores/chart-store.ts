@@ -11,6 +11,13 @@ export const $favoriteIntervals = atom<ResolutionString[]>([
   "1w" as ResolutionString,
 ])
 
+export const INTERVAL_LABEL_MAP: Record<ResolutionString, string> = {
+  ["1d" as ResolutionString]: "1 day",
+  ["1h" as ResolutionString]: "1 hour",
+  ["1m" as ResolutionString]: "1 minute",
+  ["1w" as ResolutionString]: "1 week",
+}
+
 export const $preferredInterval = atom<ResolutionString>("1d" as ResolutionString)
 export const $preferredType = atom<SeriesType>("Candlestick")
 

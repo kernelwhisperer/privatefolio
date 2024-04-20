@@ -9,6 +9,7 @@ export interface Currency {
   id: string
   logo?: string
   maxDigits: number
+  name: string
   significantDigits: number
   symbol: string
 }
@@ -17,24 +18,28 @@ export const DEFAULT_CURRENCIES_MAP: Record<string, Currency> = {
   BTC: {
     id: "BTC",
     maxDigits: 8,
+    name: "Bitcoin",
     significantDigits: 5,
     symbol: "₿", // ฿
   },
   ETH: {
     id: "ETH",
     maxDigits: 6,
+    name: "Ether",
     significantDigits: 3,
     symbol: "Ξ",
   },
   EUR: {
     id: "EUR",
     maxDigits: 2,
+    name: "Euro",
     significantDigits: 0,
     symbol: "€",
   },
   USD: {
     id: "USD",
     maxDigits: 2,
+    name: "US Dollar",
     // name: "US Dollar"
     significantDigits: 0,
     symbol: "$",
@@ -90,3 +95,8 @@ export const $showQuotedAmounts = persistentAtom<boolean>(
     encode: (value) => (value ? "true" : "false"),
   }
 )
+
+export const $showRelativeTime = persistentAtom<boolean>("privatefolio-show-relative-time", true, {
+  decode: (value) => value === "true",
+  encode: (value) => (value ? "true" : "false"),
+})

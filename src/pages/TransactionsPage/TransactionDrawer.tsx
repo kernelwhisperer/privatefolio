@@ -108,7 +108,7 @@ export function TransactionDrawer(props: TransactionDrawerProps) {
           <Typography variant="subtitle1" letterSpacing="0.025rem">
             Transaction details
           </Typography>
-          <IconButton onClick={toggleOpen} edge="end" color="secondary">
+          <IconButton onClick={toggleOpen} edge="end" color="secondary" aria-label="Close dialog">
             <CloseRounded fontSize="small" />
           </IconButton>
         </Stack>

@@ -45,3 +45,8 @@ pnpm-debug.log*
 next-env.d.ts
 
 .env
+
+# pouchdb local server
+local-db/
+log.txt
+config.json

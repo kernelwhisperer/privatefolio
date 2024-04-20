@@ -46,8 +46,13 @@ export function CurrencySelector() {
         </Tooltip>
       )}
     >
-      {Object.values(DEFAULT_CURRENCIES_MAP).map(({ id, symbol }) => (
-        <MenuItem key={id} value={id} disabled={id !== "USD"}>
+      {Object.values(DEFAULT_CURRENCIES_MAP).map(({ id, symbol, name }) => (
+        <MenuItem
+          key={id}
+          value={id}
+          disabled={id !== "USD"}
+          aria-label={`Change quote currency to ${name}`}
+        >
           <ListItemAvatar sx={{ width: 12 }}>{symbol}</ListItemAvatar>
           <ListItemText primary={id} />
         </MenuItem>

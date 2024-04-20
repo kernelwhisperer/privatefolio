@@ -256,6 +256,7 @@ export const theme: CssVarsThemeOptions = {
           "&:active:not(.MuiMenuItem-root):not(.MuiListItemButton-root)": {
             transform: "translateY(1px)",
           },
+          "&:not(.MuiChip-root) *": { pointerEvents: "none" },
         },
       },
     },
@@ -314,6 +315,9 @@ export const theme: CssVarsThemeOptions = {
         anchor: "right",
       },
       styleOverrides: {
+        paper: {
+          borderRadius: "0px !important",
+        },
         paperAnchorBottom: {
           borderBottom: "none",
           borderLeft: "none",
@@ -321,17 +325,17 @@ export const theme: CssVarsThemeOptions = {
         },
         paperAnchorLeft: {
           borderBottom: "none",
-          // borderBottomRightRadius: 16,
           borderLeft: "none",
           borderTop: "none",
-          // borderTopRightRadius: 16,
           left: 0,
+          // borderTopRightRadius: 16,
+          // borderBottomRightRadius: 16,
         },
         paperAnchorRight: {
           borderBottom: "none",
-          // borderBottomLeftRadius: 16,
           borderRight: "none",
           borderTop: "none",
+          // borderBottomLeftRadius: 16,
           // borderTopLeftRadius: 16
         },
       },
@@ -380,6 +384,9 @@ export const theme: CssVarsThemeOptions = {
       },
     },
     MuiListItemButton: {
+      defaultProps: {
+        component: "button", // why is this needed?
+      },
       styleOverrides: {
         root: {
           "&:hover, &.Mui-selected": {
@@ -406,6 +413,7 @@ export const theme: CssVarsThemeOptions = {
     MuiMenuItem: {
       styleOverrides: {
         root: {
+          "& *": { pointerEvents: "none" },
           "&:hover, &.Mui-selected": {
             background: "var(--mui-palette-action-hover)",
             color: "var(--mui-palette-text-primary)",
@@ -669,10 +677,11 @@ export const theme: CssVarsThemeOptions = {
             },
           ],
         },
+        TransitionComponent: Fade,
         TransitionProps: { timeout: 0 },
         arrow: true,
         disableInteractive: true,
-        enterDelay: 100,
+        enterDelay: 200,
         followCursor: true,
       },
       styleOverrides: {

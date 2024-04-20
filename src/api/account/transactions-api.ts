@@ -177,13 +177,13 @@ export async function findTransactions(request: FindTransactionsRequest = {}, ac
         timestamp: { $exists: true },
       }
 
-  // FIXME: seems to be breaking - is it no longer needed?
-  // if (preferredFilter) {
-  //   _filterOrder.forEach((filter) => {
-  //     if (filter === preferredFilter) return
-  //     selector[filter] = filters[filter] ? filters[filter] : { $exists: true }
-  //   })
-  // }
+  // TESTME
+  if (preferredFilter) {
+    _filterOrder.forEach((filter) => {
+      if (filter === preferredFilter) return
+      selector[filter] = filters[filter] ? filters[filter] : { $exists: true }
+    })
+  }
 
   const sort: PouchDB.Find.FindRequest<Transaction>["sort"] = !preferredFilter
     ? [{ timestamp: order }]
@@ -273,7 +273,7 @@ export async function autoMergeTransactions(
     const deduplicated = deduplicateMap[tx._id]
 
     for (const deduplicatedTx of deduplicated) {
-      const auditLogs = await findAuditLogsForTxId(deduplicatedTx._id, accountName)
+      const auditLogs = await findAuditLogsForTxId(deduplicatedTx._id, accountName, signal)
 
       for (const auditLog of auditLogs) {
         auditLog.txId = tx._id
@@ -399,7 +399,7 @@ export async function detectSpamTransactions(
 
   progress([66, `Deleting ${spam.length} spam transactions`])
   for (const spamTx of spam) {
-    const auditLogs = await findAuditLogsForTxId(spamTx._id, accountName)
+    const auditLogs = await findAuditLogsForTxId(spamTx._id, accountName, signal)
 
     const logUpdates = await account.auditLogsDB.bulkDocs(
       auditLogs.map((log) => ({ _deleted: true, _id: log._id, _rev: log._rev } as never))

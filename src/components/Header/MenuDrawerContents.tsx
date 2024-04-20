@@ -7,7 +7,15 @@ import {
   SyncAltRounded,
   Workspaces,
 } from "@mui/icons-material"
-import { Button, ListItemAvatar, ListItemText, MenuItem, Stack, useMediaQuery } from "@mui/material"
+import {
+  Button,
+  Chip,
+  ListItemAvatar,
+  ListItemText,
+  MenuItem,
+  Stack,
+  useMediaQuery,
+} from "@mui/material"
 import React, { useEffect, useState } from "react"
 import { Link, useLocation } from "react-router-dom"
 import { useBoolean } from "src/hooks/useBoolean"
@@ -92,6 +100,7 @@ export const MenuDrawerContents = ({ appVer, gitHash, open, toggleOpen }: MenuCo
             value=""
             to={`/u/${accountIndex}/`}
             label="Home"
+            aria-label="Visit Home"
             onClick={toggleOpen}
             avatar={<HomeRounded />}
           />
@@ -99,6 +108,7 @@ export const MenuDrawerContents = ({ appVer, gitHash, open, toggleOpen }: MenuCo
             value="transactions"
             to={`/u/${accountIndex}/transactions`}
             label="Transactions"
+            aria-label="Visit Transactions"
             onClick={toggleOpen}
             avatar={<SyncAltRounded />}
           />
@@ -106,6 +116,7 @@ export const MenuDrawerContents = ({ appVer, gitHash, open, toggleOpen }: MenuCo
             value="assets"
             to={`/u/${accountIndex}/assets`}
             label="Assets"
+            aria-label="Visit Assets"
             onClick={toggleOpen}
             avatar={<Workspaces />}
           />
@@ -113,6 +124,7 @@ export const MenuDrawerContents = ({ appVer, gitHash, open, toggleOpen }: MenuCo
             value="audit-logs"
             to={`/u/${accountIndex}/audit-logs`}
             label="Audit logs"
+            aria-label="Visit Audit logs"
             onClick={toggleOpen}
             avatar={<ReceiptLong />}
           />
@@ -120,6 +132,7 @@ export const MenuDrawerContents = ({ appVer, gitHash, open, toggleOpen }: MenuCo
             value="import-data"
             to={`/u/${accountIndex}/import-data`}
             label="Import data"
+            aria-label="Visit Import data"
             onClick={toggleOpen}
             avatar={<StorageRounded />}
           />
@@ -135,11 +148,24 @@ export const MenuDrawerContents = ({ appVer, gitHash, open, toggleOpen }: MenuCo
               display: isInstalled ? "none" : "inline-flex",
             }}
             onClick={promptInstall}
+            aria-label="Install app"
           >
             <ListItemAvatar>
               <DownloadRounded />
             </ListItemAvatar>
-            <ListItemText primary="Install app" />
+            <ListItemText
+              primary={
+                <Stack direction="row" justifyContent="space-between" alignItems="center">
+                  Install app{" "}
+                  <Chip
+                    size="small"
+                    color="secondary"
+                    sx={{ fontSize: "0.65rem", height: 18 }}
+                    label="Coming soon"
+                  />
+                </Stack>
+              }
+            />
           </MenuItem>
           <MenuItem
             onClick={() => {
@@ -153,6 +179,7 @@ export const MenuDrawerContents = ({ appVer, gitHash, open, toggleOpen }: MenuCo
               borderRadius: 0.5,
               color: "text.secondary",
             }}
+            aria-label="Open Settings"
           >
             <ListItemAvatar>
               <Settings

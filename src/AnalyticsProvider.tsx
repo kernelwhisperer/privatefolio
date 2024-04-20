@@ -32,6 +32,9 @@ export function AnalyticsProvider({ children }: PropsWithChildren) {
 
         posthog.init(POSTHOG_KEY, {
           api_host: "https://ph.protocol.fun",
+          session_recording: {
+            maskTextSelector: "*",
+          },
           ui_host: "https://eu.posthog.com",
         })
 

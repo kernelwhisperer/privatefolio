@@ -67,7 +67,7 @@ export function ConnectionDrawer({ open, toggleOpen, ...rest }: DrawerProps & Po
             <Typography variant="subtitle1" letterSpacing="0.025rem">
               Add connection
             </Typography>
-            <IconButton onClick={toggleOpen} edge="end" color="secondary">
+            <IconButton onClick={toggleOpen} edge="end" color="secondary" aria-label="Close dialog">
               <CloseRounded fontSize="small" />
             </IconButton>
           </Stack>

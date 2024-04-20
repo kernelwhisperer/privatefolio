@@ -70,12 +70,17 @@ type FindAuditLogsRequest = {
   skip?: number
 }
 
-export async function findAuditLogs(request: FindAuditLogsRequest = {}, accountName: string) {
+export async function findAuditLogs(
+  request: FindAuditLogsRequest = {},
+  accountName: string,
+  signal?: AbortSignal
+) {
   const account = getAccount(accountName)
   const { indexes } = await account.auditLogsDB.getIndexes()
   if (indexes.length === 1) {
     await indexAuditLogs(accountName)
   }
+  if (signal?.aborted) throw new Error(signal.reason)
 
   const { filters = {}, limit, skip, order = "desc", fields } = request
 
@@ -89,13 +94,13 @@ export async function findAuditLogs(request: FindAuditLogsRequest = {}, accountN
         timestamp: { $exists: true },
       }
 
-  // FIXME: is this no longer needed?
-  // if (preferredFilter) {
-  //   _filterOrder.forEach((filter) => {
-  //     if (filter === preferredFilter) return
-  //     selector[filter] = filters[filter] ? filters[filter] : { $exists: true }
-  //   })
-  // }
+  // TESTME
+  if (preferredFilter) {
+    _filterOrder.forEach((filter) => {
+      if (filter === preferredFilter) return
+      selector[filter] = filters[filter] ? filters[filter] : { $exists: true }
+    })
+  }
 
   const sort: PouchDB.Find.FindRequest<AuditLog>["sort"] = !preferredFilter
     ? [{ timestamp: order }, { changeN: order }]
@@ -115,15 +120,21 @@ export async function findAuditLogs(request: FindAuditLogsRequest = {}, accountN
   //
   const { docs, warning } = await account.auditLogsDB.find(_req)
   if (warning) console.warn("findAuditLogs", warning)
+  if (signal?.aborted) throw new Error(signal.reason)
   return docs as AuditLog[]
 }
 
-export async function findAuditLogsForTxId(txId: string, accountName: string) {
+export async function findAuditLogsForTxId(
+  txId: string,
+  accountName: string,
+  signal?: AbortSignal
+) {
   const account = getAccount(accountName)
   const { indexes } = await account.auditLogsDB.getIndexes()
   if (indexes.length === 1) {
     await indexAuditLogs(accountName)
   }
+  if (signal?.aborted) throw new Error(signal.reason)
 
   const _req: PouchDB.Find.FindRequest<AuditLog> = {
     selector: {
@@ -137,6 +148,7 @@ export async function findAuditLogsForTxId(txId: string, accountName: string) {
   //
   const { docs, warning } = await account.auditLogsDB.find(_req)
   if (warning) console.warn("findAuditLogsForTxId", warning)
+  if (signal?.aborted) throw new Error(signal.reason)
   return docs as AuditLog[]
 }
 

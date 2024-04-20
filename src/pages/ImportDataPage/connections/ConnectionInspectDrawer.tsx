@@ -49,7 +49,7 @@ export function ConnectionInspectDrawer(props: ConnectionInspectDrawerProps) {
           <Typography variant="subtitle1" letterSpacing="0.025rem">
             Connection details
           </Typography>
-          <IconButton onClick={toggleOpen} edge="end" color="secondary">
+          <IconButton onClick={toggleOpen} edge="end" color="secondary" aria-label="Close dialog">
             <CloseRounded fontSize="small" />
           </IconButton>
         </Stack>

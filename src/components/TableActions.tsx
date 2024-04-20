@@ -45,7 +45,7 @@ export function TablePaginationActions(props: TablePaginationActionsProps) {
             size="small"
             onClick={handleFirstPageButtonClick}
             disabled={page === 0}
-            aria-label="first page"
+            aria-label="Go to first page"
             color="secondary"
           >
             <KeyboardDoubleArrowLeftRounded />
@@ -58,7 +58,7 @@ export function TablePaginationActions(props: TablePaginationActionsProps) {
             size="small"
             onClick={handleBackButtonClick}
             disabled={page === 0}
-            aria-label="previous page"
+            aria-label="Go to previous page"
             color="secondary"
           >
             <KeyboardArrowLeftRounded />
@@ -97,7 +97,7 @@ export function TablePaginationActions(props: TablePaginationActionsProps) {
             size="small"
             onClick={handleNextButtonClick}
             disabled={page >= lastPage}
-            aria-label="next page"
+            aria-label="Go to next page"
             color="secondary"
           >
             <KeyboardArrowRightRounded />
@@ -110,7 +110,7 @@ export function TablePaginationActions(props: TablePaginationActionsProps) {
             size="small"
             onClick={handleLastPageButtonClick}
             disabled={page >= lastPage}
-            aria-label="last page"
+            aria-label="Go to last page"
             color="secondary"
           >
             <KeyboardDoubleArrowRightRounded />

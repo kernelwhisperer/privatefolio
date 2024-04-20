@@ -105,7 +105,7 @@ export function FileImportDrawer(props: FileImportDrawerProps) {
           <Typography variant="subtitle1" letterSpacing="0.025rem">
             File import details
           </Typography>
-          <IconButton onClick={toggleOpen} edge="end" color="secondary">
+          <IconButton onClick={toggleOpen} edge="end" color="secondary" aria-label="Close dialog">
             <CloseRounded fontSize="small" />
           </IconButton>
         </Stack>

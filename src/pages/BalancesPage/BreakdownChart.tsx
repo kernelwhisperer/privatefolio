@@ -1,8 +1,8 @@
-import { AlertTitle, Link, Stack, useMediaQuery } from "@mui/material"
+import { Stack, useMediaQuery } from "@mui/material"
 import { useStore } from "@nanostores/react"
 import React, { useCallback, useMemo } from "react"
-import { Callout } from "src/components/Callout"
 import { QueryFunction, SingleSeriesChart, TooltipOpts } from "src/components/SingleSeriesChart"
+import { WorkInProgressCallout } from "src/components/WorkInProgressCallout"
 import { $quoteCurrency } from "src/stores/account-settings-store"
 import { $activeAccount } from "src/stores/account-store"
 import { $debugMode } from "src/stores/app-store"
@@ -97,23 +97,7 @@ export function BreakdownChart() {
         tooltipOptions={tooltipOptions}
         chartOptions={chartOptions}
       />
-      <Callout
-      // icon={
-      //   <Chip
-      //     size="small"
-      //     color="primary"
-      //     sx={{ fontSize: "0.65rem", height: 20, paddingX: 0.5 }}
-      //     label="WIP"
-      //   />
-      // }
-      >
-        <AlertTitle sx={{ fontSize: "0.85rem" }}>This feature is still being developed.</AlertTitle>
-        If you have any ideas on how we can improve it, please{" "}
-        <Link target="_blank" href="https://github.com/kernelwhisperer/privatefolio/issues/new">
-          let us know
-        </Link>
-        !
-      </Callout>
+      <WorkInProgressCallout />
     </Stack>
   )
 }

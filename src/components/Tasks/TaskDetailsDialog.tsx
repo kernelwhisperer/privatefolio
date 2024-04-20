@@ -118,6 +118,7 @@ export function TaskDetailsDialog({ taskId, ...props }: DialogProps & { taskId: 
               onClick={(event) => props.onClose?.(event, "escapeKeyDown")}
               edge="end"
               color="secondary"
+              aria-label="Close dialog"
             >
               <CloseRounded fontSize="small" />
             </IconButton>

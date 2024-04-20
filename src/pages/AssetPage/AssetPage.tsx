@@ -14,7 +14,6 @@ import { getAssetTicker } from "src/utils/assets-utils"
 import { clancy } from "src/workers/remotes"
 
 import { AssetAvatar } from "../../components/AssetAvatar"
-import { StaggeredList } from "../../components/StaggeredList"
 import { $assetMap, $filterOptionsMap } from "../../stores/metadata-store"
 import { SerifFont } from "../../theme"
 import { AuditLogTable } from "../AuditLogsPage/AuditLogTable"
@@ -23,7 +22,7 @@ import { AssetInfo } from "./AssetInfo"
 import { BalanceChart } from "./BalanceChart"
 import { PriceChart } from "./PriceChart"
 
-export default function AssetPage({ show }: { show: boolean }) {
+export default function AssetPage() {
   const params = useParams()
   const assetId = params.assetId // ?.toLocaleUpperCase()
   const [searchParams] = useSearchParams()
@@ -58,12 +57,21 @@ export default function AssetPage({ show }: { show: boolean }) {
   })
 
   return (
-    <StaggeredList component="main" gap={2} show={show}>
+    <Stack component="main" gap={2}>
       {/* <BackButton to=".." sx={{ marginLeft: 1 }}>
         Back
       </BackButton> */}
-      <Stack direction="row" alignItems="center" width="100%" gap={6} paddingBottom={2}>
-        <Stack direction="row" gap={1} component="div" sx={{ marginX: 2 }}>
+      <Stack
+        direction="row"
+        alignItems="center"
+        width="100%"
+        paddingBottom={2}
+        flexWrap="wrap"
+        justifyContent="space-between"
+        gap={6}
+        sx={{ paddingX: 2 }}
+      >
+        <Stack direction="row" gap={1} component="div">
           <AssetAvatar
             size="large"
             src={assetMap[assetId]?.logoUrl}
@@ -83,19 +91,25 @@ export default function AssetPage({ show }: { show: boolean }) {
             </Typography>
           </Stack>
         </Stack>
-        <Stack alignItems="center">
-          <SectionTitle>Balance</SectionTitle>
-          <AmountBlock amount={row?.balanceN} currencyTicker={getAssetTicker(assetId)} showTicker />
-        </Stack>
-        <Stack alignItems="center">
-          <SectionTitle>Value</SectionTitle>
-          <AmountBlock
-            amount={row?.value}
-            currencySymbol={currency.symbol}
-            significantDigits={currency.maxDigits}
-            maxDigits={currency.maxDigits}
-            currencyTicker={currency.id}
-          />
+        <Stack gap={6} direction="row">
+          <div>
+            <SectionTitle>Balance</SectionTitle>
+            <AmountBlock
+              amount={row?.balanceN}
+              currencyTicker={getAssetTicker(assetId)}
+              showTicker
+            />
+          </div>
+          <div>
+            <SectionTitle>Value</SectionTitle>
+            <AmountBlock
+              amount={row?.value}
+              currencySymbol={currency.symbol}
+              significantDigits={currency.maxDigits}
+              maxDigits={currency.maxDigits}
+              currencyTicker={currency.id}
+            />
+          </div>
         </Stack>
       </Stack>
       <Stack>
@@ -123,7 +137,7 @@ export default function AssetPage({ show }: { show: boolean }) {
            costBasis={amounts.costBasis.toNumber()}
            tradeHistory={tradeHistory}
          /> */}
-    </StaggeredList>
+    </Stack>
   )
 }
 

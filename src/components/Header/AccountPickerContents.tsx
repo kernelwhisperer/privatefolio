@@ -42,10 +42,12 @@ export function AccountPickerContents(props: AccountPickerContentsProps) {
           to={`/u/${index}/${currentPath}`}
           label={x}
           avatar={<AccountAvatar alt={x} />}
+          aria-label={`Switch to account ${index}`}
         />
       ))}
       <Divider />
       <MenuItem
+        aria-label="Add account"
         onClick={() => {
           toggleAddAccount()
           onClose()
@@ -57,6 +59,7 @@ export function AccountPickerContents(props: AccountPickerContentsProps) {
         <ListItemText primary="Add account" />
       </MenuItem>
       <MenuItem
+        aria-label="Reset account"
         onClick={async () => {
           const { confirmed } = await confirm({
             content: (
@@ -83,6 +86,7 @@ export function AccountPickerContents(props: AccountPickerContentsProps) {
         <ListItemText>Reset account</ListItemText>
       </MenuItem>
       <MenuItem
+        aria-label="Delete account"
         disabled={accounts.length === 1}
         onClick={async () => {
           const { confirmed } = await confirm({
