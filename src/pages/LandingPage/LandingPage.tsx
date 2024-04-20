@@ -313,7 +313,20 @@ export default function LandingPage() {
               <Typography variant="body1" marginTop={-1} color="text.secondary">
                 Keep up with the latest updates and news.
               </Typography>
-              <Button
+              <Box
+                component="iframe"
+                src="https://paragraph.xyz/@privatefolio/embed?minimal=true"
+                sx={{
+                  borderRadius: "5px",
+                  // background: "white",
+                  // border: "1px solid #EEE",
+                  height: 42,
+                  width: 450,
+                }}
+                frameBorder="0"
+                scrolling="no"
+              />
+              {/* <Button
                 target="_blank"
                 href="https://kernelwhisperer.substack.com/?utm_source=landing&utm_medium=web&utm_campaign=landing_1"
                 LinkComponent={MuiLink}
@@ -321,7 +334,18 @@ export default function LandingPage() {
                 size="large"
               >
                 Subscribe
-              </Button>
+              </Button> */}
+              <Typography variant="body1" color="text.secondary">
+                Or read it first at{" "}
+                <MuiLink
+                  href="https://paragraph.xyz/@privatefolio"
+                  target="_blank"
+                  underline="hover"
+                >
+                  paragraph.xyz/@privatefolio
+                </MuiLink>
+                .
+              </Typography>
             </Stack>
             <Box
               sx={{
