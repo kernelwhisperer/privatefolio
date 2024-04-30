@@ -315,13 +315,14 @@ export default function LandingPage() {
               </Typography>
               <Box
                 component="iframe"
-                src="https://paragraph.xyz/@privatefolio/embed?minimal=true"
+                src="https://paragraph.xyz/@privatefolio/embed?minimal=true&vertical=true"
                 sx={{
                   borderRadius: "5px",
                   // background: "white",
                   // border: "1px solid #EEE",
-                  height: 42,
-                  width: 450,
+                  height: 80,
+                  marginX: -4,
+                  width: 260,
                 }}
                 frameBorder="0"
                 scrolling="no"
