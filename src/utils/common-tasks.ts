@@ -6,6 +6,7 @@ import {
 import { AssetId, AuditLog, Connection } from "src/interfaces"
 import { PriceApiId } from "src/settings"
 import { $accountReset, $accounts, $activeAccount } from "src/stores/account-store"
+import { $debugMode } from "src/stores/app-store"
 
 import { $filterOptionsMap, computeMetadata } from "../stores/metadata-store"
 import { $taskQueue, enqueueTask, ProgressUpdate, TaskPriority } from "../stores/task-store"
@@ -252,10 +253,19 @@ export function enqueueRefreshNetworth() {
 
 export function enqueueSyncConnection(connection: Connection) {
   enqueueTask({
+    abortable: true,
     description: `Sync "${connection.address}"`,
     determinate: true,
-    function: async (progress) => {
-      await clancy.syncConnection(progress, connection, $activeAccount.get())
+    function: async (progress, signal) => {
+      await clancy.syncConnection(
+        progress,
+        connection,
+        $activeAccount.get(),
+        $debugMode.get(),
+        undefined,
+        signal
+      )
+      // handleAuditLogChange()
     },
     name: "Sync connection",
     priority: TaskPriority.High,

@@ -83,10 +83,24 @@ export type AuditLogOperation =
   | "Fee"
   | "Withdraw"
   | "Funding Fee"
+  | "Commission"
   | "Conversion"
+  | "Insurance Fund"
   | "Transfer"
   | "Smart Contract"
+  | "Realized Profit and Loss"
   | "Reward"
+  | "Loan"
+  | "Loan Repayment"
+  | "Liquidation Repayment"
+  | "API Rebate"
+  | "Delivered Settelment"
+  | "Referrer Rebates"
+  | "Commission Rebate"
+  | "Options Fee"
+  | "Options Purchase"
+  | "Auto Exchange"
+  | "Increase Fee"
 
 export interface Exchange {
   coingeckoId: string
@@ -303,7 +317,15 @@ export const DEFAULT_POLLING_INTERVAL = 2_000
 export interface Connection {
   _id: string
   _rev: string
-  address: string
+  address?: string
+  binanceWallets?: {
+    coin: boolean
+    cross: boolean
+    isolated: boolean
+    spot: boolean
+    usd: boolean
+  }
+  key?: string
   label: string
   meta?: {
     assetIds: string[]
@@ -314,11 +336,20 @@ export interface Connection {
     wallets: string[]
   }
   platform: PlatformId
+  secret?: string
   syncedAt?: number
   /**
    * createdAt
    */
   timestamp: Timestamp
+}
+
+export type EtherscanConnection = Connection & {
+  address: string
+}
+export type BinanceConnection = Connection & {
+  key: string
+  secret: string
 }
 
 export type ParserResult = { logs: AuditLog[]; txns?: Transaction[] }

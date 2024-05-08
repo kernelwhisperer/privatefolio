@@ -18,7 +18,7 @@ import { TimestampBlock } from "src/components/TimestampBlock"
 import { useConfirm } from "src/hooks/useConfirm"
 import { Connection } from "src/interfaces"
 import { $activeAccount } from "src/stores/account-store"
-import { PopoverToggleProps } from "src/stores/app-store"
+import { $debugMode, PopoverToggleProps } from "src/stores/app-store"
 import { enqueueTask, TaskPriority } from "src/stores/task-store"
 import { handleAuditLogChange } from "src/utils/common-tasks"
 import { clancy } from "src/workers/remotes"
@@ -31,11 +31,12 @@ type ConnectionInspectDrawerProps = DrawerProps &
 
 export function ConnectionInspectDrawer(props: ConnectionInspectDrawerProps) {
   const { open, toggleOpen, connection, relativeTime, ...rest } = props
-  const { _id, address, timestamp, syncedAt, platform, label, meta } = connection
+  const { _id, address, timestamp, syncedAt, platform, label, meta, key } = connection
   const confirm = useConfirm()
   const [loadingRemove, setLoadingRemove] = useState(false)
   const [loadingReset, setLoadingReset] = useState(false)
   const [loadingSync, setLoadingSync] = useState(false)
+  const debugMode = $debugMode.get()
 
   return (
     <Drawer open={open} onClose={toggleOpen} {...rest}>
@@ -57,13 +58,25 @@ export function ConnectionInspectDrawer(props: ConnectionInspectDrawerProps) {
           <SectionTitle>Identifier</SectionTitle>
           <IdentifierBlock id={_id} />
         </div>
-        <div>
-          <SectionTitle>Address</SectionTitle>
-          <Stack gap={0.5} alignItems="flex-start">
-            <IdentifierBlock id={address} />
-            <Typography variant="caption">{label ? `${label}` : null}</Typography>
-          </Stack>
-        </div>
+
+        {platform === "binance" ? (
+          <div>
+            <SectionTitle>Key</SectionTitle>
+            <Stack gap={0.5} alignItems="flex-start">
+              <IdentifierBlock id={key as string} />
+              <Typography variant="caption">{label ? `${label}` : null}</Typography>
+            </Stack>
+          </div>
+        ) : (
+          <div>
+            <SectionTitle>Address</SectionTitle>
+            <Stack gap={0.5} alignItems="flex-start">
+              <IdentifierBlock id={address as string} />
+              <Typography variant="caption">{label ? `${label}` : null}</Typography>
+            </Stack>
+          </div>
+        )}
+
         <div>
           <SectionTitle>Created</SectionTitle>
           {timestamp ? (
@@ -107,7 +120,12 @@ export function ConnectionInspectDrawer(props: ConnectionInspectDrawerProps) {
                     description: `Sync "${connection.address}"`,
                     determinate: true,
                     function: async (progress) => {
-                      await clancy.syncConnection(progress, connection, $activeAccount.get())
+                      await clancy.syncConnection(
+                        progress,
+                        connection,
+                        $activeAccount.get(),
+                        debugMode
+                      )
                       setLoadingSync(false)
                       handleAuditLogChange()
                     },
@@ -133,7 +151,13 @@ export function ConnectionInspectDrawer(props: ConnectionInspectDrawerProps) {
                     determinate: true,
                     function: async (progress) => {
                       await clancy.resetConnection(connection, progress, $activeAccount.get())
-                      await clancy.syncConnection(progress, connection, $activeAccount.get(), "0")
+                      await clancy.syncConnection(
+                        progress,
+                        connection,
+                        $activeAccount.get(),
+                        debugMode,
+                        "0"
+                      )
                       setLoadingReset(false)
                     },
                     name: `Reset connection`,
