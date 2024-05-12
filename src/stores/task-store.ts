@@ -84,7 +84,7 @@ async function processQueue() {
         const callback = createProgressCallback(task.id)
         await task.function(proxy(callback), task.abortController.signal)
       } catch (error) {
-        // console.error("Error processing task:", error)
+        console.error("Error processing task:", error)
         errorMessage = String(error)
       } finally {
         // console.log(`Completed task: ${task.name}`)

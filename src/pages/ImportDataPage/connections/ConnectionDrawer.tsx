@@ -67,7 +67,7 @@ export function ConnectionDrawer({ open, toggleOpen, ...rest }: DrawerProps & Po
     (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault()
 
-      if (platform === "ethereum") {
+      if (platform !== "binance") {
         const isValidAddress = address && isAddress(address)
         if (!isValidAddress) return
       } else {
@@ -124,7 +124,7 @@ export function ConnectionDrawer({ open, toggleOpen, ...rest }: DrawerProps & Po
               ))}
             </Select>
           </div>
-          {platform === "ethereum" ? (
+          {platform !== "binance" ? (
             <div>
               <SectionTitle>Address *</SectionTitle>
               <AddressInput

@@ -23,6 +23,7 @@ export const getAssetContract = memoize(function getAssetPlatform(assetId: strin
 })
 
 export const getEvmChainId = memoize(function getAssetPlatform(platform: PlatformId) {
+  if (platform === "ethereum") return 1
   return Number(platform.split("-")[1]) as Networkish
 })
 
