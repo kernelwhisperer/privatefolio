@@ -9,7 +9,7 @@ import { PlatformId, PLATFORMS_META } from "src/settings"
 import { asUTC } from "src/utils/formatting-utils"
 
 export const Identifier = "etherscan"
-export const platform: PlatformId = "ethereum"
+export const platform: PlatformId = "ethereum" // FIXME: this should work for all EVM chains
 
 export const HEADER =
   '"Txhash","Blockno","UnixTimestamp","DateTime (UTC)","From","To","ContractAddress","Value_IN(ETH)","Value_OUT(ETH)","CurrentValue","TxnFee(ETH)","TxnFee(USD)","Historical $Price/Eth","Status","ErrCode","Method"'
@@ -42,7 +42,7 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
     throw new Error(`Invalid timestamp: ${datetimeUtc}`)
   }
   const txId = `${fileImportId}_${txHash}_NORMAL_${index}`
-  const assetId = PLATFORMS_META.ethereum.nativeAssetId as string
+  const assetId = PLATFORMS_META[platform].nativeAssetId as string
   const wallet = incoming === "0" ? from : to
   const hasError = status === "Error(0)" || undefined // TODO statuses like Error(1) means only some internal txns failed
   //

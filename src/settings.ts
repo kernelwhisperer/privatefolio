@@ -44,20 +44,20 @@ export const PARSERS_META: Record<ParserId, ParserMeta> = {
 }
 
 export const PLATFORM_IDS = [
-  // "arbitrum",
   "binance",
   "coinmama",
   "ethereum",
+  "eip155-137",
+  "eip155-8453",
+  "eip155-42161",
   "coinbase",
-  // "evm",
   "mexc",
-  // "op",
-  // "polygon",
 ] as const
 
 export type PlatformId = (typeof PLATFORM_IDS)[number]
 
 export type PlatformMeta = {
+  coingeckoId?: string
   logoUrl: string
   name: string
   nativeAssetId?: string
@@ -70,7 +70,26 @@ export const PLATFORMS_META: Record<PlatformId, PlatformMeta> = {
   },
   coinbase: { logoUrl: "", name: "Coinbase" },
   coinmama: { logoUrl: "", name: "Coinmama" },
+  "eip155-137": {
+    coingeckoId: "polygon-pos",
+    logoUrl: "https://icons.llamao.fi/icons/chains/rsz_polygon.jpg",
+    name: "Polygon",
+    nativeAssetId: "eip155-137:0x0000000000000000000000000000000000000000:MATIC",
+  },
+  "eip155-42161": {
+    coingeckoId: "arbitrum-one",
+    logoUrl: "https://icons.llamao.fi/icons/chains/rsz_arbitrum.jpg",
+    name: "Arbitrum",
+    nativeAssetId: "eip155-42161:0x0000000000000000000000000000000000000000:ETH",
+  },
+  "eip155-8453": {
+    coingeckoId: "base",
+    logoUrl: "https://icons.llamao.fi/icons/chains/rsz_base.jpg",
+    name: "Base",
+    nativeAssetId: "eip155-42161:0x0000000000000000000000000000000000000000:ETH",
+  },
   ethereum: {
+    coingeckoId: "ethereum",
     logoUrl: "https://icons.llamao.fi/icons/chains/rsz_ethereum.jpg",
     name: "Ethereum",
     nativeAssetId: "ethereum:0x0000000000000000000000000000000000000000:ETH",
@@ -78,10 +97,7 @@ export const PLATFORMS_META: Record<PlatformId, PlatformMeta> = {
   mexc: { logoUrl: "", name: "MEXC Global" },
 }
 
-export const CONNECTIONS = {
-  binance: "Binance",
-  ethereum: "Ethereum",
-} as const
+export const CONNECTIONS: PlatformId[] = ["eip155-42161", "eip155-8453", "ethereum", "binance"]
 
 export const DEFAULT_DEBOUNCE_DURATION = 1500
 

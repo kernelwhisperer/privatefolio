@@ -14,6 +14,7 @@ function toTitleCase(text: string): string {
       .replace(/^./, (str) => str.toUpperCase())
   )
 }
+
 export function extractMethodFromFunctionName(functionName: string) {
   const parts = functionName.split("(")
   const methodName = toTitleCase(parts[0])

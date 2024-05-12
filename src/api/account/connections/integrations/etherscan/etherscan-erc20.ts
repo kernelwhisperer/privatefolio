@@ -36,7 +36,7 @@ export function parseERC20(
   if (isNaN(timestamp)) {
     throw new Error(`Invalid timestamp: ${time}`)
   }
-  const assetId = `ethereum:${contractAddress}:${symbol}`
+  const assetId = `${platform}:${contractAddress}:${symbol}`
   if (isSpamToken(contractAddress, symbol)) {
     return { logs: [] }
   }

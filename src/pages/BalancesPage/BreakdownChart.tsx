@@ -42,15 +42,11 @@ export function BreakdownChart() {
         // console.log("📜 LOG > assetValues > assetValues:", assetValues)
 
         return {
-          assets: assetValues
-            .map((x) => getAssetTicker(x.symbol))
-            // .slice(0, 5)
-            .reverse(),
+          assets: assetValues.map((x) => getAssetTicker(x.symbol)),
+          // .slice(0, 5)
           time: (Number(_id) / 1000) as Time,
-          values: assetValues
-            .map((x) => x.value)
-            // .slice(0, 5)
-            .reverse(),
+          values: assetValues.map((x) => x.value),
+          // .slice(0, 5)
         }
       })
     )

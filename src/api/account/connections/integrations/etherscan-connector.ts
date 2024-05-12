@@ -1,5 +1,6 @@
 import { EtherscanConnection, SyncResult } from "src/interfaces"
 import { ProgressCallback } from "src/stores/task-store"
+import { getAssetPlatform, getEvmChainId } from "src/utils/assets-utils"
 import { noop } from "src/utils/utils"
 
 import { parseNormal } from "./etherscan/etherscan"
@@ -7,7 +8,11 @@ import { parseBlockReward } from "./etherscan/etherscan-block-reward"
 import { parseERC20 } from "./etherscan/etherscan-erc20"
 import { parseInternal } from "./etherscan/etherscan-internal"
 import { parseStakingWithdrawal } from "./etherscan/etherscan-staking-withdrawal"
-import { FullEtherscanProvider } from "./etherscan-rpc"
+import {
+  BlockRewardTransaction,
+  FullEtherscanProvider,
+  StakingWithdrawalTransaction,
+} from "./etherscan-rpc"
 
 const parserList = [
   parseNormal,
@@ -22,7 +27,8 @@ export async function syncEtherscan(
   connection: EtherscanConnection,
   since: string
 ) {
-  const rpcProvider = new FullEtherscanProvider()
+  const chainId = getEvmChainId(getAssetPlatform(connection.platform))
+  const rpcProvider = new FullEtherscanProvider(chainId)
 
   progress([0, `Starting from block number ${since}`])
 
@@ -43,11 +49,16 @@ export async function syncEtherscan(
   progress([20, `Fetched ${internal.length} Internal transactions`])
   const erc20 = await rpcProvider.getErc20Transactions(connection.address, since)
   progress([30, `Fetched ${erc20.length} ERC20 transactions`])
-  const staking = await rpcProvider.getStakingWithdrawalTransactions(connection.address, since)
-  progress([40, `Fetched ${staking.length} Staking Withdrawal transactions`])
-  const blocks = await rpcProvider.getBlockRewardTransactions(connection.address, since)
-  progress([50, `Fetched ${blocks.length} Block Reward transactions`])
 
+  let staking: StakingWithdrawalTransaction[] = []
+  let blocks: BlockRewardTransaction[] = []
+
+  if (connection.platform === "ethereum") {
+    staking = await rpcProvider.getStakingWithdrawalTransactions(connection.address, since)
+    progress([40, `Fetched ${staking.length} Staking Withdrawal transactions`])
+    blocks = await rpcProvider.getBlockRewardTransactions(connection.address, since)
+    progress([50, `Fetched ${blocks.length} Block Reward transactions`])
+  }
   const transactionArrays = [normal, internal, erc20, staking, blocks]
 
   let blockNumber = 0

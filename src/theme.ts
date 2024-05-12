@@ -181,7 +181,7 @@ export const theme: CssVarsThemeOptions = {
         },
         background: {
           default: bgColor,
-          paper: "rgb(249 249 250)", // derived from default + paper
+          paper: "rgb(253, 253, 253)",
           paperTransparent: "rgba(255, 255, 255, 0.55)",
         },
         // divider: "rgba(0,0,0,0.15)",

@@ -1,9 +1,10 @@
 import { mkdir, writeFile } from "fs/promises"
 import { join } from "path"
-import { COINGECKO_BASE_API } from "src/api/external/assets/coingecko-asset-api"
 
+import { COINGECKO_BASE_API } from "../src/api/external/assets/coingecko-asset-api"
 import { AssetMetadata } from "../src/interfaces"
-import { ASSET_FILES_LOCATION } from "../src/settings"
+import { ASSET_FILES_LOCATION, PLATFORM_IDS, PlatformId, PLATFORMS_META } from "../src/settings"
+import { isEvmPlatform } from "../src/utils/assets-utils"
 import { wait } from "../src/utils/utils"
 
 const PAGES = 4 // 250 * 4 = 1000
@@ -17,13 +18,26 @@ type CoingeckoId = string
  *
  * ```json
  * {
- *   "id": "compound-governance-token",
- *   "symbol": "comp",
- *   "name": "Compound",
+ *   "id": "usd-coin",
+ *   "symbol": "usdc",
+ *   "name": "USDC",
  *   "platforms": {
- *     "ethereum": "0xc00e94cb662c3520282e6f5717214004a7f26888",
- *     "arbitrum-one": "0x354a6da3fcde098f8389cad84b0182725c6c91de",
- *   }
+ *     "ethereum": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+ *     "polkadot": "1337",
+ *     "avalanche": "0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e",
+ *     "optimistic-ethereum": "0x0b2c639c533813f4aa9d7837caf62653d097ff85",
+ *     "stellar": "USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN",
+ *     "near-protocol": "17208628f84f5d6ad33f0da3bbbeb27ffcb398eac501a31bd6ad2011e36133a1",
+ *     "hedera-hashgraph": "0.0.456858",
+ *     "zksync": "0x1d17cbcf0d6d143135ae902365d2e5e2a16538d4",
+ *     "tron": "TEkxiTehnzSmSe2XqrBj4w32RUN966rdz8",
+ *     "arbitrum-one": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+ *     "base": "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
+ *     "polygon-pos": "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
+ *     "solana": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+ *     "flow": "A.b19436aae4d94622.FiatToken",
+ *     "celo": "0xceba9300f2b948710d2653dd7b07f33a8b32118c"
+ *     }
  * }
  * ```
  */
@@ -111,6 +125,8 @@ type AssetWithMeta = {
   total_volume: number
 }
 
+const EVM_PLATFORMS: PlatformId[] = PLATFORM_IDS.filter(isEvmPlatform)
+
 async function main() {
   const map = await getAssetMapWithPlatforms()
 
@@ -127,7 +143,9 @@ async function main() {
   console.log("URLs:", URLs)
 
   const destination = join(process.cwd(), DESTINATION_DIR)
-  await mkdir(`${destination}/ethereum`, { recursive: true })
+  for (const platform of EVM_PLATFORMS) {
+    await mkdir(`${destination}/${platform}`, { recursive: true })
+  }
   await mkdir(`${destination}/symbol`, { recursive: true })
   await mkdir(`${destination}/meta`, { recursive: true })
 
@@ -160,9 +178,14 @@ async function main() {
 
         for (const asset of assets) {
           if (!asset.coingeckoId) return
-          const contractAddress = map[asset.coingeckoId]?.platforms.ethereum
-          if (contractAddress) {
-            await writeFile(`${destination}/ethereum/${contractAddress}`, asset.coingeckoId)
+          const { platforms } = map[asset.coingeckoId]
+
+          for (const platform of EVM_PLATFORMS) {
+            const contractAddress = platforms[PLATFORMS_META[platform].coingeckoId as string]
+
+            if (contractAddress) {
+              await writeFile(`${destination}/${platform}/${contractAddress}`, asset.coingeckoId)
+            }
           }
           await writeFile(`${destination}/symbol/${asset.symbol}`, asset.coingeckoId)
           await writeFile(

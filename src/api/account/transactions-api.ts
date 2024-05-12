@@ -1,5 +1,6 @@
 // /* eslint-disable sort-keys-fix/sort-keys-fix */
 import { proxy } from "comlink"
+import { isEvmPlatform } from "src/utils/assets-utils"
 import { mergeTransactions } from "src/utils/integrations/etherscan-utils"
 import { noop } from "src/utils/utils"
 
@@ -239,6 +240,9 @@ export function subscribeToTransactions(callback: () => void, accountName: strin
   })
 }
 
+/**
+ * This only applies to Etherscan transactions
+ */
 export async function autoMergeTransactions(
   accountName: string,
   progress: ProgressCallback = noop,
@@ -248,15 +252,15 @@ export async function autoMergeTransactions(
   progress([0, "Fetching all transactions"])
   const transactions = await findTransactions({}, accountName)
 
-  const ethereumTransactions = transactions.filter(
-    (tx) => tx.platform === "ethereum"
+  const etherscan = transactions.filter((tx) =>
+    isEvmPlatform(tx.platform)
   ) as EtherscanTransaction[]
 
   if (signal?.aborted) {
     throw new Error(signal.reason)
   }
-  progress([25, `Processing ${ethereumTransactions.length} Ethereum transactions`])
-  const { merged, deduplicateMap } = mergeTransactions(ethereumTransactions)
+  progress([25, `Processing ${etherscan.length} (EVM) transactions`])
+  const { merged, deduplicateMap } = mergeTransactions(etherscan)
 
   //
   if (signal?.aborted) {
@@ -365,18 +369,18 @@ export async function detectSpamTransactions(
   progress([0, "Fetching all transactions"])
   const transactions = await findTransactions({}, accountName)
 
-  const ethereumTransactions = transactions.filter(
-    (tx) => tx.platform === "ethereum"
+  const etherscanTransactions = transactions.filter((tx) =>
+    isEvmPlatform(tx.platform)
   ) as EtherscanTransaction[]
 
   if (signal?.aborted) {
     throw new Error(signal.reason)
   }
-  progress([33, `Processing ${ethereumTransactions.length} Ethereum transactions`])
+  progress([33, `Processing ${etherscanTransactions.length} (EVM) transactions`])
   const filterMap = await getFilterMap(accountName)
   const assetMap = await getAssetMap(accountName, filterMap.assetId)
 
-  const spam = ethereumTransactions.filter((tx) => {
+  const spam = etherscanTransactions.filter((tx) => {
     // it means the user created the transaction
     if (tx.fee) return false
 

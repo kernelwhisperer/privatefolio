@@ -1,13 +1,18 @@
 import { AssetMetadata } from "src/interfaces"
 import { ASSET_FILES_LOCATION, PLATFORMS_META } from "src/settings"
 
+const ETH: AssetMetadata = {
+  coingeckoId: "ethereum",
+  logoUrl: `https://assets.coingecko.com/coins/images/279/large/ethereum.png`,
+  name: "Ethereum",
+  symbol: "ETH",
+}
+
 export const memoryCacheMap: Record<string, AssetMetadata> = {
-  [PLATFORMS_META.ethereum.nativeAssetId as string]: {
-    coingeckoId: "ethereum",
-    logoUrl: `https://assets.coingecko.com/coins/images/279/large/ethereum.png`,
-    name: "Ethereum",
-    symbol: "ETH",
-  },
+  // TODO
+  [PLATFORMS_META["eip155-8453"].nativeAssetId as string]: ETH,
+  [PLATFORMS_META["eip155-42161"].nativeAssetId as string]: ETH,
+  [PLATFORMS_META.ethereum.nativeAssetId as string]: ETH,
   "binance:BUSD": {
     coingeckoId: "busd",
     logoUrl: `/${ASSET_FILES_LOCATION}/overrides/BUSD.svg`,

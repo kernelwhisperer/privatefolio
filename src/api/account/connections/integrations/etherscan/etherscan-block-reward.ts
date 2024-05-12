@@ -26,7 +26,7 @@ export function parseBlockReward(
   }
   const wallet = address.toLowerCase()
   const txId = `${connection._id}_${wallet}+${blockNumber}_BLOCK_${index}`
-  const assetId = PLATFORMS_META.ethereum.nativeAssetId as string
+  const assetId = PLATFORMS_META[platform].nativeAssetId as string
   const operation: AuditLogOperation = "Reward"
   const type: TransactionType = operation
 

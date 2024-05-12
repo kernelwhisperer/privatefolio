@@ -317,7 +317,7 @@ export default function LandingPage() {
                 component="iframe"
                 src="https://paragraph.xyz/@privatefolio/embed?minimal=true&vertical=true"
                 sx={{
-                  borderRadius: "5px",
+                  borderRadius: "4px",
                   // background: "white",
                   // border: "1px solid #EEE",
                   height: 80,

@@ -138,7 +138,7 @@ export function ConnectionInspectDrawer(props: ConnectionInspectDrawerProps) {
               </LoadingButton>
             </span>
           </Tooltip>
-          <Tooltip title={loadingReset ? "Reseting..." : "This will reset the connection"}>
+          <Tooltip title={loadingReset ? "Resetting..." : "This will reset the connection"}>
             <span>
               <LoadingButton
                 size="small"
@@ -159,11 +159,11 @@ export function ConnectionInspectDrawer(props: ConnectionInspectDrawerProps) {
                         "0"
                       )
                       setLoadingReset(false)
+                      handleAuditLogChange()
                     },
                     name: `Reset connection`,
                     priority: TaskPriority.High,
                   })
-                  handleAuditLogChange()
                 }}
                 loading={loadingReset}
               >

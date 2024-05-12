@@ -19,7 +19,7 @@ import { isAddress } from "ethers"
 import React, { useCallback, useEffect, useState } from "react"
 import { BinanceInput } from "src/components/BinanceInput"
 import { $activeAccount } from "src/stores/account-store"
-import { enqueueSyncConnection, handleAuditLogChange } from "src/utils/common-tasks"
+import { enqueueSyncConnection } from "src/utils/common-tasks"
 import { isProduction } from "src/utils/utils"
 import { clancy } from "src/workers/remotes"
 
@@ -84,7 +84,6 @@ export function ConnectionDrawer({ open, toggleOpen, ...rest }: DrawerProps & Po
         .then((connection) => {
           toggleOpen()
           enqueueSyncConnection(connection)
-          handleAuditLogChange()
         })
         .catch(() => {
           setLoading(false)
@@ -114,17 +113,15 @@ export function ConnectionDrawer({ open, toggleOpen, ...rest }: DrawerProps & Po
               value={platform}
               onChange={(event) => setPlatform(event.target.value as PlatformId)}
             >
-              {Object.keys(CONNECTIONS).map((x) =>
-                PLATFORMS_META[x].name === "Binance" && !isProduction ? (
-                  <MenuItem key={x} value={x} disabled>
-                    <ListItemText primary={PLATFORMS_META[x].name} />
-                  </MenuItem>
-                ) : (
-                  <MenuItem key={x} value={x}>
-                    <ListItemText primary={PLATFORMS_META[x].name} />
-                  </MenuItem>
-                )
-              )}
+              {CONNECTIONS.map((x) => (
+                <MenuItem
+                  key={x}
+                  value={x}
+                  disabled={PLATFORMS_META[x].name === "Binance" && !isProduction}
+                >
+                  <ListItemText primary={PLATFORMS_META[x].name} />
+                </MenuItem>
+              ))}
             </Select>
           </div>
           {platform === "ethereum" ? (

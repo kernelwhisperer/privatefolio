@@ -60,7 +60,7 @@ export function parser(
     to.toLowerCase() === userAddress.toLowerCase() ? "Deposit" : "Withdraw"
   const type: TransactionType = operation
   const wallet = operation === "Deposit" ? to : from
-  const assetId = `ethereum:${contractAddress}:${symbol}`
+  const assetId = `${platform}:${contractAddress}:${symbol}`
   const importId = fileImportId
   const importIndex = index
 

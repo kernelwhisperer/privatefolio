@@ -1,5 +1,5 @@
 import { AssetMetadata, CoingeckoMetadataShort } from "src/interfaces"
-import { getAssetTicker } from "src/utils/assets-utils"
+import { getAssetTicker, isEvmPlatform } from "src/utils/assets-utils"
 
 import { ASSET_FILES_LOCATION } from "../../../settings"
 import { memoryCacheMap } from "./coingecko-asset-memory-cache"
@@ -9,7 +9,7 @@ export async function getCachedCoingeckoId(assetId: string): Promise<string> {
   const platform = parts[0]
 
   let coingeckoId: string
-  if (platform === "ethereum") {
+  if (isEvmPlatform(platform)) {
     const contract = parts[1]
 
     const geckoIdReq = await fetch(`/${ASSET_FILES_LOCATION}/${platform}/${contract}`)

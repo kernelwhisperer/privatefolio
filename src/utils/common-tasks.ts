@@ -265,7 +265,7 @@ export function enqueueSyncConnection(connection: Connection) {
         undefined,
         signal
       )
-      // handleAuditLogChange()
+      handleAuditLogChange()
     },
     name: "Sync connection",
     priority: TaskPriority.High,

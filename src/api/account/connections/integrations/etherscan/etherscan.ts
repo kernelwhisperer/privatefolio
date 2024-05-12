@@ -37,7 +37,7 @@ export function parseNormal(
     throw new Error(`Invalid timestamp: ${time}`)
   }
   const txId = `${connection._id}_${txHash}_NORMAL_${index}`
-  const assetId = PLATFORMS_META.ethereum.nativeAssetId as string
+  const assetId = PLATFORMS_META[platform].nativeAssetId as string
   const wallet = address.toLowerCase()
   const hasError = isError === "1" || undefined
   const method = extractMethodFromFunctionName(functionName || methodId)
@@ -81,6 +81,7 @@ export function parseNormal(
         wallet,
       })
 
+      // TESTME: on other networks
       // Fix for WETH: wrapping does not appear
       if (operation === "Withdraw" && to === "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2") {
         logs.push({

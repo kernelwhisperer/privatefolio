@@ -116,7 +116,7 @@ export class StackedAreaSeriesRenderer<TData extends StackedAreaData>
         }
         const x = stack.x * horizontalPixelRatio
         const y = yMedia * verticalPixelRatio
-        if (firstBar) {
+        if (firstBar || !oddLines[lineIndex]) {
           oddLines[lineIndex] = {
             first: { x, y },
             last: { x, y },

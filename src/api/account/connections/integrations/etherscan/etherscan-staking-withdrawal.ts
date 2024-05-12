@@ -32,7 +32,7 @@ export function parseStakingWithdrawal(
   }
   const wallet = address.toLowerCase()
   const txId = `${connection._id}_${validatorIndex}+${withdrawalIndex}_BEACON_${index}`
-  const assetId = PLATFORMS_META.ethereum.nativeAssetId as string
+  const assetId = PLATFORMS_META[platform].nativeAssetId as string
   const operation: AuditLogOperation = "Deposit"
   const type: TransactionType = operation
 

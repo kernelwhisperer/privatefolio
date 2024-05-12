@@ -4,7 +4,7 @@ import { asUTC } from "src/utils/formatting-utils"
 import { hashString } from "src/utils/utils"
 
 export const Identifier = "privatefolio"
-export const platform: PlatformId = "ethereum"
+export const platform: PlatformId = "ethereum" // FIXME: this should work for all EVM chains
 
 export const HEADER =
   '"Timestamp","Platform","Wallet","Type","Incoming","Incoming Asset","Outgoing","Outgoing Asset","Fee","Fee Asset","Smart Contract","Smart Contract Method","Blockchain Tx","Notes"'

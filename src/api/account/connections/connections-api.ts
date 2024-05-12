@@ -2,6 +2,7 @@ import { proxy } from "comlink"
 import { getAddress } from "ethers"
 import { validateOperation } from "src/api/database-utils"
 import { ProgressCallback } from "src/stores/task-store"
+import { isEvmPlatform } from "src/utils/assets-utils"
 
 import {
   AuditLogOperation,
@@ -158,6 +159,8 @@ export async function syncConnection(
   }
 
   if (connection.platform === "ethereum") {
+    result = await syncEtherscan(progress, connection as EtherscanConnection, since)
+  } else if (isEvmPlatform(connection.platform)) {
     result = await syncEtherscan(progress, connection as EtherscanConnection, since)
   } else if (connection.platform === "binance") {
     result = await syncBinance(progress, connection as BinanceConnection, debugMode, since, signal)
