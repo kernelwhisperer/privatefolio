@@ -2,6 +2,8 @@ import { BinanceConnection } from "src/interfaces"
 import { ProgressCallback } from "src/stores/task-store"
 import { formatDate } from "src/utils/formatting-utils"
 
+import { BASE_URL } from "./binance-settings"
+
 const testEnvironment = process.env.NODE_ENV === "test"
 
 async function generateSignature(data: Uint8Array, secret: Uint8Array) {
@@ -35,7 +37,6 @@ export interface BinanceDeposit {
   address: string
   addressTag: string
   amount: string
-  blockNumber: string
   coin: string
   confirmTimes: string
   id: string
@@ -51,7 +52,6 @@ export interface BinanceWithdraw {
   address: string
   amount: string
   applyTime: string
-  blockNumber: string
   coin: string
   completeTime: string
   confirmNo: number
@@ -67,7 +67,6 @@ export interface BinanceWithdraw {
 }
 export interface BinanceTrade {
   baseAsset: string
-  blockNumber: string
   commission: string
   commissionAsset: string
   id: number
@@ -91,7 +90,6 @@ export interface BinancePair {
 export interface BinanceReward {
   amount?: string
   asset: string
-  blockNumber: string
   lockPeriod?: string
   positionId?: string
   projectId?: string
@@ -103,7 +101,6 @@ export interface BinanceReward {
 export interface BinanceMarginLoanRepayment {
   amount: string
   asset: string
-  blockNumber: string
   interest: string
   isolatedSymbol: string
   principal: string
@@ -114,7 +111,6 @@ export interface BinanceMarginLoanRepayment {
 
 export interface BinanceMarginTrade {
   baseAsset: string
-  blockNumber: string
   commission: string
   commissionAsset: string
   id: number
@@ -133,7 +129,6 @@ export interface BinanceMarginTrade {
 export interface BinanceMarginTransfer {
   amount: string
   asset: string
-  blockNumber: string
   fromSymbol: string
   status: string
   timestamp: number
@@ -145,7 +140,6 @@ export interface BinanceMarginTransfer {
 }
 export interface BinanceMarginLiquidation {
   avgPrice: string
-  blockNumber: string
   executedQty: string
   isIsolated: boolean
   orderId: number
@@ -159,7 +153,6 @@ export interface BinanceMarginLiquidation {
 
 export interface BinanceFuturesUSDTrades {
   baseAsset: string
-  blockNumber: number
   buyer: boolean
   commission: string
   commissionAsset: string
@@ -180,7 +173,6 @@ export interface BinanceFuturesUSDTrades {
 export interface BinanceFuturesCOINTrades {
   baseAsset: string
   baseQty: string
-  blockNumber: number
   buyer: boolean
   commission: string
   commissionAsset: string
@@ -201,7 +193,6 @@ export interface BinanceFuturesCOINTrades {
 
 export interface BinanceFuturesCOINIncome {
   asset: string
-  blockNumber: number
   income: string
   incomeType: string
   info: string
@@ -213,7 +204,6 @@ export interface BinanceFuturesCOINIncome {
 
 export interface BinanceFuturesUSDIncome {
   asset: string
-  blockNumber: number
   income: string
   incomeType: string
   info: string
@@ -238,7 +228,6 @@ export async function getBinanceDeposit(
   const encodedSecret = encoder.encode(connection.secret)
 
   const signature = await generateSignature(encodedData, encodedSecret)
-  const BASE_URL = "http://localhost:8080/api.binance.com"
   const endpoint = "/sapi/v1/capital/deposit/hisrec"
   const url = `${BASE_URL}${endpoint}?${queryString}&signature=${signature}`
 
@@ -273,13 +262,12 @@ export async function getBinanceWithdraw(
   debugMode: boolean
 ): Promise<Array<BinanceWithdraw>> {
   const timestamp = Date.now()
-  const queryString = `timestamp=${timestamp}&startTime=${startTime}&endTime=${endTime}`
+  const queryString = `timestamp=${timestamp}&startTime=${startTime}&endTime=${endTime}&recvWindow=60000`
   const encoder = new TextEncoder()
   const encodedData = encoder.encode(queryString)
   const encodedSecret = encoder.encode(connection.secret)
   const signature = await generateSignature(encodedData, encodedSecret)
 
-  const BASE_URL = "http://localhost:8080/api.binance.com"
   const endpoint = "/sapi/v1/capital/withdraw/history"
   const url = `${BASE_URL}${endpoint}?${queryString}&signature=${signature}`
 
@@ -304,7 +292,6 @@ export async function getBinanceWithdraw(
 export async function getBinanceSymbols(
   connection: BinanceConnection
 ): Promise<Array<BinancePair>> {
-  const BASE_URL = "http://localhost:8080/api.binance.com"
   const endpoint = "/api/v3/exchangeInfo"
   const url = `${BASE_URL}${endpoint}`
 
@@ -327,16 +314,17 @@ export async function getBinanceTradesForSymbol(
   connection: BinanceConnection,
   symbol: BinancePair,
   progress: ProgressCallback,
+  since: number,
+  until: number,
   debugMode: boolean
 ): Promise<Array<BinanceTrade>> {
   const timestamp = Date.now()
-  const queryString = `symbol=${symbol.symbol}&timestamp=${timestamp}`
+  const queryString = `symbol=${symbol.symbol}&timestamp=${timestamp}&recvWindow=60000`
   const encoder = new TextEncoder()
   const encodedData = encoder.encode(queryString)
   const encodedSecret = encoder.encode(connection.secret)
   const signature = await generateSignature(encodedData, encodedSecret)
 
-  const BASE_URL = "http://localhost:8080/api.binance.com"
   const endpoint = "/api/v3/myTrades"
   const url = `${BASE_URL}${endpoint}?${queryString}&signature=${signature}`
 
@@ -357,12 +345,18 @@ export async function getBinanceTradesForSymbol(
   // check if status is 429
   if (res.status === 429) {
     // wait()
-    throw new Error("429: Rate limited")
+    throw new Error(
+      `429: Rate limited - Fetched trade history for ${
+        symbol.symbol
+      } - Weight used: ${res.headers.get("X-Mbx-Used-Weight")}`
+    )
 
     // return getBinanceTradesForSymbol(connection, symbol)
   }
 
-  return data.map((x) => ({ ...x, baseAsset: symbol.baseAsset, quoteAsset: symbol.quoteAsset }))
+  return data
+    .map((x) => ({ ...x, baseAsset: symbol.baseAsset, quoteAsset: symbol.quoteAsset }))
+    .filter((x) => x.time > since && x.time < until)
 }
 
 // https://binance-docs.github.io/apidocs/spot/en/#get-flexible-rewards-history-user_data
@@ -375,13 +369,12 @@ export async function getBinanceFlexibleRewards(
   type: string
 ): Promise<Array<BinanceReward>> {
   const timestamp = Date.now()
-  const queryString = `timestamp=${timestamp}&type=${type}&startTime=${startTime}&endTime=${endTime}`
+  const queryString = `timestamp=${timestamp}&type=${type}&startTime=${startTime}&endTime=${endTime}&recvWindow=60000`
   const encoder = new TextEncoder()
   const encodedData = encoder.encode(queryString)
   const encodedSecret = encoder.encode(connection.secret)
   const signature = await generateSignature(encodedData, encodedSecret)
 
-  const BASE_URL = "http://localhost:8080/api.binance.com"
   const endpoint = "/sapi/v1/simple-earn/flexible/history/rewardsRecord"
   const url = `${BASE_URL}${endpoint}?${queryString}&signature=${signature}`
 
@@ -411,13 +404,12 @@ export async function getBinanceLockedRewards(
   debugMode: boolean
 ): Promise<Array<BinanceReward>> {
   const timestamp = Date.now()
-  const queryString = `timestamp=${timestamp}&startTime=${startTime}&endTime=${endTime}`
+  const queryString = `timestamp=${timestamp}&startTime=${startTime}&endTime=${endTime}&recvWindow=60000`
   const encoder = new TextEncoder()
   const encodedData = encoder.encode(queryString)
   const encodedSecret = encoder.encode(connection.secret)
   const signature = await generateSignature(encodedData, encodedSecret)
 
-  const BASE_URL = "http://localhost:8080/api.binance.com"
   const endpoint = "/sapi/v1/simple-earn/locked/history/rewardsRecord"
   const url = `${BASE_URL}${endpoint}?${queryString}&signature=${signature}`
 
@@ -454,7 +446,6 @@ export async function getBinanceMarginLoanRepayment(
   const encodedSecret = encoder.encode(connection.secret)
   const signature = await generateSignature(encodedData, encodedSecret)
 
-  const BASE_URL = "http://localhost:8080/api.binance.com"
   const endpoint = "/sapi/v1/margin/borrow-repay"
   const url = `${BASE_URL}${endpoint}?${queryString}&signature=${signature}`
 
@@ -493,7 +484,6 @@ export async function getBinanceMarginTrades(
   const encodedSecret = encoder.encode(connection.secret)
   const signature = await generateSignature(encodedData, encodedSecret)
 
-  const BASE_URL = "http://localhost:8080/api.binance.com"
   const endpoint = "/sapi/v1/margin/myTrades"
   const url = `${BASE_URL}${endpoint}?${queryString}&signature=${signature}`
 
@@ -536,7 +526,6 @@ export async function getBinanceMarginTransfer(
   const encodedSecret = encoder.encode(connection.secret)
   const signature = await generateSignature(encodedData, encodedSecret)
 
-  const BASE_URL = "http://localhost:8080/api.binance.com"
   const endpoint = "/sapi/v1/margin/transfer"
   const url = `${BASE_URL}${endpoint}?${queryString}&signature=${signature}`
 
@@ -575,7 +564,6 @@ export async function getBinanceMarginLiquidation(
   const encodedSecret = encoder.encode(connection.secret)
   const signature = await generateSignature(encodedData, encodedSecret)
 
-  const BASE_URL = "http://localhost:8080/api.binance.com"
   const endpoint = "/sapi/v1/margin/forceLiquidationRec"
   const url = `${BASE_URL}${endpoint}?${queryString}&signature=${signature}`
 

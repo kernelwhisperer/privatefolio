@@ -15,16 +15,18 @@ import {
   getBinanceTradesForSymbol,
   getBinanceWithdraw,
 } from "../binance-account-api"
+import { ninetyDays } from "../binance-settings"
 
 export async function binanceSpotAccount(
   progress: ProgressCallback = noop,
   connection: BinanceConnection,
   debugMode: boolean,
+  since: string,
+  until: string,
   signal?: AbortSignal
 ) {
-  const genesis = 1498867200000
-  const currentTime = Date.now()
-  const ninetyDays = 7_776_000_000
+  const genesis = since !== "0" ? parseFloat(since) : 1498867200000
+  const currentTime = parseFloat(until)
 
   progress([0, `Fetching deposits`])
   let deposits: BinanceDeposit[] = []
@@ -32,7 +34,7 @@ export async function binanceSpotAccount(
   for (let startTime = genesis; startTime <= currentTime; startTime += ninetyDays) {
     // eslint-disable-next-line no-loop-func
     promisesDeposits.push(async () => {
-      const endTime = startTime + ninetyDays
+      const endTime = startTime + ninetyDays > currentTime ? currentTime : startTime + ninetyDays
       try {
         if (signal?.aborted) {
           throw new Error(signal.reason)
@@ -60,7 +62,6 @@ export async function binanceSpotAccount(
       })
     )
   )
-  console.log("Deposits: ", deposits)
   progress([15, `Fetched ${deposits.length} deposits`])
 
   progress([15, `Fetching withdrawals`])
@@ -69,7 +70,7 @@ export async function binanceSpotAccount(
   for (let startTime = genesis; startTime <= currentTime; startTime += ninetyDays) {
     // eslint-disable-next-line no-loop-func
     promisesWithdraws.push(async () => {
-      const endTime = startTime + ninetyDays
+      const endTime = startTime + ninetyDays > currentTime ? currentTime : startTime + ninetyDays
       try {
         if (signal?.aborted) {
           throw new Error(signal.reason)
@@ -109,11 +110,11 @@ export async function binanceSpotAccount(
       )
     )
   }
-  console.log("Withdraws: ", withdraws)
   progress([30, `Fetched ${withdraws.length} withdraws`])
 
   progress([30, `Fetching symbols`])
-  const symbols = await getBinanceSymbols(connection)
+  const symbols = connection.options?.symbols || (await getBinanceSymbols(connection))
+
   progress([35, `Fetched ${symbols.length} symbols`])
 
   progress([35, `Fetching spot trade history`])
@@ -134,6 +135,8 @@ export async function binanceSpotAccount(
             connection,
             symbol,
             progress,
+            genesis,
+            currentTime,
             debugMode
           )
           trades = trades.concat(tradesForSymbol)
@@ -149,10 +152,9 @@ export async function binanceSpotAccount(
     progressCount += batch.length
     progress([35 + (progressCount / symbols.length) * 55])
     if (i + 10 < symbols.length) {
-      await wait(200 * 4)
+      await wait(200 * 10)
     }
   }
-  console.log("Spot trades: ", trades)
   progress([90, `Fetched ${trades.length} trades`])
 
   progress([90, `Fetching rewards`])
@@ -161,7 +163,7 @@ export async function binanceSpotAccount(
   for (let startTime = genesis; startTime <= currentTime; startTime += ninetyDays) {
     // eslint-disable-next-line no-loop-func
     promisesRewards.push(async () => {
-      const endTime = startTime + ninetyDays
+      const endTime = startTime + ninetyDays > currentTime ? currentTime : startTime + ninetyDays
       try {
         if (signal?.aborted) {
           throw new Error(signal.reason)
@@ -219,7 +221,6 @@ export async function binanceSpotAccount(
       })
     )
   )
-  console.log("Rewards: ", rewards)
   progress([100, `Fetched ${rewards.length} rewards`])
   const result = {
     deposits,
