@@ -241,7 +241,8 @@ describe("should import 0x003dc via files", () => {
       "0,Fetching all transactions
       25,Processing 948 Ethereum transactions
       50,Saving 211 merged transactions
-      75,Deleting 493 deduplicated transactions
+      70,Updating the audit logs of 211 merged transactions
+      90,Deleting 493 deduplicated transactions
       100,Done"
     `)
   })

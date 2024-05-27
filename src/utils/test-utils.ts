@@ -29,21 +29,27 @@ export function sanitizeAuditLog(auditLog: AuditLog) {
     platform,
     timestamp,
     txId: fullTxId,
-    balance, // FIXME - this should not be excluded
-    balanceN, // FIXME - this should not be excluded
+    balance, // FIXME - this should not be excluded for binance
+    balanceN, // FIXME - this should not be excluded for binance
     ...rest
   } = auditLog
 
   const _id = platform === "binance" ? "" : trimAuditLogId(fullId, auditLog.platform)
-  const txId =
-    platform === "binance" ? "" : fullTxId ? trimTxId(fullTxId, auditLog.platform) : undefined
+  let txId = fullTxId ? trimTxId(fullTxId, auditLog.platform) : undefined
   let time = timestamp
+  let balanceValue = balance
+  let balanceNvalue = balanceN
   if (platform === "binance") {
     time = (timestamp / 1000) | 0
+    balanceValue = undefined
+    balanceNvalue = undefined
+    txId = undefined
   }
 
   return {
     _id,
+    balance: balanceValue,
+    balanceN: balanceNvalue,
     platform,
     timestamp: time,
     txId,
@@ -70,14 +76,17 @@ export function sanitizeTransaction(transaction: Transaction) {
 
   const _id = platform === "ethereum" ? trimTxId(transaction._id, transaction.platform) : ""
   let time = timestamp
+  let tx = txHash
   if (platform === "binance") {
     time = (timestamp / 1000) | 0
+    tx = ""
   }
 
   return {
     _id,
     platform,
     timestamp: time,
+    txHash: tx,
     ...rest,
   }
 }

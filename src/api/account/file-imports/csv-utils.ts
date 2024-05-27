@@ -48,7 +48,7 @@ export async function parseCsv(
       if (index !== 0 && (index + 1) % 1000 === 0) {
         progress([(index * 50) / rows.length, `Parsing row ${index + 1}`])
       }
-      const { logs: newLogs, txns } = parser(row, index, _fileImportId, parserContext)
+      const { logs: newLogs, txns } = parser(row, index, _fileImportId, parserContext, header)
 
       for (const log of newLogs) {
         logs.push(log)

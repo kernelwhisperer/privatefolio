@@ -362,7 +362,8 @@ export type CsvParser = (
   csvRow: string,
   index: number,
   fileImportId: string,
-  parserContext: Record<string, unknown>
+  parserContext: Record<string, unknown>,
+  header: string
 ) => ParserResult
 export type EvmParser = (
   row: NormalTransaction | InternalTransaction | Erc20Transaction,
