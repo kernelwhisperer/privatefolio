@@ -17,7 +17,7 @@ export function parseWithdraw(
   connection: BinanceConnection
 ): ParserResult {
   const { platform } = connection
-  const { address, transactionFee, amount, coin, completeTime, applyTime, txId: txHash } = row
+  const { transactionFee, amount, coin, applyTime, txId: txHash } = row
 
   const wallet = `Binance Spot`
   if (amount === "0") {

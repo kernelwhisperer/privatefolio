@@ -54,51 +54,80 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
   if (!incoming && !outgoing && !fee) {
     throw new Error("Invalid transaction")
   }
-  const wallet = "Binance Spot"
+  const wallet = "Binance"
   let logs: AuditLog[] = []
   let txns: Transaction[] = []
 
   if (type === "Swap") {
     const priceN = (incomingN as number) / (outgoingN as number)
     const price = priceN.toString()
-    logs = [
-      {
-        _id: txId.concat("Buy"),
-        assetId: incomingAsset as string,
-        change: incoming as string,
-        changeN: incomingN as number,
-        importId: fileImportId,
-        importIndex: index,
-        operation: "Buy",
-        platform: "binance",
-        timestamp,
-        wallet,
-      },
-      {
-        _id: txId.concat("Sell"),
-        assetId: outgoingAsset as string,
-        change: `-${outgoing}`,
-        changeN: -(outgoingN as number),
-        importId: fileImportId,
-        importIndex: index,
-        operation: "Sell",
-        platform: "binance",
-        timestamp,
-        wallet,
-      },
-      {
-        _id: txId.concat("Fee"),
-        assetId: feeAsset as string,
-        change: `-${fee}`,
-        changeN: -(feeN as number),
-        importId: fileImportId,
-        importIndex: index,
-        operation: "Fee",
-        platform: "binance",
-        timestamp,
-        wallet,
-      },
-    ]
+    if (fee) {
+      logs = [
+        {
+          _id: txId.concat("Buy"),
+          assetId: incomingAsset as string,
+          change: incoming as string,
+          changeN: incomingN as number,
+          importId: fileImportId,
+          importIndex: index,
+          operation: "Buy",
+          platform: "binance",
+          timestamp,
+          wallet,
+        },
+        {
+          _id: txId.concat("Sell"),
+          assetId: outgoingAsset as string,
+          change: `-${outgoing}`,
+          changeN: -(outgoingN as number),
+          importId: fileImportId,
+          importIndex: index,
+          operation: "Sell",
+          platform: "binance",
+          timestamp,
+          wallet,
+        },
+        {
+          _id: txId.concat("Fee"),
+          assetId: feeAsset as string,
+          change: `-${fee}`,
+          changeN: -(feeN as number),
+          importId: fileImportId,
+          importIndex: index,
+          operation: "Fee",
+          platform: "binance",
+          timestamp,
+          wallet,
+        },
+      ]
+    } else {
+      logs = [
+        {
+          _id: txId.concat("Buy"),
+          assetId: incomingAsset as string,
+          change: incoming as string,
+          changeN: incomingN as number,
+          importId: fileImportId,
+          importIndex: index,
+          operation: "Buy",
+          platform: "binance",
+          timestamp,
+          wallet,
+        },
+        {
+          _id: txId.concat("Sell"),
+          assetId: outgoingAsset as string,
+          change: `-${outgoing}`,
+          changeN: -(outgoingN as number),
+          importId: fileImportId,
+          importIndex: index,
+          operation: "Sell",
+          platform: "binance",
+          timestamp,
+          wallet,
+        },
+      ]
+    }
     txns = [
       {
         _id: txId,
@@ -154,7 +183,7 @@ export function parser(csvRow: string, index: number, fileImportId: string): Par
   }
 
   if (type === "Withdraw") {
-    const change = outgoingBN.plus(feeBN)
+    const change = feeBN ? outgoingBN.plus(feeBN) : outgoingBN
     logs = [
       {
         _id: txId,

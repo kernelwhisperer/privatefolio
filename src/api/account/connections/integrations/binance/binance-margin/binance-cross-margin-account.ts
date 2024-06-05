@@ -31,7 +31,7 @@ export async function binanceCrossMarginAccount(
   const currentTime = parseFloat(until)
 
   progress([10, `Fetching symbols`])
-  const symbols = await getBinanceSymbols(connection)
+  const symbols = connection.options?.symbols || (await getBinanceSymbols(connection))
   progress([15, `Fetched ${symbols.length} symbols`])
 
   progress([0, `Fetching cross margin trade history`])
@@ -48,7 +48,15 @@ export async function binanceCrossMarginAccount(
             throw new Error(signal.reason)
           }
           progress([undefined, `Fetching margin trades for ${symbol.symbol} `])
-          const trade = await getBinanceMarginTrades(connection, symbol, false, progress, debugMode)
+          const trade = await getBinanceMarginTrades(
+            connection,
+            symbol,
+            false,
+            progress,
+            genesis,
+            currentTime,
+            debugMode
+          )
           trades = trades.concat(trade)
         } catch (err) {
           if (String(err).includes("429")) {
@@ -65,7 +73,6 @@ export async function binanceCrossMarginAccount(
       await wait(5)
     }
   }
-  console.log("Cross Margin trades: ", trades)
   progress([30, `Fetched ${trades.length} trades`])
 
   progress([35, `Fetching Loan and repayment history`])
@@ -91,6 +98,7 @@ export async function binanceCrossMarginAccount(
           startTime,
           endTime,
           "BORROW",
+          false,
           progress,
           debugMode
         )
@@ -99,6 +107,7 @@ export async function binanceCrossMarginAccount(
           startTime,
           endTime,
           "REPAY",
+          false,
           progress,
           debugMode
         )
@@ -121,7 +130,6 @@ export async function binanceCrossMarginAccount(
       })
     )
   )
-  console.log("Loans: ", loans, "Repayments: ", repayments)
   progress([40, `Fetched ${loans.length} loans and ${repayments.length} repayments`])
 
   progress([40, `Fetching Cross Margin transfers and liquidations`])
@@ -146,6 +154,7 @@ export async function binanceCrossMarginAccount(
           connection,
           startTime,
           endTime,
+          false,
           progress,
           debugMode
         )
@@ -153,6 +162,7 @@ export async function binanceCrossMarginAccount(
           connection,
           startTime,
           endTime,
+          false,
           progress,
           debugMode
         )
@@ -177,8 +187,6 @@ export async function binanceCrossMarginAccount(
     )
   )
 
-  console.log("Margin Transfers: ", transfers)
-  console.log("Margin Liquidations: ", liquidations)
   progress([43, `Fetched ${transfers.length} transfers and ${liquidations.length} liquidations`])
 
   const result = {

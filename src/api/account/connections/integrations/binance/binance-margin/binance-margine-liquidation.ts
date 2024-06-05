@@ -1,3 +1,4 @@
+import Big from "big.js"
 import { AuditLog, BinanceConnection, ParserResult } from "src/interfaces"
 
 import { BinanceMarginLiquidation } from "../binance-account-api"
@@ -8,18 +9,7 @@ export function parseMarginLiquidation(
   connection: BinanceConnection
 ): ParserResult {
   const { platform } = connection
-  const {
-    avgPrice,
-    executedQty,
-    isIsolated,
-    orderId,
-    price,
-    qty,
-    side,
-    symbol,
-    timeInForce,
-    updatedTime,
-  } = row
+  const { executedQty, isIsolated, orderId, price, qty, side, symbol, updatedTime } = row
   const wallet = isIsolated ? `Binance Isolated Margin` : `Binance Cross Margin`
   const timestamp = new Date(Number(updatedTime)).getTime()
   if (isNaN(timestamp)) {
@@ -28,15 +18,17 @@ export function parseMarginLiquidation(
   const txId = `${connection._id}_${orderId}_binance_${index}`
   const importId = connection._id
   const importIndex = index
-  const outgoing = executedQty
-  const outgoingN = parseFloat(outgoing)
+
+  const changeBN = new Big(executedQty)
+  const outgoing = changeBN.toFixed()
+  const outgoingN = changeBN.toNumber()
   const outgoingAsset = `binance:${symbol}`
   const logs: AuditLog[] = [
     {
       _id: `${txId}_LOAN`,
       assetId: outgoingAsset,
-      change: `-${outgoing}` as string,
-      changeN: outgoingN as number,
+      change: `-${outgoing}`,
+      changeN: -outgoingN,
       importId,
       importIndex,
       operation: "Liquidation Repayment",

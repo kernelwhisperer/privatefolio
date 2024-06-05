@@ -40,6 +40,7 @@ export async function parseCsv(
   const assetMap: Record<string, boolean> = {}
   const walletMap: Record<string, boolean> = {}
   const operationMap: Partial<Record<AuditLogOperation, boolean>> = {}
+  // const pairList = new Set()
 
   progress([0, `Parsing ${rows.length - 1} rows`])
   // Skip header
@@ -49,6 +50,10 @@ export async function parseCsv(
         progress([(index * 50) / rows.length, `Parsing row ${index + 1}`])
       }
       const { logs: newLogs, txns } = parser(row, index, _fileImportId, parserContext, header)
+
+      // const x = txns?.[0]?.incomingAsset?.replace("binance:", "")
+      // const y = txns?.[0]?.outgoingAsset?.replace("binance:", "")
+      // pairList.add(`${x}${y}`)
 
       for (const log of newLogs) {
         logs.push(log)
@@ -74,6 +79,7 @@ export async function parseCsv(
     integration: parserId,
     logs: logs.length,
     operations: Object.keys(operationMap) as AuditLogOperation[],
+    // pairList: Array.from(pairList),
     platform,
     rows: rows.length - 1,
     transactions: transactions.length,

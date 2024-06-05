@@ -1,3 +1,4 @@
+import Big from "big.js"
 import { AuditLog, BinanceConnection, ParserResult } from "src/interfaces"
 
 import { BinanceFuturesCOINIncome } from "../binance-account-api"
@@ -8,7 +9,7 @@ export function parseFuturesCOINIncome(
   connection: BinanceConnection
 ): ParserResult {
   const { platform } = connection
-  const { asset, income, incomeType, info, symbol, time, tranId: id } = row
+  const { asset, income: amount, incomeType, time, tranId: id } = row
 
   const wallet = `Binance Coin-M Futures`
   const timestamp = new Date(Number(time)).getTime()
@@ -18,8 +19,12 @@ export function parseFuturesCOINIncome(
   const txId = `${connection._id}_${id}_binance_${index}`
   const importId = connection._id
   const importIndex = index
+
   let logs: AuditLog[] = []
-  const incomeN = parseFloat(income)
+  const incomeBN = new Big(amount)
+  const income = incomeBN.toFixed()
+  const incomeN = incomeBN.toNumber()
+
   switch (incomeType) {
     case "TRANSFER":
       logs = [

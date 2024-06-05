@@ -1,3 +1,4 @@
+import Big from "big.js"
 import { AuditLog, BinanceConnection, ParserResult } from "src/interfaces"
 
 import { BinanceMarginLoanRepayment } from "../binance-account-api"
@@ -8,16 +9,7 @@ export function parseLoan(
   connection: BinanceConnection
 ): ParserResult {
   const { platform } = connection
-  const {
-    amount,
-    asset,
-    interest,
-    isolatedSymbol,
-    principal,
-    status,
-    timestamp: time,
-    txId: id,
-  } = row
+  const { amount, asset, isolatedSymbol, principal, timestamp: time, txId: id } = row
   const wallet = isolatedSymbol ? `Binance Isolated Margin` : `Binance Cross Margin`
   const timestamp = new Date(Number(time)).getTime()
   if (isNaN(timestamp)) {
@@ -26,8 +18,11 @@ export function parseLoan(
   const txId = `${connection._id}_${id}_binance_${index}`
   const importId = connection._id
   const importIndex = index
-  const incoming = principal
-  const incomingN = parseFloat(incoming)
+
+  const principalBN = new Big(principal)
+
+  const incoming = principalBN.toFixed()
+  const incomingN = principalBN.toNumber()
   const incomingAsset = `binance:${asset}`
   const logs: AuditLog[] = [
     {
@@ -55,16 +50,7 @@ export function parseRepayment(
   connection: BinanceConnection
 ): ParserResult {
   const { platform } = connection
-  const {
-    amount,
-    asset,
-    interest,
-    isolatedSymbol,
-    principal,
-    status,
-    timestamp: time,
-    txId: id,
-  } = row
+  const { amount, asset, isolatedSymbol, principal, timestamp: time, txId: id } = row
   const wallet = isolatedSymbol ? `Binance isolated margin` : `Binance cross margin`
   const timestamp = new Date(Number(time)).getTime()
   if (isNaN(timestamp)) {
@@ -73,15 +59,17 @@ export function parseRepayment(
   const txId = `${connection._id}_${id}_binance_${index}`
   const importId = connection._id
   const importIndex = index
-  const outgoing = amount
-  const outgoingN = parseFloat(outgoing)
+
+  const amountBN = new Big(amount)
+  const outgoing = amountBN.toFixed()
+  const outgoingN = amountBN.toNumber()
   const outgoingAsset = `binance:${asset}`
   const logs: AuditLog[] = [
     {
       _id: `${txId}_Repayment`,
       assetId: outgoingAsset,
       change: `-${outgoing}` as string,
-      changeN: outgoingN,
+      changeN: -outgoingN,
       importId,
       importIndex,
       operation: "Loan Repayment",

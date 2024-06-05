@@ -48,8 +48,8 @@ export function ConnectionDrawer({ open, toggleOpen, ...rest }: DrawerProps & Po
 
   const [state, setState] = React.useState({
     coin: false,
-    cross: false,
-    isolated: false,
+    cross: true,
+    isolated: true,
     spot: true,
     usd: false,
   })
@@ -178,7 +178,6 @@ export function ConnectionDrawer({ open, toggleOpen, ...rest }: DrawerProps & Po
                   label="Spot"
                 />
                 <FormControlLabel
-                  sx={{ display: "none" }}
                   control={
                     <Checkbox
                       checked={cross}
@@ -190,7 +189,7 @@ export function ConnectionDrawer({ open, toggleOpen, ...rest }: DrawerProps & Po
                   label="Cross Margin"
                 />
                 <FormControlLabel
-                  sx={{ display: "none" }}
+                  // sx={{ display: "none" }}
                   control={
                     <Checkbox
                       checked={isolated}
@@ -202,7 +201,7 @@ export function ConnectionDrawer({ open, toggleOpen, ...rest }: DrawerProps & Po
                   label="Isolated Margin"
                 />
                 <FormControlLabel
-                  sx={{ display: "none" }}
+                  // sx={{ display: "none" }}
                   control={
                     <Checkbox
                       checked={coin}
@@ -214,7 +213,7 @@ export function ConnectionDrawer({ open, toggleOpen, ...rest }: DrawerProps & Po
                   label="Coin-M Futures"
                 />
                 <FormControlLabel
-                  sx={{ display: "none" }}
+                  // sx={{ display: "none" }}
                   control={
                     <Checkbox checked={usd} color="secondary" name="usd" onChange={handleChange} />
                   }

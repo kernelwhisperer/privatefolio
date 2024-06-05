@@ -27,7 +27,7 @@ export async function binanceFuturesUSDAccount(
   const currentTime = parseFloat(until)
 
   progress([0, `Fetching Futures symbols`])
-  const symbols = await getBinanceFuturesUSDSymbols(connection)
+  const symbols = connection.options?.symbols || (await getBinanceFuturesUSDSymbols(connection))
   console.log("Futures USD symbols:", symbols)
   progress([5, `Fetched ${symbols.length} futures USD symbols`])
 

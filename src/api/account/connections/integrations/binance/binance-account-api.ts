@@ -436,6 +436,7 @@ export async function getBinanceMarginLoanRepayment(
   startTime: number,
   endTime: number,
   type: string,
+  isolated: boolean,
   progress: ProgressCallback,
   debugMode: boolean
 ): Promise<Array<BinanceMarginLoanRepayment>> {
@@ -466,7 +467,9 @@ export async function getBinanceMarginLoanRepayment(
   if (res.status !== 200) {
     throw new Error(`Binance: ${data.msg}`)
   }
-  return data.rows as BinanceMarginLoanRepayment[]
+  return (data.rows as BinanceMarginLoanRepayment[]).filter((x) =>
+    isolated ? x.isolatedSymbol : !x.isolatedSymbol
+  )
 }
 
 // https://binance-docs.github.io/apidocs/spot/en/#query-margin-account-39-s-trade-list-user_data
@@ -475,6 +478,8 @@ export async function getBinanceMarginTrades(
   symbol: BinancePair,
   isIsolated: boolean,
   progress: ProgressCallback,
+  since: number,
+  until: number,
   debugMode: boolean
 ): Promise<Array<BinanceMarginTrade>> {
   const timestamp = Date.now()
@@ -504,11 +509,13 @@ export async function getBinanceMarginTrades(
   if (res.status !== 200) {
     throw new Error(data.msg)
   }
-  return data.map((x) => ({
-    ...x,
-    baseAsset: symbol.baseAsset,
-    quoteAsset: symbol.quoteAsset,
-  })) as BinanceMarginTrade[]
+  return (
+    data.map((x) => ({
+      ...x,
+      baseAsset: symbol.baseAsset,
+      quoteAsset: symbol.quoteAsset,
+    })) as BinanceMarginTrade[]
+  ).filter((x) => x.time > since && x.time < until)
 }
 
 // https://binance-docs.github.io/apidocs/spot/en/#get-cross-margin-transfer-history-user_data
@@ -516,6 +523,7 @@ export async function getBinanceMarginTransfer(
   connection: BinanceConnection,
   startTime: number,
   endTime: number,
+  isolated: boolean,
   progress: ProgressCallback,
   debugMode: boolean
 ): Promise<Array<BinanceMarginTransfer>> {
@@ -546,7 +554,11 @@ export async function getBinanceMarginTransfer(
   if (res.status !== 200) {
     throw new Error(`Binance: ${data.msg}`)
   }
-  return data.rows as BinanceMarginTransfer[]
+  return (data.rows as BinanceMarginTransfer[]).filter((x) =>
+    isolated
+      ? x.transFrom === "ISOLATED_MARGIN" || x.transTo === "ISOLATED_MARGIN"
+      : x.transFrom === "CROSS_MARGIN" || x.transTo === "CROSS_MARGIN"
+  )
 }
 
 // https://binance-docs.github.io/apidocs/spot/en/#get-force-liquidation-record-user_data
@@ -554,6 +566,7 @@ export async function getBinanceMarginLiquidation(
   connection: BinanceConnection,
   startTime: number,
   endTime: number,
+  isolated: boolean,
   progress: ProgressCallback,
   debugMode: boolean
 ): Promise<Array<BinanceMarginLiquidation>> {
@@ -584,7 +597,9 @@ export async function getBinanceMarginLiquidation(
   if (res.status !== 200) {
     throw new Error(`Binance: ${data.msg}`)
   }
-  return data.rows as BinanceMarginLiquidation[]
+  return (data.rows as BinanceMarginLiquidation[]).filter((x) =>
+    isolated ? x.isIsolated : !x.isIsolated
+  )
 }
 
 // https://binance-docs.github.io/apidocs/futures/en/#exchange-information

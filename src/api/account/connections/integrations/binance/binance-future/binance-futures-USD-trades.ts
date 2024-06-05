@@ -1,3 +1,4 @@
+import Big from "big.js"
 import {
   AuditLog,
   BinanceConnection,
@@ -24,23 +25,27 @@ export function parseFuturesUSDTrade(
   const type: TransactionType = "Swap"
   const importId = connection._id
   const importIndex = index
+
   let incoming: string | undefined, incomingAsset: string | undefined, incomingN: number | undefined
   let outgoing: string | undefined, outgoingAsset: string | undefined, outgoingN: number | undefined
+  let incomingBN: Big | undefined, outgoingBN: Big | undefined
   let logs: AuditLog[]
 
   if (buyer) {
-    incoming = qty
-    incomingN = parseFloat(incoming)
+    incomingBN = new Big(qty)
+    incoming = incomingBN.toFixed()
+    incomingN = incomingBN.toNumber()
     incomingAsset = `binance:${baseAsset}`
-    outgoing = quoteQty
-    outgoingN = parseFloat(outgoing)
+    outgoingBN = new Big(quoteQty)
+    outgoing = outgoingBN.toFixed()
+    outgoingN = outgoingBN.toNumber()
     outgoingAsset = `binance:${quoteAsset}`
     logs = [
       {
         _id: `${txId}_SELL`,
         assetId: outgoingAsset,
-        change: `-${outgoing}` as string,
-        changeN: outgoingN,
+        change: `-${outgoing}`,
+        changeN: -outgoingN,
         importId,
         importIndex,
         operation: "Sell",
@@ -64,18 +69,20 @@ export function parseFuturesUSDTrade(
       },
     ]
   } else {
-    incoming = quoteQty
-    incomingN = parseFloat(incoming)
+    incomingBN = new Big(quoteQty)
+    incoming = incomingBN.toFixed()
+    incomingN = incomingBN.toNumber()
     incomingAsset = `binance:${quoteAsset}`
-    outgoing = qty
-    outgoingN = parseFloat(outgoing)
+    outgoingBN = new Big(qty)
+    outgoing = outgoingBN.toFixed()
+    outgoingN = outgoingBN.toNumber()
     outgoingAsset = `binance:${baseAsset}`
     logs = [
       {
         _id: `${txId}_SELL`,
         assetId: outgoingAsset,
-        change: `-${outgoing}` as string,
-        changeN: outgoingN,
+        change: `-${outgoing}`,
+        changeN: -outgoingN,
         importId,
         importIndex,
         operation: "Sell",
@@ -101,11 +108,12 @@ export function parseFuturesUSDTrade(
   }
 
   if (commission) {
+    const feeBN = new Big(commission)
     logs.push({
       _id: `${txId}_FEE`,
       assetId: `binance:${commissionAsset}`,
-      change: `-${commission}` as string,
-      changeN: parseFloat(commission),
+      change: `-${feeBN.toFixed()}`,
+      changeN: -feeBN.toNumber(),
       importId,
       importIndex,
       operation: "Fee",
@@ -116,6 +124,7 @@ export function parseFuturesUSDTrade(
     })
   }
 
+  const priceBN = incomingBN.div(outgoingBN)
   const tx: Transaction = {
     _id: txId,
     fee: commission === "0" ? undefined : commission,
@@ -130,6 +139,8 @@ export function parseFuturesUSDTrade(
     outgoingAsset: outgoing === "0" ? undefined : outgoingAsset,
     outgoingN: outgoing === "0" ? undefined : outgoingN,
     platform,
+    price: priceBN.toFixed(),
+    priceN: priceBN.toNumber(),
     timestamp,
     type,
     wallet,
