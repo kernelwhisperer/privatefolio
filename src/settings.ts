@@ -91,7 +91,7 @@ export const PLATFORMS_META: Record<PlatformId, PlatformMeta> = {
     coingeckoId: "base",
     logoUrl: "https://icons.llamao.fi/icons/chains/rsz_base.jpg",
     name: "Base",
-    nativeAssetId: "eip155-42161:0x0000000000000000000000000000000000000000:ETH",
+    nativeAssetId: "eip155-8453:0x0000000000000000000000000000000000000000:ETH",
   },
   ethereum: {
     coingeckoId: "ethereum",
