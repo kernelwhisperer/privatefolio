@@ -1,8 +1,9 @@
 import { Stack, Typography } from "@mui/material"
 import { useStore } from "@nanostores/react"
 import React, { ReactNode } from "react"
+import { PLATFORMS_META } from "src/settings"
 import { $assetMap } from "src/stores/metadata-store"
-import { getAssetTicker } from "src/utils/assets-utils"
+import { getAssetPlatform, getAssetTicker } from "src/utils/assets-utils"
 
 import { AssetAvatar, AssetAvatarProps } from "./AssetAvatar"
 import { Truncate } from "./Truncate"
@@ -31,7 +32,9 @@ export function AssetBlock(props: AssetBlockProps) {
         {...rest}
       />
       <Stack>
-        <Truncate>{getAssetTicker(asset)}</Truncate>
+        <Truncate>
+          {getAssetTicker(asset)} ({PLATFORMS_META[getAssetPlatform(asset)].name})
+        </Truncate>
         {secondary && (
           <Typography color="text.secondary" variant="caption" fontWeight={300} letterSpacing={0.5}>
             {secondary}
