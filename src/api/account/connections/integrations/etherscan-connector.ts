@@ -1,4 +1,5 @@
 import { EtherscanConnection, SyncResult } from "src/interfaces"
+import { API_KEYS } from "src/settings"
 import { ProgressCallback } from "src/stores/task-store"
 import { getAssetPlatform, getEvmChainId } from "src/utils/assets-utils"
 import { noop } from "src/utils/utils"
@@ -29,7 +30,7 @@ export async function syncEtherscan(
   until: string
 ) {
   const chainId = getEvmChainId(getAssetPlatform(connection.platform))
-  const rpcProvider = new FullEtherscanProvider(chainId, "3JHR8S44XRG5VAN774EGSBY175A1QE2EZA")
+  const rpcProvider = new FullEtherscanProvider(chainId, API_KEYS[connection.platform])
 
   progress([0, `Starting from block number ${since}`])
 

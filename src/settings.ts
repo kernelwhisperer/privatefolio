@@ -132,3 +132,9 @@ export const PRICE_APIS_META: Record<PriceApiId, PriceApiMeta> = {
     name: "DefiLlama",
   },
 }
+
+export const API_KEYS: Partial<Record<PlatformId, string>> = {
+  "eip155-42161": "536HFC6SEA6TH2XUQZ8DFFFD77PJP8QMBQ",
+  "eip155-8453": "WJPKFYTUSTH1N9AM2I947BJ2918GUF58JR",
+  ethereum: "3JHR8S44XRG5VAN774EGSBY175A1QE2EZA",
+}
