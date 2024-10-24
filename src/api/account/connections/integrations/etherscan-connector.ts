@@ -29,7 +29,7 @@ export async function syncEtherscan(
   until: string
 ) {
   const chainId = getEvmChainId(getAssetPlatform(connection.platform))
-  const rpcProvider = new FullEtherscanProvider(chainId)
+  const rpcProvider = new FullEtherscanProvider(chainId, "3JHR8S44XRG5VAN774EGSBY175A1QE2EZA")
 
   progress([0, `Starting from block number ${since}`])
 
