@@ -68,7 +68,7 @@ export function AuditLogTableRow(props: TableRowComponentProps<AuditLog>) {
                     colorized
                     showSign
                   />
-                  {showAssetColumn && <AssetBlock asset={assetId} />}
+                  {showAssetColumn && <AssetBlock asset={assetId} showPlatform />}
                 </Stack>
               </Stack>
             </Stack>
@@ -122,7 +122,7 @@ export function AuditLogTableRow(props: TableRowComponentProps<AuditLog>) {
         </TableCell>
         {showAssetColumn && (
           <TableCell>
-            <AssetBlock asset={assetId} />
+            <AssetBlock asset={assetId} showPlatform />
           </TableCell>
         )}
         <TableCell align="right">

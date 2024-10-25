@@ -1,8 +1,9 @@
 import { Stack, Typography } from "@mui/material"
 import { useStore } from "@nanostores/react"
 import React, { ReactNode } from "react"
+import { PLATFORMS_META } from "src/settings"
 import { $assetMap } from "src/stores/metadata-store"
-import { getAssetTicker } from "src/utils/assets-utils"
+import { getAssetPlatform, getAssetTicker } from "src/utils/assets-utils"
 
 import { AssetAvatar, AssetAvatarProps } from "./AssetAvatar"
 import { Truncate } from "./Truncate"
@@ -10,11 +11,12 @@ import { Truncate } from "./Truncate"
 type AssetBlockProps = {
   asset?: string
   secondary?: ReactNode
+  showPlatform?: boolean
 } & Omit<AssetAvatarProps, "alt" | "src">
 
 export function AssetBlock(props: AssetBlockProps) {
   const assetMap = useStore($assetMap)
-  const { asset, secondary, ...rest } = props
+  const { asset, secondary, showPlatform, ...rest } = props
 
   return (
     <Stack
@@ -31,7 +33,20 @@ export function AssetBlock(props: AssetBlockProps) {
         {...rest}
       />
       <Stack>
-        <Truncate>{getAssetTicker(asset)}</Truncate>
+        <Truncate>
+          {getAssetTicker(asset)}
+          {showPlatform && asset && getAssetPlatform(asset) !== "ethereum" && (
+            <Typography
+              color="text.secondary"
+              variant="caption"
+              fontWeight={300}
+              letterSpacing={0.5}
+            >
+              {" "}
+              - {PLATFORMS_META[getAssetPlatform(asset)].name}
+            </Typography>
+          )}
+        </Truncate>
         {secondary && (
           <Typography color="text.secondary" variant="caption" fontWeight={300} letterSpacing={0.5}>
             {secondary}

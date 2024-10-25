@@ -32,6 +32,7 @@ export function BalanceTableRow(props: TableRowComponentProps<Balance>) {
                 asset={assetId}
                 size="medium"
                 secondary={<AmountBlock amount={balance} />}
+                showPlatform
               />
               <Stack alignItems="flex-end">
                 <Typography variant="body1">
@@ -69,7 +70,7 @@ export function BalanceTableRow(props: TableRowComponentProps<Balance>) {
     <TableRow hover {...rest}>
       <TableCell variant="clickable">
         <AppLink to={`./asset/${encodeURI(assetId)}`}>
-          <AssetBlock asset={assetId} />
+          <AssetBlock asset={assetId} showPlatform />
         </AppLink>
       </TableCell>
       <TableCell variant="clickable" align="right">

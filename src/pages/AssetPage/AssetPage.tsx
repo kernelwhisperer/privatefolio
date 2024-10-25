@@ -5,12 +5,13 @@ import React, { useEffect, useState } from "react"
 import { Navigate, useParams, useSearchParams } from "react-router-dom"
 import { AmountBlock } from "src/components/AmountBlock"
 import { NavTab } from "src/components/NavTab"
+import { PlatformBlock } from "src/components/PlatformBlock"
 import { SectionTitle } from "src/components/SectionTitle"
 import { Tabs } from "src/components/Tabs"
 import { Balance } from "src/interfaces"
 import { $quoteCurrency } from "src/stores/account-settings-store"
 import { $activeAccount } from "src/stores/account-store"
-import { getAssetTicker } from "src/utils/assets-utils"
+import { getAssetPlatform, getAssetTicker } from "src/utils/assets-utils"
 import { clancy } from "src/workers/remotes"
 
 import { AssetAvatar } from "../../components/AssetAvatar"
@@ -78,17 +79,20 @@ export default function AssetPage() {
             alt={getAssetTicker(assetId)}
           />
           <Stack>
-            <Typography variant="h6" fontFamily={SerifFont} sx={{ marginBottom: -0.5 }}>
-              <span>{getAssetTicker(assetId)}</span>
-            </Typography>
-            <Typography
-              color="text.secondary"
-              variant="subtitle2"
-              fontWeight={300}
-              letterSpacing={0.5}
-            >
-              {assetMap[assetId]?.name}
-            </Typography>
+            <Stack direction="row" alignItems="baseline" gap={1}>
+              <Typography variant="h6" fontFamily={SerifFont} sx={{ marginBottom: -0.5 }}>
+                <span>{getAssetTicker(assetId)}</span>
+              </Typography>
+              <Typography
+                color="text.secondary"
+                variant="subtitle2"
+                fontWeight={300}
+                letterSpacing={0.5}
+              >
+                {assetMap[assetId]?.name}
+              </Typography>
+            </Stack>
+            <PlatformBlock platform={getAssetPlatform(assetId)} />
           </Stack>
         </Stack>
         <Stack gap={6} direction="row">

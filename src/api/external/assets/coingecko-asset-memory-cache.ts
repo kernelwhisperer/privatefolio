@@ -4,7 +4,7 @@ import { ASSET_FILES_LOCATION, PLATFORMS_META } from "src/settings"
 const ETH: AssetMetadata = {
   coingeckoId: "ethereum",
   logoUrl: `https://assets.coingecko.com/coins/images/279/large/ethereum.png`,
-  name: "Ethereum",
+  name: "Ether",
   symbol: "ETH",
 }
 
